@@ -37,21 +37,19 @@
  *
  ******************************************************************************/
 
+#include <stddef.h>
 #include "dcmotor3.h"
-#include "em_gpio.h"
 #include "mikroe_tb6549fg_config.h"
 #include "mikroe_tb6549fg.h"
-#include "third_party_hw_drivers_helpers.h"
 
 static dcmotor3_t dcmotor3;
 static dcmotor3_cfg_t dcmotor3_cfg;
 
-sl_status_t mikroe_tb6549fg_init(sl_pwm_instance_t *pwm_instance)
+sl_status_t mikroe_tb6549fg_init(mikroe_pwm_handle_t pwm_instance)
 {
   if (pwm_instance == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
   // Configure default i2csmp instance
   dcmotor3.pwm.handle = pwm_instance;
@@ -71,14 +69,14 @@ sl_status_t mikroe_tb6549fg_init(sl_pwm_instance_t *pwm_instance)
   dcmotor3_cfg.slp = hal_gpio_pin_name(DCMOTOR3_SLP_PORT, DCMOTOR3_SLP_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(dcmotor3_init(&dcmotor3,
-                                                &dcmotor3_cfg));
+  if (dcmotor3_init(&dcmotor3, &dcmotor3_cfg) != DCMOTOR3_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_tb6549fg_set_pwm_instance(
-  sl_pwm_instance_t *pwm_instance)
+sl_status_t mikroe_tb6549fg_set_pwm_instance(mikroe_pwm_handle_t pwm_instance)
 {
   if (NULL == pwm_instance) {
     return SL_STATUS_INVALID_PARAMETER;

@@ -2,7 +2,7 @@
 
 ## Summary ##
 
-This project aims to show the hardware driver that is used to interface with the DC motor driver using the TB6549FG from Toshiba via APIs of GSDK.
+This project aims to show the hardware driver that is used to interface with the DC motor driver using the TB6549FG from Toshiba with the Silicon Labs Platform.
 
 DC MOTOR 3 Click is a mikroBUS™ add-on board with a Toshiba TB6549FG full-bridge driver for direct current motors. The IC is capable of outputting currents of up to 3.5 A with 30V, making it suitable for high-power motors.
 
@@ -10,26 +10,28 @@ DC MOTOR 3 Click is a mikroBUS™ add-on board with a Toshiba TB6549FG full-brid
 
 - [BGM220 Bluetooth Module Explorer Kit](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)
 
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
 - [DC Motor 3 Click](https://www.mikroe.com/dc-motor-3-click)
-
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2703A | [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)  |
-| BRD4108A | [EFR32BG22 Explorer Kit Board](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)  |
 
 ## Hardware Connection ##
 
-The DC Motor 3 Click board supports mikroBUS™, so it can connect easily to BGM220 Bluetooth Module Explorer Kit's header.
+- If the BGM220P Explorer Kit is used:
 
-During the assembly process, make sure that the 45-degree corner of the Click board matches the 45-degree white line of the Silicon Labs Explorer Kit.
+  The DC Motor 3 Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of the Click board matches the 45-degree white line of the Explorer Kit.
 
-The hardware connection is shown in the image below:
+  The hardware connection is shown in the image below:
 
-![board](image/hardware_connection.png)
+  ![board](image/hardware_connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description | BRD4338A GPIO | BRD4002 EXP Header | DC Motor 3 Click |
+  | ----------- | ------------- | ------------------ | ---------------- |
+  | IN1         | GPIO_48       | P28                | IN1              |
+  | IN2         | GPIO_47       | P26                | IN2              |
+  | SLP         | GPIO_46       | P24                | SLP              |
+  | PWM         | GPIO_7        | P20                | PWM              |
 
 ## Setup ##
 
@@ -37,16 +39,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter dc
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *dc*
 
 2. Click **Create** button on the **Third Party Hardware Drivers - TB6549FG - DC Motor 3 Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_dcmotor3_tb6549fg/app.c` into the project root folder (overwriting the existing file).
 
@@ -58,16 +61,24 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
-        - **[Services] → [IO Stream] → [IO Stream: USART]** → default instance name: vcom
-        - **[Application] → [Utility] → [Log]**
-        - **[Services] → [Timers] → [Sleep Timer]**
-        - **[Third Party Hardware Drivers] → [Miscellaneous] → [TB6549FG - DC MOTOR 3 Click (Mikroe)]**
+      **If the BGM220P Explorer Kit is used:**
+
+        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
+        - [Application] → [Utility] → [Log]
+        - [Services] → [Timers] → [Sleep Timer]
+        - [Third Party Hardware Drivers] → [Miscellaneous] → [TB6549FG - DC MOTOR 3 Click (Mikroe)]
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [PWM] → [channel_0] → use default configuration
+        - [Third Party Hardware Drivers] → [Miscellaneous] → [TB6549FG - DC MOTOR 3 Click (Mikroe)]
 
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - Third-party drivers extension must be enabled for the project to install "TB6549FG - DC MOTOR 3 Click (Mikroe)" component.
 

@@ -43,26 +43,53 @@
 extern "C" {
 #endif
 
+#ifndef SLI_SI917
+#include "em_gpio.h"
+#endif
+
 // <<< Use Configuration Wizard in Context Menu >>>
 // <h> Ozone 2 Click ADC Select
 
-// <o MIKROE_OZONE2_CLICK_ADC_SEL> Select ADC module
+// <o MIKROE_OZONE2_ADC_SEL> Select ADC module
 // <i>
 // <0=> Internal ADC
 // <1=> External ADC
-#define MIKROE_OZONE2_CLICK_ADC_SEL              1
+#define MIKROE_OZONE2_ADC_SEL                      1
 
 // </h>
+
+// <h> Ozone 2 Click SPI Configuration
+
+// <e> Ozone 2 Click SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_OZONE2_CLICK_SPI_UC                 0
+
+// <o MIKROE_OZONE2_CLICK_SPI_UC_BITRATE> Bit Rate (Bits/Second) <1-116000000>
+// <i> Default: 10000000
+#define MIKROE_OZONE2_CLICK_SPI_UC_BITRATE         10000000
+
+// </e>
+// </h>
+
 // <<< end of configuration section >>>
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> MIKROE_OZONE2_CLICK_AN
-// $[GPIO_MIKROE_OZONE2_CLICK_AN]
-#warning "MIKROE_OZONE2_CLICK_AN is not configured"
-// #define MIKROE_OZONE2_CLICK_AN_PORT             gpioPortB
-// #define MIKROE_OZONE2_CLICK_AN_PIN              0
-// [GPIO_MIKROE_OZONE2_CLICK_AN]$
+// <gpio optional=true> MIKROE_OZONE2_AN
+// $[GPIO_MIKROE_OZONE2_AN]
+#warning "MIKROE_OZONE2_AN is not configured"
+// #define MIKROE_OZONE2_AN_PORT                    gpioPortB
+// #define MIKROE_OZONE2_AN_PIN                     0
+// [GPIO_MIKROE_OZONE2_AN]$
+
+// <gpio optional=true> MIKROE_OZONE2_CS
+// $[GPIO_MIKROE_OZONE2_CS]
+#warning "MIKROE_OZONE2_CS is not configured"
+// #define MIKROE_OZONE2_CS_PORT                    gpioPortC
+// #define MIKROE_OZONE2_CS_PIN                     0
+// [GPIO_MIKROE_OZONE2_CS]$
 
 // <<< sl:end pin_tool >>>
 
@@ -70,4 +97,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_MQ131_CONFIG_H */
+#endif // MIKROE_MQ131_CONFIG_H

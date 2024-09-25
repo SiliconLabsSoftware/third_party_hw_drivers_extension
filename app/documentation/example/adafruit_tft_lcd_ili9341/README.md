@@ -10,6 +10,7 @@ For testing, you'll need a ILI9341 display breakout, like [this large 2.8" TFT d
 ## Required Hardware ##
 
 - [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 - A ILI9341 TFT display as listed below:
   - [Adafruit ILI9341 - 2.4" TFT LCD with Touchscreen](https://www.adafruit.com/product/2478)
   - [2.8" TFT LCD with Touchscreen Breakout Board w/MicroSD Socket - ILI9341](https://www.adafruit.com/product/1770)
@@ -17,19 +18,19 @@ For testing, you'll need a ILI9341 display breakout, like [this large 2.8" TFT d
 
 ## Hardware Connection ##
 
-To connect the Adafruit 2.4" TFT LCD (with Touchscreen) with the EFR32xG24 Explorer Kit, you can see the pins mapping table below.
+To connect the Adafruit 2.4" TFT LCD (with Touchscreen) with your board, you can see the pins mapping table below.
 
-| Pin | Connection | Pin function |
-|:---:|:-------------:|:---------------|
-| PC8 | D/C | GPIO |
-| PC0 | CS | SPI CS |
-| PC1 | CLK | SPI SCK |
-| PC2 | MISO | SPI MISO |
-| PC3 | MOSI | SPI MOSI |
-| PD5 | XP(X+) | AN |
-| PD4 | YP(Y+) | AN |
-| PB1 | YM(Y-) | AN |
-| PA0 | XM(Y+) | AN |
+| EFR32xG24 Explorer Kit | SiWx917-RB4338A Radio Board  | Connection | Pin function |
+| --- | --- | --- | --- |
+| PC8 | GPIO_47 (P26) | D/C | GPIO |
+| PC0 | GPIO_28 (P31) | CS | SPI CS |
+| PC1 | GPIO_25 (P25) | CLK | SPI SCK |
+| PC2 | GPIO_26 (P27) | MISO | SPI MISO |
+| PC3 | GPIO_27 (P29) | MOSI | SPI MOSI |
+| PD5 | GPIO_7 (P20) | XP(X+) | AN |
+| PD4 | ULP_GPIO_1 (P16) | YP(Y+) | AN |
+| PB1 | GPIO_6 (P19) | YM(Y-) | AN |
+| PA0 | ULP_GPIO_8 (P15) | XM(X-) | AN |
 
 ## Setup ##
 
@@ -37,8 +38,7 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter **tft lcd**.
-
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **tft lcd**.
 2. Click **Create** button on the example:
 
     - **Third Party Hardware Drivers - ILI9341 - TFT LCD with Touchscreen (Adafruit) - SPI** if using without DMA.  
@@ -47,37 +47,49 @@ You can either create a project based on an example project or start with an emp
 
     Example project creation dialog pops up -> click Create and Finish and Project should be generated.
     ![Create_example](image/create_example.png)
-
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
-
-2. Copy the file `app/example/adafruit_tft_lcd_ili9341/app.c` into the project root folder (overwriting existing file).
-
+1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Board" or "SiWx917-RB4338A Radio Board" using Simplicity Studio v5. Use the default project settings.
+2. Copy source files:
+    - With Gecko EFR32 SOCs:
+      - Copy the file `app/example/adafruit_tft_lcd_ili9341/gecko/app.c` into the project root folder (overwriting existing file).
+    - With SiWx917 SoCs:
+      - Copy the file `app/example/adafruit_tft_lcd_ili9341/si91x/app.c` into the project root folder (overwriting existing file).
 3. Install the software components:
-
    - Open the .slcp file in the project.
-
    - Select the SOFTWARE COMPONENTS tab.
-
    - Install the following components:
-
-      - [Services] → [Timers] → [Sleep Timer]
-      - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
-      - [Application] → [Utility] → [Log]
+      - With Gecko EFR32 SOCs:
+         - [Services] → [Timers] → [Sleep Timer]
+         - [Platform] → [Driver] → [LED] → [Simple LED] → [led0, led1]
+         - [Platform] → [Driver] → [Button] → [Simple Button] → [btn0, btn1]
+         - [Third Party Hardware Drivers] → [Human Machine Interface] → [Touch Screen Analog Interface (Gecko)] → use the default configuration
+      - With SiWx917 SoCs:
+         - [WiSeConnect 3 SDK] → [Device] → [MCU] → [Service] → [Power Manager] → [Sleep Timer for Si91x]
+         - [WiSeConnect 3 SDK] → [Device] → [MCU] → [Hardware] → [LED] → [led0, led1]
+         - [WiSeConnect 3 SDK] → [Device] → [MCU] → [Hardware] → [Button] → [btn0, btn1]
+         - [Third Party Hardware Drivers] → [Human Machine Interface] → [Touch Screen Analog Interface (Si91x)] → use the default configuration
       - [Application] → [Utility] → [Assert]
       - If using without DMA: [Third Party Hardware Drivers] → [Display & LED] → [ILI9341 - TFT LCD Display (Adafruit) - SPI]
       - If using with DMA: [Third Party Hardware Drivers] → [Display & LED] → [ILI9341 - TFT LCD Display (Adafruit) - SPI with DMA]
       - [Third Party Hardware Drivers] → [Services] → [GLIB - OLED Graphics Library]
-      - [Third Party Hardware Drivers] → [Human Machine Interface] → [Touch Screen (Analog)] → use default configuration
+      - [Third Party Hardware Drivers] → [Human Machine Interface] → [Touch Screen (Analog)]
 
-4. Build and flash the project to your device.
+4. Enable DMA support for SPI module (for SiWx917 SoCs)
+
+   To improve SPI transfer speed, enable DMA support by changing configuration of GSPI component at: **[WiSeConnect 3 SDK] → [Device] → [Si91X] → [MCU] → [Peripheral] → [GSPI]** as the picture bellow
+
+   | | |
+   | - | - |
+   | ![gspi](image/gspi.png) | ![gspi_dma](image/gspi_dma.png) |
+
+5. Build and flash the project to your device.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install **ILI9341 - TFT LCD Display (Adafruit) - SPI** or **ILI9341 - TFT LCD Display (Adafruit) - SPI with DMA** component.
 
@@ -85,18 +97,38 @@ You can either create a project based on an example project or start with an emp
 
 Adafruit ILI9341 uses 4 resistive touch pins (Y+ X+ Y- X-) to determine touch points. We will read the analog values from these pins to detect where the touched point is on the screen. This process will surely have uncertainties so we have to calibrate it to detect touched points properly. Please follow these steps below to calibrate the touch screen.
 
-- Open configuration for Touch Screen (Analog) component. Enable **calibration printf** option.
-   ![enable calib printf](image/enable_calib_printf.png)
+The calibration parameters can be configured through the settings of the component:
 
-- Open the console window to monitor values of the 'x' and 'y' when touching in some special points then update them in CALIBRATION settings.
+- [Third Party Hardware Drivers] → [Human Machine Interface] → [Touch Screen Analog Interface (Gecko)]
+  - Calib X-min
+  - Calib X-max
+  - Calib Y-min
+  - Calib Y-max
+  - Invert X-axis
+  - Invert Y-axis
+  - XY Swap
 
-   ![calib point](image/calib_point.png)
+![touchscreen_configuration](image/touch_settings.png)
 
-- Touch X1 point then update x for **Calib X-min** and y for **Calib Y-min**.
+Follow the steps below to calibrate the touch screen.
 
-- Touch X2 point then update x for **Calib X-max**
+1. Open app.c, set the `CALIB_ENABLED` macro to `1` to enable calib function
 
-- Touch X3 point then update y for **Calib Y-max**
+   > #define CALIB_ENABLED 1
+
+2. Measuring 2 points at 2 conners that is marked with green and yellow to determine the value of:
+    - Calib X-min: minimum value of X_RAW
+    - Calib X-max: maximum value of X_RAW
+    - Calib Y-min: minimum value of Y_RAW
+    - Calib Y-max: maximum value of Y_RAW
+
+   ![calib](image/calib.jpg)
+
+3. The origin of the screen (X = 0, Y = 0) is marked green, the maximum XY coordinate (X = 320, Y = 480) is marked yellow. We need to make the X and Y value of the touch screen is matched with these 2 points by changing 3 options in the `Touch Settings`:
+
+- Invert X-axis
+- Invert Y-axis
+- XY Swap
 
 ## How It Works ##
 

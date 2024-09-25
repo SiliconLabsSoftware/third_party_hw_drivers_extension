@@ -2,30 +2,45 @@
 
 ## Summary ##
 
-This project shows the implementation of a barometer-sensor driver using Pressure 3 Click (DPS310) from Mikroe integrated with BGM220 Explorer Kit.
+This project shows the implementation of a barometer-sensor driver using Pressure 3 Click (DPS310) from Mikroe integrated with the Silicon Labs platform.
 
 ## Required Hardware ##
 
 - [**BRD4314A-BGM220** BGM220 Bluetooth Module Explorer Kit (BRD4314A-BGM220 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)
 
-- [**Pressure 3 Click** board](https://www.mikroe.com/pressure-3-click).
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2703A | [EFR32xG24 Explorer Kit - XG24-EK2703A ](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)  |
-| BRD4108A | [EFR32BG22 Explorer Kit Board](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)  |
+- [**Pressure 3 Click** board](https://www.mikroe.com/pressure-3-click)
 
 ## Hardware Connection ##
 
-The Pressure 3 Click board can just be "clicked" into its place. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+- If the BGM220P Explorer Kit is used:
 
-The hardware connection is shown in the image below:
+  The Pressure 3 Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of Click board matches the 45-degree white line of the Explorer Kit.
 
-![board](image/hardware_connection.png "BGM220 Explorer Kit Board and Pressure 3 Click Board")
+  The hardware connection is shown in the image below:
+
+  ![board](image/hardware_connection.png "BGM220 Explorer Kit Board and Pressure 3 Click Board")
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  The hardware connection is shown in the table below:
+
+  - If the I2C interface is used:
+
+    | Description  | BRD4338A GPIO | BRD4002 EXP Header | Pressure 3 Click   |
+    | -------------| ------------- | ------------------ | ------------------ |
+    | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
+    | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
+
+  - If the SPI interface is used:
+
+    | Description  | BRD4338A GPIO            | BRD4002 Breakout Pad | Pressure 3 click   |
+    | -------------| ------------------------ | -------------------- | ------------------ |
+    | CS           | GPIO_46                  | P24                  | CS                 |
+    | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25      | P25                  | SCK                |
+    | RTE_GSPI_MASTER_MISO_PIN | GPIO_26      | P27                  | SDO                |
+    | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27      | P29                  | SDI                |
 
 ## Setup ##
 
@@ -33,7 +48,7 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter 'dps310'.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by 'dps310'.
 
 2. Click **Create** button on the example:
 
@@ -48,26 +63,37 @@ You can either create a project based on an example project or start with an emp
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_pressure3_dps310/app.c` into the project root folder (overwriting the existing file).
 
 3. Install the software components:
 
     - Open the .slcp file in the project.
-
     - Select the SOFTWARE COMPONENTS tab.
-
     - Install the following components:
+
+      **If the BGM220P Explorer Kit is used:**
 
         - [Services] → [Timers] → [Sleep Timer]
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
-        - If using the SPI interface: 
-            - [Third Party Hardware Drivers] → [Sensors] → [DPS310 - Mikroe Pressure 3 Click (SPI)]
-            - [Platform] → [Driver] → [SPI] → [SPIDRV] → [mikroe] → change the configuration for [SPI master chip select (CS) control scheme] to "CS controlled by the application"
-        - If using the I2C interface:
-            - [Third Party Hardware Drivers] → [Sensors] → [DPS310 - Mikroe Pressure 3 Click (I2C)]
+        - If the SPI interface is used:
+            - [Platform] → [Driver] → [SPI] → [SPIDRV] → [mikroe] → change the configuration for [SPI master chip select (CS) control scheme] to "CS controlled by the application", select the CS pin to None as below:
+               ![spi config](image/spi_config.png)
+            - [Third Party Hardware Drivers] → [Sensors] → [DPS310 - Pressure 3 Click (Mikroe) - SPI] → select the CS pin to PC03 as below:
+               ![pressure 3 config](image/pressure3_config.png)
+        - If the I2C interface is used:
+            - [Third Party Hardware Drivers] → [Sensors] → [DPS310 - Pressure 3 Click (Mikroe) - I2C]
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - If the SPI interface is used:
+          - [Third Party Hardware Drivers] → [Sensors] → [DPS310 - Pressure 3 Click (Mikroe) - SPI] → use default configuration
+        - If the I2C interface is used:
+          - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+          - [Third Party Hardware Drivers] → [Sensors] → [DPS310 - Pressure 3 Click (Mikroe) - I2C]
 
 4. Install printf float
 
@@ -81,7 +107,7 @@ You can either create a project based on an example project or start with an emp
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the Third Party Hardware Drivers extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 ## How It Works ##
 

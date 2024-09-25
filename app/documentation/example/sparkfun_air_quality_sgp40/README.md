@@ -2,27 +2,37 @@
 
 ## Summary ##
 
-This project shows the implementation of an SGP40 that is new digital VOC (volatile organic compounds) sensor designed for easy integration into air purifiers or demand-controlled ventilation, integrated on the Air Quality Sensor.
+This project shows the implementation of an SGP40 that is new digital VOC (volatile organic compounds) sensor designed for easy integration into air purifiers or demand-controlled ventilation, integrated into the Air Quality Sensor.
 
 You can use this example as a reference for creating your own indoor air quality monitoring application. You can visualize the measured volatile organic compound (VOC) level by a display or you can transfer the measurements to a data center or mobile phone, which can trigger warning messages or start air freshener devices.
 
-## Quick Look Video
+## Quick Look Video ##
 
 [![SGP 40 Quick Look Video](image/yt_thumbnail.jpg)](https://youtu.be/6eyTzxQM3K0 "Quick Look - SparkFun Air Quality Sensor SGP40 – Silicon Labs")
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit).
-
-- [Air Quality Sensor](https://www.sparkfun.com/products/18345).
+- [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- [Air Quality Sensor](https://www.sparkfun.com/products/18345)
 
 ## Hardware Connection ##
 
-The Air Quality Sensor support Qwiic, so it can connect easily to EFR32xG24 Explorer Kit's Qwiic header.
+- **If the EFR32xG24 Explorer Kit is used**:
 
-The hardware connection is shown in the image below:
+  The Air Quality Sensor supports Qwiic, so it can connect easily to the Qwiic header of the EFR32xG24 Explorer Kit.
 
-![board](image/hardware_connection.png "Hardware connection")
+  The hardware connection is shown in the image below:
+
+  ![board](image/hardware_connection.png "Hardware connection")
+
+- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+
+   The hardware connection is shown in the table below:
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | Air Quality Sensor |
+  | -------------| ------------- | ------------------ | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
 
 ## Setup ##
 
@@ -30,37 +40,43 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter sgp40
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by "sgp40".
 
 2. Click **Create** button on the **Third Party Hardware Drivers - SGP40 - Air Quality Sensor (Sparkfun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
-2. Copy the file `app/example/sparkfun_air_quality_sgp40/app.c` into the project root folder (overwriting existing file).
+2. Copy the file `app/example/sparkfun_air_quality_sgp40/app.c` into the project root folder (overwriting the existing file).
 
 3. Install the software components:
 
     - Open the .slcp file in the project.
-
     - Select the SOFTWARE COMPONENTS tab.
-
     - Install the following components:
 
-        - **[Services] → [Timers] → [Sleep Timer]**
-        - **[Services] → [IO Stream] → [IO Stream: USART]** → default instance name: vcom
-        - **[Application] → [Utility] → [Log]**
-        - **[Third Party Hardware Drivers] → [Sensors] → [SGP40 - Air Quality Sensor (Sparkfun)]**
+      **If the BGM220P Explorer Kit is used:**
+
+         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
+         - [Application] → [Utility] → [Log]
+         - [Platform] → [Driver] → [I2C] → [I2CSPM] → qwiic instance
+         - [Third Party Hardware Drivers] → [Sensors] → [SGP40 - Air Quality Sensor (Sparkfun)]
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+         - [Third Party Hardware Drivers] → [Sensors] → [SGP40 - Air Quality Sensor (Sparkfun)]
 
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "SGP40 - Air Quality Sensor (Sparkfun)" component.
 
@@ -70,15 +86,15 @@ You can launch Console that's integrated into Simplicity Studio or use a third-p
 
 - Test the sensor and start to measure
 
-![logging_screen](image/log1.png)
+  ![logging_screen](image/log1.png)
 
 - After trying to put the sensor near a source of Volatile Organic Compounds (VOCs)
 
-![logging_screen](image/log2.png)
+  ![logging_screen](image/log2.png)
 
 - After trying to put the sensor away a source of Volatile Organic Compounds (VOCs)
 
-![logging_screen](image/log3.png)
+  ![logging_screen](image/log3.png)
 
 ## Report Bugs & Get Support ##
 

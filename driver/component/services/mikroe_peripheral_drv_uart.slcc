@@ -7,8 +7,14 @@ category: Services|mikroSDK 2.0 SDK - Peripheral Drivers
 quality: evaluation
 root_path: driver
 requires:
-  - name: gsdk_version
   - name: iostream_transport
+    condition: [device_series_1]
+  - name: iostream_transport
+    condition: [device_series_2]
+  - name: sl_uart
+    condition: [device_si91x]
+  - name: app_assert
+    condition: [device_si91x]
 recommends:
   - id: iostream_transport
     instance: [mikroe]
@@ -28,5 +34,14 @@ include:
       - path: drv_uart.h
       - path: drv_name.h
       - path: hal_target.h
+      - path: ring.h
+        condition: [device_si91x]
 source:
   - path: peripheral_drivers/mikroe/src/drv_uart.c
+    condition: [device_series_1]
+  - path: peripheral_drivers/mikroe/src/drv_uart.c
+    condition: [device_series_2]
+  - path: peripheral_drivers/mikroe/src/drv_uart_si91x.c
+    condition: [device_si91x]
+  - path: peripheral_drivers/mikroe/src/ring.c
+    condition: [device_si91x]

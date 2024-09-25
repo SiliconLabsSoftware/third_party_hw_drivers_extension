@@ -40,18 +40,16 @@
 #include "irthermo3.h"
 #include "mikroe_mlx90632.h"
 #include "mikroe_mlx90632_config.h"
-#include "third_party_hw_drivers_helpers.h"
 
 static irthermo3_t irthermo3;
 static irthermo3_cfg_t irthermo3_cfg;
 static uint8_t adr_rst[4] = { 0x30, 0x05, 0x00, 0x06 };
 
-sl_status_t mikroe_mlx90632_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_mlx90632_init(mikroe_i2c_handle_t i2cspm_instance)
 {
   if (i2cspm_instance == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
   // Configure default i2csmp instance
   irthermo3.i2c.handle = i2cspm_instance;
@@ -61,12 +59,19 @@ sl_status_t mikroe_mlx90632_init(sl_i2cspm_t *i2cspm_instance)
 
   irthermo3_cfg.i2c_address = MLX90632_I2C_ADDR;
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(irthermo3_init(&irthermo3,
-                                                 &irthermo3_cfg));
+#if (MIKROE_I2C_MLX90632_UC == 1)
+  irthermo3_cfg.i2c_speed = MIKROE_I2C_MLX90632_SPEED_MODE;
+#endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(mikroe_mlx90632_present());
+  if (irthermo3_init(&irthermo3, &irthermo3_cfg) != IRTHERMO3_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  if (mikroe_mlx90632_present() != SL_STATUS_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_mlx90632_present(void)
@@ -85,7 +90,8 @@ void mikroe_mlx90632_default_config(void)
   mikroe_mlx90632_cal();
 }
 
-sl_status_t mikroe_mlx90632_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_mlx90632_set_i2csmp_instance(
+  mikroe_i2c_handle_t i2cspm_instance)
 {
   if (NULL == i2cspm_instance) {
     return SL_STATUS_INVALID_PARAMETER;

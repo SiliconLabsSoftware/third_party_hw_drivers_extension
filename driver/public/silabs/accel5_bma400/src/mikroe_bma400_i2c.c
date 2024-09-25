@@ -34,14 +34,21 @@
  ******************************************************************************/
 
 #include "mikroe_bma400_i2c.h"
+#include "mikroe_bma400_i2c_config.h"
 
 // Read write length varies based on user requirement
 #define READ_WRITE_LENGTH  UINT8_C(46)
 
-// Variable to store the device address
-static uint8_t dev_addr;
 // Variable to store the i2cspm instance
-static sl_i2cspm_t *i2c_handle;
+typedef struct
+{
+  i2c_master_t i2c;
+  digital_in_t interrupt_pin_1;
+  digital_in_t interrupt_pin_2;
+  uint8_t   intf_ref;
+} bma400_handle_t;
+
+static bma400_handle_t bma400_handle;
 
 // Local prototypes
 static int8_t bma400_i2c_read(uint8_t reg_addr,
@@ -69,29 +76,53 @@ static void bma400_delay_us(uint32_t period, void *intf_ptr);
  *  @ref BMA400_OK on success.
  *  @ref On failure, BMA400_E_NULL_PTR is returned.
  ******************************************************************************/
-int8_t bma400_i2c_init(sl_i2cspm_t *i2cspm,
+int8_t bma400_i2c_init(mikroe_i2c_handle_t i2cspm,
                        uint8_t bma400_i2c_addr,
                        struct bma400_dev *bma400)
 {
-  if (bma400 == NULL) {
+  if ((bma400 == NULL) || (NULL == i2cspm)) {
     return BMA400_E_NULL_PTR;
   }
 
   // The device needs startup time
-  sl_udelay_wait(10000);
+  sl_sleeptimer_delay_millisecond(10);
 
-  // Update i2cspm instance
-  i2c_handle = i2cspm;
-  // Update device addr
-  dev_addr = bma400_i2c_addr;
+  i2c_master_config_t i2c_cfg;
+  i2c_master_configure_default(&i2c_cfg);
+
+  i2c_cfg.addr = bma400_i2c_addr;
+  bma400_handle.i2c.handle = i2cspm;
+
+#if (MIKROE_BMA400_I2C_UC == 1)
+  i2c_cfg.speed = MIKROE_BMA400_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&bma400_handle.i2c, &i2c_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  i2c_master_set_speed(&bma400_handle.i2c, i2c_cfg.speed);
+  i2c_master_set_timeout(&bma400_handle.i2c, 0);
 
   bma400->read = bma400_i2c_read;
   bma400->write = bma400_i2c_write;
   bma400->intf = BMA400_I2C_INTF;
 
-  bma400->intf_ptr = &dev_addr;
+  bma400->intf_ptr = &bma400_handle.intf_ref;
   bma400->delay_us = bma400_delay_us;
   bma400->read_write_len = READ_WRITE_LENGTH;
+
+#ifdef  MIKROE_BMA400_INT1_PORT
+  pin_name_t int_pin_1 = hal_gpio_pin_name(MIKROE_BMA400_INT1_PORT,
+                                           MIKROE_BMA400_INT1_PIN);
+  digital_in_init(&bma400_handle.interrupt_pin_1, int_pin_1);
+#endif
+
+#ifdef  MIKROE_BMA400_INT2_PORT
+  pin_name_t int_pin_2 = hal_gpio_pin_name(MIKROE_BMA400_INT2_PORT,
+                                           MIKROE_BMA400_INT2_PIN);
+  digital_in_init(&bma400_handle.interrupt_pin_2, int_pin_2);
+#endif
 
   return BMA400_OK;
 }
@@ -105,22 +136,12 @@ static int8_t bma400_i2c_read(uint8_t reg_addr,
                               void *intf_ptr)
 {
   (void) intf_ptr;
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef ret;
-  uint8_t i2c_write_data[1];
 
-  seq.addr = dev_addr << 1;
-  seq.flags = I2C_FLAG_WRITE_READ;
-
-  i2c_write_data[0] = reg_addr;
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = 1;
-
-  // Select length of data to be read
-  seq.buf[1].data = reg_data;
-  seq.buf[1].len = (uint16_t)len;
-  ret = I2CSPM_Transfer(i2c_handle, &seq);
-  if (ret != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&bma400_handle.i2c,
+                                                       &reg_addr,
+                                                       1,
+                                                       reg_data,
+                                                       len)) {
     return BMA400_E_COM_FAIL;
   }
 
@@ -136,27 +157,18 @@ static int8_t bma400_i2c_write(uint8_t reg_addr,
                                void *intf_ptr)
 {
   (void) intf_ptr;
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef ret;
-  uint8_t i2c_write_data[len + 1];
-  uint8_t i2c_read_data[1];
 
-  seq.addr = dev_addr << 1;
-  seq.flags = I2C_FLAG_WRITE;
+  uint8_t i2c_write_data[len + 1];
 
   // Select register and data to write
   i2c_write_data[0] = reg_addr;
   for (uint16_t i = 0; i < (uint16_t)len; i++) {
     i2c_write_data[i + 1] = reg_data[i];
   }
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = (uint16_t)len + 1;
 
-  // Select length of data to be read
-  seq.buf[1].data = i2c_read_data;
-  seq.buf[1].len = 0;
-  ret = I2CSPM_Transfer(i2c_handle, &seq);
-  if (ret != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bma400_handle.i2c,
+                                             i2c_write_data,
+                                             len + 1)) {
     return BMA400_E_COM_FAIL;
   }
 
@@ -169,5 +181,11 @@ static int8_t bma400_i2c_write(uint8_t reg_addr,
 static void bma400_delay_us(uint32_t period, void *intf_ptr)
 {
   (void) intf_ptr;
-  sl_udelay_wait(period);
+  uint32_t delay_ms = 1;
+
+  if (period > 1000) {
+    delay_ms = (period / 1000) + 1;
+  }
+
+  sl_sleeptimer_delay_millisecond(delay_ms);
 }

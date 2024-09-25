@@ -38,8 +38,8 @@
  ******************************************************************************/
 #ifndef MIKROE_ADPD188BI_H_
 #define MIKROE_ADPD188BI_H_
+
 #include "sl_status.h"
-#include "sl_i2cspm.h"
 #include "smoke2.h"
 
 #ifdef __cplusplus
@@ -211,7 +211,7 @@ extern "C" {
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_adpd188bi_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_adpd188bi_init(mikroe_i2c_handle_t i2cspm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -224,7 +224,8 @@ sl_status_t mikroe_adpd188bi_init(sl_i2cspm_t *i2cspm_instance);
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null.
  ******************************************************************************/
-sl_status_t mikroe_adpd188bi_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_adpd188bi_set_i2csmp_instance(
+  mikroe_i2c_handle_t i2cspm_instance);
 
 /***************************************************************************//**
  * @brief

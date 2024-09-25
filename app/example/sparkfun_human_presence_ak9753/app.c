@@ -33,19 +33,43 @@
  * maintained and there may be no bug maintenance planned for these resources.
  * Silicon Labs may update projects from time to time.
  ******************************************************************************/
+#include "sparkfun_ak9753.h"
 
+#if (defined(SLI_SI917))
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+#else
 #include "sl_i2cspm_instances.h"
 #include "app_log.h"
-#include "sparkfun_ak9753.h"
+#endif
+
+#if (defined(SLI_SI917))
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
+#if (defined(SLI_SI917))
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
+
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
 
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
 void app_init(void)
 {
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_qwiic;
+#endif
+
   sparkfun_ak9753_config_t sparkfun_ak9753_cfg = {
     .I2C_address = SPARKFUN_AK9753_ADDR,
-    .sparkfun_ak9753_i2cspm_instance = sl_i2cspm_qwiic,
+    .i2cspm_instance = app_i2c_instance,
     .cut_off_freq = SPARKFUN_AK975X_FREQ_8_8HZ,
     .mode = SPARKFUN_AK975X_MODE_0,
     .upper_threshold13 = 0x00,
@@ -76,25 +100,25 @@ void app_process_action(void)
     int16_t ret = 0;
     float tempC = 0;
     float tempF = 0;
-    app_log("1:DWN[");
+    app_printf("1:DWN[");
     sparkfun_ak9753_get_ir1_data(&ret);
-    app_log("%d", ret);
+    app_printf("%d", ret);
     sparkfun_ak9753_get_ir2_data(&ret);
-    app_log("]\t2:LFT[");
-    app_log("%d", ret);
+    app_printf("]\t2:LFT[");
+    app_printf("%d", ret);
     sparkfun_ak9753_get_ir3_data(&ret);
-    app_log("]\t3:UP[");
-    app_log("%d", ret);
+    app_printf("]\t3:UP[");
+    app_printf("%d", ret);
     sparkfun_ak9753_get_ir4_data(&ret);
-    app_log("]\t4:RGH[");
-    app_log("%d", ret);
+    app_printf("]\t4:RGH[");
+    app_printf("%d", ret);
     sparkfun_ak9753_get_tempC(&tempC);
-    app_log("]\ttempC[");
-    app_log("%f", tempC);
+    app_printf("]\ttempC[");
+    app_printf("%f", tempC);
     sparkfun_ak9753_get_tempF(&tempF);
-    app_log("]\ttempF[");
-    app_log("%f", tempF);
-    app_log("]\r\n");
+    app_printf("]\ttempF[");
+    app_printf("%f", tempF);
+    app_printf("]\r\n");
     sparkfun_ak9753_get_dummy();
   }
 }

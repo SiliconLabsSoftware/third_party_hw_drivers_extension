@@ -39,11 +39,51 @@
 #ifndef MIKROE_ML8511A_CONFIG_H_
 #define MIKROE_ML8511A_CONFIG_H_
 
+#ifndef SLI_SI917
+#include "em_gpio.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#define ADC_MODE                                 0
+#define ANALOG_MODE                              1
+
+// <<< Use Configuration Wizard in Context Menu >>>
+
+// <h> MIKROE_ML8511A SPI Configuration
+
+// <e>MIKROE_ML8511A SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_ML8511A_SPI_UC                    0
+
+// <o MIKROE_ML8511A_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
+// <i> Default: 10000000
+#define MIKROE_ML8511A_SPI_BITRATE               10000000
+
+// </e>
+// </h>
+
+//<h>MIKROE ML8511A Configuration
+// <o MIKROE_ML8511A_OPERATION_MODE> Operation mode
+// <AN_MODE=> Analog mode
+// <ADC_MODE=> ADC mode
+// <i> Default: AN_MODE
+#define MIKROE_ML8511A_OPERATION_MODE            AN_MODE
+
+// </h>
+// <<< end of configuration section >>>
+
 // <<< sl:start pin_tool >>>
+
+// <gpio optional=true> ML8511A_CS
+// $[GPIO_ML8511A_CS]
+// #define ML8511A_CS_PORT                       0
+// #define ML8511A_CS_PIN                        0
+// [GPIO_ML8511A_CS]$
 
 // <gpio optional=true> ML8511A_AN
 #warning "GPIO_ML8511A_AN is not configured"

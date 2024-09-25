@@ -12,13 +12,15 @@ requires:
   - name: status
   - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_i2c
-config_file:
 provides:
   - name: mikroe_temphum15
     allow_multiple: false
 template_contribution:
   - name: component_catalog
     value: mikroe_temphum15
+config_file:
+  - path: public/mikroe/temphum15_sht40/config/mikroe_sht40_config.h
+    file_id: driver_config_temphum15_sht40
 include:
   - path: inc
     file_list:

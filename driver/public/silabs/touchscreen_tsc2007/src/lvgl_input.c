@@ -34,7 +34,6 @@
  ******************************************************************************/
 #include "sl_status.h"
 #include "lvgl_input.h"
-#include "sl_i2cspm_instances.h"
 // -----------------------------------------------------------------------------
 //                       Local Function
 // -----------------------------------------------------------------------------
@@ -80,8 +79,7 @@ lvgl_input_t *lvgl_input_get(void)
 
 static sl_status_t lvgl_input_driver_init(void)
 {
-  sl_status_t stt = adafruit_tsc2007_init(sl_i2cspm_qwiic);
-  return stt;
+  return SL_STATUS_OK;
 }
 
 static sl_status_t lvgl_input_driver_read_data(void)

@@ -37,7 +37,6 @@
  *
  ******************************************************************************/
 
-#include "third_party_hw_drivers_helpers.h"
 #include "mikroe_pn7150_config.h"
 #include "mikroe_pn7150.h"
 #include "nfc2.h"
@@ -48,22 +47,24 @@ static nfc2_cfg_t nfc2_cfg;
 /***************************************************************************//**
  *    Initialization function.
  ******************************************************************************/
-sl_status_t mikroe_pn7150_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_pn7150_init(mikroe_i2c_handle_t i2c_instance)
 {
-  if (NULL == i2cspm_instance) {
+  if (NULL == i2c_instance) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
   // Configure default i2csmp instance
-  nfc2.i2c.handle = i2cspm_instance;
+  nfc2.i2c.handle = i2c_instance;
 
   // Configure default I2C address
   nfc2.slave_address = MIKROE_PN7150_ADDR;
 
   // Call basic setup functions
   nfc2_cfg_setup(&nfc2_cfg);
+
+#if (MIKROE_PN7150_I2C_UC == 1)
+  nfc2_cfg.i2c_speed = MIKROE_PN7150_I2C_SPEED_MODE;
+#endif
 
 #if defined(MIKROE_PN7150_INT_PORT) && defined(MIKROE_PN7150_INT_PIN)
   nfc2_cfg.int_pin = hal_gpio_pin_name(MIKROE_PN7150_INT_PORT,
@@ -75,21 +76,23 @@ sl_status_t mikroe_pn7150_init(sl_i2cspm_t *i2cspm_instance)
                                    MIKROE_PN7150_RESET_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(nfc2_init(&nfc2, &nfc2_cfg));
+  if (nfc2_init(&nfc2, &nfc2_cfg) != I2C_MASTER_SUCCESS) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
  *    This function sets the IC2SPM instance used by platform functions.
  ******************************************************************************/
-sl_status_t mikroe_pn7150_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_pn7150_set_i2csmp_instance(mikroe_i2c_handle_t i2c_instance)
 {
-  if (NULL == i2cspm_instance) {
+  if (NULL == i2c_instance) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  nfc2.i2c.handle = i2cspm_instance;
+  nfc2.i2c.handle = i2c_instance;
 
   return SL_STATUS_OK;
 }

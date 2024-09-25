@@ -39,6 +39,7 @@
 #include <stdio.h>
 #include "sl_status.h"
 #include "sparkfun_vcnl4040_platform.h"
+#include "drv_i2c_master.h"
 
 // -----------------------------------------------------------------------------
 //                          Public functions
@@ -47,78 +48,52 @@
 /***************************************************************************//**
  *  Read two consecutive bytes from a given 'command code' location
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_read_command(sl_i2cspm_t *i2cspm,
-                                               uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_read_command(i2c_master_t *i2cspm,
                                                uint8_t command,
                                                uint16_t *data)
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef ret;
   uint8_t pdata[2];
 
-  if ((i2cspm == NULL) || (data == NULL)) {
-    return SL_STATUS_NULL_POINTER;
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(i2cspm, &command, 1,
+                                                       pdata, 2)) {
+    return SL_STATUS_TRANSMIT;
   }
-  seq.addr = (uint16_t)(address << 1);
-  seq.flags = I2C_FLAG_WRITE_READ;
-
-  seq.buf[0].data = &command;
-  seq.buf[0].len = 1;
-
-  seq.buf[1].data = pdata;
-  seq.buf[1].len = 2;
-
-  ret = I2CSPM_Transfer(i2cspm, &seq);
   *data = (uint16_t)(pdata[1] << 8) + pdata[0];
 
-  return ret;
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
  *  Write two consecutive bytes to a given 'command code' location
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_write_command(sl_i2cspm_t *i2cspm,
-                                                uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_write_command(i2c_master_t *i2cspm,
                                                 uint8_t command,
                                                 uint16_t data)
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef ret;
   uint8_t send_data[3];
 
-  if (i2cspm == NULL) {
-    return SL_STATUS_NULL_POINTER;
-  }
   send_data[0] = command;
   send_data[1] = (uint8_t)(data & 0xFF);
   send_data[2] = (uint8_t)(data >> 8);
 
-  seq.addr = (uint16_t)(address << 1);
-  seq.flags = I2C_FLAG_WRITE;
+  if (I2C_MASTER_SUCCESS != i2c_master_write(i2cspm, send_data, 3)) {
+    return SL_STATUS_TRANSMIT;
+  }
 
-  seq.buf[0].data = send_data;
-  seq.buf[0].len = 3;
-
-  ret = I2CSPM_Transfer(i2cspm, &seq);
-
-  return ret;
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
  *  Read lower byte from a given 'command code' location
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_read_command_lower(sl_i2cspm_t *i2cspm,
-                                                     uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_read_command_lower(i2c_master_t *i2cspm,
                                                      uint8_t command,
                                                      uint8_t *data)
 {
-  uint16_t pdata;
   sl_status_t ret;
+  uint16_t pdata = 0;
 
-  if ((i2cspm == NULL) || (data == NULL)) {
-    return SL_STATUS_NULL_POINTER;
-  }
-  ret = sparkfun_vcnl4040_i2c_read_command(i2cspm, address, command, &pdata);
+  ret = sparkfun_vcnl4040_i2c_read_command(i2cspm, command, &pdata);
   *data = (uint8_t)(pdata & 0xFF);
 
   return ret;
@@ -127,18 +102,14 @@ sl_status_t sparkfun_vcnl4040_i2c_read_command_lower(sl_i2cspm_t *i2cspm,
 /***************************************************************************//**
  *  Read upper byte from a given 'command code' location
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_read_command_upper(sl_i2cspm_t *i2cspm,
-                                                     uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_read_command_upper(i2c_master_t *i2cspm,
                                                      uint8_t command,
                                                      uint8_t *data)
 {
-  uint16_t pdata;
+  uint16_t pdata = 0;
   sl_status_t ret;
 
-  if ((i2cspm == NULL) || (data == NULL)) {
-    return SL_STATUS_NULL_POINTER;
-  }
-  ret = sparkfun_vcnl4040_i2c_read_command(i2cspm, address, command, &pdata);
+  ret = sparkfun_vcnl4040_i2c_read_command(i2cspm, command, &pdata);
   *data = (uint8_t)(pdata >> 8);
 
   return ret;
@@ -147,21 +118,14 @@ sl_status_t sparkfun_vcnl4040_i2c_read_command_upper(sl_i2cspm_t *i2cspm,
 /***************************************************************************//**
  *  Write lower byte to a given 'command code' location
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_write_command_lower(sl_i2cspm_t *i2cspm,
-                                                      uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_write_command_lower(i2c_master_t *i2cspm,
                                                       uint8_t command,
                                                       uint8_t data)
 {
   uint16_t command_value;
   sl_status_t ret;
 
-  if (i2cspm == NULL) {
-    return SL_STATUS_NULL_POINTER;
-  }
-  ret = sparkfun_vcnl4040_i2c_read_command(i2cspm,
-                                           address,
-                                           command,
-                                           &command_value);
+  ret = sparkfun_vcnl4040_i2c_read_command(i2cspm, command, &command_value);
 
   if (ret != SL_STATUS_OK) {
     return ret;
@@ -170,7 +134,6 @@ sl_status_t sparkfun_vcnl4040_i2c_write_command_lower(sl_i2cspm_t *i2cspm,
   command_value |= (uint16_t)(data);
 
   return sparkfun_vcnl4040_i2c_write_command(i2cspm,
-                                             address,
                                              command,
                                              command_value);
 }
@@ -178,8 +141,7 @@ sl_status_t sparkfun_vcnl4040_i2c_write_command_lower(sl_i2cspm_t *i2cspm,
 /***************************************************************************//**
  *  Write upper byte to a given 'command code' location
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_write_command_upper(sl_i2cspm_t *i2cspm,
-                                                      uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_write_command_upper(i2c_master_t *i2cspm,
                                                       uint8_t command,
                                                       uint8_t data)
 {
@@ -189,10 +151,7 @@ sl_status_t sparkfun_vcnl4040_i2c_write_command_upper(sl_i2cspm_t *i2cspm,
   if (i2cspm == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-  ret = sparkfun_vcnl4040_i2c_read_command(i2cspm,
-                                           address,
-                                           command,
-                                           &command_value);
+  ret = sparkfun_vcnl4040_i2c_read_command(i2cspm, command, &command_value);
 
   if (ret != SL_STATUS_OK) {
     return ret;
@@ -200,17 +159,13 @@ sl_status_t sparkfun_vcnl4040_i2c_write_command_upper(sl_i2cspm_t *i2cspm,
   command_value &= 0x00FF;
   command_value |= (uint16_t)data << 8;
 
-  return sparkfun_vcnl4040_i2c_write_command(i2cspm,
-                                             address,
-                                             command,
-                                             command_value);
+  return sparkfun_vcnl4040_i2c_write_command(i2cspm, command, command_value);
 }
 
 /***************************************************************************//**
  *  Masked write of upper/lower byte at a given 'command code' location
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_masked_write_command(sl_i2cspm_t *i2cspm,
-                                                       uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_masked_write_command(i2c_master_t *i2cspm,
                                                        uint8_t command,
                                                        bool command_height,
                                                        uint8_t mask,
@@ -223,29 +178,23 @@ sl_status_t sparkfun_vcnl4040_i2c_masked_write_command(sl_i2cspm_t *i2cspm,
     return SL_STATUS_NULL_POINTER;
   }
   if (command_height == LOWER) {
-    if (sparkfun_vcnl4040_i2c_read_command_lower(i2cspm, address, command,
+    if (sparkfun_vcnl4040_i2c_read_command_lower(i2cspm, command,
                                                  &reg_value) != SL_STATUS_OK) {
       return SL_STATUS_FAIL;
     }
     reg_value &= mask;
     reg_value |= data;
-    ret = sparkfun_vcnl4040_i2c_write_command_lower(i2cspm,
-                                                    address,
-                                                    command,
-                                                    data);
+    ret = sparkfun_vcnl4040_i2c_write_command_lower(i2cspm, command, data);
 
     return ret;
   } else {
-    if (sparkfun_vcnl4040_i2c_read_command_upper(i2cspm, address, command,
+    if (sparkfun_vcnl4040_i2c_read_command_upper(i2cspm, command,
                                                  &reg_value) != SL_STATUS_OK) {
       return SL_STATUS_FAIL;
     }
     reg_value &= mask;
     reg_value |= data;
-    ret = sparkfun_vcnl4040_i2c_write_command_upper(i2cspm,
-                                                    address,
-                                                    command,
-                                                    data);
+    ret = sparkfun_vcnl4040_i2c_write_command_upper(i2cspm, command, data);
 
     return ret;
   }

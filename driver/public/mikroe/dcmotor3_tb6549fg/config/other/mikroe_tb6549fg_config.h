@@ -40,7 +40,9 @@
 #ifndef MIKROE_TB6549FG_CONFIG_H_
 #define MIKROE_TB6549FG_CONFIG_H_
 
+#ifndef SLI_SI917
 #include "em_gpio.h"
+#endif
 
 // <<< sl:start pin_tool >>>
 
@@ -67,4 +69,4 @@
 
 // <<< sl:end pin_tool >>>
 
-#endif /* MIKROE_TB6549FG_CONFIG_H_ */
+#endif // MIKROE_TB6549FG_CONFIG_H_

@@ -41,20 +41,34 @@
 #define MIKROE_PL_N823_01_H_
 
 #include "sl_status.h"
-#include "sl_i2cspm.h"
-#include "pir.h"
+#include "drv_i2c_master.h"
 
-#define PIR_PL_N823_01_I2C_SLAVE_ADDRESS 0x4D
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-/**
+/***************************************************************************//**
  * @brief Initialization function.
  *
  * @description This function initializes all necessary pins and peripherals
  *   used for this click.
- */
-sl_status_t mikroe_pl_n823_01_init(sl_i2cspm_t *instance);
+ ******************************************************************************/
+sl_status_t mikroe_pl_n823_01_init(mikroe_i2c_handle_t i2cspm_instance);
 
-/**
+/***************************************************************************//**
+ * @brief
+ *    This function sets the IC2 instance used by platform functions.
+ *
+ * @param[in] i2c_instance
+ *    I2C instance
+ *
+ * @return
+ *    SL_STATUS_OK if there are no errors.
+ *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null.
+ ******************************************************************************/
+sl_status_t mikroe_pl_n823_01_set_i2c_instance(mikroe_i2c_handle_t instance);
+
+/***************************************************************************//**
  * @brief Generic write function.
  *
  * @param reg          Register address.
@@ -62,11 +76,11 @@ sl_status_t mikroe_pl_n823_01_init(sl_i2cspm_t *instance);
  * @param len          Number of the bytes in data buf.
  *
  * @description This function writes data  to the desired register.
- */
+ ******************************************************************************/
 sl_status_t mikroe_pl_n823_01_generic_write(uint8_t reg, uint8_t *data_buf,
                                             uint8_t len);
 
-/**
+/***************************************************************************//**
  * @brief Generic read function.
  *
  * @param reg          Register address.
@@ -74,34 +88,34 @@ sl_status_t mikroe_pl_n823_01_generic_write(uint8_t reg, uint8_t *data_buf,
  * @param len          Number of the bytes to be read
  *
  * @description This function reads data from the desired register.
- */
+ ******************************************************************************/
 sl_status_t mikroe_pl_n823_01_generic_read (uint8_t reg, uint8_t *data_buf,
                                             uint8_t len);
 
-/**
+/***************************************************************************//**
  * @brief Reading 12bit ADC value.
  *
  * This function reads single ADC conversion data
- */
+ ******************************************************************************/
 uint16_t mikroe_pl_n823_01_get_adc(void);
 
-/**
+/***************************************************************************//**
  * @brief Reading register.
  *
  * This function reads register
- */
+ ******************************************************************************/
 uint16_t mikroe_pl_n823_01_reg_read(void);
 
-/**
+/***************************************************************************//**
  * @brief Reading ADC data in mili Volts
  *
  * @param ref_voltage reference voltage in miliVolts (3300 or 5000 miliVolts).
  *
  * This function reads 12bit ADC data and convets it to miliVolts
- */
+ ******************************************************************************/
 float mikroe_pl_n823_01_get_mili_volt(uint16_t ref_voltage);
 
-/**
+/***************************************************************************//**
  * @brief Scaling ADC results
  *
  * @param in_val    ADC conversion raw data
@@ -110,8 +124,12 @@ float mikroe_pl_n823_01_get_mili_volt(uint16_t ref_voltage);
  *
  * This function scales ADC conversion data (inVal) to desired range (from
  *   outMin to outMax) and returns scaled data (outVal)
- */
+ ******************************************************************************/
 float mikroe_pl_n823_01_scale_results (uint16_t in_val, uint16_t out_min,
                                        uint16_t out_max);
 
-#endif /* MIKROE_PL_N823_01_H_ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif // MIKROE_PL_N823_01_H_

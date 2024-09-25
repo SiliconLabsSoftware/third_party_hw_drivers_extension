@@ -39,25 +39,29 @@
 
 #include "turbidity.h"
 #include "mikroe_tsd10.h"
+#include "mikroe_tsd10_config.h"
 
 static turbidity_t turbi;
 static turbidity_cfg_t turbi_cfg;
 
-sl_status_t mikroe_turbidity_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_turbidity_init(mikroe_i2c_handle_t i2cspm_instance)
 {
-  sl_status_t retval = SL_STATUS_INVALID_PARAMETER;
-
-  if (NULL != i2cspm_instance) {
-    turbi.i2c.handle = i2cspm_instance;
-    turbidity_cfg_setup(&turbi_cfg);
-
-    if (I2C_MASTER_SUCCESS == turbidity_init(&turbi, &turbi_cfg)) {
-      retval = SL_STATUS_OK;
-    } else {
-      retval = SL_STATUS_FAIL;
-    }
+  if (NULL == i2cspm_instance) {
+    return SL_STATUS_INVALID_PARAMETER;
   }
-  return retval;
+
+  turbi.i2c.handle = i2cspm_instance;
+  turbidity_cfg_setup(&turbi_cfg);
+
+#if (MIKROE_I2C_TSD10_UC == 1)
+  turbi_cfg.i2c_speed = MIKROE_I2C_TSD10_SPEED_MODE;
+#endif
+
+  if (I2C_MASTER_SUCCESS != turbidity_init(&turbi, &turbi_cfg)) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_turbidity_generic_read(uint8_t *rx_buf, uint8_t rx_len)

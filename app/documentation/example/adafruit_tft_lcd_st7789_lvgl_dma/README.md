@@ -11,30 +11,25 @@ This example uses the source files which are generated from [SquareLine Studio](
 ## Required Hardware ##
 
 - [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 - A ST7789 TFT display as listed below:
   - [Adafruit 1.14" 240x135 Color TFT Display + MicroSD Card Breakout - ST7789](https://www.adafruit.com/product/4383)
 
 ![st7789_display](image/st7789_display.png)
 
 ![hardware](image/hw.png)
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2703A | [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
 
 ## Hardware Connection ##
 
-To connect the Adafruit 1.14" 240x135 Color TFT Display + MicroSD Card Breakout - ST7789 with the EFR32xG24 Explorer Kit, you can see the pins mapping table below.
+To connect the Adafruit 1.14" 240x135 Color TFT Display + MicroSD Card Breakout - ST7789 with your board, you can see the pins mapping table below.
 
-| Pin | Connection | Pin function |
-|:---:|:-------------:|:---------------|
-| PC8 | D/C | GPIO |
-| PC0 | CS | SPI CS |
-| PC1 | CLK | SPI SCK |
-| PC2 | MISO | SPI MISO |
-| PC3 | MOSI | SPI MOSI |
+| EFR32xG24 Explorer Kit | SiWx917-RB4338A Radio Board  | Connection | Pin function |
+| --- | --- | --- | --- |
+| PC8 | GPIO_47 (P26) | D/C | GPIO |
+| PC0 | GPIO_28 (P31) | CS | SPI CS |
+| PC1 | GPIO_25 (P25) | CLK | SPI SCK |
+| PC2 | GPIO_26 (P27) | MISO | SPI MISO |
+| PC3 | GPIO_27 (P29) | MOSI | SPI MOSI |
 
 ## Setup ##
 
@@ -42,7 +37,7 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter **"st7789"**.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **"st7789"**.
 
 2. Click **Create** button on the example:
 
@@ -55,10 +50,13 @@ You can either create a project based on an example project or start with an emp
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Board" or "SiWx917-RB4338A Radio Board" using Simplicity Studio v5. Use the default project settings.
 
-2. Copy source file:
-   - Copy the file `app/example/adafruit_tft_lcd_st7789_lvgl_dma/app.c` into the project root folder (overwriting existing file).
+2. Copy source files:
+   - With Gecko EFR32 SOCs:
+     - Copy the file `app/example/adafruit_tft_lcd_st7789_lvgl_dma/gecko/app.c` into the project root folder (overwriting existing file).
+   - With SiWx917 SoCs:
+     - Copy the file `app/example/adafruit_tft_lcd_st7789_lvgl_dma/si91x/app.c` into the project root folder (overwriting existing file).
 
    - Copy the `app/example/adafruit_tft_lcd_st7789_lvgl_dma/app_ui` folder and all the files in it into the project root folder.
 
@@ -69,23 +67,33 @@ You can either create a project based on an example project or start with an emp
    - Select the SOFTWARE COMPONENTS tab.
 
    - Install the following components:
-
-      - [Services] → [Timers] → [Sleep Timer]
-      - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
-      - [Application] → [Utility] → [Log]
+      - With Gecko EFR32 SOCs:
+         - [Services] → [Timers] → [Sleep Timer]
+         - [Platform] → [Driver] → [LED] → [Simple LED] → [led0, led1]
+         - [Platform] → [Driver] → [Button] → [Simple Button] → [btn0, btn1]
+      - With SiWx917 SoCs:
+         - [WiSeConnect 3 SDK] → [Device] → [MCU] → [Service] → [Power Manager] → [Sleep Timer for Si91x]
+         - [WiSeConnect 3 SDK] → [Device] → [MCU] → [Hardware] → [LED] → [led0, led1]
+         - [WiSeConnect 3 SDK] → [Device] → [MCU] → [Hardware] → [Button] → [btn0, btn1]
       - [Application] → [Utility] → [Assert]
-      - [Platform] → [Driver] → [LED] → [Simple LED] → [led0, led1]
-      - [Platform] → [Driver] → [Button] → [Simple Button] → [btn0, btn1]
       - [Third Party Hardware Drivers] → [Display & LED] → [ST7789 - TFT LCD Display (Adafruit) - SPI with DMA]
       - [Third Party Hardware Drivers] → [Services] → [LVGL - Graphic Library] → Using settings as below:
 
       ![lvgl_config](image/lvgl_config.png)
 
-4. Build and flash the project to your device.
+4. Enable DMA support for SPI module (for SiWx917 SoCs)
+
+   To improve SPI transfer speed, enable DMA support by changing configuration of GSPI component at: **[WiSeConnect 3 SDK] → [Device] → [Si91X] → [MCU] → [Peripheral] → [GSPI]** as the picture bellow
+
+   | | |
+   | - | - |
+   | ![gspi](image/gspi.png) | ![gspi_dma](image/gspi_dma.png) |
+
+5. Build and flash the project to your device.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install **Third Party Hardware Drivers - ST7789 - TFT LCD Display (Adafruit) - with LVGL + DMA** component.
 

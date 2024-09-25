@@ -39,22 +39,34 @@ component:
   instance: [mikroe]
 - id: app_log
 
+configuration:
+  - name: SL_IOSTREAM_USART_MIKROE_FLOW_CONTROL_TYPE
+    value: usartHwFlowControlNone
+  - name: SL_IOSTREAM_USART_MIKROE_RX_BUFFER_SIZE
+    value: 256
+  - name: CIRCULAR_QUEUE_LEN_MAX
+    value: "256"
+
 toolchain_settings:
   - option: gcc_linker_option
     value: "-u _printf_float"
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/create_example.png
     directory: "image"
+  - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/config_queue_size.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/config_uart_si91x.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/config_sms_phone_number.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/config_pdu_phone_number.png
+    directory: "image"
   - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/hardware_connection_1.png
-    directory: "image"
-  - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/hardware_connection_2.png
-    directory: "image"
-  - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/hardware_connection_3.png
     directory: "image"
   - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/log.png
     directory: "image"

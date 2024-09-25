@@ -43,19 +43,21 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
-#include "em_gpio.h"
-#include "em_cmu.h"
 #include "sl_status.h"
 #include "ir_array_amg88xx.h"
+#include "sparkfun_amg88xx_config.h"
+
+typedef struct {
+  i2c_master_t i2c;
+  uint8_t slave_address;
+  enum temperature_scale_t temperature_scale;
+} ir_array_t;
 
 // -----------------------------------------------------------------------------
 //                                Local Variables
 // -----------------------------------------------------------------------------
-static uint16_t amg88xx_I2C_address = AMG88XX_ADDRESS_OPEN;
 
-static enum temperature_scale_t temperature_scale = CELSIUS;
-
-static sl_i2cspm_t *amg88xx_I2C_instance = NULL;
+static ir_array_t ir_array;
 
 // -----------------------------------------------------------------------------
 //                                Local Functions
@@ -75,26 +77,15 @@ static sl_status_t amg88xx_i2c_read(uint8_t register_address,
                                     uint8_t *rx_buffer,
                                     uint8_t number_of_bytes)
 {
-  // Transfer structure.
-  I2C_TransferSeq_TypeDef i2c_transfer;
-  I2C_TransferReturn_TypeDef result;
-
-  // Initializing I2C transfer.
-  i2c_transfer.addr = (uint16_t) (amg88xx_I2C_address << 1);
   // Must write target address before reading.
-  i2c_transfer.flags = I2C_FLAG_WRITE_READ;
-  i2c_transfer.buf[0].data = &register_address;
-  i2c_transfer.buf[0].len = 1;
-  i2c_transfer.buf[1].data = rx_buffer;
-  i2c_transfer.buf[1].len = number_of_bytes;
-
-  result = I2CSPM_Transfer(amg88xx_I2C_instance, &i2c_transfer);
-
-  if (result == i2cTransferDone) {
-    return SL_STATUS_OK;
-  } else {
-    return SL_STATUS_FAIL;
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&ir_array.i2c,
+                                                       &register_address,
+                                                       1,
+                                                       (uint8_t *)rx_buffer,
+                                                       number_of_bytes)) {
+    return SL_STATUS_TRANSMIT;
   }
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
@@ -111,9 +102,6 @@ static sl_status_t amg88xx_i2c_write(uint8_t register_address,
                                      const uint8_t *tx_buffer,
                                      uint8_t number_of_bytes)
 {
-  // Transfer structure.
-  I2C_TransferSeq_TypeDef i2c_transfer;
-  I2C_TransferReturn_TypeDef result;
   uint8_t tx_buffer_with_address[I2C_BUFFER_SIZE + 1];
 
   // Register address to write to.
@@ -122,21 +110,12 @@ static sl_status_t amg88xx_i2c_write(uint8_t register_address,
     tx_buffer_with_address[i + 1] = tx_buffer[i];
   }
 
-  // Initializing I2C transfer.
-  i2c_transfer.addr = (uint16_t) (amg88xx_I2C_address << 1);
-  i2c_transfer.flags = I2C_FLAG_WRITE;
-  i2c_transfer.buf[0].data = tx_buffer_with_address;
-  i2c_transfer.buf[0].len = number_of_bytes + 1;
-  i2c_transfer.buf[1].data = NULL;
-  i2c_transfer.buf[1].len = 0;
-
-  result = I2CSPM_Transfer(amg88xx_I2C_instance, &i2c_transfer);
-
-  if (result == i2cTransferDone) {
-    return SL_STATUS_OK;
-  } else {
-    return SL_STATUS_FAIL;
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&ir_array.i2c,
+                                             tx_buffer_with_address,
+                                             number_of_bytes + 1)) {
+    return SL_STATUS_TRANSMIT;
   }
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
@@ -227,13 +206,35 @@ static uint16_t convert_fahrenheit_to_raw(float degrees_F)
 /***************************************************************************//**
  * Initialise the periphery
  ******************************************************************************/
-void amg88xx_init(sl_i2cspm_t *amg88xx_i2c_instance_init,
-                  int16_t I2C_address,
-                  enum temperature_scale_t temp_scale)
+sl_status_t amg88xx_init(mikroe_i2c_handle_t amg88xx_i2c_instance_init,
+                         uint8_t I2C_address,
+                         enum temperature_scale_t temp_scale)
 {
-  amg88xx_I2C_instance = amg88xx_i2c_instance_init;
-  amg88xx_I2C_address = I2C_address;
-  set_temperature_scale(temp_scale);
+  i2c_master_config_t ir_array_config;
+
+  ir_array.i2c.handle = amg88xx_i2c_instance_init;
+
+  i2c_master_configure_default(&ir_array_config);
+
+  ir_array_config.addr = I2C_address;
+  ir_array.slave_address = ir_array_config.addr;
+
+#if (SPARKFUN_AMG88XX_I2C_UC == 1)
+  ir_array_config.speed = SPARKFUN_AMG88XX_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&ir_array.i2c, &ir_array_config) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  i2c_master_set_slave_address(&ir_array.i2c, ir_array.slave_address);
+  i2c_master_set_speed(&ir_array.i2c, ir_array_config.speed);
+  i2c_master_set_timeout(&ir_array.i2c, 0);
+
+  ir_array.temperature_scale = temp_scale;
+  set_temperature_scale(ir_array.temperature_scale);
+
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
@@ -241,7 +242,7 @@ void amg88xx_init(sl_i2cspm_t *amg88xx_i2c_instance_init,
  ******************************************************************************/
 void set_temperature_scale(enum temperature_scale_t temp_scale)
 {
-  temperature_scale = temp_scale;
+  ir_array.temperature_scale = temp_scale;
 }
 
 /***************************************************************************//**
@@ -262,7 +263,7 @@ sl_status_t amg88xx_get_thermistor_temperature(float *thermistor_temperature)
       temperature = temperature * -1;
     }
     *thermistor_temperature = (float) (temperature * 0.0625);
-    if (temperature_scale == FAHRENHEIT) {
+    if (ir_array.temperature_scale == FAHRENHEIT) {
       *thermistor_temperature = (float) (*thermistor_temperature * 1.8 + 32);
     }
   }
@@ -287,7 +288,7 @@ sl_status_t amg88xx_get_pixel_temperature(unsigned char pixel_number,
   int16_t temperature = 0;
   sl_status_t result = amg88xx_get_pixel_temperature_raw(pixel_number,
                                                          &temperature);
-  if (temperature_scale == CELSIUS) {
+  if (ir_array.temperature_scale == CELSIUS) {
     *pixel_temperature = convert_raw_to_celsius(temperature);
   } else {
     *pixel_temperature = convert_raw_to_fahrenheit(temperature);
@@ -317,7 +318,7 @@ sl_status_t amg88xx_get_sensor_array_temperatures(
                                  SENSOR_ARRAY_ROWS * SENSOR_ARRAY_COLUMNS * 2);
   while ((read_result == SL_STATUS_OK) && (i < SENSOR_ARRAY_COLUMNS)) {
     for (int j = 0; j < SENSOR_ARRAY_ROWS; j++) {
-      if (temperature_scale == CELSIUS) {
+      if (ir_array.temperature_scale == CELSIUS) {
         temperature_grid[i][j] = convert_raw_to_celsius(
           temperature_grid_raw[i][j]);
       } else {
@@ -345,7 +346,8 @@ sl_status_t amg88xx_get_sensor_array_temperatures_raw(
  ******************************************************************************/
 void amg88xx_set_i2c_address(uint16_t address)
 {
-  amg88xx_I2C_address = address;
+  ir_array.slave_address = address;
+  i2c_master_set_slave_address(&ir_array.i2c, ir_array.slave_address);
 }
 
 /***************************************************************************//**
@@ -690,7 +692,7 @@ sl_status_t amg88xx_is_moving_average_enabled(bool *is_enabled)
 sl_status_t amg88xx_set_upper_interrupt_value(float degrees)
 {
   uint16_t temperature = 0;
-  if (temperature_scale == CELSIUS) {
+  if (ir_array.temperature_scale == CELSIUS) {
     temperature = convert_celsius_to_raw(degrees);
   } else {
     temperature = convert_fahrenheit_to_raw(degrees);
@@ -711,7 +713,7 @@ sl_status_t amg88xx_set_upper_interrupt_value_raw(int16_t register_value)
 sl_status_t amg88xx_set_lower_interrupt_value(float degrees)
 {
   uint16_t temperature = 0;
-  if (temperature_scale == CELSIUS) {
+  if (ir_array.temperature_scale == CELSIUS) {
     temperature = convert_celsius_to_raw(degrees);
   } else {
     temperature = convert_fahrenheit_to_raw(degrees);
@@ -732,7 +734,7 @@ sl_status_t amg88xx_set_lower_interrupt_value_raw(int16_t register_value)
 sl_status_t amg88xx_set_interrupt_hysteresis(float degrees)
 {
   uint16_t temperature = 0;
-  if (temperature_scale == CELSIUS) {
+  if (ir_array.temperature_scale == CELSIUS) {
     temperature = convert_celsius_to_raw(degrees);
   } else {
     temperature = convert_fahrenheit_to_raw(degrees);
@@ -756,7 +758,7 @@ sl_status_t amg88xx_get_upper_interrupt_value(float *degrees)
     return result;
   }
 
-  if (temperature_scale == CELSIUS) {
+  if (ir_array.temperature_scale == CELSIUS) {
     *degrees = convert_raw_to_celsius(temperature);
   } else {
     *degrees = convert_raw_to_fahrenheit(temperature);
@@ -780,7 +782,7 @@ sl_status_t amg88xx_get_lower_interrupt_value(float *degrees)
     return result;
   }
 
-  if (temperature_scale == CELSIUS) {
+  if (ir_array.temperature_scale == CELSIUS) {
     *degrees = convert_raw_to_celsius(temperature);
   } else {
     *degrees = convert_raw_to_fahrenheit(temperature);
@@ -804,7 +806,7 @@ sl_status_t amg88xx_get_interrupt_hysteresis(float *degrees)
     return result;
   }
 
-  if (temperature_scale == CELSIUS) {
+  if (ir_array.temperature_scale == CELSIUS) {
     *degrees = convert_raw_to_celsius(temperature);
   } else {
     *degrees = convert_raw_to_fahrenheit(temperature);

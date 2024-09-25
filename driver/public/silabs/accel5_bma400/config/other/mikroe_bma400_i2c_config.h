@@ -44,10 +44,30 @@
 extern "C" {
 #endif
 
+#ifndef SLI_SI917
 #include "em_gpio.h"
+#endif
 
 // A CMSIS annotation block starts with the following line:
 // <<< Use Configuration Wizard in Context Menu >>>
+
+//<h>MIKROE BMA400 I2C Configuration
+
+//  <e>MIKROE BMA400 I2C UC Configuration
+//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+//  <i> Default: 0
+#define MIKROE_BMA400_I2C_UC                  0
+
+// <o MIKROE_BMA400_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define MIKROE_BMA400_I2C_SPEED_MODE          0
+
+// </e>
+// </h>
 
 // <o MIKROE_BMA400_ADDR> BMA400 I2C ADDRESS
 // <0x14=> 0x14
@@ -62,14 +82,14 @@ extern "C" {
 
 // <gpio optional=true> MIKROE_BMA400_INT1
 // $[GPIO_MIKROE_BMA400_INT1]
-#warning "Interrupt pin for MAX30101 is not configured"
+#warning "Interrupt pin 1 for BMA400 is not configured"
 // #define MIKROE_BMA400_INT1_PORT                  gpioPortB
 // #define MIKROE_BMA400_INT1_PIN                   1
 // [GPIO_MIKROE_BMA400_INT1]$
 
 // <gpio optional=true> MIKROE_BMA400_INT2
 // $[GPIO_MIKROE_BMA400_INT2]
-#warning "Interrupt pin for MAX30101 is not configured"
+#warning "Interrupt pin 2 for BMA400 is not configured"
 // #define MIKROE_BMA400_INT2_PORT                  gpioPortA
 // #define MIKROE_BMA400_INT2_PIN                   0
 // [GPIO_MIKROE_BMA400_INT2]$

@@ -39,8 +39,7 @@
 #include "em_gpio.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
@@ -83,4 +82,4 @@ extern "C"
 }
 #endif
 
-#endif /* SPARKFUN_TYPE5_CONFIG_H_ */
+#endif // SPARKFUN_TYPE5_CONFIG_H_

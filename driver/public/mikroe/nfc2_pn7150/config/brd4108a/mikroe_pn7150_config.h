@@ -45,6 +45,24 @@
 // A CMSIS annotation block starts with the following line:
 // <<< Use Configuration Wizard in Context Menu >>>
 
+// <h> MIKROE PN7150 I2C Configuration
+
+// <e> MIKROE PN7150 I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_PN7150_I2C_UC                  0
+
+// <o MIKROE_PN7150_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define MIKROE_PN7150_I2C_SPEED_MODE          0
+
+// </e>
+// </h>
+
 // <o MIKROE_PN7150_ADDR> PN7150 I2C ADDRESS
 // <0x28=> I2C_ADDR_0
 // <0x29=> I2C_ADDR_1
@@ -72,4 +90,4 @@
 
 // <<< sl:end pin_tool >>>
 
-#endif /* MIKROE_PN7150_CONFIG_H_ */
+#endif // MIKROE_PN7150_CONFIG_H_

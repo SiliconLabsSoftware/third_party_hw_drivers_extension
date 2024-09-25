@@ -12,8 +12,7 @@
  */
 #include "deca_probe_interface.h"
 #include "deca_interface.h"
-#include "deca_spi.h"
-#include "port.h"
+#include "port_dw3000.h"
 
 static const struct dwt_spi_s dw3000_spi_fct = {
   .readfromspi = readfromspi,

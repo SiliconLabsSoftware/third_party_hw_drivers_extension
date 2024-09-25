@@ -8,10 +8,8 @@ quality: evaluation
 root_path: driver
 requires:
   - name: status
-  - name: i2cspm
-recommends:
-  - id: i2cspm
-    instance: [qwiic]
+  - name: mikroe_peripheral_driver_i2c
+  - name: mikroe_peripheral_driver_digital_io
 config_file:
   - path: public/silabs/proximity_vcnl4040/config/sparkfun_vcnl4040_config.h
     file_id: sparkfun_vcnl4040_config

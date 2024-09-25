@@ -41,7 +41,7 @@
 #define MIKROE_CAP1166_H_
 
 #include "sl_status.h"
-#include "spidrv.h"
+#include "captouch2.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -191,7 +191,7 @@ void mikroe_cap1166_default_cfg(void);
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_FAIL if error spi communication.
  ******************************************************************************/
-sl_status_t mikroe_cap1166_init(SPIDRV_Handle_t spi_instance);
+sl_status_t mikroe_cap1166_init(mikroe_spi_handle_t spi_instance);
 
 /***************************************************************************//**
  * @brief
@@ -204,7 +204,7 @@ sl_status_t mikroe_cap1166_init(SPIDRV_Handle_t spi_instance);
  *    SL_STATUS_OK if there are no errors
  *    SL_STATUS_INVALID_PARAMETER if spi_instance is null
  ******************************************************************************/
-sl_status_t mikroe_cap1166_set_spi_instance(SPIDRV_Handle_t spi_instance);
+sl_status_t mikroe_cap1166_set_spi_instance(mikroe_spi_handle_t spi_instance);
 
 /**
  * @brief Generic Read function

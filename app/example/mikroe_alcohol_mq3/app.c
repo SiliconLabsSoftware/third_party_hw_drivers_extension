@@ -51,7 +51,7 @@
 
 #if (defined(SLI_SI917))
 #define app_printf(...) DEBUGOUT(__VA_ARGS__)
-static uint8_t channel = SL_ADC_CHANNEL_0;
+static uint8_t channel = SL_ADC_CHANNEL_1;
 #else
 #define app_printf(...) app_log(__VA_ARGS__)
 #endif

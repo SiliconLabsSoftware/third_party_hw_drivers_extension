@@ -33,14 +33,32 @@
  * maintained and there may be no bug maintenance planned for these resources.
  * Silicon Labs may update projects from time to time.
  ******************************************************************************/
+
+#include "app_assert.h"
+#include "sparkfun_rfid_id12la.h"
+
+#if (defined(SLI_SI917))
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+#else
 #include "sl_i2cspm_instances.h"
 #include "app_log.h"
-#include "app_assert.h"
+#endif
 
-#include "sparkfun_rfid_id12la.h"
+#if (defined(SLI_SI917))
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
+#if (defined(SLI_SI917))
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
 
 static id12la_tag_list_t id12la_all_tag_data;
 static uint8_t count_tag = 0;
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
 
 /***************************************************************************//**
  * Initialize application.
@@ -49,17 +67,26 @@ void app_init(void)
 {
   sl_status_t ret;
 
-  ret = sparkfun_id12la_init(sl_i2cspm_rfid);
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_qwiic;
+#endif
 
-  if (ret != SL_STATUS_OK) {
-    app_log("I2C address has been changed before\n");
+  ret = sparkfun_id12la_init(app_i2c_instance);
+
+  if (ret == SL_STATUS_NOT_AVAILABLE) {
+    app_printf(
+      "Device is not present on the I2C bus or I2C address has been changed before\n");
     ret = sparkfun_id12la_scan_address();
     app_assert_status(ret);
-    app_log("I2C address is: 0x%02X\n", sparkfun_id12la_get_i2c_address());
-    app_log("RFID begins successfully, ready to scan some tags\n");
-  } else {
-    app_log("RFID inits successfully, ready scans some tags\n");
+    app_printf("I2C address is: 0x%02X\n", sparkfun_id12la_get_i2c_address());
+  } else if (ret != SL_STATUS_OK) {
+    app_printf("Failed to initialize RFID\r\n");
+    return;
   }
+
+  app_printf("RFID inits successfully, ready scans some tags\n");
 }
 
 /***************************************************************************//**
@@ -69,25 +96,27 @@ void app_process_action(void)
 {
   if (sparkfun_id12la_get_all_tag(&id12la_all_tag_data,
                                   &count_tag) != SL_STATUS_OK) {
-    app_log("error while scanning tags, check connection!!!\n");
+    app_printf("error while scanning tags, check connection!!!\n");
   }
 
   if (count_tag > 0) {
-    app_log("count tag: %d\n", count_tag);
+    app_printf("count tag: %d\n", count_tag);
 
     for (uint8_t i = 0; i < count_tag; i++) {
       if (id12la_all_tag_data.id12la_data[i].checksum_valid == true) {
-        app_log("ID (last byte is checksum): 0x%02X 0x%02X 0x%02X 0x%02X \
-                0x%02X 0x%02X\n",
-                id12la_all_tag_data.id12la_data[i].id_tag[0], \
-                id12la_all_tag_data.id12la_data[i].id_tag[1], \
-                id12la_all_tag_data.id12la_data[i].id_tag[2], \
-                id12la_all_tag_data.id12la_data[i].id_tag[3], \
-                id12la_all_tag_data.id12la_data[i].id_tag[4], \
-                id12la_all_tag_data.id12la_data[i].id_tag[5]);
-        app_log("Scan time: %ld\n\n", id12la_all_tag_data.id12la_data[i].time);
+        app_printf(
+          "ID (last byte is checksum): 0x%02X 0x%02X 0x%02X 0x%02X \
+                   0x%02X 0x%02X\n",
+          id12la_all_tag_data.id12la_data[i].id_tag[0], \
+          id12la_all_tag_data.id12la_data[i].id_tag[1], \
+          id12la_all_tag_data.id12la_data[i].id_tag[2], \
+          id12la_all_tag_data.id12la_data[i].id_tag[3], \
+          id12la_all_tag_data.id12la_data[i].id_tag[4], \
+          id12la_all_tag_data.id12la_data[i].id_tag[5]);
+        app_printf("Scan time: %ld\n\n",
+                   id12la_all_tag_data.id12la_data[i].time);
       } else {
-        app_log("Tag %d : checksum error, please scan the tag again\n", i);
+        app_printf("Tag %d : checksum error, please scan the tag again\n", i);
       }
     }
   }

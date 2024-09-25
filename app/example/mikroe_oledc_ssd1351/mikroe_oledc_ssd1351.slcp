@@ -23,9 +23,8 @@ include:
   - path: app.h
 component:
 - id: sl_system
+- id: sleeptimer
 - id: device_init
-- id: spidrv
-  instance: [mikroe]
 - id: iostream_eusart
   instance: [vcom]
 - id: oledc_ssd1351
@@ -34,12 +33,12 @@ component:
   from: third_party_hw_drivers  
 - id: app_log
 - id: app_assert
-- id: sleeptimer
+
 define:
 - name: DEBUG_EFM
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 other_file:
   - path: ../../documentation/example/mikroe_oledc_ssd1351/image/hardware_connection.png
     directory: "image"

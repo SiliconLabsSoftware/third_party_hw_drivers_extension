@@ -1603,7 +1603,8 @@ static void gnss_max_m10s_process(sl_max_m10s_cfg_data_t *gnss_cfg_data,
 
 uint32_t gnss_max_m10s_milli_sec()
 {
-  return sl_sleeptimer_get_tick_count();
+  uint32_t tickcount = sl_sleeptimer_get_tick_count();
+  return sl_sleeptimer_tick_to_ms(tickcount);
 }
 
 static uint16_t gnss_max_m10s_file_buffer_space_available(

@@ -33,6 +33,8 @@
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 #include "mikroe_bme688_spi.h"
+#include "sl_sleeptimer.h"
+#include "mikroe_bme688_spi_config.h"
 
 // Local prototypes
 static int8_t mikroe_bme688_spi_read(uint8_t reg_addr,
@@ -46,14 +48,32 @@ static int8_t mikroe_bme688_spi_write(uint8_t reg_addr,
 static void mikroe_bme688_spi_delay_us(uint32_t period,
                                        void *intf_ptr);
 
+spi_master_t bme68x;
+
 /***************************************************************************//**
  *  Initializes an SPI interface for BME688.
  *  As entry point, call this API before using other APIs.
  ******************************************************************************/
-int8_t mikroe_bme688_spi_init(bme68x_dev_t *bme688)
+int8_t mikroe_bme688_spi_init(bme68x_dev_t *bme688,
+                              mikroe_spi_handle_t spi_handle)
 {
-  if (bme688 == NULL) {
+  if ((bme688 == NULL) || (NULL == spi_handle)) {
     return BME68X_E_NULL_PTR;
+  }
+
+  spi_master_config_t spi_cfg;
+  spi_master_configure_default(&spi_cfg);
+  spi_cfg.mode = SPI_MASTER_MODE_0;
+  spi_cfg.speed = 1000000;
+
+#if (MIKROE_BME688_SPI_UC == 1)
+  spi_cfg.speed = MIKROE_BME688_SPI_BITRATE;
+#endif
+
+  bme68x.handle = spi_handle;
+
+  if (spi_master_open(&bme68x, &spi_cfg) == SPI_MASTER_ERROR) {
+    return BME68X_E_COM_FAIL;
   }
 
   bme688->read = mikroe_bme688_spi_read;
@@ -92,25 +112,15 @@ static int8_t mikroe_bme688_spi_read(uint8_t reg_addr,
                                      uint32_t len,
                                      void *intf_ptr)
 {
-  SPIDRV_Handle_t spi_handle = ((bme68x_spi_t *)intf_ptr)->handle;
-  Ecode_t ret_code;
-  uint8_t txBuffer[len + 1];
-  uint8_t rxBuffer[len + 1];
+  (void)intf_ptr;
+  err_t ret_code = spi_master_write_then_read(&bme68x,
+                                              &reg_addr,
+                                              1,
+                                              reg_data,
+                                              len);
 
-  txBuffer[0] = reg_addr;
-
-  // Fullfill the remaining elements of the txBuffer with dummy
-  for (uint16_t i = 0; i < (uint16_t)len; i++) {
-    txBuffer[i + 1] = 0xff;
-  }
-
-  ret_code = SPIDRV_MTransferB(spi_handle, txBuffer, rxBuffer, len + 1);
-  if (ret_code != ECODE_EMDRV_SPIDRV_OK) {
+  if (ret_code != SPI_MASTER_SUCCESS) {
     return BME68X_E_COM_FAIL;
-  }
-  // Copy the receive payload (without the dummy byte) to the output buffer data
-  for (uint16_t i = 0; i < len; i++) {
-    reg_data[i] = rxBuffer[i + 1];
   }
 
   return BME68X_OK;
@@ -138,22 +148,18 @@ static int8_t mikroe_bme688_spi_write(uint8_t reg_addr,
                                       uint32_t len,
                                       void *intf_ptr)
 {
-  SPIDRV_Handle_t spi_handle = ((bme68x_spi_t *)intf_ptr)->handle;
-  Ecode_t ret_code;
+  (void) intf_ptr;
   uint8_t txBuffer[len + 1];
 
   txBuffer[0] = reg_addr;
-
-  // Fullfill the remaining elements of the txBuffer with dummy
-  for (uint16_t i = 0; i < (uint16_t)len; i++) {
+  for (uint32_t i = 0; i < len; i++) {
     txBuffer[i + 1] = reg_data[i];
   }
 
-  ret_code = SPIDRV_MTransmitB(spi_handle, txBuffer, len + 1);
-  if (ret_code != ECODE_EMDRV_SPIDRV_OK) {
+  sl_status_t ret_code = spi_master_write(&bme68x, txBuffer, len + 1);
+  if (ret_code != SPI_MASTER_SUCCESS) {
     return BME68X_E_COM_FAIL;
   }
-
   return BME68X_OK;
 }
 
@@ -170,5 +176,11 @@ static int8_t mikroe_bme688_spi_write(uint8_t reg_addr,
 static void mikroe_bme688_spi_delay_us(uint32_t period, void *intf_ptr)
 {
   (void) intf_ptr;
-  sl_udelay_wait(period);
+  uint32_t delay_ms = 1;
+
+  if (period > 1000) {
+    delay_ms = (period / 1000) + 1;
+  }
+
+  sl_sleeptimer_delay_millisecond(delay_ms);
 }

@@ -46,6 +46,8 @@
 #include <stdbool.h>
 #include "sl_status.h"
 #include "sl_component_catalog.h"
+#include "mipi_dbi.h"
+#include "mipi_dbi_spi.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -106,15 +108,14 @@ extern "C" {
 #define ST7789_YELLOW      0xFFE0
 #define ST7789_ORANGE      0xFC00
 
-typedef void (*adafruit_st7789_dma_complete_callback_t)(sl_status_t status);
-
 typedef enum
 {
   adafruit_st7789_rotation_none = 0,
   adafruit_st7789_rotation_90,
   adafruit_st7789_rotation_180,
   adafruit_st7789_rotation_270,
-}adafruit_st7789_rotation_e;
+} adafruit_st7789_rotation_e;
+
 // -----------------------------------------------------------------------------
 //                       Public Function
 // -----------------------------------------------------------------------------
@@ -131,16 +132,10 @@ typedef enum
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_FAIL if the process is failed.
  ******************************************************************************/
-#if defined(SL_CATALOG_ADAFRUIT_TFT_LCD_ST7789_PRESENT)
-sl_status_t adafruit_st7789_spi_usart_init(void);
+sl_status_t adafruit_st7789_spi_init(const struct mipi_dbi_config *config);
 
-#define adafruit_st7789_init  adafruit_st7789_spi_usart_init
-#elif defined(SL_CATALOG_ADAFRUIT_TFT_LCD_ST7789_DMA_PRESENT)
-#include "spidrv.h"
-sl_status_t adafruit_st7789_spi_dma_init(SPIDRV_Handle_t spidrv_handle);
-
-#define adafruit_st7789_init  adafruit_st7789_spi_dma_init
-#endif
+#define adafruit_st7789_init(spi_handle) \
+  adafruit_st7789_spi_init((const struct mipi_dbi_config *)spi_handle);
 
 /***************************************************************************//**
  * @brief

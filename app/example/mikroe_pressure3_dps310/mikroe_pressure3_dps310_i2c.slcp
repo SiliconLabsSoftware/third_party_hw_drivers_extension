@@ -5,6 +5,7 @@ description: |
   This example project shows an example for Mikroe Pressure 3 Click board driver integration using I2C communication.
 category: Example|Platform
 quality: evaluation
+
 filter:
 - name: Device Type
   value: [SoC]
@@ -12,15 +13,19 @@ filter:
   value: [32-bit MCU]
 - name: Project Difficulty
   value: [Beginner]
+
 readme:
 - path: ../../documentation/example/mikroe_pressure3_dps310/README.md
+
 source:
 - path: app.c
 - path: main.c
+
 include:
 - path: ''
   file_list:
   - path: app.h
+
 component:
 - id: sl_system
 - id: device_init
@@ -34,14 +39,18 @@ component:
 - id: sleeptimer
 - id: mikroe_pressure3_i2c
   from: third_party_hw_drivers
+
 toolchain_settings:
   - option: gcc_linker_option
     value: "-u _printf_float"
+
 define:
 - name: DEBUG_EFM
+
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
+
 other_file:
   - path: ../../documentation/example/mikroe_pressure3_dps310/image/create_example.png
     directory: "image"
@@ -51,6 +60,11 @@ other_file:
     directory: "image"
   - path: ../../documentation/example/mikroe_pressure3_dps310/image/float.png
     directory: "image"
+  - path: ../../documentation/example/mikroe_pressure3_dps310/image/spi_config.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_pressure3_dps310/image/pressure3_config.png
+    directory: "image"
+
 ui_hints:
   highlight:
     - path: README.md

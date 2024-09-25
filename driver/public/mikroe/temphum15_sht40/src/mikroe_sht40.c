@@ -36,8 +36,9 @@
  * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
+
+#include "mikroe_sht40_config.h"
 #include "mikroe_sht40.h"
-#include "temphum15.h"
 
 static temphum15_t temhum15;
 static temphum15_cfg_t temhum15_cfg;
@@ -46,109 +47,105 @@ static temphum15_cfg_t temhum15_cfg;
                                  || (mikroe_sht40_precision_mode_medium == x) \
                                  || (mikroe_sht40_precision_mode_low == x))
 
-sl_status_t mikroe_sht40_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_sht40_init(mikroe_i2c_handle_t instance)
 {
-  sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
-
-  if (NULL != i2cspm_instance) {
-    temhum15.i2c.handle = i2cspm_instance;
-    temphum15_cfg_setup(&temhum15_cfg);
-
-    if (I2C_MASTER_SUCCESS == temphum15_init(&temhum15, &temhum15_cfg)) {
-      stt = SL_STATUS_OK;
-    } else {
-      stt = SL_STATUS_FAIL;
-    }
+  if (NULL == instance) {
+    return SL_STATUS_INVALID_PARAMETER;
   }
-  return stt;
+
+  temhum15.i2c.handle = instance;
+  temphum15_cfg_setup(&temhum15_cfg);
+
+#if (MIKROE_I2C_SHT40_UC == 1)
+  temhum15_cfg.i2c_speed = MIKROE_I2C_SHT40_SPEED_MODE;
+#endif
+
+  if (temphum15_init(&temhum15, &temhum15_cfg) != TEMPHUM15_SUCCESS) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_sht40_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_sht40_set_i2csmp_instance(mikroe_i2c_handle_t instance)
 {
-  sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
-
-  if (NULL != i2cspm_instance) {
-    temhum15.i2c.handle = i2cspm_instance;
-    stt = SL_STATUS_OK;
+  if (NULL == instance) {
+    return SL_STATUS_INVALID_PARAMETER;
   }
-  return stt;
+
+  temhum15.i2c.handle = instance;
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_sht40_generic_write(uint8_t reg, uint8_t *tx_buf,
                                        uint8_t tx_len)
 {
-  sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
-
-  if ((NULL != tx_buf)) {
-    if (I2C_MASTER_SUCCESS == temphum15_generic_write(&temhum15, reg,
-                                                      tx_buf, tx_len)) {
-      stt = SL_STATUS_OK;
-    } else {
-      stt = SL_STATUS_FAIL;
-    }
+  if ((NULL == tx_buf)) {
+    return SL_STATUS_INVALID_PARAMETER;
   }
-  return stt;
+
+  if (TEMPHUM15_SUCCESS != temphum15_generic_write(&temhum15, reg,
+                                                   tx_buf, tx_len)) {
+    return SL_STATUS_FAIL;
+  }
+
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_sht40_generic_read(uint8_t reg, uint8_t *rx_buf,
                                       uint8_t rx_len)
 {
-  sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
-
-  if ((NULL != rx_buf)) {
-    if (I2C_MASTER_SUCCESS == temphum15_generic_read(&temhum15, reg,
-                                                     rx_buf, rx_len)) {
-      stt = SL_STATUS_OK;
-    } else {
-      stt = SL_STATUS_FAIL;
-    }
+  if ((NULL == rx_buf)) {
+    return SL_STATUS_INVALID_PARAMETER;
   }
-  return stt;
+
+  if (TEMPHUM15_SUCCESS != temphum15_generic_read(&temhum15, reg,
+                                                  rx_buf, rx_len)) {
+    return SL_STATUS_FAIL;
+  }
+
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_sht40_get_temp_and_hum(
   mikroe_sht40_precision_mode_e precision_mode,
   mikroe_sht40_measurement_data_t *measurement_data)
 {
-  sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
-
-  if ((NULL != measurement_data) && (CHECK_PRECISION_MODE(precision_mode))) {
-    float temp_val, hum_val;
-    if (I2C_MASTER_SUCCESS == temphum15_get_temp_and_hum(&temhum15,
-                                                         precision_mode,
-                                                         &temp_val,
-                                                         &hum_val)) {
-      measurement_data->temperature = temp_val;
-      measurement_data->humidity = hum_val;
-
-      stt = SL_STATUS_OK;
-    } else {
-      stt = SL_STATUS_FAIL;
-    }
+  if ((NULL == measurement_data) || (!CHECK_PRECISION_MODE(precision_mode))) {
+    return SL_STATUS_INVALID_PARAMETER;
   }
-  return stt;
+
+  float temp_val, hum_val;
+  if (TEMPHUM15_SUCCESS != temphum15_get_temp_and_hum(&temhum15,
+                                                      precision_mode,
+                                                      &temp_val,
+                                                      &hum_val)) {
+    return SL_STATUS_FAIL;
+  }
+
+  measurement_data->temperature = temp_val;
+  measurement_data->humidity = hum_val;
+
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_sht40_soft_reset(void)
 {
-  sl_status_t stt = SL_STATUS_FAIL;
-
-  if (I2C_MASTER_SUCCESS == temphum15_soft_reset(&temhum15)) {
-    stt = SL_STATUS_OK;
+  if (I2C_MASTER_SUCCESS != temphum15_soft_reset(&temhum15)) {
+    return SL_STATUS_FAIL;
   }
-  return stt;
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_sht40_read_serial(uint32_t *serial_number)
 {
-  sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
-
-  if (NULL != serial_number) {
-    if (I2C_MASTER_SUCCESS == temphum15_read_serial(&temhum15, serial_number)) {
-      stt = SL_STATUS_OK;
-    } else {
-      stt = SL_STATUS_FAIL;
-    }
+  if (NULL == serial_number) {
+    return SL_STATUS_INVALID_PARAMETER;
   }
-  return stt;
+
+  if (TEMPHUM15_SUCCESS != temphum15_read_serial(&temhum15, serial_number)) {
+    return SL_STATUS_FAIL;
+  }
+
+  return SL_STATUS_OK;
 }

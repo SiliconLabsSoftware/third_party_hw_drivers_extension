@@ -38,6 +38,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /***************************************************************************//**
  * @brief
  *   Sparkfun Type5 callback function;
@@ -46,7 +50,7 @@
  *   This callback function is executed whenever noise or radiation is detected.
  *
  ******************************************************************************/
-typedef void(*sparkfun_type5_callback_t)(void);
+typedef void (*sparkfun_type5_callback_t)(void);
 
 // -----------------------------------------------------------------------------
 //                       Public Function
@@ -162,4 +166,7 @@ double sparkfun_type5_get_usvh(void);
  ******************************************************************************/
 double sparkfun_type5_get_usvh_error(void);
 
-#endif /* SPARKFUN_TYPE5_H_ */
+#ifdef __cplusplus
+}
+#endif
+#endif // SPARKFUN_TYPE5_H_

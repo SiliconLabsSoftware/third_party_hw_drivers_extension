@@ -56,8 +56,8 @@ sl_status_t mikroe_shtc3_init(mikroe_i2c_handle_t i2cspm_instance)
   // Call basic setup functions
   temphum9_cfg_setup(&temphum9_cfg);
 
-#if (MIKROE_I2C_SHTC3_UC == 1)
-  temphum9_cfg.i2c_speed = MIKROE_I2C_SHTC3_SPEED_MODE;
+#if (MIKROE_SHTC3_I2C_UC == 1)
+  temphum9_cfg.i2c_speed = MIKROE_SHTC3_I2C_SPEED_MODE;
 #endif
 
   if (temphum9_init(&temphum9, &temphum9_cfg) != TEMPHUM9_OK) {

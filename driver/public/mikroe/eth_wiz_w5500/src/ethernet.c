@@ -128,17 +128,18 @@ sl_status_t w5x00_ethernet_set_dns_server(w5x00_ethernet_t *eth,
  ******************************************************************************/
 enum EthernetLinkStatus w5x00_ethernet_link_status(w5x00_ethernet_t *eth)
 {
+  enum EthernetLinkStatus stt = EthernetLinkUnknown;
   if (eth == NULL) {
-    return EthernetLinkUnknown;
+    stt = EthernetLinkUnknown;
   }
 
   switch (w5x00_get_link_status()) {
-    case UNKNOWN:  return EthernetLinkUnknown;
-    case LINK_ON:  return EthernetLinkON;
-    case LINK_OFF: return EthernetLinkOFF;
-    default:       return EthernetLinkUnknown;
+    case UNKNOWN:  stt =  EthernetLinkUnknown; break;
+    case LINK_ON:  stt = EthernetLinkON; break;
+    case LINK_OFF: stt = EthernetLinkOFF; break;
+    default:       stt = EthernetLinkUnknown; break;
   }
-  return EthernetLinkUnknown;
+  return stt;
 }
 
 /***************************************************************************//**
@@ -177,7 +178,6 @@ sl_status_t w5x00_ethernet_maintain(w5x00_ethernet_t *eth)
     default:
       // this is actually an error, it will retry though
       return SL_STATUS_FAIL;
-      break;
   }
   return SL_STATUS_OK;
 }

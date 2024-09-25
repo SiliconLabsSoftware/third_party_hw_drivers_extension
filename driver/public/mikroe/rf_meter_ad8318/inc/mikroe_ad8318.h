@@ -41,7 +41,7 @@
 #define MIKROE_AD8318_H_
 
 #include "sl_status.h"
-#include "spidrv.h"
+#include "drv_spi_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -78,7 +78,7 @@ void mikroe_ad8318_cfg_setup(void);
  * @description This function initializes all necessary pins and peripherals
  *   used for this click.
  */
-sl_status_t mikroe_ad8318_set_spi_instance(SPIDRV_Handle_t spi_instance);
+sl_status_t mikroe_ad8318_set_spi_instance(mikroe_spi_handle_t spi_instance);
 
 /**
  * @brief Initialization function.
@@ -87,7 +87,7 @@ sl_status_t mikroe_ad8318_set_spi_instance(SPIDRV_Handle_t spi_instance);
  * @description This function initializes all necessary pins and peripherals
  *   used for this click.
  */
-sl_status_t mikroe_ad8318_init(SPIDRV_Handle_t spi_instance);
+sl_status_t mikroe_ad8318_init(mikroe_spi_handle_t spi_instance);
 
 /**
  * @brief Data read function

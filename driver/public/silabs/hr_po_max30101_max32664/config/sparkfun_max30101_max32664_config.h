@@ -37,9 +37,29 @@
 #define BIO_HUB_CONFIG_H
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
+
+// <<< Use Configuration Wizard in Context Menu >>>
+
+// <h> SPARKFUN_MAX30101 I2C Configuration
+
+// <e> SPARKFUN_MAX30101 I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define SPARKFUN_MAX30101_I2C_UC                  0
+
+// <o SPARKFUN_MAX30101_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define SPARKFUN_MAX30101_I2C_SPEED_MODE          0
+
+// </e>
+// </h>
+// <<< end of configuration section >>>
 
 // <<< sl:start pin_tool >>>
 

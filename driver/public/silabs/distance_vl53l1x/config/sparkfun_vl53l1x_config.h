@@ -47,8 +47,29 @@ extern "C" {
 // A CMSIS annotation block starts with the following line:
 // <<< Use Configuration Wizard in Context Menu >>>
 
+// <h> VL53L1X I2C Configuration
+
+// <e>VL53L1X I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define VL53L1X_I2C__UC                0
+
+// <o VL53L1X_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define VL53L1X_I2C_SPEED_MODE         0
+
+// </e>
+// </h>
+
+// <h> Connection
 // <o VL53L1X_ADDR> I2C Address <0x1..0x7E:0x1><f.h>
-#define VL53L1X_ADDR                      0x29
+// <i> Default: 0x29
+#define VL53L1X_ADDR                         0x29
+// </h>
 
 // The block ends with the following line or at the end of the file:
 // <<< end of configuration section >>>
@@ -57,4 +78,4 @@ extern "C" {
 }
 #endif
 
-#endif /* SPARKFUN_VL53L1X_CONFIG_H_ */
+#endif // SPARKFUN_VL53L1X_CONFIG_H_

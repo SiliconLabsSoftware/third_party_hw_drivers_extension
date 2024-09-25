@@ -44,6 +44,10 @@
 
 #include "sl_status.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define VL53L1X_IMPLEMENTATION_VER_MAJOR                                    3
 #define VL53L1X_IMPLEMENTATION_VER_MINOR                                    5
 #define VL53L1X_IMPLEMENTATION_VER_SUB                                      1
@@ -430,4 +434,7 @@ VL53L1X_ERROR VL53L1X_GetSigmaThreshold(uint16_t dev, uint16_t *signal);
  */
 VL53L1X_ERROR VL53L1X_StartTemperatureUpdate(uint16_t dev);
 
+#ifdef __cplusplus
+}
 #endif
+#endif // _VL53L1X_CORE_H_

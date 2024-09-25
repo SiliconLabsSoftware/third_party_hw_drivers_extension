@@ -1,48 +1,83 @@
 /***************************************************************************//**
- * @file
+ * @file app.c
  * @brief Top level application functions
  *******************************************************************************
  * # License
- * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2024 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc. Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement. This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
  *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ * # Experimental Quality
+ * This code has been minimally tested to ensure that it builds and is suitable
+ * as a demonstration for evaluation purposes only. This code will be maintained
+ * at the sole discretion of Silicon Labs.
  ******************************************************************************/
-
+#include "sl_component_catalog.h"
 #include "sl_sleeptimer.h"
+#include "bme68x.h"
+
+#if (defined(SLI_SI917))
+#include "rsi_debug.h"
+
+#ifdef SL_CATALOG_ENVIRONMENT3_BME688_SPI_PRESENT
+#include "mikroe_bme688_spi.h"
+#include "mikroe_bme688_spi_config.h"
+#include "sl_si91x_gspi.h"
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
+#endif
+
+#ifdef SL_CATALOG_ENVIRONMENT3_BME688_I2C_PRESENT
+#include "mikroe_bme688_i2c.h"
+#include "mikroe_bme688_i2c_config.h"
+#include "sl_i2c_instances.h"
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
+
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else /* None Si91x device */
 #include "app_log.h"
 
 #ifdef SL_CATALOG_ENVIRONMENT3_BME688_SPI_PRESENT
 #include "sl_spidrv_instances.h"
 #include "mikroe_bme688_spi.h"
+#include "mikroe_bme688_spi_config.h"
 #endif
 
 #ifdef SL_CATALOG_ENVIRONMENT3_BME688_I2C_PRESENT
-#include "mikroe_bme688_i2c.h"
 #include "sl_i2cspm_instances.h"
+#include "mikroe_bme688_i2c.h"
+#include "mikroe_bme688_i2c_config.h"
 #endif
 
-#include "bme68x.h"
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
 
 #define READING_INTERVAL_MSEC    2000
 #define HEATER_TEMPERATURE       300
 #define HEATING_DURATION         100
 
 static bme68x_dev_t bme688;
-
-#ifdef SL_CATALOG_ENVIRONMENT3_BME688_SPI_PRESENT
-static bme68x_spi_t bme688_spi;
-#endif
-
-#ifdef SL_CATALOG_ENVIRONMENT3_BME688_I2C_PRESENT
-static bme68x_i2c_t bme688_i2c;
-#endif
 
 static volatile bool enable_reading_data = false;
 static sl_sleeptimer_timer_handle_t app_periodic_timer;
@@ -52,13 +87,27 @@ static sl_status_t app_bme688_get_data(void);
 static void app_periodic_timer_cb(sl_sleeptimer_timer_handle_t *timer,
                                   void *data);
 
+#ifdef SL_CATALOG_ENVIRONMENT3_BME688_SPI_PRESENT
+mikroe_spi_handle_t app_spi_instance = NULL;
+#endif
+#ifdef SL_CATALOG_ENVIRONMENT3_BME688_I2C_PRESENT
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
+#endif
+
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
 void app_init(void)
 {
   if (app_bme688_init() != SL_STATUS_OK) {
-    app_log("Initialization error. Please check again ...\r\n");
+    app_printf("Initialization error. Please check again ...\r\n");
+  } else {
+#ifdef SL_CATALOG_ENVIRONMENT3_BME688_SPI_PRESENT
+    app_printf("Environment 3 BME688 - SPI Initialization Successful\r\n");
+#endif
+#ifdef SL_CATALOG_ENVIRONMENT3_BME688_I2C_PRESENT
+    app_printf("Environment 3 BME688 - I2C Initialization Successful\r\n");
+#endif
   }
 }
 
@@ -71,7 +120,7 @@ void app_process_action(void)
     enable_reading_data = false;
 
     if (app_bme688_get_data() != SL_STATUS_OK) {
-      app_log("Reading error. Please check again ...\r\n");
+      app_printf("Reading error. Please check again ...\r\n");
     }
   }
 }
@@ -83,21 +132,24 @@ static sl_status_t app_bme688_init(void)
   bme68x_heatr_conf_t heatr_conf;
 
 #ifdef SL_CATALOG_ENVIRONMENT3_BME688_I2C_PRESENT
-  // Initialize an I2C interface for BME688
-  bme688_i2c.handle = sl_i2cspm_mikroe;
-  bme688_i2c.addr = BME68X_I2C_ADDR_LOW;
-  bme688.intf_ptr = &bme688_i2c;
-  rslt = mikroe_bme688_i2c_init(&bme688);
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_mikroe;
+#endif
+  rslt = mikroe_bme688_i2c_init(&bme688, app_i2c_instance);
   if (rslt != BME68X_OK) {
     return SL_STATUS_FAIL;
   }
 #endif
 
 #ifdef SL_CATALOG_ENVIRONMENT3_BME688_SPI_PRESENT
-  // Initialize an SPI interface for BME688
-  bme688_spi.handle = sl_spidrv_mikroe_handle;
-  bme688.intf_ptr = &bme688_spi;
-  rslt = mikroe_bme688_spi_init(&bme688);
+#if (defined(SLI_SI917))
+  app_spi_instance = &gspi_instance;
+#else
+  app_spi_instance = sl_spidrv_mikroe_handle;
+#endif
+  rslt = mikroe_bme688_spi_init(&bme688, app_spi_instance);
   if (rslt != BME68X_OK) {
     return SL_STATUS_FAIL;
   }
@@ -159,10 +211,10 @@ static sl_status_t app_bme688_get_data(void)
   }
 
   if (n_fields) {
-    app_log("\r\nTemperature : %.2f" "\xB0" "C\r\n", data.temperature);
-    app_log("Humidity : %.2f %%\r\n", data.humidity);
-    app_log("Pressure : %.2f Pa\r\n", data.pressure);
-    app_log("Gas resistance : %.2f Ohm\r\n", data.gas_resistance);
+    app_printf("\r\nTemperature : %.2f" "\xB0" "C\r\n", data.temperature);
+    app_printf("Humidity : %.2f %%\r\n", data.humidity);
+    app_printf("Pressure : %.2f Pa\r\n", data.pressure);
+    app_printf("Gas resistance : %.2f Ohm\r\n", data.gas_resistance);
   }
 
   return SL_STATUS_OK;

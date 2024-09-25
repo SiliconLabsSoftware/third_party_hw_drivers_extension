@@ -44,9 +44,9 @@
 extern "C" {
 #endif
 
-#include "environment2.h"
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "environment2.h"
+#include "drv_i2c_master.h"
 
 /*!
  * @addtogroup environment2 Environment 2 Click Driver
@@ -220,7 +220,7 @@ typedef  environment2_voc_algorithm_params
  *    SL_STATUS_OK Successful initialization.
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_environment2_init (sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_environment2_init(mikroe_i2c_handle_t i2cspm_instance);
 
 /***************************************************************************//**
  * @brief

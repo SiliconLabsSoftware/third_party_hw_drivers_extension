@@ -1,6 +1,6 @@
 /***************************************************************************//**
- * @file mikroe_l9958.h
- * @brief SCL L9958 Prototypes
+ * @file mikroe_uwb_dwm1000.h
+ * @brief mikroe uwb dwm1000 header file
  * @version 1.0.0
  *******************************************************************************
  * # License
@@ -41,8 +41,8 @@
 #define _MIKROE_MIKROE_DWM1000_DWM1000_H
 
 #include "sl_status.h"
-#include "spidrv.h"
 #include "stdint.h"
+#include "drv_spi_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -289,7 +289,7 @@ extern const uint8_t MIKROE_DWM1000_TMODE_SHORTDATA_FAST_ACCURACY[3];
  *    SL_STATUS_FAIL Initialization failed.
  *    SL_STATUS_NULL_POINTER if spi_instance is null.
  ******************************************************************************/
-sl_status_t mikroe_dwm1000_init (SPIDRV_Handle_t spi_instance);
+sl_status_t mikroe_dwm1000_init (mikroe_spi_handle_t spi_instance);
 
 /**
  * @brief Function for writing data to register

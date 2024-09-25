@@ -51,12 +51,12 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>MICRO OLED I2C Configuration
+// <h> MICRO OLED I2C Configuration
 
-//  <e>MICRO OLED I2C UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> MICRO OLED I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define MICRO_OLED_I2C__UC                  0
 
 // <o MICRO_OLED_I2C_SPEED_MODE> Speed mode
@@ -68,7 +68,6 @@ extern "C" {
 
 // </e>
 // </h>
-// <<< end of configuration section >>>
 
 // <h> Connection
 // <o CONFIG_OLED_DISPLAY_ADDRESS> I2C Address <0x1..0x7E:0x1><f.h>

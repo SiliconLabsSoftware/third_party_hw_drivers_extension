@@ -74,8 +74,8 @@ sl_status_t mikroe_ssd1306_init(mikroe_spi_handle_t spi_instance)
   oledw_cfg.cs = hal_gpio_pin_name(SSD1306_CS_PORT, SSD1306_CS_PIN);
 #endif
 
-#if (MIKROE_SPI_SSD1306_UC == 1)
-  oledw_cfg.spi_speed = MIKROE_SPI_SSD1306_BITRATE;
+#if (MIKROE_SSD1306_SPI_UC == 1)
+  oledw_cfg.spi_speed = MIKROE_SSD1306_SPI_BITRATE;
 #endif
 
   if (oledw_init(&oledw, &oledw_cfg) != OLEDW_OK) {

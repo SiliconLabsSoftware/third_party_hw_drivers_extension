@@ -68,7 +68,7 @@ static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #define GNSS_DATA_RETRY_COUNT           5
 #define GNSS_DATA_TIMEOUT_RETRY_DELAY   200       ///< In ms
 #define GNSS_PER_RETRY_DELAY            500       ///< In ms
-#define GNSS_TASK_DELAY                 2000      ///< In ms
+#define GNSS_TASK_DELAY                 1000      ///< In ms
 
 /// @brief Structure for MAX-M10s GNSS receiver data
 typedef struct {

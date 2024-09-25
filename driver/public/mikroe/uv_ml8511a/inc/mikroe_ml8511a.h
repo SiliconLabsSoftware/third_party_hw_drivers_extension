@@ -44,7 +44,9 @@
 // -----------------------------------------------------------------------------
 
 #include "uv.h"
-#include "spidrv.h"
+#include "sl_status.h"
+#include "drv_analog_in.h"
+#include "drv_spi_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,7 +67,8 @@ extern "C" {
  *    SL_STATUS_OK Successful initialization.
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_ml8511a_init(SPIDRV_Handle_t spi_instance);
+sl_status_t mikroe_ml8511a_init(mikroe_spi_handle_t spi_instance,
+                                mikroe_adc_handle_t adc_instance);
 
 /***************************************************************************//**
  * @brief

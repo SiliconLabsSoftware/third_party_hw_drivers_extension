@@ -26,10 +26,10 @@ The SparkFun MAX-M10S GNSS Receiver Breakout is an ultra-low-power, high perform
 
 - If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | SparkFun Micro OLED Breakout |
-  | -------------| ------------- | ------------------ | ---------------------------- |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                          |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                          |
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | SparkFun GNSS Receiver Breakout |
+  | -------------| ------------- | ------------------ | ------------------------------- |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                             |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                             |
 
 ## Setup ##
 
@@ -39,14 +39,9 @@ To test this application, you can either create a project based on an example pr
 
 1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *gnss*.
 
-2. Click **Create** button on the project:
+2. Click **Create** button on the **Third Party Hardware Drivers - MAX-M10S - GNSS Receiver Breakout (SparkFun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 
-   - **Third Party Hardware Drivers - MAX-M10S - GNSS Receiver Breakout (Sparkfun)** example if the BGM220P Explorer Kit is used.
-   ![create_example](image/create_example_1.png)
-   - **Third Party Hardware Drivers - MAX-M10S - GNSS Receiver Breakout (Sparkfun) - Si91x** example if the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used.
-   ![create_example](image/create_example_2.png)
-
-   Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
@@ -85,7 +80,7 @@ To test this application, you can either create a project based on an example pr
 
 **Note:**
 
-- Make sure that the SDK extension has already be installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "MAX-M10S - GNSS Receiver Breakout - I2C" component.
 

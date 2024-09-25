@@ -40,10 +40,8 @@
 /*******************************************************************************
  * Includes
  ******************************************************************************/
-#include <stdint.h>
-#include "stddef.h"
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 
 /***************************************************************************//**
  * @addtogroup id12la - RFID
@@ -109,13 +107,13 @@ typedef struct {
  * @brief
  *    Initialize the id12la
  *
- * @param[in] i2cspm
+ * @param[in] i2c
  *    The I2C peripheral to use.
  *
  * @return
  *    sl_status_t error code
  ******************************************************************************/
-sl_status_t sparkfun_id12la_init(sl_i2cspm_t *i2cspm);
+sl_status_t sparkfun_id12la_init(mikroe_i2c_handle_t i2c);
 
 /***************************************************************************//**
  * @brief
@@ -170,4 +168,4 @@ uint8_t sparkfun_id12la_get_i2c_address(void);
 #ifdef __cplusplus
 }
 #endif
-#endif /* RFID_ID12LA_H_ */
+#endif // RFID_ID12LA_H_

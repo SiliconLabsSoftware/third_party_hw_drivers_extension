@@ -36,11 +36,12 @@
 #ifndef SPARKFUN_TYPE5_CONFIG_H_
 #define SPARKFUN_TYPE5_CONFIG_H_
 
+#ifndef SLI_SI917
 #include "em_gpio.h"
+#endif
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
@@ -85,4 +86,4 @@ extern "C"
 }
 #endif
 
-#endif /* SPARKFUN_TYPE5_CONFIG_H_ */
+#endif // SPARKFUN_TYPE5_CONFIG_H_

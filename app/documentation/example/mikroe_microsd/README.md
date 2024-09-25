@@ -14,24 +14,31 @@ The microSD Click communicates with the target microcontroller over SPI interfac
 
 - [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)
 
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
 - [A microSD Click board](https://www.mikroe.com/microsd-click)
 
 - A microSD card, e.g. [microSD card 32 GB with adapter](https://www.mikroe.com/microsd-32gb)
 
-**NOTE:**
-Tested boards for working with this example:
+## Connections Required ##
 
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2703A | [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4108A | [BG22 Bluetooth SoC Explorer Kit - BG22-EK4108A](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)    |
+**Note:** A pull-up resistor (e.g., 100k) should be placed on the MISO.
 
-## Hardware Connection ##
+- If the BGM220P Explorer Kit is used:
 
-The microSD Click board can be easily clicked into its place. During the assembly, be sure that the 45-degree corner of the board fits the 45-degree white line of the Explorer Kit.
+  The microSD Click board can be easily clicked into its place. During the assembly, be sure that the 45-degree corner of the board fits the 45-degree white line of the Explorer Kit.
 
-![board](image/board.png)
+  ![board](image/board.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description  | BRD4338A GPIO | BRD4002 Breakout Pad | microSD Click Board |
+  | -------------| ------------- | -------------------- | ------------------- |
+  | Card Detection           | GPIO_46       | P24                  | CD                  |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                 |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27                  | SDO                 |
+  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27       | P29                  | SDI                 |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28       | P31                  | CS                  |
 
 ## Setup ##
 
@@ -39,39 +46,45 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter microsd.
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **microsd**.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - microSD Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![create_example](image/create_example.png)
+
+   ![create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create a "Platform - Empty C Project" project for the "BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A" using Simplicity Studio v5. Use the default project settings. Be sure to connect and select the BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A Board from the "Debug Adapters" on the left before creating a project.
+1. Create an "Empty C Project" for the your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_microsd/app.c` into the project root folder (overwriting the existing file).
 
 3. Install the software components:
 
-   - Open the .slcp file in the project
+    - Open the .slcp file in the project.
+    - Select the SOFTWARE COMPONENTS tab.
+    - Install the following components:
 
-   - Select the *SOFTWARE COMPONENTS* tab
+        **If the BGM220P Explorer Kit is used:**
 
-   - Install the following components:
+        - **[Third Party Hardware Drivers] → [Storage] → [microSD - microSD Click (Mikroe)]**
+        - **[Third Party Hardware Drivers] → [Storage] → [FatFS - Generic FAT Filesystem]**
+        - **[Services] → [IO Stream] → [IO Stream: USART]** → with the default instance name: **vcom**
+        - **[Application] → [Utility] → [Log]**
+        - **[Application] → [Utility] → [Assert]**
 
-     - **[Third Party Hardware Drivers] → [Storage] → [microSD - microSD Click (Mikroe)]**
-     - **[Third Party Hardware Drivers] → [Storage] → [FatFS - Generic FAT Filesystem]**
-     - **[Services] → [IO Stream] → [IO Stream: USART]** → with the default instance name: **vcom**
-
-     - **[Application] → [Utility] → [Log]**
-     - **[Application] → [Utility] → [Assert]**
+        **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+        - **[Application] → [Utility] → [Assert]**
+        - **[Third Party Hardware Drivers] → [Storage] → [microSD - microSD Click (Mikroe)]**
+        - **[Third Party Hardware Drivers] → [Storage] → [FatFS - Generic FAT Filesystem]** -> turn on *Enable if the system does not have an RTC or valid timestamp*
+        ![fatfs_config](image/fatfs_config.png)
 
 4. Build and flash the project to your device.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "microSD - microSD Click (Mikroe)" component.
 
@@ -109,7 +122,7 @@ This example demonstrates the basic features of the driver as shown below:
 
 ![Flow](image/workflow.png)
 
-Use a terminal program, such as the Console that is integrated into Simplicity Studio or a third-party tool terminal like Tera Term to receive the logs from the virtual COM port. You should expect a similar output to the one below.
+Use a terminal program, such as the Console that is integrated into Simplicity Studio or a third-party tool terminal like Tera Term to receive the logs from the virtual COM port. Make sure that A pull-up resistor (e.g., 100k) is placed on the MISO. You should expect a similar output to the one below.
 
 ![testing_format](image/testing.png)
 

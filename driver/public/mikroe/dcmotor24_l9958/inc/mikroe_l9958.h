@@ -41,8 +41,8 @@
 #define _MIKROE_L9958_H_
 
 #include "sl_status.h"
-#include "sl_pwm.h"
-#include "spidrv.h"
+#include "drv_pwm.h"
+#include "drv_spi_master.h"
 #include "stdint.h"
 
 #ifdef __cplusplus
@@ -122,8 +122,8 @@ extern "C" {
  *    SL_STATUS_FAIL Initialization failed.
  *    SL_STATUS_INVALID_PARAMETER if spi_instance is null.
  ******************************************************************************/
-sl_status_t mikroe_l9958_init (SPIDRV_Handle_t spi_instance,
-                               sl_pwm_instance_t *pwm_instance);
+sl_status_t mikroe_l9958_init (mikroe_spi_handle_t spi_instance,
+                               mikroe_pwm_handle_t pwm_instance);
 
 /***************************************************************************//**
  * @brief DC Motor 24 default configuration function.

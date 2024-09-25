@@ -32,36 +32,28 @@
  * as a demonstration for evaluation purposes only. This code will be maintained
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
+#include "drv_digital_in.h"
+#include "sl_sleeptimer.h"
 #include "sl_sdc_sd_card.h"
 #include "mikroe_microsd_config.h"
 
 typedef struct {
-  uint8_t mosiPort;
-  uint8_t mosiPin;
-  uint8_t misoPort;
-  uint8_t misoPin;
-  uint8_t clkPort;
-  uint8_t clkPin;
-  uint8_t csPort;
-  uint8_t csPin;
-} SPI_Pins_t;
-
-static Ecode_t GetSpiPins(SPIDRV_Handle_t handle, SPI_Pins_t *pins);
+  spi_master_t spi;
+  digital_in_t cd_pin;
+  digital_in_t miso_pin;
+} sd_card_t;
 
 // SPI bit rate controls
 // Set slow clock for card initialization (100k-400k)
 #define FCLK_SLOW() \
-  sdc_platform_set_bit_rate(sdc_spi_handle, MIKROE_MICROSD_MMC_SLOW_CLOCK)
+  sdc_platform_set_bit_rate(&sd_card.spi, MIKROE_MICROSD_MMC_SLOW_CLOCK)
 // Set fast clock for generic read/write
-#if MIKROE_MICROSD_MMC_FAST_CLOCK == 0
-#define FCLK_FAST()                                              \
-  if (sdc_spi_handle) {                                          \
-    sdc_platform_set_bit_rate(sdc_spi_handle,                    \
-                              sdc_spi_handle->initData.bitRate); \
-  }
+#if MIKROE_MICROSD_MMC_FAST_CLOCK
+#define FCLK_FAST() \
+  sdc_platform_set_bit_rate(&sd_card.spi, MIKROE_MICROSD_MMC_FAST_CLOCK)
 #else
-#define FCLK_SLOW()   sdc_platform_set_bit_rate(sdc_spi_handle, \
-                                                MIKROE_MICROSD_MMC_FAST_CLOCK)
+// The default bitrate of SPI is used
+#define FCLK_FAST()
 #endif
 
 // Socket controls
@@ -72,8 +64,7 @@ static Ecode_t GetSpiPins(SPIDRV_Handle_t handle, SPI_Pins_t *pins);
 
 #if defined(MIKROE_MICROSD_MMC_CD_PORT) && defined(MIKROE_MICROSD_MMC_CD_PORT)
 // Card detected      (yes:true, no:false, default:true)
-#define MMC_CD        (!GPIO_PinInGet(MIKROE_MICROSD_MMC_CD_PORT, \
-                                      MIKROE_MICROSD_MMC_CD_PIN))
+#define MMC_CD        (!digital_in_read(&sd_card.cd_pin))
 #endif
 
 // Definitions for MMC/SDC command
@@ -104,7 +95,7 @@ static volatile DSTATUS sd_card_status = STA_NOINIT; // Disk status
 static BYTE sd_card_type; // Card type flags
 static volatile UINT sd_card_timer_1, sd_card_timer_2; // 1kHz decrement timer
 
-static SPIDRV_Handle_t sdc_spi_handle = NULL;
+static sd_card_t sd_card;
 static sl_sleeptimer_timer_handle_t disk_timerproc_timer_handle;
 static void disk_timerproc_timer_callback(sl_sleeptimer_timer_handle_t *handle,
                                           void *data);
@@ -135,7 +126,7 @@ static bool wait_ready(UINT wt)
 
   sd_card_timer_2 = wt;
   do {
-    sdc_xchg_spi(sdc_spi_handle, 0xff, &data);
+    sdc_xchg_spi(&sd_card.spi, 0xff, &data);
     // This loop takes a time. Insert rot_rdq() here for multitask envilonment.
   } while (data != 0xff && sd_card_timer_2);  // Wait for card goes ready or
                                               //   timeout
@@ -153,8 +144,8 @@ static void deselect(void)
   BYTE data;
 
   CS_HIGH();
-  sdc_xchg_spi(sdc_spi_handle, 0xff, &data); // Dummy clock (force DO hi-z for
-                                             //   multiple slave SPI)
+  // Dummy clock (force DO hi-z for multiple slave SPI)
+  sdc_xchg_spi(&sd_card.spi, 0xff, &data);
 }
 
 /***************************************************************************//**
@@ -169,7 +160,7 @@ static bool select(void)
 
   CS_LOW();
   // Dummy clock (force DO enabled)
-  sdc_xchg_spi(sdc_spi_handle, 0xff, &data);
+  sdc_xchg_spi(&sd_card.spi, 0xff, &data);
 
   if (wait_ready(500)) {
     return 1;  // Wait for card ready
@@ -197,7 +188,7 @@ static bool rcvr_datablock(BYTE *buff, UINT btr)
 
   sd_card_timer_1 = 100;
   do { // Wait for data packet in timeout of 100ms
-    sdc_xchg_spi(sdc_spi_handle, 0xff, &token);
+    sdc_xchg_spi(&sd_card.spi, 0xff, &token);
   } while ((token == 0xff) && sd_card_timer_1);
 
   // If not valid data token, return with error
@@ -205,12 +196,12 @@ static bool rcvr_datablock(BYTE *buff, UINT btr)
     return 0;
   }
 
-  sdc_rcvr_spi_multi(sdc_spi_handle, buff, btr); // Receive the data block into
-                                                 //   buffer
+  // Receive the data block into buffer
+  sdc_rcvr_spi_multi(&sd_card.spi, buff, btr);
   // Discard 2 byte-CRC.
   // Refer to http://elm-chan.org/docs/mmc/mmc_e.html#dataxfer for details"
-  sdc_xchg_spi(sdc_spi_handle, 0xff, &token);
-  sdc_xchg_spi(sdc_spi_handle, 0xff, &token);
+  sdc_xchg_spi(&sd_card.spi, 0xff, &token);
+  sdc_xchg_spi(&sd_card.spi, 0xff, &token);
 
   return 1;
 }
@@ -236,15 +227,15 @@ static bool xmit_datablock(const BYTE *buff, BYTE token)
     return 0;
   }
 
-  sdc_xchg_spi(sdc_spi_handle, token, &data);      // Xmit a token
+  sdc_xchg_spi(&sd_card.spi, token, &data);      // Xmit a token
   if (token != 0xfd) {             // Not StopTran token
-    sdc_xmit_spi_multi(sdc_spi_handle, buff, 512); // Xmit the data block to the
-                                                   //   MMC
+    // Xmit the data block to the MMC
+    sdc_xmit_spi_multi(&sd_card.spi, buff, 512);
     // Discard 2 byte-CRC.
     // Refer to http://elm-chan.org/docs/mmc/mmc_e.html#dataxfer for details"
-    sdc_xchg_spi(sdc_spi_handle, 0xff, &data);
-    sdc_xchg_spi(sdc_spi_handle, 0xff, &data);
-    sdc_xchg_spi(sdc_spi_handle, 0xff, &data);     // Receive a data response
+    sdc_xchg_spi(&sd_card.spi, 0xff, &data);
+    sdc_xchg_spi(&sd_card.spi, 0xff, &data);
+    sdc_xchg_spi(&sd_card.spi, 0xff, &data);     // Receive a data response
     // If not accepted, return with error
     if ((data & 0x1F) != 0x05) {
       return 0;
@@ -290,11 +281,11 @@ static BYTE send_cmd(BYTE cmd, DWORD arg)
   }
 
   // Send command packet
-  sdc_xchg_spi(sdc_spi_handle, 0x40 | cmd, &data); // Start + Command index
-  sdc_xchg_spi(sdc_spi_handle, ((BYTE)(arg >> 24)), &data); // Argument[31..24]
-  sdc_xchg_spi(sdc_spi_handle, ((BYTE)(arg >> 16)), &data); // Argument[23..16]
-  sdc_xchg_spi(sdc_spi_handle, ((BYTE)(arg >> 8)), &data);  // Argument[15..8]
-  sdc_xchg_spi(sdc_spi_handle, (BYTE)(arg), &data);         // Argument[7..0]
+  sdc_xchg_spi(&sd_card.spi, 0x40 | cmd, &data); // Start + Command index
+  sdc_xchg_spi(&sd_card.spi, ((BYTE)(arg >> 24)), &data); // Argument[31..24]
+  sdc_xchg_spi(&sd_card.spi, ((BYTE)(arg >> 16)), &data); // Argument[23..16]
+  sdc_xchg_spi(&sd_card.spi, ((BYTE)(arg >> 8)), &data);  // Argument[15..8]
+  sdc_xchg_spi(&sd_card.spi, (BYTE)(arg), &data);         // Argument[7..0]
 
   n = 0x01;           // Dummy CRC + Stop
   if (cmd == CMD0) {
@@ -303,16 +294,16 @@ static BYTE send_cmd(BYTE cmd, DWORD arg)
   if (cmd == CMD8) {
     n = 0x87;         // Valid CRC for CMD8(0x1AA) + Stop
   }
-  sdc_xchg_spi(sdc_spi_handle, n, &data);
+  sdc_xchg_spi(&sd_card.spi, n, &data);
 
   // Receive command response
   if (cmd == CMD12) {
     // Skip a stuff byte on stop to read
-    sdc_xchg_spi(sdc_spi_handle, 0xff, &data);
+    sdc_xchg_spi(&sd_card.spi, 0xff, &data);
   }
   n = 10;             // Wait for a valid response in timeout of 10 attempts
   do {
-    sdc_xchg_spi(sdc_spi_handle, 0xff, &data);
+    sdc_xchg_spi(&sd_card.spi, 0xff, &data);
   } while ((data & 0x80) && --n);
 
   return data;     // Return with the response value
@@ -333,7 +324,7 @@ DSTATUS sd_card_disk_initialize(void)
 
   FCLK_SLOW();
   for (n = 10; n; n--) {
-    sdc_xchg_spi(sdc_spi_handle, 0xff, &data);  // Send 80 dummy clocks
+    sdc_xchg_spi(&sd_card.spi, 0xff, &data);  // Send 80 dummy clocks
   }
 
   ty = 0;
@@ -342,7 +333,7 @@ DSTATUS sd_card_disk_initialize(void)
     if (send_cmd(CMD8, 0x1aa) == 1) { // Is the card SDv2?
       for (n = 0; n < 4; n++) {
         // Get 32 bit return value of R7 resp
-        sdc_xchg_spi(sdc_spi_handle, 0xff, &ocr[n]);
+        sdc_xchg_spi(&sd_card.spi, 0xff, &ocr[n]);
       }
 
       // Is the card supports vcc of 2.7-3.6V?
@@ -354,7 +345,7 @@ DSTATUS sd_card_disk_initialize(void)
         // Check CCS bit in the OCR
         if (sd_card_timer_1 && (send_cmd(CMD58, 0) == 0)) {
           for (n = 0; n < 4; n++) {
-            sdc_xchg_spi(sdc_spi_handle, 0xff, &ocr[n]);
+            sdc_xchg_spi(&sd_card.spi, 0xff, &ocr[n]);
           }
           ty = (ocr[0] & 0x40) ? CT_SDC2 | CT_BLOCK : CT_SDC2;  // Card id SDv2
         }
@@ -548,11 +539,11 @@ dresult_t sd_card_disk_ioctl(BYTE cmd, void *buff)
     case GET_BLOCK_SIZE:
       if (sd_card_type & CT_SDC2) {         // SDv2?
         if (send_cmd(ACMD13, 0) == 0) { // Read SD status
-          sdc_xchg_spi(sdc_spi_handle, 0xff, &data);
+          sdc_xchg_spi(&sd_card.spi, 0xff, &data);
           if (rcvr_datablock(csd, 16)) {// Read partial block
             for (n = 64 - 16; n; n--) {
               // Purge trailing data
-              sdc_xchg_spi(sdc_spi_handle, 0xff, &data);
+              sdc_xchg_spi(&sd_card.spi, 0xff, &data);
             }
             *(DWORD *)buff = 16UL << (csd[10] >> 4);
             res = RES_OK;
@@ -638,7 +629,7 @@ dresult_t sd_card_disk_ioctl(BYTE cmd, void *buff)
       // READ_OCR
       if (send_cmd(CMD58, 0) == 0) {
         for (n = 4; n; n--) {
-          *ptr++ = sdc_xchg_spi(sdc_spi_handle, 0xff, &data);
+          *ptr++ = sdc_xchg_spi(&sd_card.spi, 0xff, &data);
         }
         res = RES_OK;
       }
@@ -649,7 +640,7 @@ dresult_t sd_card_disk_ioctl(BYTE cmd, void *buff)
     case MMC_GET_SDSTAT:
       // SD_STATUS
       if (send_cmd(ACMD13, 0) == 0) {
-        sdc_xchg_spi(sdc_spi_handle, 0xff, &data);
+        sdc_xchg_spi(&sd_card.spi, 0xff, &data);
         if (rcvr_datablock(ptr, 64)) {
           res = RES_OK;
         }
@@ -668,31 +659,26 @@ dresult_t sd_card_disk_ioctl(BYTE cmd, void *buff)
 /***************************************************************************//**
  * @brief Initialize SPI interface for SD Card.
  ******************************************************************************/
-sl_status_t sd_card_spi_init(SPIDRV_Handle_t spi_handle)
+sl_status_t sd_card_spi_init(mikroe_spi_handle_t spi_handle)
 {
   bool timer_is_running = false;
-  sdc_spi_handle = spi_handle;
+  spi_master_config_t spi_cfg;
 
-  SPI_Pins_t pins;
-  Ecode_t ret;
+  spi_master_configure_default(&spi_cfg);
+  spi_cfg.mode = SPI_MASTER_MODE_0;
+  spi_cfg.speed = 1000000;
+  spi_cfg.default_write_data = 0xFF;
+
+  sd_card.spi.handle = spi_handle;
+  if (spi_master_open(&sd_card.spi, &spi_cfg) != SPI_MASTER_SUCCESS) {
+    return SPI_MASTER_ERROR;
+  }
 
 #if defined(MIKROE_MICROSD_MMC_CD_PORT) && defined(MIKROE_MICROSD_MMC_CD_PORT)
-  GPIO_PinModeSet(MIKROE_MICROSD_MMC_CD_PORT,
-                  MIKROE_MICROSD_MMC_CD_PIN,
-                  gpioModeInputPull,
-                  1);
+  digital_in_pullup_init(&sd_card.cd_pin,
+                         hal_gpio_pin_name(MIKROE_MICROSD_MMC_CD_PORT,
+                                           MIKROE_MICROSD_MMC_CD_PIN));
 #endif
-
-  // MISO pin is not pulled-up by SDcard click board side with a resistor.
-  // This pin should be reconfigured in gpioModeInputPull mode.
-  ret = GetSpiPins(spi_handle, &pins);
-  if (ret != ECODE_EMDRV_SPIDRV_OK) {
-    return ret;
-  }
-  GPIO_PinModeSet(pins.misoPort,
-                  pins.misoPin,
-                  gpioModeInputPull,
-                  1);
 
   // Make sure the disk_timerproc_timer_handle timer is initialized only once
   sl_sleeptimer_is_timer_running(&disk_timerproc_timer_handle,
@@ -755,203 +741,3 @@ void disk_timerproc(void)
 #endif
   sd_card_status = s;
 }
-
-#if defined(_SILICON_LABS_32B_SERIES_0)
-
-/***************************************************************************//**
- * @brief Get SPI pins for Series 0 devices.
- ******************************************************************************/
-static Ecode_t GetSpiPins(SPIDRV_Handle_t handle, SPI_Pins_t *pins)
-{
-  uint32_t location;
-
-  location = handle->initData.portLocation;
-
-  if (0) {
-#if defined(USART0)
-  } else if (handle->peripheral.usartPort == USART0) {
-    pins->mosiPort = AF_USART0_TX_PORT(location);
-    pins->misoPort = AF_USART0_RX_PORT(location);
-    pins->clkPort = AF_USART0_CLK_PORT(location);
-    pins->csPort = AF_USART0_CS_PORT(location);
-    pins->mosiPin = AF_USART0_TX_PIN(location);
-    pins->misoPin = AF_USART0_RX_PIN(location);
-    pins->clkPin = AF_USART0_CLK_PIN(location);
-    pins->csPin = AF_USART0_CS_PIN(location);
-#endif
-#if defined(USART1)
-  } else if (handle->peripheral.usartPort == USART1) {
-    pins->mosiPort = AF_USART1_TX_PORT(location);
-    pins->misoPort = AF_USART1_RX_PORT(location);
-    pins->clkPort = AF_USART1_CLK_PORT(location);
-    pins->csPort = AF_USART1_CS_PORT(location);
-    pins->mosiPin = AF_USART1_TX_PIN(location);
-    pins->misoPin = AF_USART1_RX_PIN(location);
-    pins->clkPin = AF_USART1_CLK_PIN(location);
-    pins->csPin = AF_USART1_CS_PIN(location);
-#endif
-#if defined(USART2)
-  } else if (handle->peripheral.usartPort == USART2) {
-    pins->mosiPort = AF_USART2_TX_PORT(location);
-    pins->misoPort = AF_USART2_RX_PORT(location);
-    pins->clkPort = AF_USART2_CLK_PORT(location);
-    pins->csPort = AF_USART2_CS_PORT(location);
-    pins->mosiPin = AF_USART2_TX_PIN(location);
-    pins->misoPin = AF_USART2_RX_PIN(location);
-    pins->clkPin = AF_USART2_CLK_PIN(location);
-    pins->csPin = AF_USART2_CS_PIN(location);
-#endif
-#if defined(USARTRF0)
-  } else if (handle->peripheral.usartPort == USARTRF0) {
-    pins->mosiPort = AF_USARTRF0_TX_PORT(location);
-    pins->misoPort = AF_USARTRF0_RX_PORT(location);
-    pins->clkPort = AF_USARTRF0_CLK_PORT(location);
-    pins->csPort = AF_USARTRF0_CS_PORT(location);
-    pins->mosiPin = AF_USARTRF0_TX_PIN(location);
-    pins->misoPin = AF_USARTRF0_RX_PIN(location);
-    pins->clkPin = AF_USARTRF0_CLK_PIN(location);
-    pins->csPin = AF_USARTRF0_CS_PIN(location);
-#endif
-#if defined(USARTRF1)
-  } else if (handle->peripheral.usartPort == USARTRF1) {
-    pins->mosiPort = AF_USARTRF1_TX_PORT(location);
-    pins->misoPort = AF_USARTRF1_RX_PORT(location);
-    pins->clkPort = AF_USARTRF1_CLK_PORT(location);
-    pins->csPort = AF_USARTRF1_CS_PORT(location);
-    pins->mosiPin = AF_USARTRF1_TX_PIN(location);
-    pins->misoPin = AF_USARTRF1_RX_PIN(location);
-    pins->clkPin = AF_USARTRF1_CLK_PIN(location);
-    pins->csPin = AF_USARTRF1_CS_PIN(location);
-#endif
-  } else {
-    return ECODE_EMDRV_SPIDRV_PARAM_ERROR;
-  }
-  return ECODE_EMDRV_SPIDRV_OK;
-}
-
-#endif
-
-#if defined(_SILICON_LABS_32B_SERIES_1)
-
-/***************************************************************************//**
- * @brief Get SPI pins for Series 1 devices.
- ******************************************************************************/
-static Ecode_t GetSpiPins(SPIDRV_Handle_t handle, SPI_Pins_t *pins)
-{
-  if (0) {
-#if defined(USART0)
-  } else if (handle->peripheral.usartPort == USART0) {
-    pins->mosiPort = AF_USART0_TX_PORT(handle->initData.portLocationTx);
-    pins->misoPort = AF_USART0_RX_PORT(handle->initData.portLocationRx);
-    pins->clkPort = AF_USART0_CLK_PORT(handle->initData.portLocationClk);
-    pins->csPort = AF_USART0_CS_PORT(handle->initData.portLocationCs);
-    pins->mosiPin = AF_USART0_TX_PIN(handle->initData.portLocationTx);
-    pins->misoPin = AF_USART0_RX_PIN(handle->initData.portLocationRx);
-    pins->clkPin = AF_USART0_CLK_PIN(handle->initData.portLocationClk);
-    pins->csPin = AF_USART0_CS_PIN(handle->initData.portLocationCs);
-#endif
-#if defined(USART1)
-  } else if (handle->peripheral.usartPort == USART1) {
-    pins->mosiPort = AF_USART1_TX_PORT(handle->initData.portLocationTx);
-    pins->misoPort = AF_USART1_RX_PORT(handle->initData.portLocationRx);
-    pins->clkPort = AF_USART1_CLK_PORT(handle->initData.portLocationClk);
-    pins->csPort = AF_USART1_CS_PORT(handle->initData.portLocationCs);
-    pins->mosiPin = AF_USART1_TX_PIN(handle->initData.portLocationTx);
-    pins->misoPin = AF_USART1_RX_PIN(handle->initData.portLocationRx);
-    pins->clkPin = AF_USART1_CLK_PIN(handle->initData.portLocationClk);
-    pins->csPin = AF_USART1_CS_PIN(handle->initData.portLocationCs);
-#endif
-#if defined(USART2)
-  } else if (handle->peripheral.usartPort == USART2) {
-    pins->mosiPort = AF_USART2_TX_PORT(handle->initData.portLocationTx);
-    pins->misoPort = AF_USART2_RX_PORT(handle->initData.portLocationRx);
-    pins->clkPort = AF_USART2_CLK_PORT(handle->initData.portLocationClk);
-    pins->csPort = AF_USART2_CS_PORT(handle->initData.portLocationCs);
-    pins->mosiPin = AF_USART2_TX_PIN(handle->initData.portLocationTx);
-    pins->misoPin = AF_USART2_RX_PIN(handle->initData.portLocationRx);
-    pins->clkPin = AF_USART2_CLK_PIN(handle->initData.portLocationClk);
-    pins->csPin = AF_USART2_CS_PIN(handle->initData.portLocationCs);
-#endif
-#if defined(USART3)
-  } else if (handle->peripheral.usartPort == USART3) {
-    pins->mosiPort = AF_USART3_TX_PORT(handle->initData.portLocationTx);
-    pins->misoPort = AF_USART3_RX_PORT(handle->initData.portLocationRx);
-    pins->clkPort = AF_USART3_CLK_PORT(handle->initData.portLocationClk);
-    pins->csPort = AF_USART3_CS_PORT(handle->initData.portLocationCs);
-    pins->mosiPin = AF_USART3_TX_PIN(handle->initData.portLocationTx);
-    pins->misoPin = AF_USART3_RX_PIN(handle->initData.portLocationRx);
-    pins->clkPin = AF_USART3_CLK_PIN(handle->initData.portLocationClk);
-    pins->csPin = AF_USART3_CS_PIN(handle->initData.portLocationCs);
-#endif
-#if defined(USART4)
-  } else if (handle->peripheral.usartPort == USART4) {
-    pins->mosiPort = AF_USART4_TX_PORT(handle->initData.portLocationTx);
-    pins->misoPort = AF_USART4_RX_PORT(handle->initData.portLocationRx);
-    pins->clkPort = AF_USART4_CLK_PORT(handle->initData.portLocationClk);
-    pins->csPort = AF_USART4_CS_PORT(handle->initData.portLocationCs);
-    pins->mosiPin = AF_USART4_TX_PIN(handle->initData.portLocationTx);
-    pins->misoPin = AF_USART4_RX_PIN(handle->initData.portLocationRx);
-    pins->clkPin = AF_USART4_CLK_PIN(handle->initData.portLocationClk);
-    pins->csPin = AF_USART4_CS_PIN(handle->initData.portLocationCs);
-#endif
-#if defined(USART5)
-  } else if (handle->peripheral.usartPort == USART5) {
-    pins->mosiPort = AF_USART5_TX_PORT(handle->initData.portLocationTx);
-    pins->misoPort = AF_USART5_RX_PORT(handle->initData.portLocationRx);
-    pins->clkPort = AF_USART5_CLK_PORT(handle->initData.portLocationClk);
-    pins->csPort = AF_USART5_CS_PORT(handle->initData.portLocationCs);
-    pins->mosiPin = AF_USART5_TX_PIN(handle->initData.portLocationTx);
-    pins->misoPin = AF_USART5_RX_PIN(handle->initData.portLocationRx);
-    pins->clkPin = AF_USART5_CLK_PIN(handle->initData.portLocationClk);
-    pins->csPin = AF_USART5_CS_PIN(handle->initData.portLocationCs);
-#endif
-#if defined(USARTRF0)
-  } else if (handle->peripheral.usartPort == USARTRF0) {
-    pins->mosiPort = AF_USARTRF0_TX_PORT(handle->initData.portLocationTx);
-    pins->misoPort = AF_USARTRF0_RX_PORT(handle->initData.portLocationRx);
-    pins->clkPort = AF_USARTRF0_CLK_PORT(handle->initData.portLocationClk);
-    pins->csPort = AF_USARTRF0_CS_PORT(handle->initData.portLocationCs);
-    pins->mosiPin = AF_USARTRF0_TX_PIN(handle->initData.portLocationTx);
-    pins->misoPin = AF_USARTRF0_RX_PIN(handle->initData.portLocationRx);
-    pins->clkPin = AF_USARTRF0_CLK_PIN(handle->initData.portLocationClk);
-    pins->csPin = AF_USARTRF0_CS_PIN(handle->initData.portLocationCs);
-#endif
-#if defined(USARTRF1)
-  } else if (handle->peripheral.usartPort == USARTRF1) {
-    pins->mosiPort = AF_USARTRF1_TX_PORT(handle->initData.portLocationTx);
-    pins->misoPort = AF_USARTRF1_RX_PORT(handle->initData.portLocationRx);
-    pins->clkPort = AF_USARTRF1_CLK_PORT(handle->initData.portLocationClk);
-    pins->csPort = AF_USARTRF1_CS_PORT(handle->initData.portLocationCs);
-    pins->mosiPin = AF_USARTRF1_TX_PIN(handle->initData.portLocationTx);
-    pins->misoPin = AF_USARTRF1_RX_PIN(handle->initData.portLocationRx);
-    pins->clkPin = AF_USARTRF1_CLK_PIN(handle->initData.portLocationClk);
-    pins->csPin = AF_USARTRF1_CS_PIN(handle->initData.portLocationCs);
-#endif
-  } else {
-    return ECODE_EMDRV_SPIDRV_PARAM_ERROR;
-  }
-  return ECODE_EMDRV_SPIDRV_OK;
-}
-
-#endif
-
-#if defined(_SILICON_LABS_32B_SERIES_2)
-
-/***************************************************************************//**
- * @brief Get SPI pins for Series 2 devices.
- ******************************************************************************/
-static Ecode_t GetSpiPins(SPIDRV_Handle_t handle, SPI_Pins_t *pins)
-{
-  pins->mosiPort = handle->initData.portTx;
-  pins->misoPort = handle->initData.portRx;
-  pins->clkPort = handle->initData.portClk;
-  pins->csPort = handle->initData.portCs;
-  pins->mosiPin = handle->initData.pinTx;
-  pins->misoPin = handle->initData.pinRx;
-  pins->clkPin = handle->initData.pinClk;
-  pins->csPin = handle->initData.pinCs;
-
-  return ECODE_EMDRV_SPIDRV_OK;
-}
-
-#endif

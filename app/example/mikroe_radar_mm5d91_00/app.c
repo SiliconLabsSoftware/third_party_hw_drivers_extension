@@ -34,26 +34,46 @@
  ******************************************************************************/
 
 #include <string.h>
+#include "mikroe_mm5d91_00.h"
+
+#if (defined(SLI_SI917))
+#include "sl_si91x_usart.h"
+#include "rsi_debug.h"
+#else
 #include "sl_iostream_init_usart_instances.h"
 #include "sl_iostream_init_eusart_instances.h"
 #include "app_log.h"
-#include "mikroe_mm5d91_00.h"
+#endif
 
-static mikroe_radar_t mikroe_radar;
+#if (defined(SLI_SI917))
+#define app_printf(...)                DEBUGOUT(__VA_ARGS__)
+#define USART_INSTANCE_USED            UART_1
+
+static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
+#else
+#define app_printf(...)                app_log(__VA_ARGS__)
+#endif
+
+mikroe_uart_handle_t app_uart_instance = NULL;
 
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
 void app_init(void)
 {
+#if (defined(SLI_SI917))
+  app_uart_instance = &uart_instance;
+#else
+  app_uart_instance = sl_iostream_uart_mikroe_handle;
+
   sl_iostream_set_default(sl_iostream_vcom_handle);
   app_log_iostream_set(sl_iostream_vcom_handle);
-  if (SL_STATUS_OK == mikroe_radar_usart_init(&mikroe_radar,
-                                              sl_iostream_uart_mikroe_handle,
-                                              0)) {
-    app_log("Init: Success\r\n");
+#endif
+
+  if (SL_STATUS_OK == mikroe_radar_init(app_uart_instance)) {
+    app_printf("Init: Success\r\n");
   } else {
-    app_log("Init: Failed\r\n");
+    app_printf("Init: Failed\r\n");
   }
 }
 
@@ -66,32 +86,29 @@ void app_process_action(void)
   uint8_t evt_payload_size;
   uint8_t evt_payload[16];
 
-  if (SL_STATUS_OK == mikroe_radar_get_event(&mikroe_radar,
-                                             &evt_id,
+  if (SL_STATUS_OK == mikroe_radar_get_event(&evt_id,
                                              evt_payload,
                                              &evt_payload_size)) {
     if (RADAR_CMD_ID_DETECT_IN_EVT == evt_id) {
-      app_log(" EVENT: IN\r\n");
+      app_printf(" EVENT: IN\r\n");
       radar_float_bytes_t distance;
       memcpy(distance.b_data, &evt_payload[8], 4);
       radar_float_ieee_to_mchip(&distance.f_data);
-      app_log(" Target distance: %.3f m\r\n", distance.f_data);
+      app_printf(" Target distance: %.3f m\r\n", distance.f_data);
       memcpy(distance.b_data, &evt_payload[12], 4);
       radar_float_ieee_to_mchip(&distance.f_data);
-      app_log(" Accuracy (+/-): %.3f m\r\n", distance.f_data);
+      app_printf(" Accuracy (+/-): %.3f m\r\n", distance.f_data);
     } else {
-      app_log(" EVENT: OUT\r\n");
+      app_printf(" EVENT: OUT\r\n");
     }
     uint32_t evt_time = (( uint32_t ) evt_payload[3] << 24)
                         | (( uint32_t ) evt_payload[2] << 16)
                         | (( uint16_t ) evt_payload[1] << 8)
                         | evt_payload[0];
-    app_log(" Elapsed time: %.2f s\r\n",
-            evt_time / 1000.0);
+    app_printf(" Elapsed time: %.2f s\r\n", evt_time / 1000.0);
     float temperature;
-    if (SL_STATUS_OK == mikroe_radar_get_temperature(&mikroe_radar,
-                                                     &temperature)) {
-      app_log(" Temperature: %.2f C\r\n\n", temperature);
+    if (SL_STATUS_OK == mikroe_radar_get_temperature(&temperature)) {
+      app_printf(" Temperature: %.2f C\r\n\n", temperature);
     }
   }
 }

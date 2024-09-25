@@ -37,8 +37,6 @@
  *
  ******************************************************************************/
 
-#include "em_gpio.h"
-#include "third_party_hw_drivers_helpers.h"
 #include "mikroe_lb11685av_config.h"
 #include "mikroe_lb11685av.h"
 #include "brushless16.h"
@@ -51,29 +49,28 @@ static brushless16_cfg_t brushless16_cfg;
 ******************************************************************************/
 sl_status_t mikroe_lb11685av_init(void)
 {
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
   brushless16_cfg_setup(&brushless16_cfg);
 
-#if defined(BRUSHLESS_16_EN_PORT) && defined(BRUSHLESS_16_EN_PIN)
-  brushless16_cfg.en = hal_gpio_pin_name(BRUSHLESS_16_EN_PORT,
-                                         BRUSHLESS_16_EN_PIN);
+#if defined(BRUSHLESS16_EN_PORT) && defined(BRUSHLESS16_EN_PIN)
+  brushless16_cfg.en = hal_gpio_pin_name(BRUSHLESS16_EN_PORT,
+                                         BRUSHLESS16_EN_PIN);
 #endif
 
-#if defined(BRUSHLESS_16_FG_PORT) && defined(BRUSHLESS_16_FG_PIN)
-  brushless16_cfg.fg = hal_gpio_pin_name(BRUSHLESS_16_FG_PORT,
-                                         BRUSHLESS_16_FG_PIN);
+#if defined(BRUSHLESS16_FG_PORT) && defined(BRUSHLESS16_FG_PIN)
+  brushless16_cfg.fg = hal_gpio_pin_name(BRUSHLESS16_FG_PORT,
+                                         BRUSHLESS16_FG_PIN);
 #endif
 
-#if defined(BRUSHLESS_16_RD_PORT) && defined(BRUSHLESS_16_RD_PIN)
-  brushless16_cfg.rd = hal_gpio_pin_name(BRUSHLESS_16_RD_PORT,
-                                         BRUSHLESS_16_RD_PIN);
+#if defined(BRUSHLESS16_RD_PORT) && defined(BRUSHLESS16_RD_PIN)
+  brushless16_cfg.rd = hal_gpio_pin_name(BRUSHLESS16_RD_PORT,
+                                         BRUSHLESS16_RD_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(brushless16_init(&brushless16,
-                                                   &brushless16_cfg));
+  if (brushless16_init(&brushless16, &brushless16_cfg) != BRUSHLESS16_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
 }
 
 /**************************************************************************//**

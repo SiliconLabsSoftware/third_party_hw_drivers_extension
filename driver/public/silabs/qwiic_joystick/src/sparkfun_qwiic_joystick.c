@@ -33,16 +33,21 @@
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 #include "sl_sleeptimer.h"
-
 #include "sparkfun_qwiic_joystick.h"
+#include "sparkfun_qwiic_joystick_config.h"
 
-static sl_i2cspm_t *joystick_i2cspm_instance = NULL;
-static uint8_t joystick_i2c_addr = SPARKFUN_JOYSTICK_DEFAULT_ADDR;
+typedef struct
+{
+  i2c_master_t i2c;
+} joystick_handle_t;
+
+static joystick_handle_t joystick_handle;
 
 /***************************************************************************//**
  *  Initialize the Joystick.
  ******************************************************************************/
-sl_status_t sparkfun_joystick_init(sl_i2cspm_t *i2c_handle, uint8_t address)
+sl_status_t sparkfun_joystick_init(mikroe_i2c_handle_t i2c_handle,
+                                   uint8_t address)
 {
   if (i2c_handle == NULL) {
     return SL_STATUS_NULL_POINTER;
@@ -52,18 +57,33 @@ sl_status_t sparkfun_joystick_init(sl_i2cspm_t *i2c_handle, uint8_t address)
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  joystick_i2cspm_instance = i2c_handle;
+  i2c_master_config_t i2c_cfg;
+  i2c_master_configure_default(&i2c_cfg);
+
+  i2c_cfg.addr = address;
+
+  joystick_handle.i2c.handle = i2c_handle;
+
+#if (SPARKFUN_QWIIC_JOYSTICK_I2C_UC == 1)
+  i2c_cfg.speed = SPARKFUN_QWIIC_JOYSTICK_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&joystick_handle.i2c, &i2c_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  i2c_master_set_speed(&joystick_handle.i2c, i2c_cfg.speed);
+  i2c_master_set_timeout(&joystick_handle.i2c, 0);
 
   if (!sparkfun_joystick_present(address)) {
     // Wait for joystick to become ready
     sl_sleeptimer_delay_millisecond(80);
 
     if (!sparkfun_joystick_present(address)) {
-      return SL_STATUS_INITIALIZATION;
+      return SL_STATUS_NOT_AVAILABLE;
     }
   }
 
-  joystick_i2c_addr = address;
   return SL_STATUS_OK;
 }
 
@@ -76,12 +96,12 @@ bool sparkfun_joystick_present(uint8_t device_id)
   uint8_t backup_addr;
 
   // Back up the current i2c addr
-  backup_addr = joystick_i2c_addr;
+  backup_addr = joystick_handle.i2c.config.addr;
   // Use special addr to check
-  joystick_i2c_addr = device_id;
+  i2c_master_set_slave_address(&joystick_handle.i2c, device_id);
   sc = sparkfun_joystick_read_data(SPARKFUN_JOYSTICK_ID, &device_id);
   // Restore to the backed up i2c addr
-  joystick_i2c_addr = backup_addr;
+  i2c_master_set_slave_address(&joystick_handle.i2c, backup_addr);
   if (sc != SL_STATUS_OK) {
     return false;
   }
@@ -100,8 +120,9 @@ sl_status_t sparkfun_joystick_set_address(uint8_t address)
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  // SPARKFUN_JOYSTICK_LOCK_REGISTER must be changed to 0x13
-  // before I2C address can be changed
+  /* SPARKFUN_JOYSTICK_LOCK_REGISTER must be changed to 0x13
+   * before I2C address can be changed
+   */
   sc = sparkfun_joystick_write_register(SPARKFUN_JOYSTICK_LOCK_REGISTER, 0x13);
   if (sc != SL_STATUS_OK) {
     return sc;
@@ -112,8 +133,8 @@ sl_status_t sparkfun_joystick_set_address(uint8_t address)
   if (sc != SL_STATUS_OK) {
     return sc;
   }
+  i2c_master_set_slave_address(&joystick_handle.i2c, address);
 
-  joystick_i2c_addr = address;
   return SL_STATUS_OK;
 }
 
@@ -122,7 +143,7 @@ sl_status_t sparkfun_joystick_set_address(uint8_t address)
  ******************************************************************************/
 uint8_t sparkfun_joystick_get_address(void)
 {
-  return joystick_i2c_addr;
+  return joystick_handle.i2c.config.addr;
 }
 
 /***************************************************************************//**
@@ -155,7 +176,7 @@ sl_status_t sparkfun_joystick_select_device(uint8_t address)
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  joystick_i2c_addr = address;
+  i2c_master_set_slave_address(&joystick_handle.i2c, address);
   return SL_STATUS_OK;
 }
 
@@ -303,27 +324,13 @@ sl_status_t sparkfun_joystick_check_button(uint8_t *data)
  ******************************************************************************/
 sl_status_t sparkfun_joystick_read_data(uint8_t reg_addr, uint8_t *data)
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef result;
-
-  uint8_t i2c_write_data[1];
-
-  seq.addr = joystick_i2c_addr << 1;
-  seq.flags = I2C_FLAG_WRITE_READ;
-
-  i2c_write_data[0] = reg_addr;
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = 1;
-
-  seq.buf[1].data = data;
-  seq.buf[1].len = 1;
-
-  result = I2CSPM_Transfer(joystick_i2cspm_instance, &seq);
-
-  if (result != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&joystick_handle.i2c,
+                                                       &reg_addr,
+                                                       1,
+                                                       data,
+                                                       1)) {
     return SL_STATUS_TRANSMIT;
   }
-
   return SL_STATUS_OK;
 }
 
@@ -332,25 +339,11 @@ sl_status_t sparkfun_joystick_read_data(uint8_t reg_addr, uint8_t *data)
  ******************************************************************************/
 sl_status_t sparkfun_joystick_write_register(uint8_t reg_addr, uint8_t data)
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef result;
-  uint8_t i2c_write_data[2];
-  uint8_t i2c_read_data[1];
+  uint8_t i2c_write_data[2] = { reg_addr, data };
 
-  seq.addr = joystick_i2c_addr << 1;
-  seq.flags = I2C_FLAG_WRITE;
-
-  i2c_write_data[0] = reg_addr;
-  i2c_write_data[1] = data;
-
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = 2;
-
-  seq.buf[1].data = i2c_read_data;
-  seq.buf[1].len = 0;
-
-  result = I2CSPM_Transfer(joystick_i2cspm_instance, &seq);
-  if (result != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&joystick_handle.i2c,
+                                             i2c_write_data,
+                                             2)) {
     return SL_STATUS_TRANSMIT;
   }
 

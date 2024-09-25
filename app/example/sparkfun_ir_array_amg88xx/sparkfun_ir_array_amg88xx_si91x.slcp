@@ -1,0 +1,88 @@
+project_name: sparkfun_ir_array_amg88xx_si91x
+package: platform
+label: Third Party Hardware Drivers - AMG88XX - Grid-EYE Infrared Array Breakout (Sparkfun)
+description: |
+  This example project shows an example for Sparkfun Grid-EYE Infrared Array Breakout board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/sparkfun_ir_array_amg88xx/README.md
+source:
+- path: app_cli_command_table.c
+- path: app_ir_array_cli_cmds.c
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: atomic
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- id: iostream_si91x
+  from: wiseconnect3_sdk
+- instance: [i2c2]
+  from: wiseconnect3_sdk
+  id: i2c_instance
+- id: sparkfun_ir_array_amg88xx
+  from: third_party_hw_drivers
+- id: iostream_uart_core_si91x
+- id: iostream_retarget_stdio
+- instance: [vcom]
+  id: iostream_uart_si91x
+- instance: [vcom]
+  id: cli
+- id: printf
+
+config_file:
+  - override:
+      component: cli
+      file_id: sl_cli_config
+      instance: vcom
+    path: sl_cli_config_vcom.h
+
+configuration:
+  - name: SL_STACK_SIZE
+    value: "10240"
+  - name: SL_HEAP_SIZE
+    value: "6144"
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+other_file:
+  - path: ../../documentation/example/sparkfun_ir_array_amg88xx/image/create_example.png
+    directory: image
+  - path: ../../documentation/example/sparkfun_ir_array_amg88xx/image/IR_array_struct.png
+    directory: image
+  - path: ../../documentation/example/sparkfun_ir_array_amg88xx/image/dev_kit.jpg
+    directory: image
+  - path: ../../documentation/example/sparkfun_ir_array_amg88xx/image/thermal_image.png
+    directory: image
+  - path: ../../documentation/example/sparkfun_ir_array_amg88xx/temperatue_array_visualiser.py
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

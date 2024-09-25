@@ -57,7 +57,7 @@
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_ALREADY_INITIALIZED if the module is already initialized.
  ******************************************************************************/
-sl_status_t adafruit_is31fl3741_init(sl_i2cspm_t *i2cspm);
+sl_status_t adafruit_is31fl3741_init(mikroe_i2c_handle_t i2cspm);
 
 /***************************************************************************//**
  * @brief

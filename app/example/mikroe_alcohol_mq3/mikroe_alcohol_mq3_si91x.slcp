@@ -1,8 +1,8 @@
 project_name: mikroe_alcohol_mq3_si91x
 package: platform
-label: Third Party Hardware Drivers - MQ3 - Alcohol Click (Mikroe) - Si91x
+label: Third Party Hardware Drivers - MQ3 - Alcohol Click (Mikroe)
 description: |
-  This example project shows an example for Mikroe Alcohol Click board driver integration on Si91x.
+  This example project shows an example for Mikroe Alcohol Click board driver integration.
 category: Example|Platform
 quality: evaluation
 
@@ -36,20 +36,18 @@ component:
   from: wiseconnect3_sdk
 - id: si917_memory_default_config
   from: wiseconnect3_sdk
-- instance: [channel_0]
+- instance: [channel_1]
   from: wiseconnect3_sdk
   id: adc_instance
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 - id: wiseconnect3_sdk
-  version: 3.2.0
+  version: 3.3.4
 
 other_file:
-  - path: ../../documentation/example/mikroe_alcohol_mq3/image/create_example_1.png
-    directory: "image"
-  - path: ../../documentation/example/mikroe_alcohol_mq3/image/create_example_2.png
+  - path: ../../documentation/example/mikroe_alcohol_mq3/image/create_example.png
     directory: "image"
   - path: ../../documentation/example/mikroe_alcohol_mq3/image/console_log.png
     directory: "image"

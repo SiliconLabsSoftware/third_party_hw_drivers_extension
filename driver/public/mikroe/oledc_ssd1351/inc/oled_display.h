@@ -37,7 +37,6 @@
 
 #include <stdbool.h>
 #include "sl_status.h"
-
 #include "mikroe_ssd1351.h"
 
 #ifdef __cplusplus

@@ -10,10 +10,8 @@ ui_hints:
 root_path: driver
 
 requires:
-  - name: i2cspm
-recommends:
-  - id: i2cspm
-    instance: [qwiic]
+  - name: status
+  - name: mikroe_peripheral_driver_i2c
 
 config_file:
   - path: public/silabs/distance_vl53l1x/config/sparkfun_vl53l1x_config.h

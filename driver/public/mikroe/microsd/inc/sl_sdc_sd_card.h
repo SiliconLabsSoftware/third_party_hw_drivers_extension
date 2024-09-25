@@ -51,7 +51,7 @@ extern "C" {
  *
  * @return SL_STATUS_OK if successful. Error code otherwise.
  ******************************************************************************/
-sl_status_t sd_card_spi_init(SPIDRV_Handle_t spi_handle);
+sl_status_t sd_card_spi_init(mikroe_spi_handle_t spi_handle);
 
 /***************************************************************************//**
  * @brief Initialize a SD Card.

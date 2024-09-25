@@ -31,9 +31,8 @@
 
 #ifndef SENSIRION_I2C_HAL_H
 #define SENSIRION_I2C_HAL_H
-
-#include "sl_i2cspm_instances.h"
 #include "sl_status.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -55,7 +54,7 @@ sl_status_t sensirion_i2c_hal_select_bus(uint8_t bus_idx);
  * Initialize all hard- and software components that are needed for the I2C
  * communication.
  */
-sl_status_t sensirion_i2c_hal_init(sl_i2cspm_t *i2c_handle);
+sl_status_t sensirion_i2c_hal_init(mikroe_i2c_handle_t i2c_handle);
 
 /**
  * Release all resources initialized by sensirion_i2c_hal_init().

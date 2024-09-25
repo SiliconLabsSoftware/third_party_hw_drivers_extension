@@ -39,16 +39,41 @@
 #ifndef MIKROE_THUNDER_AS3935_CONFIG_H_
 #define MIKROE_THUNDER_AS3935_CONFIG_H_
 
+#include "em_gpio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+// <<< Use Configuration Wizard in Context Menu >>>
+// <h> MIKROE AS3935 SPI Configuration
+
+// <e> MIKROE AS3935 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_AS3935_SPI_UC                      0
+
+// <o MIKROE_AS3935_SPI_BITRATE> Bit Rate (Bits/Second) <1-2000000>
+// <i> Default: 1000000
+#define MIKROE_AS3935_SPI_BITRATE                 1000000
+
+// </e>
+// </h>
+// <<< end of configuration section >>>
+
 // <<< sl:start pin_tool >>>
+
+// <gpio optional=true> AS3935_CS
+// $[GPIO_AS3935_CS]
+#define AS3935_CS_PORT                            gpioPortC
+#define AS3935_CS_PIN                             3
+// [GPIO_AS3935_CS]$
 
 // <gpio optional=true> THUNDER_IRQ
 // $[GPIO_THUNDER_IRQ]
-#define THUNDER_IRQ_PORT                       gpioPortB
-#define THUNDER_IRQ_PIN                        3
+#define THUNDER_IRQ_PORT                          gpioPortB
+#define THUNDER_IRQ_PIN                           3
 // [GPIO_THUNDER_IRQ]$
 
 // <<< sl:end pin_tool >>>
@@ -57,4 +82,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_THUNDER_AS3935_CONFIG_H_ */
+#endif // MIKROE_THUNDER_AS3935_CONFIG_H_

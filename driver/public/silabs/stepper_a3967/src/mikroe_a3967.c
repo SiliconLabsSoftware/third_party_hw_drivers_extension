@@ -39,7 +39,14 @@
 #include "mikroe_a3967.h"
 #include "mikroe_a3967_config.h"
 #include "sl_sleeptimer.h"
-#include "em_gpio.h"
+#include "drv_digital_out.h"
+
+typedef struct {
+  digital_out_t ms1_pin;
+  digital_out_t ms2_pin;
+  digital_out_t dir_pin;
+  digital_out_t step_pin;
+} stepper_t;
 
 // -----------------------------------------------------------------------------
 //                          Static Variables Declarations
@@ -48,6 +55,7 @@ static sl_sleeptimer_timer_handle_t mikroe_a3967_timer_handle;
 static uint32_t mikroe_a3967_step_frequency =
   MIKROE_A3967_STEP_FREQUENCY;
 static volatile uint32_t mikroe_a3967_pulses_count;
+static stepper_t stepper;
 
 // -----------------------------------------------------------------------------
 //                          Static Function Declarations
@@ -69,28 +77,22 @@ static uint32_t mikroe_a3967_step_freq_to_tick(void);
  ******************************************************************************/
 sl_status_t mikroe_a3967_init(void)
 {
-  sl_status_t sc = SL_STATUS_OK;
+  digital_out_init(&stepper.step_pin,
+                   hal_gpio_pin_name(MIKROE_A3967_STEP_PORT,
+                                     MIKROE_A3967_STEP_PIN));
 
-  GPIO_PinModeSet(MIKROE_A3967_STEP_PORT,
-                  MIKROE_A3967_STEP_PIN,
-                  gpioModePushPull,
-                  0);
+  digital_out_init(&stepper.dir_pin,
+                   hal_gpio_pin_name(MIKROE_A3967_DIR_PORT,
+                                     MIKROE_A3967_DIR_PIN));
 
-  GPIO_PinModeSet(MIKROE_A3967_DIR_PORT,
-                  MIKROE_A3967_DIR_PIN,
-                  gpioModePushPull,
-                  0);
+  digital_out_init(&stepper.ms1_pin,
+                   hal_gpio_pin_name(MIKROE_A3967_MS1_PORT,
+                                     MIKROE_A3967_MS1_PIN));
 
-  GPIO_PinModeSet(MIKROE_A3967_MS1_PORT,
-                  MIKROE_A3967_MS1_PIN,
-                  gpioModePushPull,
-                  0);
-
-  GPIO_PinModeSet(MIKROE_A3967_MS2_PORT,
-                  MIKROE_A3967_MS2_PIN,
-                  gpioModePushPull,
-                  0);
-  return sc;
+  digital_out_init(&stepper.ms2_pin,
+                   hal_gpio_pin_name(MIKROE_A3967_MS2_PORT,
+                                     MIKROE_A3967_MS2_PIN));
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
@@ -98,8 +100,6 @@ sl_status_t mikroe_a3967_init(void)
  ******************************************************************************/
 sl_status_t mikroe_a3967_config_mode(mikroe_a3967_mode_t mode)
 {
-  sl_status_t sc = SL_STATUS_OK;
-
   if (mikroe_a3967_get_state()) {
     return SL_STATUS_INVALID_STATE;
   }
@@ -107,27 +107,27 @@ sl_status_t mikroe_a3967_config_mode(mikroe_a3967_mode_t mode)
   switch (mode)
   {
     case MIKROE_A3967_FULL_STEP:
-      GPIO_PinOutClear(MIKROE_A3967_MS1_PORT, MIKROE_A3967_MS1_PIN);
-      GPIO_PinOutClear(MIKROE_A3967_MS2_PORT, MIKROE_A3967_MS2_PIN);
+      digital_out_low(&stepper.ms1_pin);
+      digital_out_low(&stepper.ms2_pin);
       break;
 
     case MIKROE_A3967_HALF_STEP:
-      GPIO_PinOutSet(MIKROE_A3967_MS1_PORT, MIKROE_A3967_MS1_PIN);
-      GPIO_PinOutClear(MIKROE_A3967_MS2_PORT, MIKROE_A3967_MS2_PIN);
+      digital_out_high(&stepper.ms1_pin);
+      digital_out_low(&stepper.ms2_pin);
       break;
 
     case MIKROE_A3967_QUARTER_STEP:
-      GPIO_PinOutClear(MIKROE_A3967_MS1_PORT, MIKROE_A3967_MS1_PIN);
-      GPIO_PinOutSet(MIKROE_A3967_MS2_PORT, MIKROE_A3967_MS2_PIN);
+      digital_out_low(&stepper.ms1_pin);
+      digital_out_high(&stepper.ms2_pin);
       break;
 
     case MIKROE_A3967_EIGHTH_STEP:
-      GPIO_PinOutSet(MIKROE_A3967_MS1_PORT, MIKROE_A3967_MS1_PIN);
-      GPIO_PinOutSet(MIKROE_A3967_MS2_PORT, MIKROE_A3967_MS2_PIN);
+      digital_out_high(&stepper.ms1_pin);
+      digital_out_high(&stepper.ms2_pin);
       break;
   }
 
-  return sc;
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
@@ -153,9 +153,9 @@ sl_status_t mikroe_a3967_set_direction(mikroe_a3967_direction_t dir)
     return SL_STATUS_INVALID_STATE;
   }
   if (dir == MIKROE_A3967_COUNTERCLOCKWISE) {
-    GPIO_PinOutSet(MIKROE_A3967_DIR_PORT, MIKROE_A3967_DIR_PIN);
+    digital_out_high(&stepper.dir_pin);
   } else {
-    GPIO_PinOutClear(MIKROE_A3967_DIR_PORT, MIKROE_A3967_DIR_PIN);
+    digital_out_low(&stepper.dir_pin);
   }
 
   return sc;
@@ -194,7 +194,7 @@ sl_status_t mikroe_a3967_start(void)
     return SL_STATUS_INVALID_STATE;
   }
 
-  GPIO_PinOutClear(MIKROE_A3967_STEP_PORT, MIKROE_A3967_STEP_PIN);
+  digital_out_low(&stepper.step_pin);
 
   timeout = mikroe_a3967_step_freq_to_tick();
   sc = sl_sleeptimer_start_periodic_timer(&mikroe_a3967_timer_handle,
@@ -226,7 +226,7 @@ sl_status_t mikroe_a3967_step(uint16_t step)
   if (mikroe_a3967_get_state()) {
     sc = SL_STATUS_INVALID_STATE;
   }
-  GPIO_PinOutClear(MIKROE_A3967_STEP_PORT, MIKROE_A3967_STEP_PIN);
+  digital_out_low(&stepper.step_pin);
 
   timeout = mikroe_a3967_step_freq_to_tick();
   mikroe_a3967_pulses_count = step;
@@ -251,7 +251,7 @@ static void mikroe_a3967_step_callback(sl_sleeptimer_timer_handle_t *handle,
   (void) data;
   mikroe_a3967_pulses_count--;
 
-  GPIO_PinOutToggle(MIKROE_A3967_STEP_PORT, MIKROE_A3967_STEP_PIN);
+  digital_out_toggle(&stepper.step_pin);
   if (mikroe_a3967_pulses_count == 0) {
     sl_sleeptimer_stop_timer(&mikroe_a3967_timer_handle);
   }
@@ -263,7 +263,7 @@ static void mikroe_a3967_run_callback(sl_sleeptimer_timer_handle_t *handle,
   (void) handle;
   (void) data;
 
-  GPIO_PinOutToggle(MIKROE_A3967_STEP_PORT, MIKROE_A3967_STEP_PIN);
+  digital_out_toggle(&stepper.step_pin);
 }
 
 /*******************************************************************************

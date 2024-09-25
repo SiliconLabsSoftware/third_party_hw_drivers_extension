@@ -38,34 +38,51 @@
  ******************************************************************************/
 #include <stdint.h>
 #include <stdlib.h>
-
 #include "w5x00_platform.h"
+#include "drv_digital_out.h"
 
-static SPIDRV_Handle_t spi_handle = NULL;
+typedef struct {
+  spi_master_t spi;
+  digital_out_t rst_pin;
+  digital_out_t cs_pin;
+} w5x00_handle_t;
+
+static w5x00_handle_t w5x00;
 
 /***************************************************************************//**
  * Reset Chip.
  ******************************************************************************/
 void w5x00_reset(void)
 {
-  GPIO_PinOutClear(W5500_RESET_PORT, W5500_RESET_PIN);
+  digital_out_low(&w5x00.rst_pin);
   w5x00_delay_ms(100);
-  GPIO_PinOutSet(W5500_RESET_PORT, W5500_RESET_PIN);
+  digital_out_high(&w5x00.rst_pin);
 }
 
 /***************************************************************************//**
  * Initialize Bus IO.
  ******************************************************************************/
-void w5x00_bus_init(SPIDRV_Handle_t handle)
+void w5x00_bus_init(mikroe_spi_handle_t handle)
 {
-  spi_handle = handle;
-  GPIO_PinModeSet(W5500_RESET_PORT,
-                  W5500_RESET_PIN,
-                  gpioModePushPull,
-                  0);
-  GPIO_PinModeSet((GPIO_Port_TypeDef)spi_handle->portCs,
-                  spi_handle->pinCs,
-                  gpioModePushPull, 1);
+  w5x00.spi.handle = handle;
+
+  spi_master_config_t spi_cfg;
+  spi_master_configure_default(&spi_cfg);
+
+#if (MIKROE_W5500_SPI_UC == 1)
+  spi_cfg.speed = MIKROE_W5500_SPI_BITRATE;
+#endif
+
+  spi_master_open(&w5x00.spi, &spi_cfg);
+
+  pin_name_t reset = hal_gpio_pin_name(W5500_RESET_PORT,
+                                       W5500_RESET_PIN);
+  digital_out_init(&w5x00.rst_pin, reset);
+
+  pin_name_t cs = hal_gpio_pin_name(MIKROE_W5500_CS_PORT,
+                                    MIKROE_W5500_CS_PIN);
+  digital_out_init(&w5x00.cs_pin, cs);
+  digital_out_high(&w5x00.cs_pin);
 }
 
 /***************************************************************************//**
@@ -73,11 +90,10 @@ void w5x00_bus_init(SPIDRV_Handle_t handle)
  ******************************************************************************/
 void w5x00_bus_select(void)
 {
-  if (spi_handle == NULL) {
+  if (w5x00.spi.handle == NULL) {
     return;
   }
-  GPIO_PinOutClear((GPIO_Port_TypeDef)spi_handle->portCs,
-                   spi_handle->pinCs);
+  digital_out_low(&w5x00.cs_pin);
 }
 
 /***************************************************************************//**
@@ -85,24 +101,32 @@ void w5x00_bus_select(void)
  ******************************************************************************/
 void w5x00_bus_deselect(void)
 {
-  if (spi_handle == NULL) {
+  if (w5x00.spi.handle == NULL) {
     return;
   }
-  GPIO_PinOutSet((GPIO_Port_TypeDef)spi_handle->portCs,
-                 spi_handle->pinCs);
+  digital_out_high(&w5x00.cs_pin);
 }
 
 /***************************************************************************//**
  * Read Chip Data From SPI Interface.
  ******************************************************************************/
-uint32_t w5x00_bus_read(uint8_t *buf, uint16_t len)
+uint32_t w5x00_bus_write_then_read(uint8_t *write_data_buffer,
+                                   size_t length_write_data,
+                                   uint8_t *read_data_buffer,
+                                   size_t length_read_data)
 {
-  if (spi_handle == NULL) {
+  if (w5x00.spi.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-  if (SPIDRV_MReceiveB(spi_handle, buf, len)) {
+
+  if (spi_master_write_then_read(&w5x00.spi,
+                                 write_data_buffer,
+                                 length_write_data,
+                                 read_data_buffer,
+                                 length_read_data) != SPI_MASTER_SUCCESS) {
     return SL_STATUS_TRANSMIT;
   }
+
   return SL_STATUS_OK;
 }
 
@@ -111,12 +135,15 @@ uint32_t w5x00_bus_read(uint8_t *buf, uint16_t len)
  ******************************************************************************/
 uint32_t w5x00_bus_write(const uint8_t *buf, uint16_t len)
 {
-  if (spi_handle == NULL) {
+  if (w5x00.spi.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-  if (SPIDRV_MTransmitB(spi_handle, buf, len)) {
+
+  if (spi_master_write(&w5x00.spi, (uint8_t *)buf,
+                       len) != SPI_MASTER_SUCCESS) {
     return SL_STATUS_TRANSMIT;
   }
+
   return SL_STATUS_OK;
 }
 

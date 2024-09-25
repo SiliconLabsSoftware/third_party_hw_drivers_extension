@@ -39,17 +39,15 @@
 
 #include "mikroe_stn1110.h"
 #include "mikroe_stn1110_config.h"
-#include "third_party_hw_drivers_helpers.h"
 
 static obdii_t obdii;
 static obdii_cfg_t obdii_cfg;
 
-sl_status_t mikroe_stn1110_init(sl_iostream_uart_t *handle)
+sl_status_t mikroe_stn1110_init(mikroe_uart_handle_t handle)
 {
   if (NULL == handle) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
   obdii.uart.handle = handle;
   obdii_cfg_setup(&obdii_cfg);
@@ -64,12 +62,14 @@ sl_status_t mikroe_stn1110_init(sl_iostream_uart_t *handle)
                                         STN1110_INT_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(obdii_init(&obdii, &obdii_cfg));
+  if (obdii_init(&obdii, &obdii_cfg) != UART_SUCCESS) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_stn1110_set_uart_instance(sl_iostream_uart_t *handle)
+sl_status_t mikroe_stn1110_set_uart_instance(mikroe_uart_handle_t handle)
 {
   if (NULL == handle) {
     return SL_STATUS_INVALID_PARAMETER;

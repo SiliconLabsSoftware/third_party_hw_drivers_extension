@@ -38,28 +38,26 @@ component:
 - id: sleeptimer
 - id: app_log
 
+configuration:
+  - name: SL_SPIDRV_MIKROE_CS_CONTROL
+    value: "spidrvCsControlApplication"
+
 define:
 - name: DEBUG_EFM
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
   
 other_file:
   - path: ../../documentation/example/mikroe_thunder_as3935/image/create_example.png
     directory: "image"
   - path: ../../documentation/example/mikroe_thunder_as3935/image/hardware_connection.png
     directory: "image"
-  - path: ../../documentation/example/mikroe_thunder_as3935/image/mikroe_spi_config.png
-    directory: "image"
   - path: ../../documentation/example/mikroe_thunder_as3935/image/result.png
     directory: "image"
-
-configuration:
-  - name: SL_SPIDRV_MIKROE_CS_CONTROL
-    value: "spidrvCsControlApplication"
-  - name: SL_SPIDRV_MIKROE_CLOCK_MODE
-    value: "spidrvClockMode1"
+  - path: ../../documentation/example/mikroe_thunder_as3935/image/spi_config.png
+    directory: "image"
 
 ui_hints:
   highlight:

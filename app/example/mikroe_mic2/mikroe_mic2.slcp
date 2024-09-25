@@ -45,14 +45,12 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/mikroe_mic2/image/create_example.png
     directory: "image"
   - path: ../../documentation/example/mikroe_mic2/image/hardware_connection.png
-    directory: "image"
-  - path: ../../documentation/example/mikroe_mic2/image/install_float.png
     directory: "image"
   - path: ../../documentation/example/mikroe_mic2/image/software_layer.png
     directory: "image"

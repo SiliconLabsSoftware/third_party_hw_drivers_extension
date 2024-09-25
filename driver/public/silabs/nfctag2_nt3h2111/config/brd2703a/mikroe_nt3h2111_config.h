@@ -45,10 +45,28 @@
 // A CMSIS annotation block starts with the following line:
 // <<< Use Configuration Wizard in Context Menu >>>
 
+// <h> MIKROE_NT3H211 I2C Configuration
+
+// <e> MIKROE_NT3H211 I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_NT3H211_I2C_UC                  0
+
+// <o MIKROE_NT3H211_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define MIKROE_NT3H211_I2C_SPEED_MODE          0
+
+// </e>
+// </h>
+
 // <h> Connection
 // <o MIKROE_NT3H211_ADDR> I2C Address <0-0xFF><f.h>
-// <i> Default: 0xAA
-#define MIKROE_NT3H211_ADDR                            0xAA
+// <i> Default: 0x55
+#define MIKROE_NT3H211_ADDR                            0x55
 // </h>
 
 // The block ends with the following line or at the end of the file:

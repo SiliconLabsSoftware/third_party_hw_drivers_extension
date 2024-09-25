@@ -38,20 +38,19 @@
  ******************************************************************************/
 
 // ------------------------------------------------------------------- INCLUDES
-
 #include "mikroe_uwb_dwm1000.h"
-#include "sl_spidrv_instances.h"
-#include "app_log.h"
 #include "app_assert.h"
-
+#if (defined(SLI_SI917))
+#include "rsi_debug.h"
+#include "sl_si91x_gspi.h"
+#include "sl_si91x_button_instances.h"
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else /* None Si91x device */
+#include "app_log.h"
+#include "sl_spidrv_instances.h"
 #include "sl_simple_button_instances.h"
-
-#include "sl_udelay.h"
-
-// ------------------------------------------------------------------- DEFINES
-
-#ifndef BUTTON_INSTANCE_0
-#define BUTTON_INSTANCE_0   sl_button_btn0
+#define app_printf(...) app_log(__VA_ARGS__)
 #endif
 
 // ------------------------------------------------------------------ VARIABLES
@@ -75,36 +74,42 @@ static uint8_t received_data[256] = { 0 };
 // Dev_status var
 static uint8_t dev_status = { 0 };
 
+static mikroe_spi_handle_t app_spi_instance = NULL;
+
 void app_init(void)
 {
   sl_status_t sc;
 
-  app_log("---- Application Init ----\r\n\n");
+  app_printf("---- Application Init ----\r\n");
 
-  if (mikroe_dwm1000_init(sl_spidrv_mikroe_handle) == SL_STATUS_OK) {
-    app_log("---- UWB DWM1000 Click initialized successfully ----\r\n\n");
+#if (defined(SLI_SI917))
+  app_spi_instance = &gspi_instance;
+#else
+  app_spi_instance = sl_spidrv_mikroe_handle;
+#endif
+
+  if (mikroe_dwm1000_init(app_spi_instance) == SL_STATUS_OK) {
+    app_printf("---- UWB DWM1000 Click initialized successfully ----\r\n");
   } else {
-    app_log("****** Error initializing the uwb device ******\r\n\n");
+    app_printf("****** Error initializing the uwb device ******\r\n");
   }
 
   sl_udelay_wait(100000);
-
   mikroe_dwm1000_enable();
-
   sl_udelay_wait(100000);
 
   uint8_t id_raw[4] = { 0 };
 
-  app_log("----- Reading Device TAG ----\r\n\n");
+  app_printf("----- Reading Device TAG ----\r\n");
   mikroe_dwm1000_generic_read(MIKROE_DWM1000_REG_DEV_ID, &id_raw[0], 4);
 
   uint16_t tag_data = (( uint16_t ) id_raw[3] << 8) | id_raw[2];
 
   if (MIKROE_DWM1000_TAG != tag_data) {
-    app_log(" ***** TAG ERROR ***** \r\n\n");
+    app_printf(" ***** TAG ERROR ***** \r\n");
     sc = SL_STATUS_FAIL;
   } else {
-    app_log("---- TAG OK ----\r\n\n");
+    app_printf("---- TAG OK ----\r\n");
     sc = SL_STATUS_OK;
   }
 
@@ -121,15 +126,15 @@ void app_init(void)
   mikroe_dwm1000_clear_status();
 
   // Setting device address and network ID
-  app_log(" ------------------ \r\n");
+  app_printf(" ------------------ \r\n");
   if (MIKROE_DWM1000_MODE_RX == dev_mode) {
     mikroe_dwm1000_set_dev_adr_n_network_id(6, 10);
-    app_log(" -----RECEIVER----- \r\n");
+    app_printf(" -----RECEIVER----- \r\n");
   } else if (MIKROE_DWM1000_MODE_TX == dev_mode) {
     mikroe_dwm1000_set_dev_adr_n_network_id(5, 10);
-    app_log(" ---TRANSMITTER--- \r\n");
+    app_printf(" ---TRANSMITTER--- \r\n");
   }
-  app_log(" ------------------ \r\n\n");
+  app_printf(" ------------------ \r\n");
 
   sl_udelay_wait(100000);
 
@@ -155,7 +160,7 @@ void app_init(void)
     mikroe_dwm1000_start_transceiver();
   } else if (MIKROE_DWM1000_MODE_TX == dev_mode) {
     // Setup for first transmit
-    app_log("Setting up first transmit. \r\n\n");
+    app_printf("Setting up first transmit. \r\n");
     mikroe_dwm1000_set_mode(MIKROE_DWM1000_MODE_IDLE);
     mikroe_dwm1000_clear_status();
     mikroe_dwm1000_set_transmit(&data_tx[0], 7);
@@ -163,7 +168,7 @@ void app_init(void)
     mikroe_dwm1000_start_transceiver();
     transmit_cnt++;
 
-    app_log(" - Transmit %u done - \r\n", transmit_cnt);
+    app_printf(" - Transmit %u done - \r\n", transmit_cnt);
   }
 
   sl_udelay_wait(2000000);
@@ -182,8 +187,8 @@ void app_process_action(void)
     mikroe_dwm1000_clear_status();
     temp_len = mikroe_dwm1000_get_transmit_len();
     mikroe_dwm1000_get_transmit(&received_data[0], temp_len);
-    app_log("Received data: %s\r\n", received_data);
-    app_log(" - Receive done - \r\n\n");
+    app_printf("Received data: %s\r\n", received_data);
+    app_printf(" - Receive done - \r\n");
     mikroe_dwm1000_set_mode(MIKROE_DWM1000_MODE_RX);
     mikroe_dwm1000_start_transceiver();
     mikroe_dwm1000_int_mask_set();
@@ -201,18 +206,29 @@ void app_process_action(void)
     mikroe_dwm1000_start_transceiver();
     transmit_cnt++;
 
-    app_log(" - Transmit %u done - \r\n", transmit_cnt);
+    app_printf(" - Transmit %u done - \r\n", transmit_cnt);
   }
 }
 
 /******************************************************************************
  * Button callback, called if any button is pressed or released.
  *****************************************************************************/
+#if (defined(SLI_SI917))
+void sl_si91x_button_isr(uint8_t pin, int8_t state)
+{
+  if ((pin == button_btn0.pin) && (state == 0)) {
+    tx_requested = true;
+  }
+}
+
+#else
 void sl_button_on_change(const sl_button_t *handle)
 {
   if (sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED) {
-    if (&BUTTON_INSTANCE_0 == handle) {
+    if (&sl_button_btn0 == handle) {
       tx_requested = true;
     }
   }
 }
+
+#endif

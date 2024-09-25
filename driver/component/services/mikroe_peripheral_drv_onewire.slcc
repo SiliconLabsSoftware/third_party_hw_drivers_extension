@@ -1,0 +1,31 @@
+id: services_mikroe_peripheral_drivers_onewire
+package: third_party_hw_drivers
+label: OneWire
+description: >
+  Interface provider for mikroSDK 2.0 SDK OneWire peripheral integration.
+category: Services|mikroSDK 2.0 SDK - Peripheral Drivers
+quality: evaluation
+root_path: driver
+provides:
+  - name: mikroe_peripheral_drivers_onewire
+    allow_multiple: false
+template_contribution:
+  - name: component_catalog
+    value: services_mikroe_peripheral_drivers_onewire
+requires:
+  - name: mikroe_peripheral_driver_digital_io
+  - name: udelay
+    condition: [device_series_1]
+  - name: udelay
+    condition: [device_series_2]
+include:
+  - path: peripheral_drivers/mikroe/inc
+    file_list:
+      - path: drv_one_wire.h
+source:
+  - path: peripheral_drivers/mikroe/src/drv_one_wire.c
+    condition: [device_series_1]
+  - path: peripheral_drivers/mikroe/src/drv_one_wire.c
+    condition: [device_series_2]
+  - path: peripheral_drivers/mikroe/src/drv_one_wire_si91x.c
+    condition: [device_si91x]

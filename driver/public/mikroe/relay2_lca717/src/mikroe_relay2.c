@@ -37,35 +37,31 @@
  *
  ******************************************************************************/
 
-#include "em_gpio.h"
+#include <stdbool.h>
 #include "relay2.h"
 #include "mikroe_relay2.h"
 #include "mikroe_relay2_config.h"
-#include "third_party_hw_drivers_helpers.h"
 
 static relay2_t relay2;
 static relay2_cfg_t relay2_cfg;
 
 sl_status_t mikroe_relay2_init(void)
 {
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
   relay2_cfg_setup(&relay2_cfg);
+
 #if defined(RELAY2_RL1_PORT) && defined(RELAY2_RL1_PIN)
   relay2_cfg.an = hal_gpio_pin_name(RELAY2_RL1_PORT, RELAY2_RL1_PIN);
-#else
-  relay2_cfg.an = hal_gpio_pin_name(gpioPortB, 4);
 #endif
 
 #if defined(RELAY2_RL2_PORT) && defined(RELAY2_RL2_PIN)
   relay2_cfg.pwm = hal_gpio_pin_name(RELAY2_RL2_PORT, RELAY2_RL2_PIN);
-#else
-  relay2_cfg.pwm = hal_gpio_pin_name(gpioPortB, 0);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(relay2_init(&relay2, &relay2_cfg));
+  if (relay2_init(&relay2, &relay2_cfg) != RELAY2_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
 }
 
 void mikroe_relay2_relay1_control(uint8_t pin_state)

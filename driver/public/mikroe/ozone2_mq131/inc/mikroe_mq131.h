@@ -36,7 +36,8 @@
 #define MIKROE_MQ131_H
 
 #include "sl_status.h"
-#include "spidrv.h"
+#include "ozone2.h"
+#include "mikroe_mq131_config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,7 +48,8 @@ extern "C" {
  *
  * @return SL_STATUS_OK if successful. Error code otherwise.
  ******************************************************************************/
-sl_status_t mikroe_ozone2_init (SPIDRV_Handle_t spidrv);
+sl_status_t mikroe_ozone2_init(mikroe_spi_handle_t spi,
+                               mikroe_adc_handle_t adc);
 
 /***************************************************************************//**
  * @brief Read ADC voltage.

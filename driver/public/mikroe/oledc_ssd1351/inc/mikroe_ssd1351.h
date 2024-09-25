@@ -4,7 +4,7 @@
 
 #include "oledc.h"
 #include "sl_status.h"
-#include "spidrv.h"
+#include "drv_spi_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -142,7 +142,7 @@ extern "C" {
  *    SL_STATUS_OK Successful initialization.
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_ssd1351_init(SPIDRV_Handle_t spi_instance);
+sl_status_t mikroe_ssd1351_init(mikroe_spi_handle_t spi_instance);
 
 /***************************************************************************//**
  * @brief
@@ -155,7 +155,7 @@ sl_status_t mikroe_ssd1351_init(SPIDRV_Handle_t spi_instance);
  *    SL_STATUS_OK if there are no errors
  *    SL_STATUS_INVALID_PARAMETER if spi_instance is null
  ******************************************************************************/
-sl_status_t mikroe_ssd1351_set_spi_instance(SPIDRV_Handle_t spi_instance);
+sl_status_t mikroe_ssd1351_set_spi_instance(mikroe_spi_handle_t spi_instance);
 
 /***************************************************************************//**
  * @brief

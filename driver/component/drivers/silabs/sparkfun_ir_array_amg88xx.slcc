@@ -8,11 +8,10 @@ quality: evaluation
 root_path: driver
 requires:
   - name: status
-  - name: sleeptimer
-  - name: i2cspm
-recommends:
-  - id: i2cspm
-    instance: [qwiic] 
+  - name: mikroe_peripheral_driver_i2c
+config_file:
+  - path: public/silabs/ir_array_amg88xx/config/sparkfun_amg88xx_config.h
+    file_id: sparkfun_amg88xx_config
 provides:
   - name: sparkfun_ir_array_amg88xx
 template_contribution:

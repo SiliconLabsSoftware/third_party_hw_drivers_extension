@@ -1,6 +1,6 @@
 /***************************************************************************//**
- * @file mikroe_l9958.C
- * @brief SCL L9958 Driver
+ * @file mikroe_uwb_dwm1000.c
+ * @brief mikroe uwb dwm1000 source file
  * @version 1.0.0
  *******************************************************************************
  * # License
@@ -42,6 +42,10 @@
 #include "mikroe_uwb_dwm1000_config.h"
 #include "third_party_hw_drivers_helpers.h"
 
+#if (defined(SLI_SI917))
+#else
+#include "sl_spidrv_mikroe_config.h"
+#endif
 // ------------------------------------------------------------- PRIVATE MACROS
 
 #define MIKROE_DWM1000_DUMMY 0
@@ -76,8 +80,9 @@ const uint8_t MIKROE_DWM1000_TMODE_SHORTDATA_FAST_ACCURACY[3]
 static uwb_t uwb;
 static uwb_cfg_t uwb_cfg;
 static bool initialized = false;
+static digital_out_t cs_out;
 
-sl_status_t mikroe_dwm1000_init(SPIDRV_Handle_t spi_instance)
+sl_status_t mikroe_dwm1000_init(mikroe_spi_handle_t spi_instance)
 {
   THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
@@ -97,6 +102,10 @@ sl_status_t mikroe_dwm1000_init(SPIDRV_Handle_t spi_instance)
   // Call basic setup functions
   uwb_cfg_setup(&uwb_cfg);
 
+#if (UWB_DWM1000_SPI_UC == 1)
+  uwb_cfg.spi_speed = UWB_DWM1000_SPI_BITRATE;
+#endif
+
 #if defined(DWM1000_RESET_PORT) && defined(DWM1000_RESET_PIN)
   uwb_cfg.rst = hal_gpio_pin_name(DWM1000_RESET_PORT,
                                   DWM1000_RESET_PIN);
@@ -106,13 +115,21 @@ sl_status_t mikroe_dwm1000_init(SPIDRV_Handle_t spi_instance)
   uwb_cfg.irq = hal_gpio_pin_name(DWM1000_INT_PORT,
                                   DWM1000_INT_PIN);
 #endif
-  uwb_cfg.cs = hal_gpio_pin_name(spi_instance->portCs,
-                                 spi_instance->pinCs);
 
-  GPIO_PinModeSet(spi_instance->portCs,
-                  spi_instance->pinCs,
-                  gpioModePushPull,
-                  1);
+#if (defined(SLI_SI917))
+#if defined(DWM1000_SPI_CS_PORT) && defined(DWM1000_SPI_CS_PIN)
+  uwb_cfg.cs = hal_gpio_pin_name(DWM1000_SPI_CS_PORT,
+                                 DWM1000_SPI_CS_PIN);
+#endif
+#else
+#if defined(SL_SPIDRV_MIKROE_CS_PORT) && defined(SL_SPIDRV_MIKROE_CS_PIN)
+  uwb_cfg.cs = hal_gpio_pin_name(SL_SPIDRV_MIKROE_CS_PORT,
+                                 SL_SPIDRV_MIKROE_CS_PIN);
+#endif
+#endif
+
+  digital_out_init(&cs_out, uwb_cfg.cs);
+  digital_out_high(&cs_out);
 
   THIRD_PARTY_HW_DRV_RETCODE_TEST(uwb_init(&uwb, &uwb_cfg));
 

@@ -36,16 +36,16 @@
 //                               Includes
 // -----------------------------------------------------------------------------
 
+#include "sl_sleeptimer.h"
 #include "sparkfun_soil_moisture.h"
+#include "sparkfun_soil_moisture_config.h"
 
 // -----------------------------------------------------------------------------
 //                       Local Variables
 // -----------------------------------------------------------------------------
 
-static sl_i2cspm_t *sparkfun_soil_moisture_i2cspm_instance = NULL;
-static uint16_t sparkfun_soil_moisture_i2c_addr =
-  SPARKFUN_SOIL_MOISTURE_DEFAULT_ADDR;
 static bool initialized = false;
+static i2c_master_t soil_moisture_i2c;
 static sparkfun_soil_moisture_calibration_t calib = {
   .dry_value = 0,
   .wet_value = 1023,
@@ -74,23 +74,46 @@ static sl_status_t sparkfun_soil_moisture_read_blocking(uint8_t *pdata,
 /**************************************************************************//**
  *  Initialize the sparkfun soil moisture sensor.
  *****************************************************************************/
-sl_status_t sparkfun_soil_moisture_init(sl_i2cspm_t *i2cspm, uint16_t address)
+sl_status_t sparkfun_soil_moisture_init(mikroe_i2c_handle_t i2cspm,
+                                        uint16_t address)
 {
   if (initialized) {
     return SL_STATUS_ALREADY_INITIALIZED;
   }
+
   if (i2cspm == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
+
   if ((address < 0x07) | (address > 0x78)) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  sparkfun_soil_moisture_i2cspm_instance = i2cspm;
-  if (!sparkfun_soil_moisture_is_present(address)) {
+
+  i2c_master_config_t i2c_cfg;
+  i2c_master_configure_default(&i2c_cfg);
+
+  i2c_cfg.addr = address;
+  soil_moisture_i2c.handle = i2cspm;
+
+#if (SPARKFUN_SOIL_MOISTURE_I2C_UC == 1)
+  i2c_cfg.speed = SPARKFUN_SOIL_MOISTURE_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&soil_moisture_i2c, &i2c_cfg) == I2C_MASTER_ERROR) {
     return SL_STATUS_INITIALIZATION;
   }
-  sparkfun_soil_moisture_i2c_addr = address;
+
+  i2c_master_set_speed(&soil_moisture_i2c, i2c_cfg.speed);
+  i2c_master_set_timeout(&soil_moisture_i2c, 0);
+
+  // Wait for sensor to become ready
+  sl_sleeptimer_delay_millisecond(100);
+  if (!sparkfun_soil_moisture_is_present(address)) {
+    return SL_STATUS_NOT_AVAILABLE;
+  }
+
   initialized = true;
+
   return SL_STATUS_OK;
 }
 
@@ -100,17 +123,21 @@ sl_status_t sparkfun_soil_moisture_init(sl_i2cspm_t *i2cspm, uint16_t address)
 bool sparkfun_soil_moisture_is_present(uint16_t address)
 {
   sl_status_t sc;
-  uint16_t backup_addr;
+  uint8_t backup_addr;
+  uint8_t data[2];
 
-  backup_addr = sparkfun_soil_moisture_i2c_addr;
-  sparkfun_soil_moisture_i2c_addr = address;
-  sc = sparkfun_soil_moisture_write_blocking(NULL, 0);
-  sparkfun_soil_moisture_i2c_addr = backup_addr;
-  if (sc == SL_STATUS_OK) {
-    return true;
-  } else {
+  // Back up the current i2c addr
+  backup_addr = soil_moisture_i2c.config.addr;
+  // Use special addr to check
+  i2c_master_set_slave_address(&soil_moisture_i2c, address);
+  sc = sparkfun_soil_moisture_read_blocking(data, 2);
+  // Restore to the backed up i2c addr
+  i2c_master_set_slave_address(&soil_moisture_i2c, backup_addr);
+  if (sc != SL_STATUS_OK) {
     return false;
   }
+
+  return true;
 }
 
 /**************************************************************************//**
@@ -128,10 +155,12 @@ sl_status_t sparkfun_soil_moisture_set_address(uint16_t address)
   send_data[1] = (uint8_t)address;
 
   sc = sparkfun_soil_moisture_write_blocking(send_data, 2);
-  if (sc == SL_STATUS_OK) {
-    sparkfun_soil_moisture_i2c_addr = address;
+  if (sc != SL_STATUS_OK) {
+    return sc;
   }
-  return sc;
+
+  i2c_master_set_slave_address(&soil_moisture_i2c, address);
+  return SL_STATUS_OK;
 }
 
 /**************************************************************************//**
@@ -140,28 +169,19 @@ sl_status_t sparkfun_soil_moisture_set_address(uint16_t address)
 sl_status_t sparkfun_soil_moisture_scan_address(uint16_t *address,
                                                 uint8_t *num_dev)
 {
-  uint16_t backup_addr;
-  sl_status_t sc;
   *num_dev = 0;
 
   if ((address == NULL) || (num_dev == NULL)) {
     return SL_STATUS_NULL_POINTER;
   }
 
-  // Back up current address before scanning
-  backup_addr = sparkfun_soil_moisture_i2c_addr;
-
-  for (uint16_t addr = 0x08; addr < 0x78; addr++) {
-    sparkfun_soil_moisture_i2c_addr = addr;
-    sc = sparkfun_soil_moisture_write_blocking(NULL, 0);
-    if (sc == SL_STATUS_OK) {
+  for (uint8_t addr = 0x08; addr < 0x78; addr++) {
+    if (sparkfun_soil_moisture_is_present(addr)) {
       *(address + *num_dev) = addr;
       (*num_dev)++;
     }
   }
 
-  // Restore the back up address
-  sparkfun_soil_moisture_i2c_addr = backup_addr;
   return SL_STATUS_OK;
 }
 
@@ -173,7 +193,9 @@ sl_status_t sparkfun_soil_moisture_select_device(uint16_t address)
   if ((address < 0x07) || (address > 0x78)) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  sparkfun_soil_moisture_i2c_addr = address;
+
+  i2c_master_set_slave_address(&soil_moisture_i2c, address);
+
   return SL_STATUS_OK;
 }
 
@@ -182,7 +204,7 @@ sl_status_t sparkfun_soil_moisture_select_device(uint16_t address)
  *****************************************************************************/
 uint16_t sparkfun_soil_moisture_get_device_address(void)
 {
-  return sparkfun_soil_moisture_i2c_addr;
+  return soil_moisture_i2c.config.addr;
 }
 
 /**************************************************************************//**
@@ -314,18 +336,13 @@ sl_status_t sparkfun_soil_moisture_get_moisture_raw(uint16_t *value)
 static sl_status_t sparkfun_soil_moisture_write_blocking(uint8_t *pdata,
                                                          uint8_t len)
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef ret;
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&soil_moisture_i2c,
+                                             pdata,
+                                             len)) {
+    return SL_STATUS_TRANSMIT;
+  }
 
-  seq.addr = sparkfun_soil_moisture_i2c_addr << 1;
-  seq.flags = I2C_FLAG_WRITE;
-
-  seq.buf[0].data = pdata;
-  seq.buf[0].len = len;
-
-  ret = I2CSPM_Transfer(sparkfun_soil_moisture_i2cspm_instance, &seq);
-
-  return ret;
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
@@ -346,23 +363,15 @@ static sl_status_t sparkfun_soil_moisture_write_blocking(uint8_t *pdata,
 static sl_status_t sparkfun_soil_moisture_read_blocking(uint8_t *pdata,
                                                         uint8_t len)
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef ret;
   uint8_t send_data = GET_VALUE;
 
-  if (pdata == NULL) {
-    return SL_STATUS_NULL_POINTER;
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&soil_moisture_i2c,
+                                                       &send_data,
+                                                       1,
+                                                       pdata,
+                                                       len)) {
+    return SL_STATUS_TRANSMIT;
   }
-  seq.addr = sparkfun_soil_moisture_i2c_addr << 1;
-  seq.flags = I2C_FLAG_WRITE_READ;
 
-  seq.buf[0].data = &send_data;
-  seq.buf[0].len = 1;
-
-  seq.buf[1].data = pdata;
-  seq.buf[1].len = len;
-
-  ret = I2CSPM_Transfer(sparkfun_soil_moisture_i2cspm_instance, &seq);
-
-  return ret;
+  return SL_STATUS_OK;
 }

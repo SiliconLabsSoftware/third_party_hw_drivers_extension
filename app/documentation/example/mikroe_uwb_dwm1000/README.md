@@ -11,20 +11,33 @@ It features a frequency range from 3.5GHz to 6.5GHz, a very precise location of 
 ## Required Hardware ##
 
 - [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
-
-- [UWB Click](https://www.mikroe.com/uwb-click)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- 2 x [UWB Click](https://www.mikroe.com/uwb-click), one is for TX and one is for RX
 
 ## Hardware Connection ##
 
-The DWM1000 - UWB Click board supports MikroBus; therefore, it can easily connect to the MikroBus socket of the EFR32xG24 Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit.
+- **If the EFR32xG24 Explorer Kit is used**:
 
-The hardware connection is shown in the image below:
+    The DWM1000 - UWB Click board supports MikroBus; therefore, it can easily connect to the MikroBus socket of the EFR32xG24 Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit.The hardware connection is shown in the image below:
 
-![board](image/hardware_connection.png)
+    ![board](image/hardware_connection.png)
+
+- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+
+    The hardware connection is shown in the table below:
+
+    | Description  | BRD4338A GPIO | BRD4002 Breakout Pad | DWM1000 - UWB Click board  |
+    | -------------| ------------- | -------------------- | ---------------------------|
+    | GPIO         | GPIO_46       | P24                  | RST                        |
+    | GPIO         | GPIO_47       | P26                  | INT                        |
+    | CS           | GPIO_48       | P28                  | CS                         |
+    | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                 |
+    | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27                  | SDO                 |
+    | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27       | P29                  | SDI                 |
 
 ### Driver Layer Diagram ###
 
-The driver of the DWM1000 - UWB Click board builds upon more than one level of software. On the first layer, there are the SPIDRV and GPIO drivers from Silabs, which focus on interfacing with the xG24 motherboard. On top of that, there are multiple layers of drivers, which either work as an interfacing layer between the Click board and the motherboard or control the DWM1000 UWB module. Here you can see the high-level overview of the software layers:
+The driver of the DWM1000 - UWB Click board builds upon more than one level of software. On the first layer, there are the SPIDRV and GPIO drivers from Silabs, which focus on interfacing with the motherboard. On top of that, there are multiple layers of drivers, which either work as an interfacing layer between the Click board and the motherboard or control the DWM1000 UWB module. Here you can see the high-level overview of the software layers:
 
 ![logging_screen](image/sw_layer.png)
 
@@ -34,17 +47,19 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by uwb.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by "dwm1000".
 
-2. Click **Create** button on the **Third Party Hardware Drivers - DWM1000 - UWB Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+2. Click **Create** button on the example **Third Party Hardware Drivers - DWM1000 - UWB Click (Mikroe)**
 
-![create_example](image/create_example.png)
+    ![create_example](image/create_example.png)
+
+    Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for the your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_uwb_dwm1000/app.c` into the project root folder (overwriting the existing file).
 
@@ -56,25 +71,30 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
-        - **[Services] → [IO Stream] → [IO Stream: EUSART]** → default instance name: vcom
-        - **[Application] → [Utility] → [Log]**
-        - **[Application] → [Utility] → [Assert]**
-        - **[Platform] → [Driver] → [Button] → [Simple Button]** → use default instance name: btn0
-            - For using the SPI interface
-                - [Platform] → [Driver] → [SPI] → [SPIDRV] → [mikroe] → change the configuration for [SPI master chip select (CS) control scheme] to "CS controlled by the application", use the default instance name "mikroe"
-        - **[Third Party Hardware Drivers] → [Wireless Connectivity] → [DWM1000 - UWB Click (Mikroe)]** → use default configuration.
+        **If the EFR32xG24 Explorer Kit is used**
 
-            ![config](image/uwb_config.png)
+        - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
+        - [Application] → [Utility] → [Log]
+        - [Application] → [Utility] → [Assert]
+        - [Platform] → [Driver] → [Button] → [Simple Button] → use default instance name: btn0
+        - [Third Party Hardware Drivers] → [Wireless Connectivity] → [DWM1000 - UWB Click (Mikroe)] → use default configuration.
+        - [Platform] → [Driver] → [SPI] → [SPIDRV] → [mikroe] → change the configuration for [SPI master chip select (CS) control scheme] to "CS controlled by the application"
+
+        **Third Party Hardware Drivers - DWM1000 - UWB Click (Mikroe) - Si91x**
+
+        - [Application] → [Utility] → [Assert]
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Hardware] → [Button] → [btn0] → [Button Interrupt Configuration] → "Fall Edge Interrupt"
+        - [Third Party Hardware Drivers] → [Wireless Connectivity] → [DWM1000 - UWB Click (Mikroe)] → use default configuration.
 
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension has already been installed. If not, please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension has already be installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "DWM1000 - UWB Click (Mikroe)" component.
+- SDK Extension must be enabled for the project to install "DWM1000 - UWB Click (Mikroe)" component
 
-- Make sure that the SPI CS Control scheme is set to "CS controlled by the application", otherwise the driver is not able to communicate with the module properly.
+- Make sure that the SPI CS Control scheme is set to "CS controlled by the application", otherwise the driver is not able to communicate with the module properly
 
 ## How It Works ##
 

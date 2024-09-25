@@ -46,7 +46,7 @@ static bool lvgl_input_driver_get_touch(void);
 // -----------------------------------------------------------------------------
 //                       Local Variables
 // -----------------------------------------------------------------------------
-#define PRESSURE_THRESH                 (25)
+#define PRESSURE_THRESH                 (500)
 static lvgl_input_t lvgl_input_instance;
 static bool initialized = false;
 static touch_point_t g_touch_point;
@@ -57,6 +57,8 @@ static const lvgl_input_driver_api_t lvgl_input_driver_api =
   .get_touch = lvgl_input_driver_get_touch,
   .get_xy = lvgl_input_driver_get_xy
 };
+
+static struct touch_screen touch_screen;
 
 sl_status_t lvgl_input_init(void)
 {
@@ -76,13 +78,13 @@ lvgl_input_t *lvgl_input_get(void)
 
 static sl_status_t lvgl_input_driver_init(void)
 {
-  sl_status_t stt = touch_screen_init();
-  return stt;
+  return touch_screen_init(&touch_screen);
 }
 
 static sl_status_t lvgl_input_driver_read_data(void)
 {
-  sl_status_t stt = touch_screen_get_point(200, &g_touch_point);
+  sl_status_t stt = touch_screen_get_point(&touch_screen,
+                                           &g_touch_point);
   return stt;
 }
 
@@ -104,7 +106,7 @@ static bool lvgl_input_driver_get_touch(void)
 {
   bool retVal = false;
 
-  if (g_touch_point.z < PRESSURE_THRESH) {
+  if (g_touch_point.r_touch < PRESSURE_THRESH) {
     retVal = true;
   }
   return retVal;

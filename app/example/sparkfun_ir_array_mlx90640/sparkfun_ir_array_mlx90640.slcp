@@ -39,14 +39,6 @@ component:
 - id: app_assert
 - id: app_log
 
-config_file:
-  - override:
-      component: i2cspm
-      file_id: i2cspm_config
-      instance: qwiic
-    path: brd2601b/sl_i2cspm_qwiic_config.h
-    condition: [brd2601b]
-
 configuration:
   - name: SL_STACK_SIZE
     value: "10240"
@@ -62,7 +54,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/sparkfun_ir_array_mlx90640/image/connection.png

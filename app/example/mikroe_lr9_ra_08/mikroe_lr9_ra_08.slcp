@@ -1,0 +1,61 @@
+project_name: mikroe_lr_ra_08
+label: Third Party Hardware Drivers - RA-08 - LR 9 Click (Mikroe)
+package: platform
+description: |
+  This example project shows an example for Mikroe LR 9 Click (Mikroe).
+category: Example|Platform
+quality: evaluation
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_lr9_ra_08/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: device_init
+- id: sleeptimer
+- id: mikroe_lr9
+  from: third_party_hw_drivers
+- id: iostream_eusart
+  instance: [vcom]
+- id: iostream_usart
+  instance: [mikroe]
+- id: app_log
+
+other_file:
+  - path: ../../documentation/example/mikroe_lr9_ra_08/image/create_project.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_lr9_ra_08/image/hardware_connection.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_lr9_ra_08/image/log_receiver.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_lr9_ra_08/image/log_transmitter.png
+    directory: "image"
+    
+
+define:
+- name: DEBUG_EFM
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true

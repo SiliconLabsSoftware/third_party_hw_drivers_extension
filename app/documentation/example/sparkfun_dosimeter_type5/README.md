@@ -2,7 +2,7 @@
 
 ## Overview ##
 
-This project aims to show the hardware driver that is used to interface with the Type5 Geiger Sensor via APIs of GSDK.
+This project aims to show the hardware driver that is used to interface with the Type5 Geiger Sensor using Silicon Labs platform.
 
 The Type 5 Pocket Geiger Radiation Sensor from Radiation Watch is a highly sensitive radiation sensor designed for the embedded systems market. It is capable of detecting Gamma and Beta radiation. The sensor has a simple pulsed output that can be used with any microcontroller. It is beneficial for detecting the levels of ionizing radiation, used as a medical equipment, and as personal dosimeters. By combining this sensor with Silicon Labs wireless technology, it is possible to send the collected information to a data center or trigger a remote protection system.
 
@@ -10,24 +10,37 @@ The Type 5 Pocket Geiger Radiation Sensor from Radiation Watch is a highly sensi
 
 ## Hardware Required ##
 
-- [A BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit).
+- [A BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
 
-- [Pocket Geiger Radiation Sensor - Type 5](https://www.sparkfun.com/products/14209).
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
+- [Pocket Geiger Radiation Sensor - Type 5](https://www.sparkfun.com/products/14209)
 
 ## Connections Required ##
 
-Connect the Pocket Geiger Type 5 board to the BGM220 Explorer Kit through GPIO.
+- If the BGM220P Explorer Kit is used:
 
-![connection](image/connection.png)
+  Connect the Pocket Geiger Type 5 board to the BGM220 Explorer Kit through GPIO.
 
-By default, the binding used is as the table below:
+  ![connection](image/connection.png)
 
-| Pocket Geiger pin  | BGM220 Explorer Kit pin | Standing for                  |
-| ------------------ | ----------------------- | ----------------------------- |
-| +V                 | 5V                      | Alimentation pin (DC 3V~9V)   |
-| GND                | GND                     | Ground pin                    |
-| SIG                | 2                       | Radiation-detection pulse pin |
-| NS                 | 3                       | Noise-detection pulse pin     |
+  By default, the binding used is as the table below:
+
+  | Description                   | BGM220 Explorer Kit pin | Pocket Geiger pin |
+  | ----------------------------- | ----------------------- | ----------------- |
+  | DC 3V~9V                      | 5V                      | +V                |
+  | GND                           | GND                     | GND               |
+  | Radiation-detection pulse pin | PB2                     | SIG               |
+  | Noise-detection pulse pin     | PB3                     | NS                |
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description                   | BRD4338A GPIO  | BRD4002 Breakout Pad | Pocket Geiger pin   |
+  | ----------------------------- | -------------- | -------------------- | ------------------- |
+  | DC 3V~9V                      | 5V             | 5V                   | +V                  |
+  | GND                           | GND            | GND                  | GND                 |
+  | Radiation-detection pulse pin | GPIO_46        | P24                  | SIG                 |
+  | Noise-detection pulse pin     | GPIO_47        | P26                  | NS                  |
 
 ## Setup ##
 
@@ -35,10 +48,11 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter radiation.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *radiation*.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - Pocket Geiger Radiation Sensor - Type 5 (Sparkfun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
@@ -56,9 +70,12 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
+      - **If the BGM220P Explorer Kit is used:**
         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
-        - [Third Party Hardware Drivers] → [Sensors] → [Pocket Geiger Radiation - Type 5 (Sparkfun)]
+        - [Third Party Hardware Drivers] → [Sensors] → [Pocket Geiger Radiation - Type 5 (Sparkfun)] → use default configuration
+      - **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+        - [Third Party Hardware Drivers] → [Sensors] → [Pocket Geiger Radiation - Type 5 (Sparkfun)] → use default configuration
 
 4. Install printf float
 
@@ -72,7 +89,7 @@ You can either create a project based on an example project or start with an emp
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install **Pocket Geiger Radiation - Type 5 (Sparkfun)** component.
 
@@ -89,7 +106,7 @@ You can either create a project based on an example project or start with an emp
 ### Testing ###
 
 The application monitors the Pocket Geiger through interrupts, processes and allows to get back the data using a callback function.
-Use Putty or other program to read the serial output. The BGM220P uses by default a baudrate of 115200. You should expect a similar output to the one below.
+Use Putty or other program to read the serial output. The board uses by default a baudrate of 115200. You should expect a similar output to the one below.
 
 ![logging_screen](image/log.png)
 

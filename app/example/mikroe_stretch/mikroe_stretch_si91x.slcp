@@ -1,0 +1,70 @@
+project_name: mikroe_stretch
+package: platform
+label: Third Party Hardware Drivers - Stretch Click (Mikroe)
+description: |
+  This example project shows an example for Mikroe Stretch Click board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_stretch/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: sleeptimer_si91x
+  from: wiseconnect3_sdk
+- id: mikroe_stretch
+  from: third_party_hw_drivers
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- instance: [channel_1]
+  from: wiseconnect3_sdk
+  id: adc_instance
+
+define:
+  - name: DEBUG_EFM
+
+sdk_extension:
+- id: wiseconnect3_sdk
+  version: 3.3.4
+- id: third_party_hw_drivers
+  version: 4.0.0
+
+other_file:
+  - path: ../../documentation/example/mikroe_stretch/image/console_log.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_stretch/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_stretch/image/hardware_connection.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_stretch/image/software_component.png
+    directory: "image"    
+  - path: ../../documentation/example/mikroe_stretch/image/software_layer.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

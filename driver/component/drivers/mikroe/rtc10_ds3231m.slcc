@@ -14,17 +14,20 @@ requires:
   - name: mikroe_peripheral_driver_digital_io
 config_file:
   - path: public/mikroe/rtc10_ds3231m/config/brd2703a/mikroe_ds3231m_config.h
-    file_id: mikroe_thunder_config
+    file_id: mikroe_rtc_config
     condition: [brd2703a]
   - path: public/mikroe/rtc10_ds3231m/config/brd4108a/mikroe_ds3231m_config.h
-    file_id: mikroe_thunder_config
+    file_id: mikroe_rtc_config
     condition: [brd4108a]
   - path: public/mikroe/rtc10_ds3231m/config/brd4314a/mikroe_ds3231m_config.h
-    file_id: mikroe_thunder_config
+    file_id: mikroe_rtc_config
     condition: [brd4314a]
+  - path: public/mikroe/rtc10_ds3231m/config/brd4338a/mikroe_ds3231m_config.h
+    file_id: mikroe_rtc_config
+    condition: [brd4338a]
   - path: public/mikroe/rtc10_ds3231m/config/other/mikroe_ds3231m_config.h
-    file_id: mikroe_thunder_config
-    unless: [brd4314a, brd4108a, brd2703a]
+    file_id: mikroe_rtc_config
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
 provides:
   - name: rtc10_ds3231m
     allow_multiple: false

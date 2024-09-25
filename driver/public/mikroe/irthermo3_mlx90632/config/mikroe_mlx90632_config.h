@@ -46,6 +46,24 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
+//<h>MIKROE I2C MLX90632 Configuration
+
+//  <e>MIKROE I2C MLX90632 UC Configuration
+//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+//  <i> Default: 0
+#define MIKROE_I2C_MLX90632_UC                  0
+
+// <o MIKROE_I2C_MLX90632_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define MIKROE_I2C_MLX90632_SPEED_MODE          0
+
+// </e>
+// </h>
+
 // <h> Address setting
 // <o MLX90632_I2C_ADDR> MLX90632 I2C ADDRESS
 // <0x3A=> 0x3A
@@ -60,4 +78,4 @@ extern "C" {
 }
 #endif
 
-#endif /* SCL_MLX90632_CONFIG_H_ */
+#endif // SCL_MLX90632_CONFIG_H_

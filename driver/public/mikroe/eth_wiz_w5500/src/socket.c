@@ -99,7 +99,7 @@ w5x00_socket_t w5x00_socket_init(w5x00_socket_t s,
     return W5x00_MAX_SOCK_NUM;
   }
   //  EthernetServer::server_port[s] = 0;
-  w5x00_delay_us(250); // TODO: is this needed??
+  w5x00_delay_ms(1); // TODO: is this needed??
   w5x00_writeSnMR(s, protocol);
   w5x00_writeSnIR(s, 0xFF);
   if (port > 0) {
@@ -140,7 +140,7 @@ w5x00_socket_t w5x00_socket_init_multicast(w5x00_socket_t s,
   }
 
   // w5x00_log_info("W5000socket %d\n", s);
-  w5x00_delay_us(250);
+  w5x00_delay_ms(1);
   w5x00_writeSnMR(s, protocol);
   w5x00_writeSnIR(s, 0xFF);
   if (port > 0) {

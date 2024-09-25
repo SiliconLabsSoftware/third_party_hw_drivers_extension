@@ -1,0 +1,65 @@
+project_name: mikroe_accel5_bma400_spi
+label: Third Party Hardware Drivers - BMA400 - Accel 5 Click (Mikroe) - SPI
+package: platform
+description: |
+  This example project shows an example for Mikroe Accel 5 Click driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_accel5_bma400/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- id: mikroe_accel5_bma400_spi
+  from: third_party_hw_drivers
+
+define:
+- name: DEBUG_EFM
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+toolchain_settings:
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+
+other_file:
+  - path: ../../documentation/example/mikroe_accel5_bma400/image/hardware_connection.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_accel5_bma400/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_accel5_bma400/image/log.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

@@ -12,6 +12,9 @@ root_path: driver
 requires:
   - name: status
   - name: udelay
+    condition: [device_series_1]
+  - name: udelay
+    condition: [device_series_2]
   - name: mikroe_peripheral_driver_spi
 
 provides:
@@ -31,9 +34,12 @@ config_file:
   - path: public/mikroe/uwb_dwm1000/config/brd4314a/mikroe_uwb_dwm1000_config.h
     file_id: driver_config_dwm1000
     condition: [brd4314a]
+  - path: public/mikroe/uwb_dwm1000/config/brd4338a/mikroe_uwb_dwm1000_config.h
+    file_id: driver_config_dwm1000
+    condition: [brd4338a]
   - path: public/mikroe/uwb_dwm1000/config/other/mikroe_uwb_dwm1000_config.h
     file_id: driver_config_dwm1000
-    unless: [brd2703a, brd4108a, brd4314a]
+    unless: [brd2703a, brd4108a, brd4314a, brd4338a]
 
 include:
   - path: inc

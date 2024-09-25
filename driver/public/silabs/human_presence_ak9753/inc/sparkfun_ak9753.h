@@ -40,11 +40,8 @@
 #ifndef SPARKFUN_AK9753_H_
 #define SPARKFUN_AK9753_H_
 
-#include "em_gpio.h"
-#include "gpiointerrupt.h"
 #include "sl_status.h"
-#include "sl_i2cspm.h"
-#include "sparkfun_ak9753_platform.h"
+#include "drv_i2c_master.h"
 #include "sparkfun_ak9753_config.h"
 
 #if (defined(SL_CATALOG_POWER_MANAGER_PRESENT))
@@ -165,7 +162,7 @@ typedef struct
  *    Structure to store the sensor configuration
  ******************************************************************************/
 typedef struct {
-  sl_i2cspm_t *sparkfun_ak9753_i2cspm_instance;
+  mikroe_i2c_handle_t  i2cspm_instance;
   uint8_t  I2C_address;
   sparkfun_ak9753_cutoff_freq_t cut_off_freq;
   sparkfun_ak9753_mode_t mode;
@@ -898,4 +895,4 @@ sl_status_t sparkfun_ak9753_is_interrupt(bool *isIR13H,
 #ifdef __cplusplus
 }
 #endif
-#endif /* SPARKFUN_AK9753_H_ */
+#endif // SPARKFUN_AK9753_H_

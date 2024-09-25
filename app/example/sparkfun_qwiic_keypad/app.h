@@ -14,17 +14,29 @@
  * sections of the MSLA applicable to Source Code.
  *
  ******************************************************************************/
-
 #ifndef APP_H
 #define APP_H
-
-#include "sl_i2cspm_instances.h"
-#include "printf.h"
 #include "sparkfun_qwiic_keypad.h"
+#include "sl_sleeptimer.h"
+#include "sparkfun_keypad_config.h"
+
+#if (defined(SLI_SI917))
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+#else
+#include "sl_i2cspm_instances.h"
+#include "app_log.h"
+#endif
+
+#if (defined(SLI_SI917))
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
+#define SAPRKFUN_KEYPAD_INT_PIN_EN
 
 #ifdef SAPRKFUN_KEYPAD_INT_PIN_EN
-
-#include "gpiointerrupt.h"
 
 /***************************************************************************//**
  * Callback for the intertrupt.

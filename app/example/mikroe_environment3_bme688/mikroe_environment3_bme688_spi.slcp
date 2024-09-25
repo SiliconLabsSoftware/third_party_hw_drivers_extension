@@ -1,4 +1,3 @@
-# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
 project_name: mikroe_environment3_bme688_spi
 package: platform
 label: Third Party Hardware Drivers - BME688 - Environment 3 click (Mikroe) - SPI
@@ -35,7 +34,6 @@ component:
 - id: iostream_eusart
   instance: [vcom]
 - id: app_log
-- id: sleeptimer
 - id: environment3_bme688_spi
   from: third_party_hw_drivers
 
@@ -48,7 +46,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/mikroe_environment3_bme688/image/create_example.png

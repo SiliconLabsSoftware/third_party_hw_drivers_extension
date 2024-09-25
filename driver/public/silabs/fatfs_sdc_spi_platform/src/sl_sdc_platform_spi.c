@@ -37,75 +37,65 @@
 /***************************************************************************//**
  * Exchange a byte.
  ******************************************************************************/
-sl_status_t sdc_xchg_spi(SPIDRV_Handle_t spi_handle, uint8_t tx, uint8_t *rx)
+sl_status_t sdc_xchg_spi(spi_master_t *spi_handle, uint8_t tx, uint8_t *rx)
 {
-  sl_status_t retval;
-
   if (!spi_handle) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  retval = SPIDRV_MTransferB(spi_handle, &tx, rx, 1);
-  if (retval != ECODE_EMDRV_SPIDRV_OK) {
+  if (SPI_MASTER_SUCCESS != spi_master_exchange(spi_handle, &tx, rx, 1)) {
     *rx = 0;
-    return SL_STATUS_TRANSMIT;
+    return SPI_MASTER_ERROR;
   }
 
-  return SL_STATUS_OK;
+  return SPI_MASTER_SUCCESS;
 }
 
 /***************************************************************************//**
  * Multi-byte SPI transaction (transmit).
  ******************************************************************************/
-sl_status_t sdc_xmit_spi_multi(SPIDRV_Handle_t spi_handle,
+sl_status_t sdc_xmit_spi_multi(spi_master_t *spi_handle,
                                const uint8_t *buff,
                                uint16_t cnt)
 {
-  sl_status_t retval;
-
   if (!spi_handle) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  retval = SPIDRV_MTransmitB(spi_handle, buff, cnt);
-  if (retval != ECODE_EMDRV_SPIDRV_OK) {
-    return SL_STATUS_TRANSMIT;
+  if (SPI_MASTER_SUCCESS != spi_master_write(spi_handle,
+                                             (uint8_t *)buff,
+                                             cnt)) {
+    return SPI_MASTER_ERROR;
   }
 
-  return SL_STATUS_OK;
+  return SPI_MASTER_SUCCESS;
 }
 
 /***************************************************************************//**
  * Multi-byte SPI transaction (receive).
  ******************************************************************************/
-sl_status_t sdc_rcvr_spi_multi(SPIDRV_Handle_t spi_handle,
+sl_status_t sdc_rcvr_spi_multi(spi_master_t *spi_handle,
                                uint8_t *buff,
                                uint16_t cnt)
 {
-  sl_status_t retval;
-  uint8_t dummy = 0xff;
-
   if (!spi_handle) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  retval = SPIDRV_MTransferB(spi_handle, &dummy, buff, cnt);
-  if (retval != ECODE_EMDRV_SPIDRV_OK) {
-    return SL_STATUS_TRANSMIT;
+  if (SPI_MASTER_SUCCESS != spi_master_read(spi_handle,
+                                            buff,
+                                            cnt)) {
+    return SPI_MASTER_ERROR;
   }
 
-  return SL_STATUS_OK;
+  return SPI_MASTER_SUCCESS;
 }
 
-sl_status_t sdc_platform_set_bit_rate(SPIDRV_Handle_t spi_handle,
+sl_status_t sdc_platform_set_bit_rate(spi_master_t *spi_handle,
                                       uint32_t bit_rate)
 {
-  sl_status_t retval;
-
   if (!spi_handle) {
     return SL_STATUS_NULL_POINTER;
   }
 
-  retval = SPIDRV_SetBitrate(spi_handle, bit_rate);
-
-  if (retval != ECODE_EMDRV_SPIDRV_OK) {
+  if (SPI_MASTER_SUCCESS != spi_master_set_speed(spi_handle, bit_rate)) {
     return SL_STATUS_TRANSMIT;
   }
 

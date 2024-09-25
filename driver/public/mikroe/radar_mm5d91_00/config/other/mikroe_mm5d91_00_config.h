@@ -26,10 +26,22 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  *
+ *******************************************************************************
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #ifndef MM5D91_00_CONFIG_H
 #define MM5D91_00_CONFIG_H
+
+#ifndef SLI_SI917
+#include "em_gpio.h"
+#endif
 
 #ifdef __cplusplus
 extern "C"
@@ -41,28 +53,28 @@ extern "C"
 // <gpio> CONFIG_MM5D91_00_RST
 // $[GPIO_CONFIG_MM5D91_00_RST]
 #warning "RST pin for MM5D91_00 is not configured"
-// #define CONFIG_MM5D91_00_RST_PORT                  gpioPortC
-// #define CONFIG_MM5D91_00_RST_PIN                   6
+// #define CONFIG_MM5D91_00_RST_PORT                  0
+// #define CONFIG_MM5D91_00_RST_PIN                   0
 // [GPIO_CONFIG_MM5D91_00_RST]$
 
 // <gpio> CONFIG_MM5D91_00_GPIO0
 // $[GPIO_CONFIG_MM5D91_00_GPIO0]
 #warning "GP0 pin for MM5D91_00 is not configured"
-// #define CONFIG_MM5D91_00_GPIO0_PORT                gpioPortB
-// #define CONFIG_MM5D91_00_GPIO0_PIN                 3
+// #define CONFIG_MM5D91_00_GPIO0_PORT                0
+// #define CONFIG_MM5D91_00_GPIO0_PIN                 0
 // [GPIO_CONFIG_MM5D91_00_GPIO0]$
 
 // <gpio> CONFIG_MM5D91_00_GPIO1
 // $[GPIO_CONFIG_MM5D91_00_GPIO1]
 #warning "GP1 pin for MM5D91_00 is not configured"
-// #define CONFIG_MM5D91_00_GPIO1_PORT                gpioPortB
-// #define CONFIG_MM5D91_00_GPIO1_PIN                 4
+// #define CONFIG_MM5D91_00_GPIO1_PORT                0
+// #define CONFIG_MM5D91_00_GPIO1_PIN                 0
 // [GPIO_CONFIG_MM5D91_00_GPIO1]$
 
 // <gpio> CONFIG_MM5D91_00_GPIO2
 // $[GPIO_CONFIG_MM5D91_00_GPIO2]
 #warning "GP2 pin for MM5D91_00 is not configured"
-// #define CONFIG_MM5D91_00_GPIO2_PORT                gpioPortB
+// #define CONFIG_MM5D91_00_GPIO2_PORT                0
 // #define CONFIG_MM5D91_00_GPIO2_PIN                 0
 // [GPIO_CONFIG_MM5D91_00_GPIO2]$
 

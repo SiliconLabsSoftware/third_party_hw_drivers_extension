@@ -8,36 +8,11 @@ quality: evaluation
 root_path: driver
 requires:
   - name: status
-  - name: iostream_usart
-  - name: udelay
-recommends:
-  - id: iostream_usart
-    instance: [sps30]
-config_file:
-  - override:
-      component: iostream_usart
-      file_id: iostream_usart_config
-      instance: sps30
-    path: public/silabs/particulate_matter_sensor_sps30/config/brd4314a/sl_iostream_usart_sps30_config.h
-    condition: [brd4314a]
-  - override:
-      component: iostream_usart
-      file_id: iostream_usart_config
-      instance: sps30
-    path: public/silabs/particulate_matter_sensor_sps30/config/brd4108a/sl_iostream_usart_sps30_config.h
-    condition: [brd4108a]
-  - override:
-      component: iostream_usart
-      file_id: iostream_usart_config
-      instance: sps30
-    path: public/silabs/particulate_matter_sensor_sps30/config/brd2703a/sl_iostream_usart_sps30_config.h
-    condition: [brd2703a]
-  - override:
-      component: iostream_usart
-      file_id: iostream_usart_config
-      instance: sps30
-    path: public/silabs/particulate_matter_sensor_sps30/config/other/sl_iostream_usart_sps30_config.h
-    unless: [brd4314a, brd4108a, brd2703a]
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_uart
+
 provides:
   - name: pm_sps30_uart
     allow_multiple: false

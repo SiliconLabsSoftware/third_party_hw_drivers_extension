@@ -42,26 +42,27 @@
 static gps_t mikroe_lea6s;
 static gps_cfg_t mikroe_lea6s_cfg;
 
-sl_status_t mikroe_lea6s_init(sl_iostream_uart_t *uart_handle)
+sl_status_t mikroe_lea6s_init(mikroe_uart_handle_t uart_handle, bool blocking)
 {
-  sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
-
-  if (NULL != uart_handle) {
-    gps_cfg_setup(&mikroe_lea6s_cfg);
-
-    mikroe_lea6s_cfg.reset = hal_gpio_pin_name(MIKROE_LEAS6_RESET_PORT,
-                                               MIKROE_LEAS6_RESET_PIN);
-
-    mikroe_lea6s_cfg.tmpls = hal_gpio_pin_name(MIKROE_LEAS6_TIMEPULSE_PORT,
-                                               MIKROE_LEAS6_TIMEPULSE_PIN);
-
-    mikroe_lea6s.uart.handle = uart_handle;
-    gps_init(&mikroe_lea6s, &mikroe_lea6s_cfg);
-
-    stt = SL_STATUS_OK;
+  if (NULL == uart_handle) {
+    return SL_STATUS_INVALID_PARAMETER;
   }
 
-  return stt;
+  gps_cfg_setup(&mikroe_lea6s_cfg);
+
+  mikroe_lea6s_cfg.reset = hal_gpio_pin_name(MIKROE_LEAS6_RESET_PORT,
+                                             MIKROE_LEAS6_RESET_PIN);
+
+  mikroe_lea6s_cfg.tmpls = hal_gpio_pin_name(MIKROE_LEAS6_TIMEPULSE_PORT,
+                                             MIKROE_LEAS6_TIMEPULSE_PIN);
+
+  mikroe_lea6s_cfg.uart_blocking = blocking;
+  mikroe_lea6s.uart.handle = uart_handle;
+  if (gps_init(&mikroe_lea6s, &mikroe_lea6s_cfg) != GPS_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  return SL_STATUS_OK;
 }
 
 void mikroe_lea6s_wakeup(void)

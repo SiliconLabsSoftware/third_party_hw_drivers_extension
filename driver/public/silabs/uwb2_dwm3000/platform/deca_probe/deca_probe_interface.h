@@ -12,8 +12,17 @@
  */
 #ifndef DECA_PROBE_INTERFACE_H
 #define DECA_PROBE_INTERFACE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "deca_device_api.h"
 
 extern const struct dwt_probe_s dw3000_probe_interf;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

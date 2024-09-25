@@ -40,7 +40,6 @@
 #include "dcmotor24.h"
 #include "mikroe_l9958.h"
 #include "mikroe_l9958_config.h"
-#include "third_party_hw_drivers_helpers.h"
 
 static dcmotor24_t dcmotor;
 static dcmotor24_cfg_t dcmotor_cfg;
@@ -49,14 +48,12 @@ static dcmotor24_cfg_t dcmotor_cfg;
  * @brief This function initializes all necessary pins and peripherals used
  * for this click board.
  ******************************************************************************/
-sl_status_t mikroe_l9958_init(SPIDRV_Handle_t spi_instance,
-                              sl_pwm_instance_t *pwm_instance)
+sl_status_t mikroe_l9958_init(mikroe_spi_handle_t spi_instance,
+                              mikroe_pwm_handle_t pwm_instance)
 {
   if ((NULL == spi_instance) || (NULL == pwm_instance)) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
   // Configure default spi instance
   dcmotor.spi.handle = spi_instance;
@@ -64,6 +61,7 @@ sl_status_t mikroe_l9958_init(SPIDRV_Handle_t spi_instance,
 
   // Call basic setup functions
   dcmotor24_cfg_setup(&dcmotor_cfg);
+  dcmotor_cfg.spi_mode = SPI_MASTER_MODE_0;
 
 #if defined(DCMOTOR24_ENABLE_PORT) && defined(DCMOTOR24_ENABLE_PIN)
   dcmotor_cfg.en = hal_gpio_pin_name(DCMOTOR24_ENABLE_PORT,
@@ -75,9 +73,22 @@ sl_status_t mikroe_l9958_init(SPIDRV_Handle_t spi_instance,
                                       DCMOTOR24_DIRECTION_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(dcmotor24_init(&dcmotor, &dcmotor_cfg));
+#if defined(DCMOTOR24_CS_PORT) && defined(DCMOTOR24_CS_PIN)
+  dcmotor_cfg.cs = hal_gpio_pin_name(DCMOTOR24_CS_PORT, DCMOTOR24_CS_PIN);
+  // CS pin need to init here since the mikroe_sdk_v2 missed this step
+  digital_out_t struct_cs;
+  digital_out_init(&struct_cs, dcmotor_cfg.cs);
+#endif
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+#if (MIKROE_L9958_SPI_UC == 1)
+  dcmotor_cfg.spi_speed = MIKROE_L9958_SPI_BITRATE;
+#endif
+
+  if (dcmotor24_init(&dcmotor, &dcmotor_cfg) != SPI_MASTER_SUCCESS) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**

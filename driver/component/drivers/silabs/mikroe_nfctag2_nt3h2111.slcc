@@ -11,8 +11,11 @@ root_path: driver
 
 requires:
   - name: status
-  - name: i2cspm
   - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_i2c
+  - name: mikroe_peripheral_driver_digital_io
 recommends:
   - id: i2cspm
     instance: [mikroe]
@@ -27,9 +30,12 @@ config_file:
   - path: public/silabs/nfctag2_nt3h2111/config/brd2703a/mikroe_nt3h2111_config.h
     file_id: driver_config_nt3h2111
     condition: [brd2703a]
+  - path: public/silabs/nfctag2_nt3h2111/config/brd4338a/mikroe_nt3h2111_config.h
+    file_id: driver_config_nt3h2111
+    condition: [brd4338a]
   - path: public/silabs/nfctag2_nt3h2111/config/other/mikroe_nt3h2111_config.h
     file_id: driver_config_bma400_i2c
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
 
 provides:
   - name: mikroe_nfctag2
@@ -41,9 +47,7 @@ template_contribution:
 include:
   - path: public/silabs/nfctag2_nt3h2111/inc
     file_list:
-      - path: mikroe_nt3h2111_i2c.h
       - path: mikroe_nt3h2111.h
 
 source:
-  - path: public/silabs/nfctag2_nt3h2111/src/mikroe_nt3h2111_i2c.c
   - path: public/silabs/nfctag2_nt3h2111/src/mikroe_nt3h2111.c

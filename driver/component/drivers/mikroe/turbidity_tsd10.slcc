@@ -18,6 +18,9 @@ provides:
 template_contribution:
   - name: component_catalog
     value: turbidity_tsd10
+config_file:
+  - path: public/mikroe/turbidity_tsd10/config/mikroe_tsd10_config.h
+    file_id: driver_config_tsd10
 include:
   - path: inc
     file_list:

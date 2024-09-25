@@ -1,0 +1,67 @@
+project_name: rfid_id12la_si91x
+package: platform
+label: Third Party Hardware Drivers - ID-12LA - RFID Qwiic Reader (Sparkfun)
+description: |
+  This example project shows an example for Sparkfun Sparkfun RFID Reader ID-12LA board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/sparkfun_rfid_id12la/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: app_assert
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- id: sparkfun_rfid_id12la
+  from: third_party_hw_drivers
+- instance: [i2c2]
+  from: wiseconnect3_sdk
+  id: i2c_instance
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+  
+other_file:
+  - path: ../../documentation/example/sparkfun_rfid_id12la/image/api_overview.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_rfid_id12la/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_rfid_id12la/image/flowchart.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_rfid_id12la/image/hardware_connection.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_rfid_id12la/image/testing_result.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb   

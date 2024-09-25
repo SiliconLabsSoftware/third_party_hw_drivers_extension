@@ -13,6 +13,8 @@ requires:
     condition: [device_series_2]
   - name: sl_gspi
     condition: [device_si91x]
+  - name: sl_clock_manager
+    condition: [device_si91x]
   - name: mikroe_peripheral_driver_digital_io
 recommends:
   - id: spidrv

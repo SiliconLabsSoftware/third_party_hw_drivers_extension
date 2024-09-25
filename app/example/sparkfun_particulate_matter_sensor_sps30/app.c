@@ -34,16 +34,40 @@
  ******************************************************************************/
 #include "sl_component_catalog.h"
 #include "sl_sleeptimer.h"
+
+#ifdef SL_CATALOG_PM_SPS30_I2C_PRESENT
+#include "sparkfun_sps30_i2c.h"
+#endif
+#ifdef SL_CATALOG_PM_SPS30_UART_PRESENT
+#include "sparkfun_sps30_uart.h"
+#endif
+
+#if (defined(SLI_SI917))
+#include "rsi_debug.h"
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+
+#ifdef SL_CATALOG_PM_SPS30_I2C_PRESENT
+#include "sl_i2c_instances.h"
+#define I2C_INSTANCE_USED              SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
+#ifdef SL_CATALOG_PM_SPS30_UART_PRESENT
+#include "sl_si91x_usart.h"
+#define USART_INSTANCE_USED            UART_1
+static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
+#endif
+
+#else /* None Si91x device */
 #include "app_log.h"
+#define app_printf(...) app_log(__VA_ARGS__)
 
 #ifdef SL_CATALOG_PM_SPS30_I2C_PRESENT
 #include "sl_i2cspm_instances.h"
-#include "sparkfun_sps30_i2c.h"
 #endif
-
 #ifdef SL_CATALOG_PM_SPS30_UART_PRESENT
 #include "sl_iostream_init_usart_instances.h"
-#include "sparkfun_sps30_uart.h"
+#include "sl_iostream_init_eusart_instances.h"
+#endif
 #endif
 
 #define READING_INTERVAL_MSEC (3000)
@@ -53,41 +77,60 @@ static volatile bool enable_reading_data = false;
 static void app_periodic_timer_cb(sl_sleeptimer_timer_handle_t *timer,
                                   void *data);
 
+#ifdef SL_CATALOG_PM_SPS30_I2C_PRESENT
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
+#endif
+#ifdef SL_CATALOG_PM_SPS30_UART_PRESENT
+mikroe_uart_handle_t app_uart_instance = NULL;
+#endif
+
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
 void app_init(void)
 {
   static sl_status_t  ret;
-  app_log_iostream_set(sl_iostream_vcom_handle);
 
   /* Initialize SPS 30 */
 #ifdef SL_CATALOG_PM_SPS30_I2C_PRESENT
-  app_log("Hello world - SPS30 - Particulate Matter Sensor - I2C !!!\r\n");
-  sps30_init(sl_i2cspm_mikroe);
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_mikroe;
+#endif
+  app_printf("Hello world - SPS30 - Particulate Matter Sensor - I2C !!!\r\n");
+  sps30_init(app_i2c_instance);
 #endif
 
 #ifdef SL_CATALOG_PM_SPS30_UART_PRESENT
-  app_log("Hello world - SPS30 - Particulate Matter Sensor - UART !!!\r\n");
-  sps30_init(sl_iostream_sps30_handle);
+#if (defined(SLI_SI917))
+  app_uart_instance = &uart_instance;
+#else
+  app_uart_instance = sl_iostream_uart_mikroe_handle;
+
+  sl_iostream_set_default(sl_iostream_vcom_handle);
+  app_log_iostream_set(sl_iostream_vcom_handle);
+#endif
+  app_printf("Hello world - SPS30 - Particulate Matter Sensor - UART !!!\r\n");
+  sps30_init(app_uart_instance);
 #endif
 
   /* Busy loop for initialization */
   while (sps30_probe() != 0) {
-    app_log("SPS30 sensor probing failed\r\n");
+    app_printf("SPS30 sensor probing failed\r\n");
     sl_sleeptimer_delay_millisecond(1000);
   }
 
-  app_log("SPS30 sensor probing successful\r\n");
+  app_printf("SPS30 sensor probing successful\r\n");
 
 #ifdef SL_CATALOG_PM_SPS30_I2C_PRESENT
   uint8_t fw_major;
   uint8_t fw_minor;
   ret = sps30_read_firmware_version(&fw_major, &fw_minor);
   if (ret) {
-    app_log("Error reading version\r\n");
+    app_printf("Error reading version\r\n");
   } else {
-    app_log("FW Ver: %u.%u\r\n", fw_major, fw_minor);
+    app_printf("FW Ver: %u.%u\r\n", fw_major, fw_minor);
   }
 #endif
 #ifdef SL_CATALOG_PM_SPS30_UART_PRESENT
@@ -95,27 +138,28 @@ void app_init(void)
   ret = sps30_read_version(&version);
 
   if (ret) {
-    app_log("Error reading version\r\n");
+    app_printf("Error reading version\r\n");
   } else {
-    app_log("FW Ver: %u.%u\r\n", version.firmware_major,
-            version.firmware_minor);
-    app_log("SHDLC Ver: %u.%u\r\n", version.shdlc_major, version.shdlc_minor);
+    app_printf("FW Ver: %u.%u\r\n", version.firmware_major,
+               version.firmware_minor);
+    app_printf("SHDLC Ver: %u.%u\r\n", version.shdlc_major,
+               version.shdlc_minor);
   }
 #endif
 
   uint8_t serial_number[SPS30_MAX_SERIAL_LEN];
   ret = sps30_get_serial((char *)serial_number);
   if (ret) {
-    app_log("Error reading serial number\r\n");
+    app_printf("Error reading serial number\r\n");
   } else {
-    app_log("Serial Number: %s\r\n", serial_number);
+    app_printf("Serial Number: %s\r\n", serial_number);
   }
 
   ret = sps30_start_measurement();
   if (ret) {
-    app_log("Error starting measurement\r\n");
+    app_printf("Error starting measurement\r\n");
   } else {
-    app_log("Measurements started\r\n");
+    app_printf("Measurements started\r\n");
   }
 
   // Start timer used for periodic indications.
@@ -140,29 +184,29 @@ void app_process_action(void)
 
     ret = sps30_read_measurement(&measure);
     if (ret) {
-      app_log("Error reading measurement\r\n");
+      app_printf("Error reading measurement\r\n");
     } else {
-      app_log("<---------- Measured values ---------->\r\n"
-              "%0.2f pm1.0\r\n"
-              "%0.2f pm2.5\r\n"
-              "%0.2f pm4.0\r\n"
-              "%0.2f pm10.0\r\n"
-              "%0.2f nc0.5\r\n"
-              "%0.2f nc1.0\r\n"
-              "%0.2f nc2.5\r\n"
-              "%0.2f nc4.5\r\n"
-              "%0.2f nc10.0\r\n"
-              "%0.2f typical particle size\r\n",
-              measure.mc_1p0,
-              measure.mc_2p5,
-              measure.mc_4p0,
-              measure.mc_10p0,
-              measure.nc_0p5,
-              measure.nc_1p0,
-              measure.nc_2p5,
-              measure.nc_4p0,
-              measure.nc_10p0,
-              measure.typical_particle_size);
+      app_printf("<---------- Measured values ---------->\r\n"
+                 "%0.2f pm1.0\r\n"
+                 "%0.2f pm2.5\r\n"
+                 "%0.2f pm4.0\r\n"
+                 "%0.2f pm10.0\r\n"
+                 "%0.2f nc0.5\r\n"
+                 "%0.2f nc1.0\r\n"
+                 "%0.2f nc2.5\r\n"
+                 "%0.2f nc4.5\r\n"
+                 "%0.2f nc10.0\r\n"
+                 "%0.2f typical particle size\r\n",
+                 measure.mc_1p0,
+                 measure.mc_2p5,
+                 measure.mc_4p0,
+                 measure.mc_10p0,
+                 measure.nc_0p5,
+                 measure.nc_1p0,
+                 measure.nc_2p5,
+                 measure.nc_4p0,
+                 measure.nc_10p0,
+                 measure.typical_particle_size);
     }
   }
 }

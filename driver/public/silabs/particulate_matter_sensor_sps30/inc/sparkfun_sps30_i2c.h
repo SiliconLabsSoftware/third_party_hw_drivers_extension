@@ -74,7 +74,7 @@ typedef struct _sps30_measurement {
  * Initialize sps30 with i2cspm
  *
  */
-sl_status_t sps30_init(sl_i2cspm_t *i2cspm);
+sl_status_t sps30_init(mikroe_i2c_handle_t i2cspm);
 
 /**
  * sps30_probe() - check if SPS sensor is available and initialize it

@@ -9,13 +9,28 @@ GPS click is a compact solution for adding GPS functionality to your device. It 
 
 - [**BGM220-EK4314A** BGM220 Bluetooth Module Explorer Kit (BRD4314A BGM220 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
 
-- [**GPS Click** board based on LEA-6S from Mikroe Integrated](https://www.mikroe.com/gps-click).
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
+- [**GPS Click** board based on LEA-6S from Mikroe Integrated](https://www.mikroe.com/gps-click)
+
+- Option: [GPS/GNSS Magnetic Mount Antenna](https://www.sparkfun.com/products/14986)
 
 ## Hardware Connection ##
 
-The GPS Click board can just be "clicked" into its place. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line. The GPS antenna needs to be connected to the GPS click board to ensure that the satellite signals can be received.
+- If the BGM220 Explorer Kit is used:
 
-![board](image/hardware_connection.png "BGM220 Explorer Kit Board and GPS Click Board")
+  The GPS Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of Click board matches the 45-degree white line of the Explorer Kit. The GPS antenna needs to be connected to the GPS click board to ensure that the satellite signals can be received.
+
+  ![board](image/hardware_connection.png "BGM220 Explorer Kit Board and GPS Click Board")
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description  | BRD4338A GPIO   | BRD4002 Breakout Pad | GPS click   |
+  | ------------ | --------------- | -------------------- | ----------- |
+  | UART1_RX_PIN | GPIO_6          | P19                  | TX          |
+  | UART1_TX_PIN | GPIO_7          | P20                  | RX          |
+  | RESET        | GPIO_46         | P24                  | RST         |
+  | Time Pulse   | GPIO_47         | P26                  | TP          |
 
 ## Setup ##
 
@@ -23,16 +38,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter 'gps'.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *gps*.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - LEA-6S - GPS Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220P Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_gpsclick_lea6s/app.c` into the project root folder (overwriting the existing file).
 
@@ -44,18 +60,31 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
+      **If the BGM220 Explorer Kit is used:**
+
         - [Services] → [Timers] → [Sleep Timer]
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
-        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: mikroe → Set "Baud rate" to 9600
+        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: mikroe
         - [Application] → [Utility] → [Log]
         - [Application] → [Utility] → [Application Queue]
         - [Third Party Hardware Drivers] → [Sensors] → [LEA-6S - GPS Click (Mikroe)]
 
-4. Build and flash this example to the board.
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [Third Party Hardware Drivers] → [Sensors] → [LEA-6S - GPS Click (Mikroe)] → use default configuration
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [UART] → disable "UART1 DMA"
+
+4. Install printf float
+
+    - Open Properties of the project.
+    - Select C/C++ Build > Settings > Tool Settings >GNU ARM C Linker > General. Check Printf float.
+
+5. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "LEA-6S - GPS Click (Mikroe)" component.
 

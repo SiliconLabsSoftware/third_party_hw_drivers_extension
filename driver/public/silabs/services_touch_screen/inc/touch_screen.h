@@ -42,12 +42,8 @@
 // -----------------------------------------------------------------------------
 //                       Includes
 // -----------------------------------------------------------------------------
+#include <stdbool.h>
 #include "sl_status.h"
-#include "em_cmu.h"
-#include "sl_udelay.h"
-#include "em_gpio.h"
-#include "em_iadc.h"
-#include "touch_screen_config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,18 +52,70 @@ extern "C" {
 // -----------------------------------------------------------------------------
 //                       Typedefs
 // -----------------------------------------------------------------------------
-typedef struct
-{
-  GPIO_Port_TypeDef port;
-  unsigned int pin;
-}touch_adc_pin_t;
+
+struct touch_screen_config {
+  // Horizontal Resolution
+  uint32_t h_res;
+
+  // Vertical Resolution
+  uint32_t v_res;
+
+  // X-plate resistance
+  uint16_t xplate_res;
+
+  // Calibration value: X-min
+  uint16_t x_min;
+
+  // Calibration value: X-max
+  uint16_t x_max;
+
+  // Calibration value: Y-min
+  uint16_t y_min;
+
+  // Calibration value: Y-max
+  uint16_t y_max;
+
+  // Invert X-axis
+  bool x_inv;
+
+  // Invert Y-axis
+  bool y_inv;
+
+  // Invert Y-axis
+  bool xy_swap;
+};
+
+enum TOUCH_SCREEN_CHANNEL {
+  TOUCH_SCREEN_CHANNEL_XM,
+  TOUCH_SCREEN_CHANNEL_XP,
+  TOUCH_SCREEN_CHANNEL_YM,
+  TOUCH_SCREEN_CHANNEL_YP,
+};
+
+struct touch_screen_analog_interface {
+  void (*delay_10us)(uint32_t idelay);
+  void (*set_input)(enum TOUCH_SCREEN_CHANNEL channel);
+  void (*set_output)(enum TOUCH_SCREEN_CHANNEL channel, uint8_t value);
+  sl_status_t (*adc_start_read)(enum TOUCH_SCREEN_CHANNEL channel);
+  uint16_t (*adc_read_u12)(void);
+  void (*adc_stop)(void);
+};
+
+struct touch_screen {
+  const struct touch_screen_config *config;
+  const struct touch_screen_analog_interface *aif;
+  uint16_t t_x;
+  uint16_t t_y;
+  uint16_t t_z1;
+  uint16_t t_z2;
+};
 
 // Touch point properties struct
 typedef struct
 {
-  int x; /* X coordinate of touch point */
-  int y; /* Y coordinate of touch point */
-  int z; /* Pressure value when touch point detected */
+  int32_t x; /* X coordinate of touch point */
+  int32_t y; /* Y coordinate of touch point */
+  float r_touch; /* Pressure value when touch point detected */
 } touch_point_t;
 
 // -----------------------------------------------------------------------------
@@ -82,7 +130,28 @@ typedef struct
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_FAIL if the process is failed.
  ******************************************************************************/
-sl_status_t touch_screen_init(void);
+sl_status_t touch_screen_init(struct touch_screen *ts);
+
+/***************************************************************************//**
+ * @brief
+ *  Initialize Touch Screen HAL.
+ *
+ * @return
+ *  SL_STATUS_OK if there are no errors.
+ *  SL_STATUS_FAIL if the process is failed.
+ ******************************************************************************/
+sl_status_t touch_screen_interface_init(struct touch_screen *ts);
+
+/***************************************************************************//**
+ * @brief
+ *  Set config.
+ *
+ * @return
+ *  SL_STATUS_OK if there are no errors.
+ *  SL_STATUS_FAIL if the process is failed.
+ ******************************************************************************/
+void touch_screen_set_config(struct touch_screen *ts,
+                             const struct touch_screen_config *config);
 
 /***************************************************************************//**
  * @brief
@@ -97,7 +166,8 @@ sl_status_t touch_screen_init(void);
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_FAIL if the process is failed.
  ******************************************************************************/
-sl_status_t touch_screen_get_point(int rxplate, touch_point_t *ts_point);
+sl_status_t touch_screen_get_point(struct touch_screen *ts,
+                                   touch_point_t *ts_point);
 
 #ifdef __cplusplus
 extern "C"

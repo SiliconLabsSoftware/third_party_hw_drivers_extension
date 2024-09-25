@@ -1,17 +1,16 @@
 /***************************************************************************//**
- * @file
- * @brief Driver for the Cambridge CMOS Sensors CCS811 gas and indoor air
- * quality sensor
+ * @file sparkfun_ccs811.h
+ * @brief header file for CCS811 sensor driver
  *******************************************************************************
  * # License
- * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2021 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
  *
  * The licensor of this software is Silicon Laboratories Inc.
  *
- * This software is provided 'as-is', without any express or implied
+ * This software is provided \'as-is\', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
  * arising from the use of this software.
  *
@@ -27,20 +26,25 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  *
+ *******************************************************************************
+ * # Evaluation Quality
+ * This code has been minimally tested to ensure that it builds and is suitable
+ * as a demonstration for evaluation purposes only. This code will be maintained
+ * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 
 #ifndef SPARKFUN_CCS811_H
 #define SPARKFUN_CCS811_H
 
 #include <stdbool.h>
-#include "sl_i2cspm.h"
 #include "sl_status.h"
+#include "sl_sleeptimer.h"
+#include "drv_i2c_master.h"
+#include "sparkfun_ccs811_config.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define SPARKFUN_CCS811_DEFAULT_ADDR 0x5B
 
 /**************************************************************************//**
 * @addtogroup ccs811 CCS811 - Gas Sensor
@@ -192,14 +196,11 @@ extern "C" {
  *    @retval SL_STATUS_OK Success
  *    @retval SL_STATUS_INITIALIZATION Initialization was unsuccessful
  ******************************************************************************/
-sl_status_t sparkfun_ccs811_init(sl_i2cspm_t *i2cspm);
+sl_status_t sparkfun_ccs811_init(mikroe_i2c_handle_t i2cspm);
 
 /***************************************************************************//**
  * @brief
  *    Reads Hardware ID from the CCS811 sensor
- *
- * @param[in] i2cspm
- *   The I2CSPM instance to use.
  *
  * @param[out] hwID
  *    The Hardware ID of the chip (should be 0x81)
@@ -208,17 +209,14 @@ sl_status_t sparkfun_ccs811_init(sl_i2cspm_t *i2cspm);
  *    @retval SL_STATUS_OK Success
  *    @retval SL_STATUS_TRANSMIT I2C transmission error
  ******************************************************************************/
-sl_status_t sparkfun_ccs811_get_hardware_id(sl_i2cspm_t *i2cspm, uint8_t *hwID);
+sl_status_t sparkfun_ccs811_get_hardware_id(uint8_t *hwID);
 
 /***************************************************************************//**
  * @brief
  *    Set the measurement mode of the CCS811 sensor.
  *
  * @details
- *  This function must be called before reading measurements from the sensor.
- *
- * @param[in] i2cspm
- *   The I2CSPM instance to use.
+ *    This function must be called before reading measurements from the sensor.
  *
  * @param[in] measMode
  *    The desired measurement mode
@@ -227,8 +225,7 @@ sl_status_t sparkfun_ccs811_get_hardware_id(sl_i2cspm_t *i2cspm, uint8_t *hwID);
  *    @retval SL_STATUS_OK Success
  *    @retval SL_STATUS_TRANSMIT I2C transmission error
  ******************************************************************************/
-sl_status_t sparkfun_ccs811_set_measure_mode(sl_i2cspm_t *i2cspm,
-                                             uint8_t measMode);
+sl_status_t sparkfun_ccs811_set_measure_mode(uint8_t measMode);
 
 /***************************************************************************//**
  * @brief
@@ -236,11 +233,7 @@ sl_status_t sparkfun_ccs811_set_measure_mode(sl_i2cspm_t *i2cspm,
  *
  * @details
  *    This function overwrites the existing firmware, irrespective of the
- *   version
- *    number.
- *
- * @param[in] i2cspm
- *   The I2CSPM instance to use.
+ *    version number.
  *
  * @param[in] firmware
  *    A buffer containing the contents of the firmware update
@@ -252,16 +245,12 @@ sl_status_t sparkfun_ccs811_set_measure_mode(sl_i2cspm_t *i2cspm,
  *    @retval SL_STATUS_OK Firmware upgrade successful
  *    @retval SL_STATUS_FAIL Firmware upgrade failed
  ******************************************************************************/
-sl_status_t sparkfun_ccs811_update_firmware(sl_i2cspm_t *i2cspm,
-                                            const uint8_t *firmware,
+sl_status_t sparkfun_ccs811_update_firmware(const uint8_t *firmware,
                                             uint32_t length);
 
 /***************************************************************************//**
  * @brief
  *    Read out current firmware of the CCS811 sensor.
- *
- * @param[in] i2cspm
- *    The i2cspm instance to use
  *
  * @param[out] fw_version
  *    The current application firmware. The top 4 bits contain the major
@@ -272,15 +261,11 @@ sl_status_t sparkfun_ccs811_update_firmware(sl_i2cspm_t *i2cspm,
  * @retval SL_STATUS_OK Success
  * @retval SL_STATUS_TRANSMIT I2C transmission error
  ******************************************************************************/
-sl_status_t sparkfun_ccs811_read_firmware_version(sl_i2cspm_t *i2cspm,
-                                                  uint16_t *fw_version);
+sl_status_t sparkfun_ccs811_read_firmware_version(uint16_t *fw_version);
 
 /**************************************************************************//**
 * @brief
 *    Read the status of the CCS811 sensor.
-*
-* @param[in] i2cspm
-*   The I2CSPM instance to use.
 *
 * @param[out] status
 *    The content of the CCS811 Status Register
@@ -289,14 +274,11 @@ sl_status_t sparkfun_ccs811_read_firmware_version(sl_i2cspm_t *i2cspm,
 *    @retval SL_STATUS_OK Success
 *    @retval SL_STATUS_TRANSMIT I2C transmission error
 ******************************************************************************/
-sl_status_t sparkfun_ccs811_get_status(sl_i2cspm_t *i2cspm, uint8_t *status);
+sl_status_t sparkfun_ccs811_get_status(uint8_t *status);
 
 /***************************************************************************//**
  * @brief
  *    Read data from a specific Mailbox address.
- *
- * @param[in] i2cspm
- *   The I2CSPM instance to use.
  *
  * @param[in] id
  *    The address of the Mailbox register
@@ -311,17 +293,13 @@ sl_status_t sparkfun_ccs811_get_status(sl_i2cspm_t *i2cspm, uint8_t *status);
  *    @retval SL_STATUS_OK Success
  *    @retval SL_STATUS_TRANSMIT I2C transmission error
  ******************************************************************************/
-sl_status_t sparkfun_ccs811_read_mailbox(sl_i2cspm_t *i2cspm,
-                                         uint8_t id,
+sl_status_t sparkfun_ccs811_read_mailbox(uint8_t id,
                                          uint8_t length,
                                          uint8_t *data);
 
 /***************************************************************************//**
  * @brief
  *    Switch the CCS811 chip from boot to application mode.
- *
- * @param[in] i2cspm
- *   The I2CSPM instance to use
  *
  * @return
  *    @retval SL_STATUS_OK  Success
@@ -331,39 +309,30 @@ sl_status_t sparkfun_ccs811_read_mailbox(sl_i2cspm_t *i2cspm,
  *    @retval SL_STATUS_INVALID_STATE Chip firmware did not switch to
  *   application mode
  ******************************************************************************/
-sl_status_t sparkfun_ccs811_start_application(sl_i2cspm_t *i2cspm);
+sl_status_t sparkfun_ccs811_start_application(void);
 
 /***************************************************************************//**
  * @brief
  *    Perform software reset on the CCS811.
  *
- * @param[in] i2cspm
- *   The I2CSPM instance to use
- *
  * @return
  *    @retval SL_STATUS_OK Success
  *    @retval SL_STATUS_TRANSMIT I2C transmission error
  ******************************************************************************/
-sl_status_t sparkfun_ccs811_software_reset(sl_i2cspm_t *i2cspm);
+sl_status_t sparkfun_ccs811_software_reset(void);
 
 /***************************************************************************//**
  * @brief
  *    Check whether new measurement data is available.
  *
- * @param[in] i2cspm
- *   The I2CSPM instance to use
- *
  * @return
  *    True if new data available, otherwise false
  ******************************************************************************/
-bool sparkfun_ccs811_is_data_available(sl_i2cspm_t *i2cspm);
+bool sparkfun_ccs811_is_data_available(void);
 
 /***************************************************************************//**
  * @brief
  *    Read measurement data (eCO2 and TVOC) from the CCS811 sensor.
- *
- * @param[in] i2cspm
- *   The I2CSPM instance to use
  *
  * @param[out] eco2
  *    The equivalent CO2 level (in ppm) read from the sensor
@@ -375,16 +344,12 @@ bool sparkfun_ccs811_is_data_available(sl_i2cspm_t *i2cspm);
  *    @retval SL_STATUS_OK Success
  *    @retval SL_STATUS_TRANSMIT I2C transmission error
  ******************************************************************************/
-sl_status_t sparkfun_ccs811_get_measurement(sl_i2cspm_t *i2cspm,
-                                            uint16_t *eco2,
+sl_status_t sparkfun_ccs811_get_measurement(uint16_t *eco2,
                                             uint16_t *tvoc);
 
 /***************************************************************************//**
  * @brief
  *    Get the latest readings from the sense resistor of the CCS811 sensor.
- *
- * @param[in] i2cspm
- *   The I2CSPM instance to use
  *
  * @param[out] current
  *    The value of current through the sensor
@@ -397,16 +362,12 @@ sl_status_t sparkfun_ccs811_get_measurement(sl_i2cspm_t *i2cspm,
  *    @retval SL_STATUS_OK Success
  *    @retval SL_STATUS_TRANSMIT I2C transmission error
  *****************************************************************************/
-sl_status_t sparkfun_ccs811_get_raw_data(sl_i2cspm_t *i2cspm,
-                                         uint16_t *current,
+sl_status_t sparkfun_ccs811_get_raw_data(uint16_t *current,
                                          uint16_t *rawData);
 
 /***************************************************************************//**
  * @brief
  *    Write temperature and humidity values to the environmental data regs.
- *
- * @param[in] i2cspm
- *   The I2CSPM instance to use.
  *
  * @param[in] tempData
  *    The environmental temperature in milliCelsius
@@ -418,8 +379,7 @@ sl_status_t sparkfun_ccs811_get_raw_data(sl_i2cspm_t *i2cspm,
  *    @retval SL_STATUS_OK Success
  *    @retval SL_STATUS_TRANSMIT I2C transmission error
  ******************************************************************************/
-sl_status_t sparkfun_ccs811_set_env_data(sl_i2cspm_t *i2cspm,
-                                         int32_t tempData,
+sl_status_t sparkfun_ccs811_set_env_data(int32_t tempData,
                                          uint32_t rhData);
 
 /** @} (end addtogroup ccs811) */

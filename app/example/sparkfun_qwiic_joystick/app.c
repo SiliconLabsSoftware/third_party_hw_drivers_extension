@@ -34,16 +34,34 @@
  * This code will not be maintained.
  *
  ******************************************************************************/
-#include "sl_sleeptimer.h"
-#include "app_log.h"
-#include "sl_i2cspm_instances.h"
 #include "sparkfun_qwiic_joystick.h"
+#include "sl_sleeptimer.h"
 
-#define READING_INTERVAL_MSEC 200
+#if (defined(SLI_SI917))
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+#else
+#include "sl_i2cspm_instances.h"
+#include "app_log.h"
+#endif
+
+#if (defined(SLI_SI917))
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
+#if (defined(SLI_SI917))
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
+
+#define READING_INTERVAL_MSEC        200
 
 static volatile bool read_position = false;
 // Periodic timer handle.
 static sl_sleeptimer_timer_handle_t app_periodic_timer;
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
 
 static void app_periodic_timer_cb(sl_sleeptimer_timer_handle_t *timer,
                                   void *data);
@@ -54,22 +72,40 @@ static void app_periodic_timer_cb(sl_sleeptimer_timer_handle_t *timer,
 void app_init(void)
 {
   sl_status_t sc;
-  uint8_t addr[255];
-  uint8_t num_dev;
+  uint8_t address[255];
+  uint8_t num_dev = 0;
 
-  // initialize joystick.
-  sc = sparkfun_joystick_init(sl_i2cspm_qwiic, SPARKFUN_JOYSTICK_DEFAULT_ADDR);
-  if (sc != SL_STATUS_OK) {
-    app_log("Warning! Failed to initialize Joystick\r\n");
-  } else {
-    app_log("Joystick initialized successfully!\r\n");
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_qwiic;
+#endif
+
+  // Initialize joystick.
+  sc = sparkfun_joystick_init(app_i2c_instance, SPARKFUN_JOYSTICK_DEFAULT_ADDR);
+
+  if (sc == SL_STATUS_NOT_AVAILABLE) {
+    app_printf("Joystick not found on the specified address.\r\r\n");
+    app_printf("\r\nScanning address of all Joysticks...\n");
+    sparkfun_joystick_scan_address(address, &num_dev);
+
+    if (num_dev == 0) {
+      app_printf("No device is found on I2C bus.\r\r\n");
+      return;
+    }
+
+    for (int i = 0; i < num_dev; i++) {
+      app_printf("\rDevice %d: address: 0x%x\n", i + 1, address[i]);
+    }
+
+    app_printf("Select the desired device, build and rerun the example.\r\n");
+    return;
+  } else if (sc != SL_STATUS_OK) {
+    app_printf("Failed to initialize Joystick!\r\n");
+    return;
   }
 
-  app_log("\r\nScan I2C address of all Joystick connected on the I2C bus.\r\n");
-  sc = sparkfun_joystick_scan_address(addr, &num_dev);
-  for (int i = 0; i < num_dev; i++) {
-    app_log("Device %d: address: 0x%x\r\n", i + 1, *addr + i);
-  }
+  app_printf("Joystick initialized successfully!\r\n");
 
   // Start timer used for periodic indications.
   sl_sleeptimer_start_periodic_timer_ms(&app_periodic_timer,
@@ -78,7 +114,7 @@ void app_init(void)
                                         NULL,
                                         0,
                                         1);
-  app_log("\r\nStart reading Position\r\n");
+  app_printf("\r\nStart reading Position\r\n");
 }
 
 /***************************************************************************//**
@@ -99,25 +135,25 @@ void app_process_action(void)
   // Reading current horizontal position
   sc = sparkfun_joystick_read_horizontal_position(&data_pos);
   if (sc != SL_STATUS_OK) {
-    app_log("Warning! Invalid Joystick reading\r\n");
+    app_printf("Warning! Invalid Joystick reading\r\n");
   } else {
-    app_log("X = %d, ", data_pos);
+    app_printf("X = %d, ", data_pos);
   }
 
   // Reading current vertical position
   sc = sparkfun_joystick_read_vertical_position(&data_pos);
   if (sc != SL_STATUS_OK) {
-    app_log("Warning! Invalid Joystick reading\r\n");
+    app_printf("Warning! Invalid Joystick reading\r\n");
   } else {
-    app_log("Y = %d, ", data_pos);
+    app_printf("Y = %d, ", data_pos);
   }
 
   // Read button postion
   sc = sparkfun_joystick_read_button_position(&bt_pos);
   if (sc != SL_STATUS_OK) {
-    app_log("Warning! Invalid Joystick reading\r\n");
+    app_printf("Warning! Invalid Joystick reading\r\n");
   } else {
-    app_log("Button = %d\r\n", bt_pos);
+    app_printf("Button = %d\r\n", bt_pos);
   }
 }
 

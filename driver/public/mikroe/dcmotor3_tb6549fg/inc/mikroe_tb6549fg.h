@@ -41,8 +41,7 @@
 #define MIKROE_TB6549FG_H_
 
 #include "sl_status.h"
-#include "sl_pwm.h"
-#include "stddef.h"
+#include "drv_pwm.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -102,7 +101,7 @@ extern "C" {
  *    SL_STATUS_OK Successful initialization.
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_tb6549fg_init(sl_pwm_instance_t *pwm_instance);
+sl_status_t mikroe_tb6549fg_init(mikroe_pwm_handle_t pwm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -115,7 +114,7 @@ sl_status_t mikroe_tb6549fg_init(sl_pwm_instance_t *pwm_instance);
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if pwm_instance is null.
  ******************************************************************************/
-sl_status_t mikroe_tb6549fg_set_pwm_instance(sl_pwm_instance_t *pwm_instance);
+sl_status_t mikroe_tb6549fg_set_pwm_instance(mikroe_pwm_handle_t pwm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -207,4 +206,4 @@ void mikroe_tb6549fg_stop(void);
 }
 #endif
 
-#endif /* MIKROE_TB6549FG_H_ */
+#endif // MIKROE_TB6549FG_H_

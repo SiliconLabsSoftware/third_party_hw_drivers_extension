@@ -1,4 +1,3 @@
-# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
 project_name: mikroe_barcode2_em3080w
 package: platform
 label: Third Party Hardware Drivers - EM3080-W - Barcode 2 Click (Mikroe)
@@ -43,8 +42,6 @@ component:
 configuration:
 - name: SL_IOSTREAM_USART_MIKROE_FLOW_CONTROL_TYPE
   value: usartHwFlowControlNone
-- name: SL_IOSTREAM_USART_MIKROE_BAUDRATE
-  value: 9600
 - name: SL_IOSTREAM_USART_MIKROE_RX_BUFFER_SIZE
   value: 256
 
@@ -53,18 +50,14 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/mikroe_barcode2_em3080w/image/hardware_connection.png
     directory: "image"
   - path: ../../documentation/example/mikroe_barcode2_em3080w/image/create_example.png
     directory: "image"
-  - path: ../../documentation/example/mikroe_barcode2_em3080w/image/barcode2_config.png
-    directory: "image"
   - path: ../../documentation/example/mikroe_barcode2_em3080w/image/log.png
-    directory: "image"
-  - path: ../../documentation/example/mikroe_barcode2_em3080w/image/uart_config.png
     directory: "image"
 
 ui_hints:

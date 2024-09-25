@@ -12,8 +12,9 @@ requires:
   - name: status
   - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_i2c
-  - name: mikroe_peripheral_driver_uart
 config_file:
+  - path: public/mikroe/hvac_scd41/config/mikroe_scd41_config.h
+    file_id: mikroe_scd41_config_id
 provides:
   - name: hvac_scd41
     allow_multiple: false

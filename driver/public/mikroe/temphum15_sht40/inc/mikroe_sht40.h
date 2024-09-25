@@ -36,10 +36,11 @@
  * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
-#ifndef MIKROE_TEMPHUM15_SHT40_INC_MIKROE_SHT40_H_
-#define MIKROE_TEMPHUM15_SHT40_INC_MIKROE_SHT40_H_
+#ifndef MIKROE_SHT40_H
+#define MIKROE_SHT40_H
+
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 #include "temphum15.h"
 
 #ifdef __cplusplus
@@ -109,7 +110,7 @@ typedef struct {
  * @brief
  *    Initialization function.
  *
- * @param[in] i2cspm_instance
+ * @param[in] instance
  *    I2CSPM instance
  *
  * @return
@@ -117,20 +118,20 @@ typedef struct {
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_sht40_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_sht40_init(mikroe_i2c_handle_t instance);
 
 /***************************************************************************//**
  * @brief
  *    This function sets the IC2SPM instance used by platform functions.
  *
- * @param[in] i2cspm_instance
+ * @param[in] instance
  *    I2CSPM instance
  *
  * @return
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null.
  ******************************************************************************/
-sl_status_t mikroe_sht40_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_sht40_set_i2csmp_instance(mikroe_i2c_handle_t instance);
 
 /***************************************************************************//**
  * @brief
@@ -216,4 +217,4 @@ sl_status_t mikroe_sht40_read_serial (uint32_t *serial_number);
 }
 #endif
 
-#endif /* MIKROE_TEMPHUM15_SHT40_INC_MIKROE_SHT40_H_ */
+#endif // MIKROE_SHT40_H

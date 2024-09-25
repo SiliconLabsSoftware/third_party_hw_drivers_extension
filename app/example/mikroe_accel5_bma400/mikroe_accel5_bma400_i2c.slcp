@@ -29,12 +29,11 @@ include:
 component:
 - id: sl_system
 - id: device_init
-- id: sleeptimer
 - id: i2cspm
   instance: [mikroe]
 - id: iostream_eusart
   instance: [vcom]
-- id: printf
+- id: app_log
 - id: gpiointerrupt
 - id: mikroe_accel5_bma400_i2c
   from: third_party_hw_drivers
@@ -44,8 +43,12 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
+toolchain_settings:
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+    
 other_file:
   - path: ../../documentation/example/mikroe_accel5_bma400/image/hardware_connection.png
     directory: "image"

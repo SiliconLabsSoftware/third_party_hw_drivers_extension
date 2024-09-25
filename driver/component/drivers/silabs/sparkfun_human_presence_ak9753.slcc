@@ -9,12 +9,12 @@ ui_hints:
   visibility: basic
 root_path: driver
 requires:
-  - name: status
-  - name: gpiointerrupt
-  - name: i2cspm
-recommends:
-  - id: i2cspm
-    instance: [qwiic]
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_i2c
+  - name: mikroe_peripheral_driver_digital_io
+
 config_file:
   - path: public/silabs/human_presence_ak9753/config/sparkfun_ak9753_config.h
     file_id: driver_config_ak9753
@@ -28,7 +28,5 @@ include:
   - path: public/silabs/human_presence_ak9753/inc
     file_list:
       - path: sparkfun_ak9753.h
-      - path: sparkfun_ak9753_platform.h
 source:
   - path: public/silabs/human_presence_ak9753/src/sparkfun_ak9753.c
-  - path: public/silabs/human_presence_ak9753/src/sparkfun_ak9753_platform.c

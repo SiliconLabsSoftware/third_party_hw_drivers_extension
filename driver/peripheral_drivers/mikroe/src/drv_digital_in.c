@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file drv_digital_in.h
+ * @file drv_digital_in.c
  * @brief mikroSDK 2.0 Click Peripheral Drivers - Digital IN
  * @version 1.0.0
  *******************************************************************************

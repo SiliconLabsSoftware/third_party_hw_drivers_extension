@@ -114,11 +114,10 @@ void app_init(void)
   GPIO_ExtIntConfig(WATER_DETECT_INT_PORT,
                     WATER_DETECT_INT_PIN,
                     WATER_DETECT_INT_PIN,
-                    1,
-                    1,
-                    1);
+                    true,
+                    true,
+                    true);
   GPIOINT_CallbackRegister(WATER_DETECT_INT_PIN, wd_int_callback);
-  GPIO_IntEnable(WATER_DETECT_INT_PIN);
 #endif
 #endif
   app_printf("  Initialization Driver   \r\n");

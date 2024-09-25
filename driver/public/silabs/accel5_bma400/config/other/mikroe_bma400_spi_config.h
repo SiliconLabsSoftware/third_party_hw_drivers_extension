@@ -44,20 +44,40 @@
 extern "C" {
 #endif
 
+#ifndef SLI_SI917
 #include "em_gpio.h"
+#endif
+
+// <<< Use Configuration Wizard in Context Menu >>>
+
+//<h>MIKROE BMA400 SPI Configuration
+
+//  <e>MIKROE BMA400 SPI UC Configuration
+//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+//  <i> Default: 0
+#define MIKROE_BMA400_SPI_UC                  0
+
+// <o MIKROE_BMA400_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
+// <i> Default: 10000000
+#define MIKROE_BMA400_SPI_BITRATE             10000000
+
+// </e>
+// </h>
+// <<< end of configuration section >>>
 
 // <<< sl:start pin_tool >>>
 
 // <gpio optional=true> MIKROE_BMA400_INT1
 // $[GPIO_MIKROE_BMA400_INT1]
-#warning "Interrupt pin for MAX30101 is not configured"
+#warning "Interrupt pin 1 for BMA400 is not configured"
 // #define MIKROE_BMA400_INT1_PORT                  gpioPortB
 // #define MIKROE_BMA400_INT1_PIN                   1
 // [GPIO_MIKROE_BMA400_INT1]$
 
 // <gpio optional=true> MIKROE_BMA400_INT2
 // $[GPIO_MIKROE_BMA400_INT2]
-#warning "Interrupt pin for MAX30101 is not configured"
+#warning "Interrupt pin 2 for BMA400 is not configured"
 // #define MIKROE_BMA400_INT2_PORT                  gpioPortA
 // #define MIKROE_BMA400_INT2_PIN                   0
 // [GPIO_MIKROE_BMA400_INT2]$

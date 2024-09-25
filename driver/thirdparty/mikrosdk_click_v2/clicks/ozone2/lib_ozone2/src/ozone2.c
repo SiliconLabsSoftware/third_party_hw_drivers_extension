@@ -145,7 +145,9 @@ err_t ozone2_read_signal_voltage ( ozone2_t *ctx, float *data_out )
         uint8_t rx_buf[ 3 ];
 
         spi_master_select_device( ctx->chip_select );
-        Delay_10us( );
+        // FIXED ozone2
+        // Silabs - 15/10/2024 Fix issue: increase delay before check sensor is ready
+        Delay_22us( );
         while ( digital_in_read( &ctx->miso ) );
         err_t error = spi_master_read( &ctx->spi, rx_buf, 3 );
         spi_master_deselect_device( ctx->chip_select );

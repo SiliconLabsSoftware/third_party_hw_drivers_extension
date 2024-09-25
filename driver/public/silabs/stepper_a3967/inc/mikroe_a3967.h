@@ -43,6 +43,10 @@
 #include <stdbool.h>
 #include "sl_status.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define MIKROE_A3967_STEP_MIN_FREQUENCY   1
 #define MIKROE_A3967_STEP_MAX_FREQUENCY   500000
 
@@ -166,4 +170,7 @@ bool mikroe_a3967_get_state(void);
  ******************************************************************************/
 sl_status_t mikroe_a3967_step(uint16_t step);
 
-#endif /* MIKROE_A3967_H_ */
+#ifdef __cplusplus
+}
+#endif
+#endif // MIKROE_A3967_H_

@@ -41,7 +41,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
-
 #include "w5x00.h"
 
 #if W5x00_ETHERNET_LARGE_BUFFERS_ENABLE
@@ -52,10 +51,12 @@ static const uint16_t SSIZE = 2048;
 static const uint16_t SMASK = 0x07FF;
 #endif
 
-#define SBASE(socknum)  \
-  ((chip) == W5x00_W5100 ? ((socknum) * SSIZE + 0x4000) : ((socknum) * SSIZE + 0x8000))
-#define RBASE(socknum)  \
-  ((chip) == W5x00_W5100 ? ((socknum) * SSIZE + 0x6000) : ((socknum) * SSIZE + 0xC000))
+#define SBASE(socknum) \
+  ((chip)              \
+   == W5x00_W5100 ? ((socknum) * SSIZE + 0x4000) : ((socknum) * SSIZE + 0x8000))
+#define RBASE(socknum) \
+  ((chip)              \
+   == W5x00_W5100 ? ((socknum) * SSIZE + 0x6000) : ((socknum) * SSIZE + 0xC000))
 
 static bool initialized = false;
 
@@ -159,7 +160,7 @@ static uint8_t w5x00_is_w5500(void)
 /***************************************************************************//**
  * W5x00 Init.
  ******************************************************************************/
-bool w5x00_init(SPIDRV_Handle_t handle)
+bool w5x00_init(mikroe_spi_handle_t handle)
 {
   uint8_t i;
 
@@ -434,11 +435,11 @@ uint16_t w5x00_read(uint16_t addr, uint8_t *buf, uint16_t len)
   if (chip == W5x00_W5100) {
     for (uint16_t i = 0; i < len; i++) {
       w5x00_bus_select();
-      ret += w5x00_bus_writebyte(0x0F);
-      ret += w5x00_bus_writebyte(addr >> 8);
-      ret += w5x00_bus_writebyte(addr & 0xFF);
+      cmd[0] = (0x0F);
+      cmd[1] = (addr >> 8);
+      cmd[2] = (addr & 0xFF);
+      ret += w5x00_bus_write_then_read(cmd, 3, &buf[i], 1);
       addr++;
-      ret += w5x00_bus_read(&buf[i], 1);
       w5x00_bus_deselect();
     }
   } else if (chip == W5x00_W5200) {
@@ -447,9 +448,8 @@ uint16_t w5x00_read(uint16_t addr, uint8_t *buf, uint16_t len)
     cmd[1] = addr & 0xFF;
     cmd[2] = (len >> 8) & 0x7F;
     cmd[3] = len & 0xFF;
-    ret += w5x00_bus_write(cmd, 4);
     memset(buf, 0, len);
-    ret += w5x00_bus_read(buf, len);
+    ret += w5x00_bus_write_then_read(cmd, 4, buf, len);
     w5x00_bus_deselect();
   } else { // chip == W5x00_W5500
     w5x00_bus_select();
@@ -491,9 +491,8 @@ uint16_t w5x00_read(uint16_t addr, uint8_t *buf, uint16_t len)
       cmd[2] = ((addr >> 6) & 0xE0) | 0x18; // 2K buffers
 #endif
     }
-    ret += w5x00_bus_write(cmd, 3);
     memset(buf, 0, len);
-    ret += w5x00_bus_read(buf, len);
+    ret += w5x00_bus_write_then_read(cmd, 3, buf, len);
     w5x00_bus_deselect();
   }
   if (ret) {

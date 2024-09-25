@@ -37,9 +37,10 @@
  *
  ******************************************************************************/
 
-#include "mikroe_dps310_spi.h"
-#include "pressure3.h"
 #include "sl_status.h"
+#include "mikroe_dps310_spi.h"
+#include "mikroe_dps310_spi_config.h"
+#include "pressure3.h"
 
 /********************************************************************************
  * static variables
@@ -51,7 +52,7 @@ static pressure3_t ctx;
 /********************************************************************************
  * public function
  *******************************************************************************/
-sl_status_t mikroe_pressure3_init(SPIDRV_Handle_t spidrv_inst)
+sl_status_t mikroe_pressure3_init(mikroe_spi_handle_t spidrv_inst)
 {
   pressure3_cfg_t cfg;
 
@@ -61,16 +62,24 @@ sl_status_t mikroe_pressure3_init(SPIDRV_Handle_t spidrv_inst)
 
   // Call basic setup functions
   pressure3_cfg_setup(&cfg);
-  cfg.cs = hal_gpio_pin_name(spidrv_inst->portCs, spidrv_inst->pinCs);
   cfg.sel = PRESSURE3_MASTER_SPI;
   // Configure default i2csmp instance
   ctx.spi.handle = spidrv_inst;
+
+#if defined(DPS310_CS_PORT) && defined(DPS310_CS_PIN)
+  cfg.cs = hal_gpio_pin_name(DPS310_CS_PORT, DPS310_CS_PIN);
+#endif
+
+#if (MIKROE_DPS310_SPI_UC == 1)
+  cfg.spi_speed = MIKROE_DPS310_SPI_BITRATE;
+#endif
+
   if (PRESSURE3_OK != pressure3_init(&ctx, &cfg)) {
-    return SL_STATUS_FAIL;
-  } else {
-    pressure3_default_cfg(&ctx);
-    return SL_STATUS_OK;
+    return SL_STATUS_INITIALIZATION;
   }
+
+  pressure3_default_cfg(&ctx);
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_pressure3_generic_write(uint8_t reg,

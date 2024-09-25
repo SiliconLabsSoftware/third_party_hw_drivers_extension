@@ -1,23 +1,49 @@
 /***************************************************************************//**
- * @file
- * @brief Top level application functions
+ * @file app.c
+ * @brief Example application
  *******************************************************************************
  * # License
- * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc. Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement. This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
 #include "app.h"
 
+#if (defined(SLI_SI917))
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
+
 static volatile bool new_keypad_event = false;
-static sl_sleeptimer_timer_handle_t button_read_timer;
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
 
 #ifdef SAPRKFUN_KEYPAD_INT_PIN_EN
 
@@ -26,12 +52,13 @@ static sl_sleeptimer_timer_handle_t button_read_timer;
  ******************************************************************************/
 void app_sparkfun_buttonEvent_callback(const uint8_t pin)
 {
-  if (pin == SPARKFUN_KEYPAD_GPIO_INT_PIN) {
-    new_keypad_event = true;
-  }
+  (void)pin;
+  new_keypad_event = true;
 }
 
 #else //SAPRKFUN_KEYPAD_INT_PIN_EN
+
+static sl_sleeptimer_timer_handle_t button_read_timer;
 
 /***************************************************************************//**
  * Callback for the timer.
@@ -57,13 +84,13 @@ void app_init_sleeptimer(void)
                                                      0,
                                                      0);
   if (error_code == SL_STATUS_OK) {
-    printf("Sleep timer initialized successfully.\n");
+    app_printf("Sleep timer initialized successfully.\r\n");
   } else if (error_code == SL_STATUS_NULL_POINTER) {
-    printf("Error, invslid sleeptimer handle.\n");
+    app_printf("Error, invslid sleeptimer handle.\r\n");
   } else if (error_code == SL_STATUS_INVALID_STATE) {
-    printf("Error, sleeptimer already running.\n");
+    app_printf("Error, sleeptimer already running.\r\n");
   } else if (error_code == SL_STATUS_INVALID_PARAMETER) {
-    printf("Error, invalid sleeptimer time_out parameter.\n");
+    app_printf("Error, invalid sleeptimer time_out parameter.\r\n");
   }
 }
 
@@ -74,11 +101,11 @@ void app_init_sleeptimer(void)
  ******************************************************************************/
 void app_init(void)
 {
-#ifdef SAPRKFUN_KEYPAD_INT_PIN_EN
+  app_init_keypad();
+
+#ifndef SAPRKFUN_KEYPAD_INT_PIN_EN
   app_init_sleeptimer();
 #endif //SAPRKFUN_KEYPAD_INT_PIN_EN
-
-  app_init_keypad();
 }
 
 /***************************************************************************//**
@@ -98,29 +125,50 @@ void app_process_action(void)
 void app_init_keypad(void)
 {
   sl_status_t status;
-  status = sparkfun_keypad_init(sl_i2cspm_qwiic, sparkfun_keypad_get_address());
-  if (status == SL_STATUS_INITIALIZATION) {
-    uint8_t address = 0;
-    uint8_t num_dev = 0;
-    printf("Keypad not found on the specified address.\n");
-    status = sparkfun_keypad_scan_address(&address, &num_dev);
-    if (status == SL_STATUS_NULL_POINTER) {
-      printf("Keypad address scanner invallid input parameter.\n");
-    } else {
-      printf("Keypad address found!\n");
+  uint8_t address[255];
+  uint8_t num_dev = 0;
+  frw_rev_t fw;
+
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_qwiic;
+#endif
+
+#ifdef SAPRKFUN_KEYPAD_INT_PIN_EN
+  status = sparkfun_keypad_init(app_i2c_instance, SPARKFUN_KEYPAD_DEFAULT_ADDR,
+                                &app_sparkfun_buttonEvent_callback);
+#else
+  status = sparkfun_keypad_init(app_i2c_instance,
+                                SPARKFUN_KEYPAD_DEFAULT_ADDR,
+                                NULL);
+#endif
+
+  if (status == SL_STATUS_NOT_AVAILABLE) {
+    app_printf("Keypad not found on the specified address.\r\r\n");
+    app_printf("\r\nScanning address of all keypads...\n");
+    status = sparkfun_keypad_scan_address(address, &num_dev);
+
+    if (num_dev == 0) {
+      app_printf("No device is found on I2C bus.\r\r\n");
+      return;
     }
-    status = sparkfun_keypad_init(sl_i2cspm_qwiic, address);
-    if (status == SL_STATUS_OK) {
-      printf("I2C initialized successfully\n");
-    } else {
-      printf("I2C initialization failed\n");
+
+    for (int i = 0; i < num_dev; i++) {
+      app_printf("\rDevice %d: address: 0x%x\n", i + 1, address[i]);
     }
-  } else if (status == SL_STATUS_NULL_POINTER) {
-    printf("I2C initialization failed, null pointer error\n");
-  } else if (status == SL_STATUS_INVALID_PARAMETER) {
-    printf("I2C initialization error, invalid address\n");
-  } else {
-    printf("I2C initialized successfully\n");
+
+    app_printf("Select the desired device, build and rerun the example.\r\n");
+    return;
+  } else if (status != SL_STATUS_OK) {
+    app_printf("Failed to initialize Keypad!\r\n");
+    return;
+  }
+
+  app_printf("Keypad initialized successfully!\r\n");
+
+  if (SL_STATUS_OK == sparkfun_keypad_get_firmware_version(&fw)) {
+    app_printf("Keypad FW: %02d.%02d\r\n", fw.major, fw.minor);
   }
 }
 
@@ -133,6 +181,6 @@ void app_handle_new_button(void)
   sparkfun_keypad_update_fifo();
   sparkfun_keypad_read_last_button(&new_btn);
   if (new_btn > 0) {
-    printf("The last pressed button: %c\n", new_btn);
+    app_printf("The last pressed button: %c\r\n", new_btn);
   }
 }

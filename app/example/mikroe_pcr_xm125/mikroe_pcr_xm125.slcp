@@ -1,0 +1,60 @@
+project_name: mikroe_pcr_xm125
+package: platform
+label: Third Party Hardware Drivers - XM125 - PCR Click (Mikroe)
+description: |
+  This example project shows an example for Mikroe PCR Click board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_pcr_xm125/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: device_init
+- id: sl_system
+- id: component_catalog
+- id: sleeptimer
+- id: app_assert
+- id: app_log
+- id: iostream_eusart
+  instance: [vcom]
+- id: mikroe_pcr_xm125
+  from: third_party_hw_drivers
+
+toolchain_settings:
+define:
+- name: DEBUG_EFM
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+
+other_file:
+  - path: ../../documentation/example/mikroe_pcr_xm125/image/create_example.png
+    directory: image
+  - path: ../../documentation/example/mikroe_pcr_xm125/image/hardware_connection.png
+    directory: image
+  - path: ../../documentation/example/mikroe_pcr_xm125/image/console_log.png
+    directory: image
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true

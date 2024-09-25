@@ -8,28 +8,37 @@ quality: evaluation
 ui_hints:
   visibility: basic
 root_path: driver
+
 requires:
   - name: status
-  - name: emlib_gpio
-  - name: app_queue
+  - name: mikroe_peripheral_driver_digital_io
+  - name: silabs_core_circular_queue
   - name: sleeptimer
-  - name: iostream_usart
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_uart
+  - name: sl_string
+
 recommends:
   - id: iostream_usart
     instance: [bg96]
+
 config_file:
-  - path: public/mikroe/lte_iot2_bg96/config/brd2703a/mikroe_lte_iot2_bg96_config.h
+  - path: public/mikroe/lte_iot2_bg96/config/brd2703a/mikroe_bg96_config.h
     file_id: driver_config_lte_iot2
     condition: [brd2703a]
-  - path: public/mikroe/lte_iot2_bg96/config/brd4108a/mikroe_lte_iot2_bg96_config.h
+  - path: public/mikroe/lte_iot2_bg96/config/brd4108a/mikroe_bg96_config.h
     file_id: driver_config_lte_iot2
     condition: [brd4108a]
-  - path: public/mikroe/lte_iot2_bg96/config/brd4314a/mikroe_lte_iot2_bg96_config.h
+  - path: public/mikroe/lte_iot2_bg96/config/brd4314a/mikroe_bg96_config.h
     file_id: driver_config_lte_iot2
     condition: [brd4314a]
-  - path: public/mikroe/lte_iot2_bg96/config/other/mikroe_lte_iot2_bg96_config.h
+  - path: public/mikroe/lte_iot2_bg96/config/brd4338a/mikroe_bg96_config.h
     file_id: driver_config_lte_iot2
-    unless: [brd4314a, brd4108a, brd2703a]
+    condition: [brd4338a]
+  - path: public/mikroe/lte_iot2_bg96/config/other/mikroe_bg96_config.h
+    file_id: driver_config_lte_iot2
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
   - override:
       component: iostream_usart
       file_id: iostream_usart_config
@@ -54,6 +63,7 @@ config_file:
       instance: bg96
     path: public/mikroe/lte_iot2_bg96/config/other/sl_iostream_usart_bg96_config.h
     unless: [brd4314a, brd4108a, brd2703a]  
+    
 provides:
   - name: mikroe_lte_iot2
     allow_multiple: false

@@ -8,17 +8,32 @@ The OBDII Click can be used for the communication with the Electronic Control Un
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview).
-- [**OBDII Click** board](https://www.mikroe.com/obdii-click).
-- [OBDII cable](https://www.mikroe.com/obd-ii-to-db9-cable).
+- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
+- [**OBDII Click** board](https://www.mikroe.com/obdii-click)
+
+- [OBDII cable](https://www.mikroe.com/obd-ii-to-db9-cable)
 
 ## Hardware Connection ##
 
-The OBDII Click supports MikroBus, so it can connect easily to EFR32xG24 Explorer Kit's MikroBus header. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+- If the EFR32xG24 Explorer Kit is used:
 
-The hardware connection is shown in the image below:
+  The OBDII Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of Click board matches the 45-degree white line of the Explorer Kit.
 
-![board](image/hardware_connection.png)
+  The hardware connection is shown in the image below:
+
+    ![board](image/hardware_connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description       | BRD4338A GPIO            | BRD4002 Breakout Pad | OBDII Click |
+  | ----------------- | ------------------------ | -------------------- | ----------- |
+  | UART1_RX_PIN      | GPIO_6                   | P19                  | TX          |
+  | UART1_TX_PIN      | GPIO_7                   | P20                  | RX          |
+  | RESET             | GPIO_46                  | P24                  | RST         |
+  | INTERRUPT         | GPIO_47                  | P27                  | INT         |
 
 ## Setup ##
 
@@ -26,14 +41,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter **obdii**.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **obdii**.
+
 2. Click **Create** button on the **Third Party Hardware Drivers - STN1110 - OBDII Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 
-![Create_example](image/create_example.png)
+    ![Create_example](image/create_example.png)
+
+3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_obdii_stn1110/app.c` into the project root folder (overwriting existing file).
 
@@ -45,24 +63,27 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
+      **If the EFR32xG24 Explorer Kit is used:**
+
         - [Services] → [Timers] → [Sleep Timer]
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: **vcom**
         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: **mikroe**
         - [Third Party Hardware Drivers] → [Interface] → [STN1110 - OBDII Click (Mikroe)] → use default configuration
-
-            | Mikroe pin  | BRD2703A pin |
-            |:----------|:------------------:|
-            | STN1110_RESET | PC8 |
-            | STN1110_INT | PB1 |
-
         - [Application] → [Utility] → [Assert]
         - [Application] → [Utility] → [Log]
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [Application] → [Utility] → [Assert]
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [Third Party Hardware Drivers] → [Interface] → [STN1110 - OBDII Click (Mikroe)] → use default configuration
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [UART] → disable "UART1 DMA"
 
 4. Build and flash this example to the board.
 
 **Note :**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "STN1110 - OBDII Click (Mikroe)" component.
 

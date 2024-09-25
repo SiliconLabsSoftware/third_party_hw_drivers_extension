@@ -42,26 +42,47 @@
 
 #include "em_gpio.h"
 
+// <<< Use Configuration Wizard in Context Menu >>>
+
+//<h>MIKROE DS3231M I2C Configuration
+
+//  <e>MIKROE DS3231M I2C UC Configuration
+//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+//  <i> Default: 0
+#define MIKROE_DS3231M_I2C_UC                            0
+
+// <o MIKROE_DS3231M_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define MIKROE_DS3231M_I2C_SPEED_MODE                    0
+
+// </e>
+// </h>
+// <<< end of configuration section >>>
+
 // <<< sl:start pin_tool >>>
 
 // <gpio optional=true> MIKROE_DS3231M_INT
 // $[GPIO_MIKROE_DS3231M_INT]
-#define MIKROE_DS3231M_INT_PORT                        gpioPortB
-#define MIKROE_DS3231M_INT_PIN                         3
+#define MIKROE_DS3231M_INT_PORT                          gpioPortB
+#define MIKROE_DS3231M_INT_PIN                           3
 // [GPIO_MIKROE_DS3231M_INT]$
 
 // <gpio optional=true> MIKROE_DS3231M_AN
 // $[GPIO_MIKROE_DS3231M_AN]
-#define MIKROE_DS3231M_AN_PORT                         gpioPortB
-#define MIKROE_DS3231M_AN_PIN                          0
+#define MIKROE_DS3231M_AN_PORT                           gpioPortB
+#define MIKROE_DS3231M_AN_PIN                            0
 // [GPIO_MIKROE_DS3231M_AN]$
 
 // <gpio optional=true> MIKROE_DS3231M_RST
 // $[GPIO_MIKROE_DS3231M_RST]
-#define MIKROE_DS3231M_RST_PORT                        gpioPortC
-#define MIKROE_DS3231M_RST_PIN                         6
+#define MIKROE_DS3231M_RST_PORT                          gpioPortC
+#define MIKROE_DS3231M_RST_PIN                           6
 // [GPIO_MIKROE_DS3231M_RST]$
 
 // <<< sl:end pin_tool >>>
 
-#endif /* MIKROE_DS3231M_CONFIG_H_ */
+#endif // MIKROE_DS3231M_CONFIG_H_

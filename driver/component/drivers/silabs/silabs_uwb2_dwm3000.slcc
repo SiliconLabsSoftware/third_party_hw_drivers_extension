@@ -9,11 +9,19 @@ ui_hints:
 root_path: driver
 
 requires:
-  - name: status
-  - name: udelay
-  - name: spidrv_core
   - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: udelay
+    condition: [device_series_1]
+  - name: udelay
+    condition: [device_series_2]
   - name: gpiointerrupt
+    condition: [device_series_1]
+  - name: gpiointerrupt
+    condition: [device_series_2]
+  - name: mikroe_peripheral_driver_spi
+  - name: mikroe_peripheral_driver_digital_io
 
 provides:
   - name: mikroe_uwb2_dwm3000
@@ -32,9 +40,12 @@ config_file:
   - path: public/silabs/uwb2_dwm3000/config/brd4314a/uwb2_dwm3000_config.h
     file_id: driver_config_dwm3000
     condition: [brd4314a]
+  - path: public/silabs/uwb2_dwm3000/config/brd4338a/uwb2_dwm3000_config.h
+    file_id: driver_config_dwm3000
+    condition: [brd4338a]
   - path: public/silabs/uwb2_dwm3000/config/other/uwb2_dwm3000_config.h
     file_id: driver_config_dwm3000
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
 
 include:
   - path: inc
@@ -55,17 +66,11 @@ include:
   - path: public/silabs/uwb2_dwm3000/platform/deca_probe
     file_list:
       - path: deca_probe_interface.h
-  - path: public/silabs/uwb2_dwm3000/platform/deca_spi
-    file_list:
-      - path: deca_spi.h
   - path: public/silabs/uwb2_dwm3000/platform/port
     file_list:
-      - path: port_hal.h
-      - path: port.h     
+      - path: port_dw3000.h     
 source:
   - path: public/silabs/uwb2_dwm3000/platform/deca_probe/deca_probe_interface.c
-  - path: public/silabs/uwb2_dwm3000/platform/deca_sleep/deca_sleep.c
-  - path: public/silabs/uwb2_dwm3000/platform/deca_spi/deca_spi.c
   - path: public/silabs/uwb2_dwm3000/platform/port/port_dw3000.c
 
 toolchain_settings:
@@ -76,6 +81,21 @@ toolchain_settings:
     - "cortexm33"
   - option: gcc_linker_option
     value: "-Wl,--whole-archive ../libdwt_uwb_driver-m4-hfp-6.0.7.a -Wl,--no-whole-archive"
+    condition:
+    - "toolchain_gcc"
+    - "cortexm4"
+  - option: fpu
+    value: "fpv5-sp"
+    condition:
+    - "toolchain_gcc"
+    - "cortexm4"
+  - option: float_abi
+    value: "hard"
+    condition:
+    - "toolchain_gcc"
+    - "cortexm4"
+  - option: optimize
+    value: "speed"
     condition:
     - "toolchain_gcc"
     - "cortexm4"

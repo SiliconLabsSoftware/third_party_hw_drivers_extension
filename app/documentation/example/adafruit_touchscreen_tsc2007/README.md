@@ -8,29 +8,30 @@ This project aims to implement a hardware driver for Adafruit TSC2007 Touch Scre
 ## Required Hardware ##
 
 - [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 - [Adafruit ILI9341 - 2.4" TFT LCD with Touchscreen](https://www.adafruit.com/product/2478)
 - [Adafruit TSC2007 I2C Resistive Touch Screen Controller - STEMMA QT](https://www.adafruit.com/product/5423)
 
 ## Hardware Connection ##
 
-To test this example, you should connect the Adafruit TSC2007 Touch Screen Controller to the Adafruit 2.4" TFT LCD (with Touchscreen) and the EFR32xG24 Explorer Kit as shown below.
+To test this example, you should connect the Adafruit TSC2007 Touch Screen Controller to the Adafruit 2.4" TFT LCD (with Touchscreen) and your board as shown below.
 
 ![hardware_connection](image/hardware_connection.png)
 
-| EFR32xG24 Explorer Kit | Adafruit TSC2007 | Adafruit ILI9341 | Pin function |
-|---|---|---|--- |
-| PC4 | QWIIC SCL |-| I2C SCL |
-| PC5 | QWIIC SDA |-| I2C SDA |
-| PB0 | PENIRQ |-| GPIO IRQ |
-|-| X+ | XP(X+) | Analog |
-|-| Y+ | YP(Y+) | Analog |
-|-| Y- | YM(Y-) | Analog |
-|-| Y+ | XM(Y+) | Analog |
-| PC8 |-| D/C | GPIO |
-| PC0 |-| CS | SPI CS |
-| PC1 |-| CLK | SPI SCK |
-| PC2 |-| MISO | SPI MISO |
-| PC3 |-| MOSI | SPI MOSI |
+| EFR32xG24 Explorer Kit | SiWx917-RB4338A Radio Board | Adafruit TSC2007 | Adafruit ILI9341 | Pin function |
+| --- | --- | --- | --- | --- |
+| PC4 | ULP_GPIO_7 | QWIIC SCL | - | I2C SCL |
+| PC5 | ULP_GPIO_6 | QWIIC SDA | - | I2C SDA |
+| PB0 | - | PENIRQ |-| GPIO IRQ |
+| - | - | X+ | XP(X+) | Analog |
+| - | - | Y+ | YP(Y+) | Analog |
+| - | - | Y- | YM(Y-) | Analog |
+| - | - | Y+ | XM(Y+) | Analog |
+| PC8 | GPIO_47 (P26) | - | D/C | GPIO |
+| PC0 | GPIO_28 (P31) | - | CS | SPI CS |
+| PC1 | GPIO_25 (P25) | - | CLK | SPI SCK |
+| PC2 | GPIO_26 (P27) | - | MISO | SPI MISO |
+| PC3 | GPIO_27 (P29) | - | MOSI | SPI MOSI |
 
 ## Setup ##
 
@@ -38,7 +39,7 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter **tsc2007**.
+1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **tsc2007**.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - TSC2007 - Resistive Touch Screen Controller (Adafruit)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
     ![create_example](image/create_example.png)
@@ -70,7 +71,7 @@ You can either create a project based on an example project or start with an emp
 
 **Note:**
 
-- Make sure that the SDK extension is already installed. If not, please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install **TSC2007 - Resistive Touch Screen Controller (Adafruit)** component.
 

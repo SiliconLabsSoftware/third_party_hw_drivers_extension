@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file drv_digital_out.h
+ * @file drv_digital_out.c
  * @brief mikroSDK 2.0 Click Peripheral Drivers - Digital OUT
  * @version 1.0.0
  *******************************************************************************

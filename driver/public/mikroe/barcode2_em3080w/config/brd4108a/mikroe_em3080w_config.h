@@ -4,7 +4,7 @@
  * @version 1.0.0
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2024 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -39,6 +39,8 @@
 #ifndef MIKROE_EM3080W_CONFIG_H_
 #define MIKROE_EM3080W_CONFIG_H_
 
+#include "em_gpio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -47,14 +49,22 @@ extern "C" {
 
 // <gpio> CONFIG_EM3080W_RST
 // $[GPIO_CONFIG_EM3080W_RST]
-#define CONFIG_EM3080W_RST_PORT                       gpioPortC
-#define CONFIG_EM3080W_RST_PIN                        6
+#ifndef CONFIG_EM3080W_RST_PORT                 
+#define CONFIG_EM3080W_RST_PORT                  gpioPortC
+#endif
+#ifndef CONFIG_EM3080W_RST_PIN                  
+#define CONFIG_EM3080W_RST_PIN                   6
+#endif
 // [GPIO_CONFIG_EM3080W_RST]$
 
 // <gpio> CONFIG_EM3080W_TRG
 // $[GPIO_CONFIG_EM3080W_TRG]
-#define CONFIG_EM3080W_TRG_PORT                       gpioPortB
-#define CONFIG_EM3080W_TRG_PIN                        4
+#ifndef CONFIG_EM3080W_TRG_PORT                 
+#define CONFIG_EM3080W_TRG_PORT                  gpioPortB
+#endif
+#ifndef CONFIG_EM3080W_TRG_PIN                  
+#define CONFIG_EM3080W_TRG_PIN                   4
+#endif
 // [GPIO_CONFIG_EM3080W_TRG]$
 
 // <<< sl:end pin_tool >>>

@@ -51,14 +51,9 @@ To test this application, you should connect your board to the PC using a micro 
 
 1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *micro oled*.
 
-2. Click **Create** button on the project:
+2. Click **Create** button on the **Third Party Hardware Drivers - SSD1306 - Micro OLED Breakout Qwiic (SparkFun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 
-   - **Third Party Hardware Drivers - SSD1306 - Micro OLED Breakout Qwiic (Sparkfun)** example if the BGM220P Explorer Kit is used.
-   ![create_example](image/create_example_1.png)
-   - **Third Party Hardware Drivers - SSD1306 - Micro OLED Breakout Qwiic (Sparkfun) - Si91x** example if the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used.
-   ![create_example](image/create_example_2.png)
-
-   Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
@@ -93,7 +88,7 @@ To test this application, you should connect your board to the PC using a micro 
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "SSD1306 - Micro OLED Breakout (Sparkfun) - I2C" component.
 

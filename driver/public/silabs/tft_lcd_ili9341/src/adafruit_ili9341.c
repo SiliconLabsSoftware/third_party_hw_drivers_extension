@@ -39,20 +39,9 @@
 // -----------------------------------------------------------------------------
 //                       Includes
 // -----------------------------------------------------------------------------
-#include "em_cmu.h"
-#include "em_gpio.h"
 #include "sl_status.h"
 #include "sl_sleeptimer.h"
 #include "sl_component_catalog.h"
-#if defined(SL_CATALOG_ADAFRUIT_TFT_LCD_ILI9341_PRESENT)
-#include "em_usart.h"
-#include "adafruit_ili9341_spi_usart_config.h"
-#elif defined(SL_CATALOG_ADAFRUIT_TFT_LCD_ILI9341_DMA_PRESENT)
-#include "spidrv.h"
-#include "adafruit_ili9341_spi_dma_config.h"
-#include "sl_spidrv_ili9341_config.h"
-#endif
-
 #include "adafruit_ili9341.h"
 
 // -----------------------------------------------------------------------------
@@ -66,15 +55,67 @@
     b = t;                  \
   }
 
-#define SPI_CS_LOW() \
-  GPIO_PinOutClear(ADAFRUIT_ILI9341_CS_PORT, ADAFRUIT_ILI9341_CS_PIN);
-#define SPI_CS_HIGH() \
-  GPIO_PinOutSet(ADAFRUIT_ILI9341_CS_PORT, ADAFRUIT_ILI9341_CS_PIN);
+#define BYTE_PER_PIXEL          (2)       /* 2 Bytes color data per pixel */
+#define MAX_XFER_PIXEL_COUNT \
+  (MIPI_DBI_SPI_4WIRE_DMA_BUFFER_SIZE_MAX / BYTE_PER_PIXEL)
 
-#define SPI_DC_LOW() \
-  GPIO_PinOutClear(ILI9341_SPI_DC_PORT, ILI9341_SPI_DC_PIN);
-#define SPI_DC_HIGH() \
-  GPIO_PinOutSet(ILI9341_SPI_DC_PORT, ILI9341_SPI_DC_PIN);
+// -----------------------------------------------------------------------------
+//                       Local Variables
+// -----------------------------------------------------------------------------
+static bool color_swap_enabled = false;
+static uint32_t gtotal_pixel = 0;
+static uint32_t gpixel_transmit = 0;
+static uint32_t gpixel_transmit_counter = 0;
+static uint8_t *pColorBuffer = NULL;
+static void (*flush_area_callback)(void *arg) = NULL;
+static void *flush_area_callback_arg = NULL;
+static uint8_t *pColorSwap = NULL;
+
+static uint16_t dma_buffer[MIPI_DBI_SPI_4WIRE_DMA_BUFFER_SIZE_MAX / 2];
+
+static struct mipi_dbi_device mipi_dbi_device;
+
+static sl_status_t command_write(uint8_t cmd)
+{
+  return mipi_dbi_device.api->command_write(
+    &mipi_dbi_device,
+    cmd,
+    NULL, 0);
+}
+
+static sl_status_t write_display(const void *framebuf,
+                                 size_t framebuf_len,
+                                 mipi_dbi_transfer_complete_callback_t callback)
+{
+  struct mipi_dbi_display_buffer_descriptor desc;
+
+  desc.buf_size = framebuf_len;
+
+  return mipi_dbi_device.api->write_display(
+    &mipi_dbi_device,
+    (const uint8_t *)framebuf,
+    &desc,
+    PIXEL_FORMAT_RGB_565,
+    callback);
+}
+
+static sl_status_t write_display16(uint16_t data)
+{
+  struct mipi_dbi_display_buffer_descriptor desc;
+  uint8_t bytes[2];
+
+  bytes[0] = data >> 8;
+  bytes[1] = data & 0x00FF;
+
+  desc.buf_size = 2;
+
+  return mipi_dbi_device.api->write_display(
+    &mipi_dbi_device,
+    bytes,
+    &desc,
+    PIXEL_FORMAT_RGB_565,
+    NULL);
+}
 
 /***************************************************************************//**
  * @brief
@@ -92,67 +133,14 @@
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_FAIL if the process is failed.
  ******************************************************************************/
-static sl_status_t adafruit_ili9341_spi_send_command(uint8_t command,
-                                                     uint8_t *data,
-                                                     uint8_t len)
+static sl_status_t send_command(uint8_t command,
+                                const uint8_t *data,
+                                uint8_t len)
 {
-  SPI_CS_LOW();
-  SPI_DC_LOW();
-  USART_SpiTransfer(ADAFRUIT_ILI9341_PERIPHERAL, command);
-  if (len != 0) {
-    SPI_DC_HIGH();
-    while (len--) {
-      USART_SpiTransfer(ADAFRUIT_ILI9341_PERIPHERAL, *data);
-      data++;
-    }
-  }
-  SPI_CS_HIGH();
-
-  return SL_STATUS_OK;
-}
-
-/***************************************************************************//**
- * @brief
- *  Write a single command byte to the display.
- *
- * @param[in] cmd
- *  8-bit command to write.
- *
- * @return
- *  SL_STATUS_OK if there are no errors.
- *  SL_STATUS_FAIL if the process is failed.
- ******************************************************************************/
-static sl_status_t adafruit_ili9341_spi_write_command(uint8_t cmd)
-{
-  SPI_DC_LOW();
-  USART_SpiTransfer(ADAFRUIT_ILI9341_PERIPHERAL, cmd);
-  SPI_DC_HIGH();
-
-  return SL_STATUS_OK;
-}
-
-/***************************************************************************//**
- * @brief
- *  Write a single command word to the display.
- *
- * @param[in] cmd
- *  16-bit command to write.
- *
- * @return
- *  SL_STATUS_OK if there are no errors.
- *  SL_STATUS_FAIL if the process is failed.
- ******************************************************************************/
-static sl_status_t adafruit_ili9341_spi_write16(uint16_t data)
-{
-  uint8_t bytes[2];
-
-  bytes[0] = data >> 8;
-  bytes[1] = data & 0x00FF;
-
-  USART_SpiTransfer(ADAFRUIT_ILI9341_PERIPHERAL, bytes[0]);
-  USART_SpiTransfer(ADAFRUIT_ILI9341_PERIPHERAL, bytes[1]);
-
-  return SL_STATUS_OK;
+  return mipi_dbi_device.api->command_write(
+    &mipi_dbi_device,
+    command,
+    data, len);
 }
 
 /***************************************************************************//**
@@ -174,15 +162,21 @@ static sl_status_t adafruit_ili9341_spi_read_command8(uint8_t *result,
                                                       uint8_t command,
                                                       uint8_t index)
 {
-  SPI_CS_LOW();
-  SPI_DC_LOW();
-  USART_SpiTransfer(ADAFRUIT_ILI9341_PERIPHERAL, command);
-  SPI_DC_HIGH();
-  do {
-    *result = USART_SpiTransfer(ADAFRUIT_ILI9341_PERIPHERAL, 0x00);
-  } while (index--); // Discard bytes up to index'th
-  SPI_CS_HIGH();
+  sl_status_t status;
 
+  status = command_write(command);
+  if (SL_STATUS_OK != status) {
+    return status;
+  }
+  do {
+    status = mipi_dbi_device.api->command_read(
+      &mipi_dbi_device,
+      NULL, 0,
+      result, 1);
+    if (SL_STATUS_OK != status) {
+      return status;
+    }
+  } while (index--); // Discard bytes up to index'th
   return SL_STATUS_OK;
 }
 
@@ -201,11 +195,38 @@ static sl_status_t adafruit_ili9341_spi_read_command8(uint8_t *result,
  ******************************************************************************/
 static sl_status_t adafruit_ili9341_write_color(uint16_t color, uint32_t len)
 {
-  while (len--) {
-    adafruit_ili9341_spi_write16(color);
+  uint32_t i, n, size;
+  sl_status_t status;
+
+  if (!len) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+  for (n = 0; n < len; n += MAX_XFER_PIXEL_COUNT) {
+    if (n + MAX_XFER_PIXEL_COUNT <= len) {
+      size = MAX_XFER_PIXEL_COUNT;
+    } else {
+      size = len - n;
+    }
+
+    for (i = 0; i < size; i++) {
+      dma_buffer[i] = color >> 8 | ((uint16_t)(color & 0xff) << 8);
+    }
+//    retVal = SPIDRV_MTransmitB(gspi_handle, dma_buffer, size * 2);
+//    if (ECODE_OK != retVal) {
+//      goto error;
+//    }
+
+    status = write_display(dma_buffer,
+                           size * 2,
+                           NULL);
+    if (SL_STATUS_OK != status) {
+      goto error;
+    }
   }
 
   return SL_STATUS_OK;
+  error:
+  return SL_STATUS_IO;
 }
 
 /***************************************************************************//**
@@ -223,15 +244,39 @@ static sl_status_t adafruit_ili9341_write_color(uint16_t color, uint32_t len)
  ******************************************************************************/
 static sl_status_t adafruit_ili9341_write_pixels(uint16_t *colors, uint32_t len)
 {
+  uint32_t i, n, size;
+  sl_status_t status;
+
   if (!len) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  while (len--) {
-    adafruit_ili9341_spi_write16(*colors);
-    colors++;
+  for (n = 0; n < len; n += MAX_XFER_PIXEL_COUNT) {
+    if (n + MAX_XFER_PIXEL_COUNT <= len) {
+      size = MAX_XFER_PIXEL_COUNT;
+    } else {
+      size = len - n;
+    }
+
+    for (i = 0; i < size; i++) {
+      dma_buffer[i] = *colors >> 8 | ((uint16_t)(*colors & 0xff) << 8);
+      colors++;
+    }
+//    retVal = SPIDRV_MTransmitB(gspi_handle, dma_buffer, size * 2);
+//    if (ECODE_OK != retVal) {
+//      goto error;
+//    }
+    status = write_display(dma_buffer,
+                           size * 2,
+                           NULL);
+    if (SL_STATUS_OK != status) {
+      goto error;
+    }
   }
+
   return SL_STATUS_OK;
+  error:
+  return SL_STATUS_IO;
 }
 
 /***************************************************************************//**
@@ -327,9 +372,7 @@ static sl_status_t adafruit_ili9341_fill_rect(int16_t x,
             if (y2 >= ILI9341_TFTHEIGHT) {
               h = ILI9341_TFTHEIGHT - y;
             }
-            SPI_CS_LOW();
             adafruit_ili9341_write_fill_rect_preclipped(x, y, w, h, color);
-            SPI_CS_HIGH();
           }
         }
       }
@@ -339,82 +382,6 @@ static sl_status_t adafruit_ili9341_fill_rect(int16_t x,
   return SL_STATUS_OK;
 }
 
-static void spi_usart_init(void)
-{
-  USART_InitSync_TypeDef usartInit = USART_INITSYNC_DEFAULT;
-
-  usartInit.msbf = true;
-  usartInit.clockMode = usartClockMode0;
-  usartInit.master = true;
-  usartInit.baudrate = ADAFRUIT_ILI9341_SPI_BITRATE;
-
-#if defined(_CMU_HFPERCLKEN0_MASK)
-  CMU_ClockEnable(cmuClock_HFPER, true);
-#endif
-  CMU_ClockEnable(cmuClock_GPIO, true);
-#if ADAFRUIT_ILI9341_PERIPHERAL_NO == 0
-  CMU_ClockEnable(cmuClock_USART0, true);
-#elif ADAFRUIT_ILI9341_PERIPHERAL_NO == 1
-  CMU_ClockEnable(cmuClock_USART1, true);
-#elif ADAFRUIT_ILI9341_PERIPHERAL_NO == 2
-  CMU_ClockEnable(cmuClock_USART2, true);
-#endif
-
-  usartInit.databits = usartDatabits8;
-  USART_InitSync(ADAFRUIT_ILI9341_PERIPHERAL, &usartInit);
-
-#if defined(USART_ROUTEPEN_TXPEN)
-  ADAFRUIT_ILI9341_PERIPHERAL->ROUTELOC0 =
-    (ADAFRUIT_ILI9341_PERIPHERAL->ROUTELOC0
-     & ~(_USART_ROUTELOC0_TXLOC_MASK
-         | _USART_ROUTELOC0_RXLOC_MASK
-         | _USART_ROUTELOC0_CLKLOC_MASK))
-    | (ADAFRUIT_ILI9341_TX_LOC  << _USART_ROUTELOC0_TXLOC_SHIFT)
-    | (ADAFRUIT_ILI9341_RX_LOC  << _USART_ROUTELOC0_RXLOC_SHIFT)
-    | (ADAFRUIT_ILI9341_CLK_LOC << _USART_ROUTELOC0_CLKLOC_SHIFT);
-
-  ADAFRUIT_ILI9341_PERIPHERAL->ROUTEPEN = USART_ROUTEPEN_TXPEN
-                                          | USART_ROUTEPEN_RXPEN
-                                          | USART_ROUTEPEN_CLKPEN
-                                          | USART_ROUTEPEN_CSPEN;
-#else
-  GPIO->USARTROUTE[ADAFRUIT_ILI9341_PERIPHERAL_NO].ROUTEEN =
-    GPIO_USART_ROUTEEN_TXPEN
-    | GPIO_USART_ROUTEEN_RXPEN
-    | GPIO_USART_ROUTEEN_CLKPEN;
-  GPIO->USARTROUTE[ADAFRUIT_ILI9341_PERIPHERAL_NO].TXROUTE =
-    ((uint32_t)ADAFRUIT_ILI9341_TX_PORT << _GPIO_USART_TXROUTE_PORT_SHIFT)
-    | ((uint32_t)ADAFRUIT_ILI9341_TX_PIN << _GPIO_USART_TXROUTE_PIN_SHIFT);
-  GPIO->USARTROUTE[ADAFRUIT_ILI9341_PERIPHERAL_NO].RXROUTE =
-    ((uint32_t)ADAFRUIT_ILI9341_RX_PORT << _GPIO_USART_RXROUTE_PORT_SHIFT)
-    | ((uint32_t)ADAFRUIT_ILI9341_RX_PIN << _GPIO_USART_RXROUTE_PIN_SHIFT);
-  GPIO->USARTROUTE[ADAFRUIT_ILI9341_PERIPHERAL_NO].CLKROUTE =
-    ((uint32_t)ADAFRUIT_ILI9341_CLK_PORT << _GPIO_USART_CLKROUTE_PORT_SHIFT)
-    | ((uint32_t)ADAFRUIT_ILI9341_CLK_PIN << _GPIO_USART_CLKROUTE_PIN_SHIFT);
-#endif
-
-  GPIO_PinModeSet(ADAFRUIT_ILI9341_TX_PORT,
-                  ADAFRUIT_ILI9341_TX_PIN,
-                  gpioModePushPull,
-                  0);
-  GPIO_PinModeSet(ADAFRUIT_ILI9341_RX_PORT,
-                  ADAFRUIT_ILI9341_RX_PIN,
-                  gpioModeInput,
-                  0);
-  GPIO_PinModeSet(ADAFRUIT_ILI9341_CLK_PORT,
-                  ADAFRUIT_ILI9341_CLK_PIN,
-                  gpioModePushPull,
-                  0);
-  GPIO_PinModeSet(ADAFRUIT_ILI9341_CS_PORT,
-                  ADAFRUIT_ILI9341_CS_PIN,
-                  gpioModePushPull,
-                  0);
-  GPIO_PinModeSet(ILI9341_SPI_DC_PORT,
-                  ILI9341_SPI_DC_PIN,
-                  gpioModePushPull,
-                  0);
-}
-
 // -----------------------------------------------------------------------------
 //                       Public Function
 // -----------------------------------------------------------------------------
@@ -422,9 +389,11 @@ static void spi_usart_init(void)
 /**************************************************************************//**
  * Initialize the Adafruit 2.4" TFT LCD with Touchscreen.
  *****************************************************************************/
-sl_status_t adafruit_ili9341_spi_usart_init(void)
+sl_status_t adafruit_ili9341_device_init(const struct mipi_dbi_config *config)
 {
-  static uint8_t init_cmd[] = {
+  mipi_dbi_device_init(&mipi_dbi_device, config);
+
+  static const uint8_t init_cmd[] = {
     0xEF, 3, 0x03, 0x80, 0x02,
     0xCF, 3, 0x00, 0xC1, 0x30,
     0xED, 4, 0x64, 0x03, 0x12, 0x81,
@@ -451,18 +420,15 @@ sl_status_t adafruit_ili9341_spi_usart_init(void)
     ILI9341_DISPON, 0x80,                  // Display on
     0x00
   };
-
-  spi_usart_init();
-
-  adafruit_ili9341_spi_send_command(ILI9341_SWRESET, NULL, 0);
+  send_command(ILI9341_SWRESET, NULL, 0);
   sl_sleeptimer_delay_millisecond(150);
 
   uint8_t cmd, x, num_args;
-  uint8_t *addr = init_cmd;
+  const uint8_t *addr = init_cmd;
   while ((cmd = pgm_read_byte(addr++)) > 0) {
     x = pgm_read_byte(addr++);
     num_args = x & 0x7F;
-    adafruit_ili9341_spi_send_command(cmd, addr, num_args);
+    send_command(cmd, addr, num_args);
     addr += num_args;
     if (x & 0x80) {
       sl_sleeptimer_delay_millisecond(150);
@@ -477,7 +443,7 @@ sl_status_t adafruit_ili9341_spi_usart_init(void)
  *****************************************************************************/
 sl_status_t adafruit_ili9341_invert_display(bool invert)
 {
-  return adafruit_ili9341_spi_send_command(
+  return send_command(
     invert ? ILI9341_INVON : ILI9341_INVOFF, NULL, 0);
 }
 
@@ -491,7 +457,7 @@ sl_status_t adafruit_ili9341_scroll_to(uint16_t y)
   data[0] = y >> 8;
   data[1] = y & 0xff;
 
-  return adafruit_ili9341_spi_send_command(ILI9341_VSCRSADD, data, 2);
+  return send_command(ILI9341_VSCRSADD, data, 2);
 }
 
 /**************************************************************************//**
@@ -508,7 +474,7 @@ sl_status_t adafruit_ili9341_set_scroll_margins(uint16_t top, uint16_t bottom)
     data[3] = middle & 0xff;
     data[4] = bottom >> 8;
     data[5] = bottom & 0xff;
-    return adafruit_ili9341_spi_send_command(ILI9341_VSCRDEF, data, 6);
+    return send_command(ILI9341_VSCRDEF, data, 6);
   } else {
     return SL_STATUS_INVALID_PARAMETER;
   }
@@ -523,25 +489,35 @@ sl_status_t adafruit_ili9341_set_addr_window(uint16_t x1, uint16_t y1,
   static uint16_t old_x1 = 0xffff, old_x2 = 0xffff;
   static uint16_t old_y1 = 0xffff, old_y2 = 0xffff;
   uint16_t x2 = (x1 + w - 1), y2 = (y1 + h - 1);
+  uint16_t tmp[2];
+  sl_status_t status;
 
   if ((x1 != old_x1) || (x2 != old_x2)) {
     // Column address set
-    adafruit_ili9341_spi_write_command(ILI9341_CASET);
-    adafruit_ili9341_spi_write16(x1);
-    adafruit_ili9341_spi_write16(x2);
+    tmp[0] = x1 >> 8 | ((uint16_t)(x1 & 0xff) << 8);
+    tmp[1] = x2 >> 8 | ((uint16_t)(x2 & 0xff) << 8);
+    status = send_command(ILI9341_CASET,
+                          (const uint8_t *)tmp, 4);
+    if (SL_STATUS_OK != status) {
+      return status;
+    }
     old_x1 = x1;
     old_x2 = x2;
   }
   if ((y1 != old_y1) || (y2 != old_y2)) {
     // Row address set
-    adafruit_ili9341_spi_write_command(ILI9341_PASET);
-    adafruit_ili9341_spi_write16(y1);
-    adafruit_ili9341_spi_write16(y2);
+    tmp[0] = y1 >> 8 | ((uint16_t)(y1 & 0xff) << 8);
+    tmp[1] = y2 >> 8 | ((uint16_t)(y2 & 0xff) << 8);
+    status = send_command(ILI9341_PASET,
+                          (const uint8_t *)tmp, 4);
+    if (SL_STATUS_OK != status) {
+      return status;
+    }
     old_y1 = y1;
     old_y2 = y2;
   }
   // Write to RAM
-  return adafruit_ili9341_spi_write_command(ILI9341_RAMWR);
+  return command_write(ILI9341_RAMWR);
 }
 
 /**************************************************************************//**
@@ -554,7 +530,7 @@ sl_status_t adafruit_ili9341_read_command8(uint8_t *result,
   uint8_t data = 0x10 + index;
 
   // Set Index Register
-  adafruit_ili9341_spi_send_command(0xD9, &data, 1);
+  send_command(0xD9, &data, 1);
   adafruit_ili9341_spi_read_command8(result, command, 0);
 
   return SL_STATUS_OK;
@@ -568,10 +544,8 @@ sl_status_t adafruit_ili9341_draw_pixel(int16_t x, int16_t y, uint16_t color)
   if ((x >= 0) && (x < ILI9341_TFTWIDTH) && (y >= 0)
       && (y < ILI9341_TFTHEIGHT)) {
     // THEN set up transaction (if needed) and draw...
-    SPI_CS_LOW();
     adafruit_ili9341_set_addr_window(x, y, 1, 1);
-    adafruit_ili9341_spi_write16(color);
-    SPI_CS_HIGH();
+    write_display16(color);
 
     return SL_STATUS_OK;
   }
@@ -628,21 +602,15 @@ sl_status_t adafruit_ili9341_draw_rgb_bitmap(int16_t x,
     h = ILI9341_TFTHEIGHT - y;
   }
   color += by1 * save_w + bx1;
-  SPI_CS_LOW();
   adafruit_ili9341_set_addr_window(x, y, w, h);
   while (h--) {
     adafruit_ili9341_write_pixels(color, w);
     color += save_w;
   }
-  SPI_CS_HIGH();
 
   return SL_STATUS_OK;
 }
 
-/**************************************************************************//**
- * Fill the screen area  with color. After the process
- * is complete call the user callback to notify the higher layer.
- *****************************************************************************/
 sl_status_t adafruit_ili9341_flush_area_rgb565(int16_t x1, int16_t y1,
                                                int16_t x2, int16_t y2,
                                                uint8_t *pcolor,
@@ -650,37 +618,73 @@ sl_status_t adafruit_ili9341_flush_area_rgb565(int16_t x1, int16_t y1,
                                                void (*callback)(void *arg),
                                                void *callback_arg)
 {
-  sl_status_t sc = SL_STATUS_FAIL;
+  sl_status_t status;
 
-  if ((pcolor == NULL) || (callback == NULL)) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
-
-  if ((x1 >= 0) && (x1 < ILI9341_TFTWIDTH)
+  if ((pcolor != NULL) && (callback != NULL)
+      && (x1 >= 0) && (x1 < ILI9341_TFTWIDTH)
       && (x2 >= 0) && (x2 < ILI9341_TFTWIDTH)
       && (y1 >= 0) && (y1 < ILI9341_TFTHEIGHT)
       && (y2 >= 0) && (y2 < ILI9341_TFTHEIGHT)
       && (x2 >= x1) && (y2 >= y1)) {
-    uint16_t *p_color = (uint16_t *)pcolor;
+    uint16_t width = x2 - x1 + 1;
+    uint16_t hight = y2 - y1 + 1;
 
-    for (int16_t y = y1; y <= y2; y++) {
-      for (int16_t x = x1; x <= x2; x++) {
-        uint16_t color;
+    adafruit_ili9341_set_addr_window(x1, y1, width, hight);
 
-        if (color_swap) {
-          color = *p_color >> 8 | ((uint16_t)(*p_color & 0xff) << 8);
-        } else {
-          color = *p_color;
+    gtotal_pixel = width * hight;
+    gpixel_transmit = 0;
+    gpixel_transmit_counter = 0;
+    color_swap_enabled = color_swap;
+    flush_area_callback = callback;
+    flush_area_callback_arg = callback_arg;
+
+    while (gpixel_transmit_counter < gtotal_pixel) {
+      uint32_t pixel_remaining = gtotal_pixel - gpixel_transmit_counter;
+      gpixel_transmit = pixel_remaining > MAX_XFER_PIXEL_COUNT
+                        ? MAX_XFER_PIXEL_COUNT : pixel_remaining;
+
+      if (!color_swap_enabled) {
+        uint16_t i;
+        pColorSwap = pcolor;
+        uint8_t colorData_H;
+        uint8_t colorData_L;
+
+        for (i = 0; i < gpixel_transmit; i++) {
+          colorData_H =
+            pColorSwap[((gpixel_transmit_counter + i) *  BYTE_PER_PIXEL) + 1];
+          colorData_L =
+            pColorSwap[((gpixel_transmit_counter + i) *  BYTE_PER_PIXEL)];
+
+          /* Swap 2 bytes color data before sending to TFT LCD */
+          dma_buffer[i] = colorData_H | (uint16_t)colorData_L << 8;
         }
-        sc = adafruit_ili9341_draw_pixel(x, y, color);
-        if (SL_STATUS_OK != sc) {
-          goto end;
-        }
-        p_color++;
+
+        pColorBuffer = (uint8_t *)dma_buffer;
+      } else {
+        pColorBuffer = (uint8_t *)pcolor;
       }
+
+      /* Start transmit data, the process is continued in
+       * adafruit_ili9341_flush_area_transmit_callback function
+       */
+      status = write_display((uint8_t *)pColorBuffer,
+                             gpixel_transmit * BYTE_PER_PIXEL,
+                             NULL);
+      if (SL_STATUS_OK != status) {
+        goto error;
+      }
+
+      if (color_swap_enabled) {
+        pColorBuffer += (gpixel_transmit * BYTE_PER_PIXEL);
+      }
+
+      gpixel_transmit_counter += gpixel_transmit;
     }
+    callback(callback_arg);
+    return SL_STATUS_OK;
   }
-  end:
+  return SL_STATUS_INVALID_PARAMETER;
+  error:
   callback(callback_arg);
-  return sc;
+  return status;
 }

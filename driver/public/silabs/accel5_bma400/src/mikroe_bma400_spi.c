@@ -34,14 +34,22 @@
  ******************************************************************************/
 
 #include "mikroe_bma400_spi.h"
+#include "sl_sleeptimer.h"
+#include "drv_spi_master.h"
+#include "drv_digital_in.h"
 
 // Read write length varies based on user requirement
 #define READ_WRITE_LENGTH  UINT8_C(46)
 
-// Variable to store the device address
-static uint8_t dev_addr;
-// Variable to store the spidrv instance
-static SPIDRV_Handle_t spi_handle;
+typedef struct
+{
+  spi_master_t spi;
+  digital_in_t interrupt_pin_1;
+  digital_in_t interrupt_pin_2;
+  uint8_t   intf_ref;
+} bma400_handle_t;
+
+static bma400_handle_t bma400_handle;
 
 // Local prototypes
 static int8_t bma400_spi_read(uint8_t reg_addr,
@@ -67,26 +75,51 @@ static void bma400_delay_us(uint32_t period, void *intf_ptr);
  *  @ref BMA400_OK on success.
  *  @ref On failure, BMA400_E_NULL_PTR is returned.
  ******************************************************************************/
-int8_t bma400_spi_init(SPIDRV_Handle_t spidrv, struct bma400_dev *bma400)
+int8_t bma400_spi_init(mikroe_spi_handle_t spidrv,
+                       struct bma400_dev *bma400)
 {
-  if (bma400 == NULL) {
+  if ((bma400 == NULL) || (NULL == spidrv)) {
     return BMA400_E_NULL_PTR;
   }
 
-  // Update the spidrv instance
-  spi_handle = spidrv;
+  // The device needs startup time
+  sl_sleeptimer_delay_millisecond(10);
 
-  /* The device needs startup time */
-  sl_udelay_wait(10000);
+  // Update the spidrv instance
+  spi_master_config_t spi_cfg;
+  spi_master_configure_default(&spi_cfg);
+  spi_cfg.mode = SPI_MASTER_MODE_0;
+  spi_cfg.speed = 1000000;
+
+#if (MIKROE_BMA400_SPI_UC == 1)
+  spi_cfg.speed = MIKROE_BMA400_SPI_BITRATE;
+#endif
+
+  bma400_handle.spi.handle = spidrv;
+
+  if (spi_master_open(&bma400_handle.spi, &spi_cfg) == SPI_MASTER_ERROR) {
+    return BMA400_E_INVALID_CONFIG;
+  }
 
   bma400->read = bma400_spi_read;
   bma400->write = bma400_spi_write;
   bma400->intf = BMA400_SPI_INTF;
 
-  dev_addr = 0xff;
-  bma400->intf_ptr = &dev_addr;
+  bma400->intf_ptr = &bma400_handle.intf_ref;
   bma400->delay_us = bma400_delay_us;
   bma400->read_write_len = READ_WRITE_LENGTH;
+
+#ifdef  MIKROE_BMA400_INT1_PORT
+  pin_name_t int_pin_1 = hal_gpio_pin_name(MIKROE_BMA400_INT1_PORT,
+                                           MIKROE_BMA400_INT1_PIN);
+  digital_in_init(&bma400_handle.interrupt_pin_1, int_pin_1);
+#endif
+
+#ifdef  MIKROE_BMA400_INT2_PORT
+  pin_name_t int_pin_2 = hal_gpio_pin_name(MIKROE_BMA400_INT2_PORT,
+                                           MIKROE_BMA400_INT2_PIN);
+  digital_in_init(&bma400_handle.interrupt_pin_2, int_pin_2);
+#endif
 
   return BMA400_OK;
 }
@@ -100,24 +133,16 @@ static int8_t bma400_spi_read(uint8_t reg_addr,
                               void *intf_ptr)
 {
   (void) intf_ptr;
-  Ecode_t ret_code;
-  uint8_t txBuffer[len + 1];
-  uint8_t rxBuffer[len + 1];
+  err_t ret_code;
 
-  txBuffer[0] = reg_addr;
+  ret_code = spi_master_write_then_read(&bma400_handle.spi,
+                                        &reg_addr,
+                                        1,
+                                        reg_data,
+                                        len);
 
-  // Fullfill the remaining elements of the txBuffer with dummy
-  for (uint16_t i = 0; i < (uint16_t)len; i++) {
-    txBuffer[i + 1] = 0xff;
-  }
-
-  ret_code = SPIDRV_MTransferB(spi_handle, txBuffer, rxBuffer, len + 1);
-  if (ret_code != ECODE_EMDRV_SPIDRV_OK) {
+  if (ret_code != SPI_MASTER_SUCCESS) {
     return BMA400_E_COM_FAIL;
-  }
-  // Copy the receive payload (without the dummy byte) to the output buffer data
-  for (uint16_t i = 0; i < len; i++) {
-    reg_data[i] = rxBuffer[i + 1];
   }
 
   return BMA400_OK;
@@ -132,18 +157,17 @@ static int8_t bma400_spi_write(uint8_t reg_addr,
                                void *intf_ptr)
 {
   (void) intf_ptr;
-  Ecode_t ret_code;
+  sl_status_t ret_code;
   uint8_t txBuffer[len + 1];
 
   txBuffer[0] = reg_addr;
 
-  // Fullfill the remaining elements of the txBuffer with dummy
   for (uint16_t i = 0; i < (uint16_t)len; i++) {
     txBuffer[i + 1] = reg_data[i];
   }
 
-  ret_code = SPIDRV_MTransmitB(spi_handle, txBuffer, len + 1);
-  if (ret_code != ECODE_EMDRV_SPIDRV_OK) {
+  ret_code = spi_master_write(&bma400_handle.spi, txBuffer, len + 1);
+  if (ret_code != SPI_MASTER_SUCCESS) {
     return BMA400_E_COM_FAIL;
   }
 
@@ -156,5 +180,11 @@ static int8_t bma400_spi_write(uint8_t reg_addr,
 static void bma400_delay_us(uint32_t period, void *intf_ptr)
 {
   (void) intf_ptr;
-  sl_udelay_wait(period);
+  uint32_t delay_ms = 1;
+
+  if (period > 1000) {
+    delay_ms = (period / 1000) + 1;
+  }
+
+  sl_sleeptimer_delay_millisecond(delay_ms);
 }

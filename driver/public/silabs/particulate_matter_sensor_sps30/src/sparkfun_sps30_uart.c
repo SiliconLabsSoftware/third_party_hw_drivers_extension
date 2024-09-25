@@ -52,7 +52,7 @@
 #define SPS30_CMD_RESET                  (0xd3)
 #define SPS30_ERR_STATE(state) (SPS30_ERR_STATE_MASK | (state))
 
-uint32_t sps30_init(sl_iostream_t *uart_handle)
+uint32_t sps30_init(mikroe_uart_handle_t uart_handle)
 {
   return sensirion_uart_init(uart_handle);
 }

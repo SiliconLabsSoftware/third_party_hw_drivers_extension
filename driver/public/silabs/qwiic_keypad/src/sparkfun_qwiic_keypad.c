@@ -33,33 +33,32 @@
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 #include "sparkfun_qwiic_keypad.h"
+#include "sparkfun_keypad_config.h"
 
-static sl_i2cspm_t *keypad_i2cspm_instance = NULL;
-static uint8_t keypad_i2c_addr = SPARKFUN_KEYPAD_DEFAULT_ADDR;
+#if (defined(SLI_SI917))
+#include "sl_driver_gpio.h"
+#define GPIO_M4_INTR              7 // M4 Pin interrupt number
+#define AVL_INTR_NO               0 // available interrupt number
+#else
+#include "gpiointerrupt.h"
+#endif
+
+typedef struct
+{
+  i2c_master_t i2c;
+  buttonEvent_callback user_callback;
+  digital_in_t interrupt_pin;
+}qwiic_keypad_t;
+
+static qwiic_keypad_t qwiic_keypad;
 
 /***************************************************************************//**
  *  Initialize the keypad.
  ******************************************************************************/
-sl_status_t sparkfun_keypad_init(sl_i2cspm_t *i2c_handle, uint8_t address)
+sl_status_t sparkfun_keypad_init(mikroe_i2c_handle_t i2c_handle,
+                                 uint8_t address,
+                                 buttonEvent_callback user_callback)
 {
-#ifdef SAPRKFUN_KEYPAD_INT_PIN_EN
-
-  GPIO_PinModeSet(SPARKFUN_KEYPAD_GPIO_INT_PORT,
-                  SPARKFUN_KEYPAD_GPIO_INT_PIN,
-                  gpioModeInput,
-                  0);
-  GPIO_ExtIntConfig(SPARKFUN_KEYPAD_GPIO_INT_PORT,
-                    SPARKFUN_KEYPAD_GPIO_INT_PIN,
-                    SPARKFUN_KEYPAD_GPIO_INT_PIN,
-                    true,
-                    false,
-                    true);
-  GPIOINT_CallbackRegister(SPARKFUN_KEYPAD_GPIO_INT_PIN,
-                           app_sparkfun_buttonEvent_callback);
-  GPIO_IntEnable(SPARKFUN_KEYPAD_GPIO_INT_PIN);
-
-#endif /* SAPRKFUN_KEYPAD_INT_PIN_EN */
-
   if (i2c_handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
@@ -68,18 +67,62 @@ sl_status_t sparkfun_keypad_init(sl_i2cspm_t *i2c_handle, uint8_t address)
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  keypad_i2cspm_instance = i2c_handle;
+  i2c_master_config_t i2c_cfg;
+  i2c_master_configure_default(&i2c_cfg);
+
+  i2c_cfg.addr = address;
+
+  qwiic_keypad.i2c.handle = i2c_handle;
+
+#if (SPARKFUN_KEYPAD_I2C_UC == 1)
+  i2c_cfg.speed = SPARKFUN_KEYPAD_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&qwiic_keypad.i2c, &i2c_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  i2c_master_set_speed(&qwiic_keypad.i2c, i2c_cfg.speed);
+  i2c_master_set_timeout(&qwiic_keypad.i2c, 0);
+
+  if (NULL != user_callback) {
+    qwiic_keypad.user_callback = user_callback;
+
+#ifdef SPARKFUN_KEYPAD_GPIO_INT_PIN
+    pin_name_t int_pin_1 = hal_gpio_pin_name(SPARKFUN_KEYPAD_GPIO_INT_PORT,
+                                             SPARKFUN_KEYPAD_GPIO_INT_PIN);
+    digital_in_init(&qwiic_keypad.interrupt_pin, int_pin_1);
+
+#if (defined(SLI_SI917))
+    sl_gpio_t gpio_port_pin = { SPARKFUN_KEYPAD_GPIO_INT_PIN / 16,
+                                SPARKFUN_KEYPAD_GPIO_INT_PIN % 16 };
+    sl_gpio_driver_configure_interrupt(&gpio_port_pin,
+                                       GPIO_M4_INTR,
+                                       SL_GPIO_INTERRUPT_FALLING_EDGE,
+                                       (void *)qwiic_keypad.user_callback,
+                                       AVL_INTR_NO);
+#else // None Si91x device
+    GPIOINT_CallbackRegister(SPARKFUN_KEYPAD_GPIO_INT_PIN,
+                             qwiic_keypad.user_callback);
+    GPIO_ExtIntConfig(SPARKFUN_KEYPAD_GPIO_INT_PORT,
+                      SPARKFUN_KEYPAD_GPIO_INT_PIN,
+                      SPARKFUN_KEYPAD_GPIO_INT_PIN,
+                      false,
+                      true,
+                      true);
+#endif
+#endif
+  }
 
   if (!sparkfun_keypad_present(address)) {
     // Wait for keypad to become ready
     sl_sleeptimer_delay_millisecond(80);
 
     if (!sparkfun_keypad_present(address)) {
-      return SL_STATUS_INITIALIZATION;
+      return SL_STATUS_NOT_AVAILABLE;
     }
   }
 
-  keypad_i2c_addr = address;
   return SL_STATUS_OK;
 }
 
@@ -92,12 +135,14 @@ bool sparkfun_keypad_present(uint8_t device_id)
   uint8_t backup_addr;
 
   // Back up the current i2c addr
-  backup_addr = keypad_i2c_addr;
+  backup_addr = qwiic_keypad.i2c.config.addr;
+
   // Use special addr to check
-  keypad_i2c_addr = device_id;
+  i2c_master_set_slave_address(&qwiic_keypad.i2c, device_id);
   sc = sparkfun_keypad_read_data(SPARKFUN_KEYPAD_ID, &device_id);
+
   // Restore to the backed up i2c addr
-  keypad_i2c_addr = backup_addr;
+  i2c_master_set_slave_address(&qwiic_keypad.i2c, backup_addr);
   if (sc != SL_STATUS_OK) {
     return false;
   }
@@ -122,7 +167,7 @@ sl_status_t sparkfun_keypad_set_address(uint8_t address)
     return sc;
   }
 
-  keypad_i2c_addr = address;
+  i2c_master_set_slave_address(&qwiic_keypad.i2c, address);
   return SL_STATUS_OK;
 }
 
@@ -131,7 +176,7 @@ sl_status_t sparkfun_keypad_set_address(uint8_t address)
  ******************************************************************************/
 uint8_t sparkfun_keypad_get_address(void)
 {
-  return keypad_i2c_addr;
+  return qwiic_keypad.i2c.config.addr;
 }
 
 /***************************************************************************//**
@@ -164,7 +209,7 @@ sl_status_t sparkfun_keypad_select_device(uint8_t address)
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  keypad_i2c_addr = address;
+  i2c_master_set_slave_address(&qwiic_keypad.i2c, address);
   return SL_STATUS_OK;
 }
 
@@ -177,7 +222,7 @@ sl_status_t sparkfun_keypad_get_firmware_version(frw_rev_t *fwRev)
   uint8_t major;
   uint8_t minor;
 
-  if (fwRev == NULL) {
+  if ((fwRev == NULL) || (NULL == qwiic_keypad.i2c.handle)) {
     return SL_STATUS_NULL_POINTER;
   }
 
@@ -204,7 +249,7 @@ sl_status_t sparkfun_keypad_read_last_button(uint8_t *data)
 {
   sl_status_t sc;
 
-  if (data == NULL) {
+  if ((data == NULL) || (NULL == qwiic_keypad.i2c.handle)) {
     return SL_STATUS_NULL_POINTER;
   }
 
@@ -268,27 +313,13 @@ sl_status_t sparkfun_keypad_update_fifo()
  ******************************************************************************/
 sl_status_t sparkfun_keypad_read_data(uint8_t reg_addr, uint8_t *data)
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef result;
-
-  uint8_t i2c_write_data[1];
-
-  seq.addr = keypad_i2c_addr << 1;
-  seq.flags = I2C_FLAG_WRITE_READ;
-
-  i2c_write_data[0] = reg_addr;
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = 1;
-
-  seq.buf[1].data = data;
-  seq.buf[1].len = 1;
-
-  result = I2CSPM_Transfer(keypad_i2cspm_instance, &seq);
-
-  if (result != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&qwiic_keypad.i2c,
+                                                       &reg_addr,
+                                                       1,
+                                                       data,
+                                                       1)) {
     return SL_STATUS_TRANSMIT;
   }
-
   return SL_STATUS_OK;
 }
 
@@ -297,25 +328,11 @@ sl_status_t sparkfun_keypad_read_data(uint8_t reg_addr, uint8_t *data)
  ******************************************************************************/
 sl_status_t sparkfun_keypad_write_register(uint8_t reg_addr, uint8_t data)
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef result;
-  uint8_t i2c_write_data[2];
-  uint8_t i2c_read_data[1];
+  uint8_t i2c_write_data[2] = { reg_addr, data };
 
-  seq.addr = keypad_i2c_addr << 1;
-  seq.flags = I2C_FLAG_WRITE;
-
-  i2c_write_data[0] = reg_addr;
-  i2c_write_data[1] = data;
-
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = 2;
-
-  seq.buf[1].data = i2c_read_data;
-  seq.buf[1].len = 0;
-
-  result = I2CSPM_Transfer(keypad_i2cspm_instance, &seq);
-  if (result != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&qwiic_keypad.i2c,
+                                             i2c_write_data,
+                                             2)) {
     return SL_STATUS_TRANSMIT;
   }
 

@@ -2,21 +2,30 @@
 
 ## Summary ##
 
-This project aims to show the hardware driver that is used to interface with the MQ7 Sensor via APIs of GSDK.
+This project aims to show the hardware driver that is used to interface with the MQ7 Sensor using Silicon Labs platform.
 
 CO Click is a compact add-on board that can detect the presence of carbon monoxide. This board features MQ-7, a carbon monoxide sensor from Zhengzhou Winsen Electronics Technology. The gas sensing layer on the MQ-7 sensor unit is made of Tin dioxide (SnO2), an inorganic compound with lower conductivity in clean air (the conductivity increases as the levels of carbon monoxide rise). It has a high sensitivity to carbon monoxide and can be used to detect alcohol in concentrations from 20 to 2000ppm communication with the host MCU through the analog mikroBUS line. This Click board is suitable as a domestic CO gas leakage alarm, industrial CO gas alarm, and portable CO gas detector.
 
 ## Required Hardware ##
 
-- [A BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit).
+- [A BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit?tab=overview) (BRD4002 + BRD4338A)
 
-- [CO Click](https://www.mikroe.com/co-click).
+- [Mikroe CO Click](https://www.mikroe.com/co-click)
 
 ## Hardware Connection ##
 
-The CO Click board can just be "clicked" into its place. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+- If the BGM220 Explorer Kit is used:
 
-![board](image/hardware_connection.png)
+  The CO Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of the Click board matches the 45-degree white line of the Explorer Kit.
+
+  ![board](image/hardware_connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description           | BRD4338A GPIO  | BRD4002 Breakout Pad | Acohol Click         |
+  | ----------------------| ---------------| ---------------------| -------------------- |
+  | Positive analog input | ULP_GPIO_1     | P16                  | OUT                  |
 
 ## Setup ##
 
@@ -24,16 +33,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter mq7.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *mq7*.
 
-2. Click **Create** button on the **Third Party Hardware Drivers - MQ7 - CO Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+2. Click **Create** button on **Third Party Hardware Drivers - MQ7 - CO Click (Mikroe)**. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_co_mq7/app.c` into the project root folder (overwriting the existing file).
 
@@ -45,11 +55,18 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
-        - **[Services] → [Timers] → [Sleep Timer]**
-        - **[Services] → [IO Stream] → [IO Stream: USART]** → default instance name: vcom
-        - **[Application] → [Utility] → [Log]**
-        - **[Third Party Hardware Drivers] → [Sensors] → [MQ7 - CO Click (Mikroe)]** → use default configuration
-        ![Default Configuration](image/default_configuration.png)
+      **If the BGM220 Explorer Kit is used:**
+
+         - [Services] → [Timers] → [Sleep Timer]
+         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
+         - [Application] → [Utility] → [Log]
+         - [Third Party Hardware Drivers] → [Sensors] → [MQ7 - CO Click (Mikroe)] → use default configuration
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [ADC] → [channel_1] → use default configuration
+        - [Third Party Hardware Drivers] → [Sensors] → [MQ7 - CO Click (Mikroe)]
 
 4. Install printf float
 
@@ -63,7 +80,7 @@ You can either create a project based on an example project or start with an emp
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install **MQ7 - CO Click (Mikroe)** component.
 

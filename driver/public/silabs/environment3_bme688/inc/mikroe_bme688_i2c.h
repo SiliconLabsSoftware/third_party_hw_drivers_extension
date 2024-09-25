@@ -34,12 +34,9 @@
  ******************************************************************************/
 #ifndef MIKROE_BME688_I2C_H
 #define MIKROE_BME688_I2C_H
-
-#include "sl_i2cspm.h"
-#include "sl_udelay.h"
-
 #include "bme68x.h"
 #include "bme68x_defs.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,10 +46,6 @@ typedef struct bme68x_conf bme68x_conf_t;
 typedef struct bme68x_data bme68x_data_t;
 typedef struct bme68x_heatr_conf bme68x_heatr_conf_t;
 typedef struct bme68x_dev bme68x_dev_t;
-typedef struct {
-  sl_i2cspm_t *handle;
-  uint8_t addr;
-} bme68x_i2c_t;
 
 /***************************************************************************//**
  * @addtogroup BME688 - GAS Sensor
@@ -127,7 +120,8 @@ typedef struct {
  *  @ref BME68X_OK on success.
  *  @ref On failure, BME68X_E_NULL_PTR is returned.
  ******************************************************************************/
-int8_t mikroe_bme688_i2c_init(bme68x_dev_t *bme688);
+int8_t mikroe_bme688_i2c_init(bme68x_dev_t *bme688,
+                              mikroe_i2c_handle_t i2c_instance);
 
 /** @} (end addtogroup BME680) */
 

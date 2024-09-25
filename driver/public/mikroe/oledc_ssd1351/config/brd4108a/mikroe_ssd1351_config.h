@@ -39,10 +39,37 @@
 #ifndef MIKROE_SSD1351_CONFIG_H_
 #define MIKROE_SSD1351_CONFIG_H_
 
+#include "em_gpio.h"
+
 #define SSD1351_DISPLAY_WIDTH                         96
 #define SSD1351_DISPLAY_HEIGHT                        96
 #define SSD1351_DISPLAY_COLOR                         16
+
+// <<< Use Configuration Wizard in Context Menu >>>
+
+// <h> MIKROE SSD1351 SPI Configuration
+
+// <e>MIKROE SSD1351 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_SSD1351_SPI_UC                  0
+
+// <o MIKROE_SSD1351_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
+// <i> Default: 10000000
+#define MIKROE_SSD1351_SPI_BITRATE             10000000
+
+// </e>
+// </h>
+// <<< end of configuration section >>>
+
 // <<< sl:start pin_tool >>>
+
+// <gpio optional=true> SSD1351_CS
+// $[GPIO_SSD1351_CS]
+// #define SSD1351_CS_PORT                        0
+// #define SSD1351_CS_PIN                         0
+// [GPIO_SSD1351_CS]$
 
 // <gpio optional=true> SSD1351_DC
 // $[GPIO_SSD1351_DC]
@@ -67,6 +94,7 @@
 #define SSD1351_RW_PORT                               gpioPortB
 #define SSD1351_RW_PIN                                0
 // [GPIO_SSD1351_RW]$
+
 // <<< sl:end pin_tool >>>
 
-#endif /* MIKROE_SSD1351_CONFIG_H_ */
+#endif // MIKROE_SSD1351_CONFIG_H_

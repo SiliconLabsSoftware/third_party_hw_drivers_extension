@@ -40,48 +40,12 @@
 #ifndef MIKROE_EMG_H_
 #define MIKROE_EMG_H_
 
-#include "em_cmu.h"
 #include "sl_status.h"
-
-#if defined(_SILICON_LABS_32B_SERIES_1)
-#include "em_adc.h"
-typedef ADC_TypeDef adc_t;
-#elif defined(_SILICON_LABS_32B_SERIES_2)
-#include "em_iadc.h"
-typedef IADC_TypeDef adc_t;
-#endif
+#include "drv_analog_in.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/***************************************************************************//**
- * @addtogroup EMG
- * @brief Driver for the Mikroe EMG Click
- *
- *
- *   @n @section emg_example EMG example
- *
- *     Basic example for performing EMG measurement: @n @n
- *      @code{.c}
- *
- *   #include "app_log.h"
- *   #include "mikroe_emg.h"
- *
- *   int main(void)
- *   {
- *     uint16_t adc_value;
- *     ...
- *
- *     mikroe_emg_init(IADC0);
- *     mikroe_emg_read_an_pin_value(&adc_value);
- *
- *     ...
- *
- *   } @endverbatim
- *
- * @{
- ******************************************************************************/
 
 /**************************************************************************//**
 * @brief EMG initialization function.
@@ -94,7 +58,7 @@ extern "C" {
 * @return SL_STATUS_OK on Success, otherwise on failure.
 *
 ******************************************************************************/
-sl_status_t mikroe_emg_init(adc_t *adc);
+sl_status_t mikroe_emg_init(mikroe_adc_handle_t handle);
 
 /**************************************************************************//**
 * @brief EMG read AN pin value function.

@@ -10,31 +10,11 @@ ui_hints:
 root_path: driver
 requires:
   - name: status
-  - name: udelay
   - name: sleeptimer
-  - name: spidrv
-recommends:
-  - id: spidrv
-    instance: [w5500]
+  - name: mikroe_peripheral_driver_spi
+  - name: mikroe_peripheral_driver_digital_io
+  
 config_file:
-  - override:
-      component: spidrv
-      file_id: spidrv_config
-      instance: w5500
-    path: public/mikroe/eth_wiz_w5500/config/brd2703a/sl_spidrv_w5500_config.h
-    condition: [brd2703a]
-  - override:
-      component: spidrv
-      file_id: spidrv_config
-      instance: w5500
-    path: public/mikroe/eth_wiz_w5500/config/brd4108a/sl_spidrv_w5500_config.h
-    condition: [brd4108a]
-  - override:
-      component: spidrv
-      file_id: spidrv_config
-      instance: w5500
-    path: public/mikroe/eth_wiz_w5500/config/brd4314a/sl_spidrv_w5500_config.h
-    condition: [brd4314a]
   - path: public/mikroe/eth_wiz_w5500/config/brd2703a/mikroe_w5500_config.h
     file_id: driver_config_eth_wiz
     condition: [brd2703a]
@@ -44,12 +24,17 @@ config_file:
   - path: public/mikroe/eth_wiz_w5500/config/brd4314a/mikroe_w5500_config.h
     file_id: driver_config_eth_wiz
     condition: [brd4314a]
+  - path: public/mikroe/eth_wiz_w5500/config/brd4338a/mikroe_w5500_config.h
+    file_id: driver_config_eth_wiz
+    condition: [brd4338a]
   - path: public/mikroe/eth_wiz_w5500/config/other/mikroe_w5500_config.h
     file_id: driver_config_eth_wiz
-    unless: [brd2703a, brd4108a, brd4314a]
+    unless: [brd2703a, brd4108a, brd4314a, brd4338a]
+
 template_contribution:
   - name: component_catalog
     value: mikroe_eth_wiz
+
 include:
   - path: public/mikroe/eth_wiz_w5500/inc
     file_list:

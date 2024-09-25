@@ -37,6 +37,7 @@ component:
   instance: [fuel_gauge]
 - id: sleeptimer
 - id: app_log
+- id: app_assert
 
 toolchain_settings:
   - option: gcc_linker_option
@@ -47,7 +48,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/maxim_fuel_gauge_max17048/image/overview.png
@@ -63,8 +64,6 @@ other_file:
   - path: ../../documentation/example/maxim_fuel_gauge_max17048/image/max17048_config.png
     directory: "image"
   - path: ../../documentation/example/maxim_fuel_gauge_max17048/image/create_example.png
-    directory: "image"
-  - path: ../../documentation/example/maxim_fuel_gauge_max17048/image/float.png
     directory: "image"
 
 configuration:

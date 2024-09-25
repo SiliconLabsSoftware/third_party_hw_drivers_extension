@@ -37,44 +37,79 @@
  * Initialize application.
  ******************************************************************************/
 #include "sl_sleeptimer.h"
-#include "sl_i2cspm_instances.h"
-
-#include "app_log.h"
-#include "app_assert.h"
-
 #include "sparkfun_soil_moisture.h"
 
-#define MOISTURE_THRESHOLD          70
-#define READING_INTERVAL_MSEC       1000
+#if (defined(SLI_SI917))
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+#else
+#include "sl_i2cspm_instances.h"
+#include "app_log.h"
+#endif
+
+#if (defined(SLI_SI917))
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
+#if (defined(SLI_SI917))
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
+
+#define MOISTURE_THRESHOLD           70
+#define READING_INTERVAL_MSEC        1000
 
 static volatile bool app_timer_expire = false;
 static sl_sleeptimer_timer_handle_t app_timer_handle;
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
 
 static void app_timer_cb(sl_sleeptimer_timer_handle_t *handle, void *data);
 
 void app_init(void)
 {
   sl_status_t sc;
-  uint16_t addr[255];
-  uint8_t num_dev;
+  uint16_t address[255];
+  uint8_t num_dev = 0;
 
-  app_log("\r\t\tSEN-17731 Soil moisture sensor test program\n");
+  app_printf("\r\t\tSEN-17731 Soil moisture sensor test program\n");
 
-  sc = sparkfun_soil_moisture_init(sl_i2cspm_qwiic,
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_qwiic;
+#endif
+
+  sc = sparkfun_soil_moisture_init(app_i2c_instance,
                                    SPARKFUN_SOIL_MOISTURE_DEFAULT_ADDR);
-  app_assert(sc == SL_STATUS_OK, "\rSparkfun soil moisture init fail\n");
+  if (sc == SL_STATUS_NOT_AVAILABLE) {
+    app_printf("Soil moisture not found on the specified address.\r\r\n");
+    app_printf("\r\nScanning address of all soil moisture sensors...\n");
+    sparkfun_soil_moisture_scan_address(address, &num_dev);
 
-  app_log("\r\nScanning address of all soil moisture sensors...\n");
-  sc = sparkfun_soil_moisture_scan_address(addr, &num_dev);
-  app_assert((sc == SL_STATUS_OK) || (num_dev != 0), "\rNo device connected\n");
-  for (int i = 0; i < num_dev; i++) {
-    app_log("\rDevice %d: address: 0x%x\n", i + 1, *(addr + i));
+    if (num_dev == 0) {
+      app_printf("No device is found on I2C bus.\r\r\n");
+      return;
+    }
+
+    for (int i = 0; i < num_dev; i++) {
+      app_printf("\rDevice %d: address: 0x%x\n", i + 1, *(address + i));
+    }
+
+    app_printf("Select the desired device, build and rerun the example.\r\n");
+    return;
+  } else if (sc != SL_STATUS_OK) {
+    app_printf("Warning! Failed to initialize soil moisture sensors\r\n");
+    return;
   }
 
-  app_log("\r\nStart calibrating the sensor...\n");
+  app_printf("Soil moisture sensors initialized successfully!\r\n");
+
+  app_printf("\r\nStart calibrating the sensor...\n");
   sparkfun_soil_moisture_set_dry_value(90);
   sparkfun_soil_moisture_set_wet_value(1023);
-  app_log("\rCalibrating done...\n");
+  app_printf("\rCalibrating done...\n");
 
   sc = sl_sleeptimer_start_periodic_timer_ms(&app_timer_handle,
                                              READING_INTERVAL_MSEC,
@@ -83,9 +118,9 @@ void app_init(void)
                                              0,
                                              1);
   if (sc != SL_STATUS_OK) {
-    app_log("\r\n > Start periodic measuring soil moisture Fail\n");
+    app_printf("\r\n > Start periodic measuring soil moisture Fail\n");
   } else {
-    app_log("\r\n > Start periodic measuring soil moisture...\n");
+    app_printf("\r\n > Start periodic measuring soil moisture...\n");
   }
 }
 
@@ -105,9 +140,9 @@ void app_process_action(void)
   sc = sparkfun_soil_moisture_get_moisture(&moisture);
 
   if (sc != SL_STATUS_OK) {
-    app_log("\r > Reading data failed\n");
+    app_printf("\r > Reading data failed\n");
   } else {
-    app_log("\r > Soil moisture: %d%%\n", moisture);
+    app_printf("\r > Soil moisture: %d%%\n", moisture);
     if (moisture > MOISTURE_THRESHOLD) {
       sparkfun_soil_moisture_led_on();
     } else {

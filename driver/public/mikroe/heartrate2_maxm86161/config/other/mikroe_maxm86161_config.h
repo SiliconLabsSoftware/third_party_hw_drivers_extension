@@ -73,4 +73,4 @@ extern "C" {
 }
 #endif
 
-#endif /* SCL_MAXM86161_CONFIG_H_ */
+#endif // SCL_MAXM86161_CONFIG_H_

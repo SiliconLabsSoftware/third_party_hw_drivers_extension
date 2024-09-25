@@ -35,52 +35,71 @@
 #ifndef MAXIM_FUEL_GAUGE_MAX17048_CONFIG_H_
 #define MAXIM_FUEL_GAUGE_MAX17048_CONFIG_H_
 
+#include "em_gpio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
-// <h> Connection
+
+// <h> MAX17048 I2C Configuration
+
+// <e> MAX17048 I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MAX17048_I2C_UC                         0
+
+// <o MAX17048_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define MAX17048_I2C_SPEED_MODE                 0
+
 // <o MAX17048_I2C_ADDRESS> I2C Address <0x1..0x7E:0x1><f.h>
 // <i> Default: 0x36
-#define MAX17048_I2C_ADDRESS                        0x36
+#define MAX17048_I2C_ADDRESS                    0x36
+
+// </e>
 // </h>
 
 // <h> User-Settings
 
-// <o MAX17048_CONFIG_STABILIZATION_DELAY> Stabilization delay (ms)
+// <o MAX17048_STABILIZATION_DELAY> Stabilization delay (ms)
 // <i> Default: 0
-#define MAX17048_CONFIG_STABILIZATION_DELAY         0
+#define MAX17048_STABILIZATION_DELAY            0
 
-// <o MAX17048_CONFIG_RCOMP_UPDATE_INTERVAL_MS> Rcomp update interval (ms)
+// <o MAX17048_RCOMP_UPDATE_INTERVAL_MS> Rcomp update interval (ms)
 // <i> Default: 60000
 // <i> The driver calculates and updates the RCOMP factor at a rate of
-// <i> 1000 ms <= MAX17048_CONFIG_RCOMP_UPDATE_INTERVAL_MS <= 60000 ms
+// <i> 1000 ms <= MAX17048_RCOMP_UPDATE_INTERVAL_MS <= 60000 ms
 // <i> and defaults to 1 minute (60000 ms = 1 minute).
-#define MAX17048_CONFIG_RCOMP_UPDATE_INTERVAL_MS    60000
+#define MAX17048_RCOMP_UPDATE_INTERVAL_MS       60000
 
-// <q MAX17048_CONFIG_ENABLE_HW_QSTRT> Enable battery quick start
+// <q MAX17048_ENABLE_HW_QSTRT> Enable battery quick start
 // <i> Default: 1
-#define MAX17048_CONFIG_ENABLE_HW_QSTRT             1
+#define MAX17048_ENABLE_HW_QSTRT                1
 
 // </h>
 // <<< end of configuration section >>>
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> MAX17048_CONFIG_ALRT
-// $[GPIO_MAX17048_CONFIG_ALRT]
+// <gpio optional=true> MAX17048_ALRT
+// $[GPIO_MAX17048_ALRT]
 #warning "ALR pin for MAX17048 is not configured"
-// #define MAX17048_CONFIG_ALRT_PORT                   gpioPortC
-// #define MAX17048_CONFIG_ALRT_PIN                    1
-// [GPIO_MAX17048_CONFIG_ALRT]$
+// #define MAX17048_ALRT_PORT                   gpioPortC
+// #define MAX17048_ALRT_PIN                    1
+// [GPIO_MAX17048_ALRT]$
 
-// <gpio> MAX17048_CONFIG_ENABLE_QSTRT
-// $[GPIO_MAX17048_CONFIG_ENABLE_QSTRT]
+// <gpio> MAX17048_ENABLE_QSTRT
+// $[GPIO_MAX17048_ENABLE_QSTRT]
 #warning "QSTRT pin for MAX17048 is not configured"
-// #define MAX17048_CONFIG_ENABLE_QSTRT_PORT           gpioPortC
-// #define MAX17048_CONFIG_ENABLE_QSTRT_PIN            2
-// [GPIO_MAX17048_CONFIG_ENABLE_QSTRT]$
+// #define MAX17048_ENABLE_QSTRT_PORT           gpioPortC
+// #define MAX17048_ENABLE_QSTRT_PIN            2
+// [GPIO_MAX17048_ENABLE_QSTRT]$
 
 // <<< sl:end pin_tool >>>
 

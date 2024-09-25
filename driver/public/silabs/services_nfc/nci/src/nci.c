@@ -1211,7 +1211,6 @@ nci_err_t nci_incoming_packet_process(void)
             default:
               /* Error: OID not recognized */
               return nci_err_uknown_oid;
-              break;
           }
           break;
         }
@@ -1256,7 +1255,6 @@ nci_err_t nci_incoming_packet_process(void)
             default:
               /* Error: OID not recognized */
               return nci_err_uknown_oid;
-              break;
           }
           break;
         }
@@ -1277,7 +1275,6 @@ nci_err_t nci_incoming_packet_process(void)
             default:
               /* Error: OID not recognized */
               return nci_err_uknown_oid;
-              break;
           }
           break;
         }
@@ -1286,12 +1283,10 @@ nci_err_t nci_incoming_packet_process(void)
         case nci_gid_proprietary: {
           /* Hand it to proprietary parser. */
           return nci_incoming_proprietary_packet_rsp_process(packet_buff);
-          break;
         }
         default:
           /* Error: GID not recognized */
           return nci_err_uknown_gid;
-          break;
       }
       break;
     }
@@ -1325,7 +1320,6 @@ nci_err_t nci_incoming_packet_process(void)
             default:
               /* Error: OID not recognized */
               return nci_err_uknown_oid;
-              break;
           }
           break;
         }
@@ -1370,7 +1364,6 @@ nci_err_t nci_incoming_packet_process(void)
             default:
               /* Error: OID not recognized */
               return nci_err_uknown_oid;
-              break;
           }
           break;
         }
@@ -1387,7 +1380,6 @@ nci_err_t nci_incoming_packet_process(void)
             default:
               /* Error: OID not recognized */
               return nci_err_uknown_oid;
-              break;
           }
           break;
         }
@@ -1396,12 +1388,10 @@ nci_err_t nci_incoming_packet_process(void)
         case nci_gid_proprietary: {
           /* Hand it to proprietary parser. */
           return nci_incoming_proprietary_packet_ntf_process(packet_buff);
-          break;
         }
         default: {
           /* Error: GID not recognized */
           return nci_err_uknown_gid;
-          break;
         }
       }
       break;
@@ -1409,7 +1399,6 @@ nci_err_t nci_incoming_packet_process(void)
     default: {
       /* Error: MT not recognized */
       return nci_err_uknown_mt;
-      break;
     }
   }
   return nci_err_none;

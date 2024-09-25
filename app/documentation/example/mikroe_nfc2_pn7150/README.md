@@ -2,7 +2,7 @@
 
 ## Summary ##
 
-This example demonstrates the usage of NFC 2 Click board with BGM220P Explorer Kit based on I2C communication.
+This example demonstrates the usage of NFC 2 Click board with Silicon Labs platform based on I2C communication.
 
 NFC 2 Click is based on the PN7150, high-performance full NFC solution with integrated firmware and I2C interface designed for contactless communication at 13.56 MHz from NXP.
 
@@ -12,15 +12,28 @@ NFC 2 Click board can be used for the detection of NFC Tag and can be used for r
 
 - [A BGM220P Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
 
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
 - [An NFC 2 Click](https://www.mikroe.com/nfc-2-click)
 
 - A T2T tag
 
 ## Hardware Connection ##
 
-The NFC 2 Click board can just be "clicked" into its place. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+- If the BGM220P Explorer Kit is used:
 
-![board](image/hardware_connection.png)
+  The NFC 2 Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of the Click board matches the 45-degree white line of the Explorer Kit.
+
+  The hardware connection is shown in the image below:
+
+  ![board](image/hardware_connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description           | BRD4338A GPIO | BRD4002 EXP/Breakout Header | MIC 2 Click        |
+  | --------------------- | ------------- | --------------------------- | ------------------ |
+  | I2C_SDA               | ULP_GPIO_6    | EXP_16                      | SDA                |
+  | I2C_SCL               | ULP_GPIO_7    | EXP_15                      | SCL                |
 
 ## Setup ##
 
@@ -28,16 +41,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter: *nfc 2*.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter: *nfc 2*.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - PN7150 - NFC 2 Click (Mikroe) - I2C** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_nfc2_pn7150/app.c` into the project root folder (overwriting the existing file).
 
@@ -49,15 +63,24 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
-        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
+      **If the EFR32xG24 Explorer Kit is used:**
+
+        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: **vcom**
         - [Application] → [Utility] → [Log]
+        - [Services] → [Timers] → [Sleep Timer]
+        - [Third Party Hardware Drivers] → [Wireless Connectivity] → [PN7150 - NFC 2 Click (Mikroe) - I2C] → use default configuration
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
         - [Third Party Hardware Drivers] → [Wireless Connectivity] → [PN7150 - NFC 2 Click (Mikroe) - I2C] → use default configuration
 
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - Third-party Hardware Drivers Extension must be enabled for the project to install "PN7150 - NFC 2 Click (Mikroe) - I2C" component.
 

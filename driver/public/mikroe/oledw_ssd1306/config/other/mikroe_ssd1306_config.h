@@ -54,17 +54,17 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>MIKROE SPI SSD1306 Configuration
+// <h> MIKROE SSD1306 SPI Configuration
 
-//  <e>MIKROE SPI SSD1306 UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
-#define MIKROE_SPI_SSD1306_UC                  0
+// <e> MIKROE SSD1306 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_SSD1306_SPI_UC                  0
 
-// <o MIKROE_SPI_SSD1306_BITRATE> Bit Rate (Bits/Second) <1-116000000>
+// <o MIKROE_SSD1306_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
 // <i> Default: 10000000
-#define MIKROE_SPI_SSD1306_BITRATE             10000000
+#define MIKROE_SSD1306_SPI_BITRATE             10000000
 
 // </e>
 // </h>

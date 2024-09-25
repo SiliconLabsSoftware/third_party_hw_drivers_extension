@@ -22,20 +22,35 @@
 
 #include "sl_status.h"
 #include "sl_sleeptimer.h"
-#include "sl_iostream_init_usart_instances.h"
-#include "sl_iostream_init_eusart_instances.h"
-
-#include "app_log.h"
-#include "app_assert.h"
-
 #include "mikroe_a172mrq.h"
 
-#define PROCESS_COUTER                100
-#define READING_INTERVAL_MSEC         5000
+#if (defined(SLI_SI917))
+#include "sl_si91x_usart.h"
+#include "rsi_debug.h"
+#else
+#include "sl_iostream_init_usart_instances.h"
+#include "sl_iostream_init_eusart_instances.h"
+#include "app_log.h"
+#endif
+
+#include "app_assert.h"
+
+#define PROCESS_COUTER                 100
+#define READING_INTERVAL_MSEC          5000
+
+#if (defined(SLI_SI917))
+#define app_printf(...)                DEBUGOUT(__VA_ARGS__)
+#define USART_INSTANCE_USED            UART_1
+
+static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
+#else
+#define app_printf(...)                app_log(__VA_ARGS__)
+#endif
 
 static sl_sleeptimer_timer_handle_t app_timer_handle;
 static volatile bool app_timer_expire = false;
 static uint8_t flag;
+mikroe_uart_handle_t app_uart_instance = NULL;
 
 static void app_timer_cb(sl_sleeptimer_timer_handle_t *handle, void *data);
 static void app_a172mrq_process(void);
@@ -49,17 +64,24 @@ void app_init(void)
 {
   sl_status_t ret_code;
 
+#if (defined(SLI_SI917))
+  app_uart_instance = &uart_instance;
+#else
+  app_uart_instance = sl_iostream_uart_mikroe_handle;
+
+  sl_iostream_set_default(sl_iostream_vcom_handle);
   app_log_iostream_set(sl_iostream_vcom_handle);
+#endif
 
   // Initialize Fingerprint 2 Click
   mikroe_a172mrq_cfg_setup();
-  ret_code = mikroe_a172mrq_init(sl_iostream_uart_mikroe_handle);
+  ret_code = mikroe_a172mrq_init(app_uart_instance);
   app_assert_status(ret_code);
 
   // Reset Fingerprint 2 Click
   mikroe_a172mrq_reset();
   sl_sleeptimer_delay_millisecond(1000);
-  app_log("Fingerprint 2 Click is initialized.\r\n");
+  app_printf("Fingerprint 2 Click is initialized.\r\n");
 
   // Write fingerprint data at position 0
   app_a172mrq_reg_one(0);
@@ -110,7 +132,7 @@ static void app_a172mrq_process(void)
             uart_rx_buffer[check_buf_cnt] = 13;
           }
         }
-        app_log("%s", uart_rx_buffer);
+        app_printf("%s", uart_rx_buffer);
         if (strstr(uart_rx_buffer, "</R>")) {
           flag = 1;
           process_cnt = 5;
@@ -123,7 +145,7 @@ static void app_a172mrq_process(void)
         sl_sleeptimer_delay_millisecond(100);
       }
     } else {
-      app_log("Fingerprint processing failed!\r\n");
+      app_printf("Fingerprint processing failed!\r\n");
     }
   }
 }
@@ -131,7 +153,7 @@ static void app_a172mrq_process(void)
 // Register a fingerprint on index
 static void app_a172mrq_reg_one(uint8_t fngr_number)
 {
-  app_log("Registration is being processed.\r\n");
+  app_printf("Registration is being processed.\r\n");
   sl_sleeptimer_delay_millisecond(500);
 
   mikroe_a172mrq_reg_one_fp(fngr_number);
@@ -146,10 +168,10 @@ static void app_a172mrq_compare(void)
 {
   sl_status_t ret_code;
 
-  ret_code = mikroe_a172mrq_generic_write(MIKROE_FINGERPRINT2_CMD_FP_CMP,
-                                          strlen(MIKROE_FINGERPRINT2_CMD_FP_CMP));
+  ret_code = mikroe_a172mrq_generic_write(
+    MIKROE_FINGERPRINT2_CMD_FP_CMP, strlen(MIKROE_FINGERPRINT2_CMD_FP_CMP));
   if (SL_STATUS_OK == ret_code) {
-    app_log("Comparison is being processed.\r\n");
+    app_printf("Comparison is being processed.\r\n");
     app_a172mrq_process();
 
     do
@@ -158,7 +180,7 @@ static void app_a172mrq_compare(void)
     }
     while (flag == 0);
   } else {
-    app_log("Comparison processing failed!\r\n");
+    app_printf("Comparison processing failed!\r\n");
   }
 }
 

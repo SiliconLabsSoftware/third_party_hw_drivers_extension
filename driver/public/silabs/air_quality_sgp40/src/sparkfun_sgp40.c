@@ -33,14 +33,14 @@
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 #include "sparkfun_sgp40.h"
-#include "sparkfun_sgp40_i2c.h"
-
 #include "sl_sleeptimer.h"
+#include "sparkfun_sgp40_config.h"
+
+typedef i2c_master_t sgp40_handle_t;
 
 // -----------------------------------------------------------------------------
 //                       Local Variables
 // -----------------------------------------------------------------------------
-static sl_i2cspm_t *sgp40_i2cpsm_instance;
 static uint8_t i2c_is_initialized = false;
 
 /// @brief Specified SGP40 commands of Air Quality Sensor driver.
@@ -63,7 +63,7 @@ static fix16_t voc_algorithm_sigmoid_scaled_process(fix16_t sample);
 static fix16_t voc_algorithm_adaptive_lowpass_process(fix16_t sample);
 
 static fix16_t voc_algorithm_mean_variance_estimator_sigmoid_process(
-    fix16_t sample);
+  fix16_t sample);
 
 static void voc_algorithm_mean_variance_estimator_calculate_gamma(
   fix16_t voc_index_from_prior);
@@ -118,6 +118,15 @@ static fix16_t fix16_sqrt(fix16_t x);
 
 static fix16_t fix16_exp(fix16_t x);
 
+static sgp40_handle_t sgp40_handle;
+
+static sl_status_t i2c_read_blocking(sgp40_handle_t *handle,
+                                     uint8_t *dest,
+                                     uint32_t len);
+static sl_status_t i2c_write_blocking(sgp40_handle_t *handle,
+                                      uint8_t *src,
+                                      uint32_t len);
+
 // -----------------------------------------------------------------------------
 //                       Global Function
 // -----------------------------------------------------------------------------
@@ -125,11 +134,11 @@ static fix16_t fix16_exp(fix16_t x);
 /**************************************************************************//**
  *  This function Initialize the sensor I2C instance.
  *****************************************************************************/
-sl_status_t sparkfun_sgp40_init(sl_i2cspm_t *i2cspm)
+sl_status_t sparkfun_sgp40_init(mikroe_i2c_handle_t i2cspm_instance)
 {
-  sl_status_t sc;
+  i2c_master_config_t i2c_cfg;
 
-  if (i2cspm == NULL) {
+  if (i2cspm_instance == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
 
@@ -138,12 +147,18 @@ sl_status_t sparkfun_sgp40_init(sl_i2cspm_t *i2cspm)
     return SL_STATUS_ALREADY_INITIALIZED;
   }
 
-  // Update i2cspm instance
-  sgp40_i2cpsm_instance = i2cspm;
+  sgp40_handle.handle = i2cspm_instance;
 
-  sc = i2c_write_blocking(sgp40_i2cpsm_instance, NULL, 0);
-  if (sc != SL_STATUS_OK) {
-    return sc;
+  i2c_master_configure_default(&i2c_cfg);
+  i2c_cfg.addr = SGP40_ADDRESS;
+  i2c_cfg.timeout_pass_count = 0;
+
+#if (SPARKFUN_SGP40_I2C_UC == 1)
+  i2c_cfg.speed = SPARKFUN_SGP40_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&sgp40_handle, &i2c_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
   }
 
   i2c_is_initialized = true;
@@ -160,13 +175,13 @@ sl_status_t sparkfun_sgp40_measure_test(uint16_t *results)
   uint8_t check_sum;
   sl_status_t sc;
 
-  sc = i2c_write_blocking(sgp40_i2cpsm_instance, sgp40_measure_test, 2);
+  sc = i2c_write_blocking(&sgp40_handle, sgp40_measure_test, 2);
   if (sc != SL_STATUS_OK) {
     return sc;
   }
   sl_sleeptimer_delay_millisecond(320);
 
-  sc = i2c_read_blocking(sgp40_i2cpsm_instance, data_to_read, 3);
+  sc = i2c_read_blocking(&sgp40_handle, data_to_read, 3);
   if (sc != SL_STATUS_OK) {
     return sc;
   }
@@ -188,7 +203,7 @@ sl_status_t sparkfun_sgp40_soft_reset(void)
 {
   sl_status_t sc;
 
-  sc = i2c_write_blocking(sgp40_i2cpsm_instance, sgp40_soft_reset, 2);
+  sc = i2c_write_blocking(&sgp40_handle, sgp40_soft_reset, 2);
   if (sc != SL_STATUS_OK) {
     return sc;
   }
@@ -202,7 +217,7 @@ sl_status_t sparkfun_sgp40_heater_off(void)
 {
   sl_status_t sc;
 
-  sc = i2c_write_blocking(sgp40_i2cpsm_instance, sgp40_heater_off, 2);
+  sc = i2c_write_blocking(&sgp40_handle, sgp40_heater_off, 2);
   sl_sleeptimer_delay_millisecond(1);
 
   if (sc != SL_STATUS_OK) {
@@ -243,7 +258,7 @@ sl_status_t sparkfun_sgp40_measure_raw(uint16_t *sraw_ticks, float rh, float t)
   t_ticks = (uint16_t)((t + 45) * 65535 / 175);
 
   // Perform a raw measurement
-  sc = i2c_write_blocking(sgp40_i2cpsm_instance, sgp40_measure_raw, 2);
+  sc = i2c_write_blocking(&sgp40_handle, sgp40_measure_raw, 2);
 
   data_to_write[0] = sgp40_measure_raw[0];
   data_to_write[1] = sgp40_measure_raw[1];
@@ -254,13 +269,13 @@ sl_status_t sparkfun_sgp40_measure_raw(uint16_t *sraw_ticks, float rh, float t)
   data_to_write[6] = ((uint8_t)(t_ticks & 0xFF));
   data_to_write[7] = (sparkfun_sgp40_crc8(t_ticks));
 
-  sc = i2c_write_blocking(sgp40_i2cpsm_instance, data_to_write, 8);
+  sc = i2c_write_blocking(&sgp40_handle, data_to_write, 8);
   if (sc != SL_STATUS_OK) {
     return sc;
   }
   sl_sleeptimer_delay_millisecond(30);
 
-  sc = i2c_read_blocking(sgp40_i2cpsm_instance, data_to_read, 3);
+  sc = i2c_read_blocking(&sgp40_handle, data_to_read, 3);
   if (sc != SL_STATUS_OK) {
     return sc;
   }
@@ -416,9 +431,11 @@ void sparkfun_sgp40_voc_algorithm_process(int32_t sraw, int32_t *voc_index)
 
 static fix16_t voc_algorithm_mox_model_process(fix16_t sraw)
 {
-  return fix16_mul((fix16_div((sraw- voc_algorithm_parameters->m_Mox_Model_Sraw_Mean),
-                               (-(voc_algorithm_parameters->m_Mox_Model_Sraw_Std + F16(VOC_ALGORITHM_SRAW_STD_BONUS))))),
-                    F16(VOC_ALGORITHM_VOC_INDEX_GAIN));
+  return fix16_mul((fix16_div((sraw
+                               - voc_algorithm_parameters->m_Mox_Model_Sraw_Mean),
+                              (-(voc_algorithm_parameters->m_Mox_Model_Sraw_Std
+                                 + F16(VOC_ALGORITHM_SRAW_STD_BONUS))))),
+                   F16(VOC_ALGORITHM_VOC_INDEX_GAIN));
 }
 
 static fix16_t voc_algorithm_sigmoid_scaled_process(fix16_t sample)
@@ -427,24 +444,27 @@ static fix16_t voc_algorithm_sigmoid_scaled_process(fix16_t sample)
   fix16_t shift;
 
   x = fix16_mul(F16(VOC_ALGORITHM_SIGMOID_K),
-                 (sample - F16(VOC_ALGORITHM_SIGMOID_X0)));
+                (sample - F16(VOC_ALGORITHM_SIGMOID_X0)));
   if ((x < F16(-50.))) {
     return F16(VOC_ALGORITHM_SIGMOID_L);
   } else if ((x > F16(50.))) {
     return F16(0.);
   } else {
     if ((sample >= F16(0.))) {
-      shift = fix16_div(F16(VOC_ALGORITHM_SIGMOID_L) -
-                            (fix16_mul(F16(5.), voc_algorithm_parameters->m_Sigmoid_Scaled_Offset)),
+      shift = fix16_div(F16(VOC_ALGORITHM_SIGMOID_L)
+                        - (fix16_mul(F16(5.),
+                                     voc_algorithm_parameters->
+                                     m_Sigmoid_Scaled_Offset)),
                         F16(4.));
       return ((fix16_div(F16(VOC_ALGORITHM_SIGMOID_L) + shift,
                          F16(1.) + fix16_exp(x))))
              - shift;
     } else {
-      return fix16_mul(fix16_div(voc_algorithm_parameters->m_Sigmoid_Scaled_Offset,
-                                   F16(VOC_ALGORITHM_VOC_INDEX_OFFSET_DEFAULT)),
+      return fix16_mul(fix16_div(voc_algorithm_parameters->
+                                 m_Sigmoid_Scaled_Offset,
+                                 F16(VOC_ALGORITHM_VOC_INDEX_OFFSET_DEFAULT)),
                        fix16_div(F16(VOC_ALGORITHM_SIGMOID_L),
-                                   F16(1.) + fix16_exp(x)));
+                                 F16(1.) + fix16_exp(x)));
     }
   }
 }
@@ -468,10 +488,10 @@ static fix16_t voc_algorithm_adaptive_lowpass_process(fix16_t sample)
     + fix16_mul(voc_algorithm_parameters->m_Adaptive_Lowpass_A1, sample);
   voc_algorithm_parameters->m_Adaptive_Lowpass_X2 =
     (fix16_mul((F16(1.) - voc_algorithm_parameters->m_Adaptive_Lowpass_A2),
-                voc_algorithm_parameters->m_Adaptive_Lowpass_X2))
-                 + fix16_mul(voc_algorithm_parameters->m_Adaptive_Lowpass_A2, sample);
+               voc_algorithm_parameters->m_Adaptive_Lowpass_X2))
+    + fix16_mul(voc_algorithm_parameters->m_Adaptive_Lowpass_A2, sample);
   abs_delta = voc_algorithm_parameters->m_Adaptive_Lowpass_X1
-             - voc_algorithm_parameters->m_Adaptive_Lowpass_X2;
+              - voc_algorithm_parameters->m_Adaptive_Lowpass_X2;
   if ((abs_delta < F16(0.))) {
     abs_delta = (-abs_delta);
   }
@@ -483,7 +503,7 @@ static fix16_t voc_algorithm_adaptive_lowpass_process(fix16_t sample)
                  F16(VOC_ALGORITHM_SAMPLING_INTERVAL) + tau_a);
   voc_algorithm_parameters->m_Adaptive_Lowpass_X3 =
     fix16_mul(F16(1.) - a3,
-                voc_algorithm_parameters->m_Adaptive_Lowpass_X3)
+              voc_algorithm_parameters->m_Adaptive_Lowpass_X3)
     + fix16_mul(a3, sample);
 
   return voc_algorithm_parameters->m_Adaptive_Lowpass_X3;
@@ -495,14 +515,16 @@ static fix16_t voc_algorithm_mean_variance_estimator_sigmoid_process(
   fix16_t x;
 
   x = fix16_mul(voc_algorithm_parameters->m_Mean_Variance_Estimator_Sigmoid_K,
-                sample - voc_algorithm_parameters->m_Mean_Variance_Estimator_Sigmoid_X0);
+                sample
+                - voc_algorithm_parameters->m_Mean_Variance_Estimator_Sigmoid_X0);
   if ((x < F16(-50.))) {
     return voc_algorithm_parameters->m_Mean_Variance_Estimator_Sigmoid_L;
   } else if ((x > F16(50.))) {
     return F16(0.);
   } else {
-    return fix16_div(voc_algorithm_parameters->m_Mean_Variance_Estimator_Sigmoid_L,
-                     F16(1.) + fix16_exp(x));
+    return fix16_div(
+      voc_algorithm_parameters->m_Mean_Variance_Estimator_Sigmoid_L,
+      F16(1.) + fix16_exp(x));
   }
 }
 
@@ -522,12 +544,14 @@ static void voc_algorithm_mean_variance_estimator_calculate_gamma(
   uptime_limit =
     F16((VOC_ALGORITHM_MEAN_VARIANCE_ESTIMATOR_FIX16_MAX
          - VOC_ALGORITHM_SAMPLING_INTERVAL));
-  if (voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gamma < uptime_limit) {
+  if (voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gamma
+      < uptime_limit) {
     voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gamma =
       voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gamma
       + F16(VOC_ALGORITHM_SAMPLING_INTERVAL);
   }
-  if (voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gating < uptime_limit) {
+  if (voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gating
+      < uptime_limit) {
     voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gating =
       voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gating
       + F16(VOC_ALGORITHM_SAMPLING_INTERVAL);
@@ -539,41 +563,51 @@ static void voc_algorithm_mean_variance_estimator_calculate_gamma(
   sigmoid_gamma_mean = voc_algorithm_mean_variance_estimator_sigmoid_process(
     voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gamma);
   gamma_mean = voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma
-     + fix16_mul(voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Initial_Mean
-                  - voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma,
-                 sigmoid_gamma_mean);
+               + fix16_mul(voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Initial_Mean
+                           - voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma,
+                           sigmoid_gamma_mean);
   gating_threshold_mean = F16(VOC_ALGORITHM_GATING_THRESHOLD)
-     + fix16_mul(F16((VOC_ALGORITHM_GATING_THRESHOLD_INITIAL
-                       - VOC_ALGORITHM_GATING_THRESHOLD)),
-                 voc_algorithm_mean_variance_estimator_sigmoid_process(
-                    voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gating));
-  voc_algorithm_mean_variance_estimator_sigmoid_set_parameters(F16(1.),
+                          + fix16_mul(F16((
+                                            VOC_ALGORITHM_GATING_THRESHOLD_INITIAL
+                                            - VOC_ALGORITHM_GATING_THRESHOLD)),
+                                      voc_algorithm_mean_variance_estimator_sigmoid_process(
+                                        voc_algorithm_parameters->
+                                        m_Mean_Variance_Estimator_Uptime_Gating));
+  voc_algorithm_mean_variance_estimator_sigmoid_set_parameters(F16(
+                                                                 1.),
                                                                gating_threshold_mean,
-                                                               F16(VOC_ALGORITHM_GATING_THRESHOLD_TRANSITION));
+                                                               F16(
+                                                                 VOC_ALGORITHM_GATING_THRESHOLD_TRANSITION));
   sigmoid_gating_mean =
     voc_algorithm_mean_variance_estimator_sigmoid_process(voc_index_from_prior);
   voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Mean =
     fix16_mul(sigmoid_gating_mean, gamma_mean);
   voc_algorithm_mean_variance_estimator_sigmoid_set_parameters(F16(1.),
-                                                               F16(VOC_ALGORITHM_INIT_DURATION_VARIANCE),
-                                                               F16(VOC_ALGORITHM_INIT_TRANSITION_VARIANCE));
+                                                               F16(
+                                                                 VOC_ALGORITHM_INIT_DURATION_VARIANCE),
+                                                               F16(
+                                                                 VOC_ALGORITHM_INIT_TRANSITION_VARIANCE));
   sigmoid_gamma_variance =
     voc_algorithm_mean_variance_estimator_sigmoid_process(
       voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gamma);
   gamma_variance =
     (voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma
-     + fix16_mul((voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Initial_Variance
-                   - voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma),
-                  sigmoid_gamma_variance - sigmoid_gamma_mean));
+     + fix16_mul((voc_algorithm_parameters->
+                  m_Mean_Variance_Estimator_Gamma_Initial_Variance
+                  - voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma),
+                 sigmoid_gamma_variance - sigmoid_gamma_mean));
   gating_threshold_variance =
     F16(VOC_ALGORITHM_GATING_THRESHOLD)
-     + fix16_mul(F16((VOC_ALGORITHM_GATING_THRESHOLD_INITIAL
-                       - VOC_ALGORITHM_GATING_THRESHOLD)),
-                  voc_algorithm_mean_variance_estimator_sigmoid_process(
-                    voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gating));
-  voc_algorithm_mean_variance_estimator_sigmoid_set_parameters(F16(1.),
+    + fix16_mul(F16((VOC_ALGORITHM_GATING_THRESHOLD_INITIAL
+                     - VOC_ALGORITHM_GATING_THRESHOLD)),
+                voc_algorithm_mean_variance_estimator_sigmoid_process(
+                  voc_algorithm_parameters->
+                  m_Mean_Variance_Estimator_Uptime_Gating));
+  voc_algorithm_mean_variance_estimator_sigmoid_set_parameters(F16(
+                                                                 1.),
                                                                gating_threshold_variance,
-                                                               F16(VOC_ALGORITHM_GATING_THRESHOLD_TRANSITION));
+                                                               F16(
+                                                                 VOC_ALGORITHM_GATING_THRESHOLD_TRANSITION));
   sigmoid_gating_variance =
     voc_algorithm_mean_variance_estimator_sigmoid_process(voc_index_from_prior);
   voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Variance =
@@ -582,13 +616,17 @@ static void voc_algorithm_mean_variance_estimator_calculate_gamma(
     (voc_algorithm_parameters->m_Mean_Variance_Estimator_Gating_Duration_Minutes
      + fix16_mul(F16((VOC_ALGORITHM_SAMPLING_INTERVAL / 60.)),
                  ((fix16_mul((F16(1.) - sigmoid_gating_mean),
-                              F16((1. + VOC_ALGORITHM_GATING_MAX_RATIO))))
+                             F16((1. + VOC_ALGORITHM_GATING_MAX_RATIO))))
                   - F16(VOC_ALGORITHM_GATING_MAX_RATIO))));
-  if (voc_algorithm_parameters->m_Mean_Variance_Estimator_Gating_Duration_Minutes < F16(0.)) {
-    voc_algorithm_parameters->m_Mean_Variance_Estimator_Gating_Duration_Minutes= F16(0.);
+  if (voc_algorithm_parameters->
+      m_Mean_Variance_Estimator_Gating_Duration_Minutes < F16(0.)) {
+    voc_algorithm_parameters->m_Mean_Variance_Estimator_Gating_Duration_Minutes
+      = F16(0.);
   }
-  if (voc_algorithm_parameters->m_Mean_Variance_Estimator_Gating_Duration_Minutes
-       > voc_algorithm_parameters->m_Mean_Variance_Estimator_Gating_Max_Duration_Minutes) {
+  if (voc_algorithm_parameters->
+      m_Mean_Variance_Estimator_Gating_Duration_Minutes
+      > voc_algorithm_parameters->
+      m_Mean_Variance_Estimator_Gating_Max_Duration_Minutes) {
     voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gating = F16(0.);
   }
 }
@@ -607,9 +645,9 @@ static void voc_algorithm_mean_variance_estimator_process(fix16_t sraw,
     voc_algorithm_parameters->m_Mean_Variance_Estimator_Mean = F16(0.);
   } else {
     if ((voc_algorithm_parameters->m_Mean_Variance_Estimator_Mean
-          >= F16(100.))
-         || (voc_algorithm_parameters->m_Mean_Variance_Estimator_Mean
-             <= F16(-100.))) {
+         >= F16(100.))
+        || (voc_algorithm_parameters->m_Mean_Variance_Estimator_Mean
+            <= F16(-100.))) {
       voc_algorithm_parameters->m_Mean_Variance_Estimator_Sraw_Offset =
         (voc_algorithm_parameters->m_Mean_Variance_Estimator_Sraw_Offset
          + voc_algorithm_parameters->m_Mean_Variance_Estimator_Mean);
@@ -632,19 +670,28 @@ static void voc_algorithm_mean_variance_estimator_process(fix16_t sraw,
     }
     voc_algorithm_parameters->m_Mean_Variance_Estimator_Std =
       fix16_mul(fix16_sqrt(fix16_mul(additional_scaling,
-                                     F16(VOC_ALGORITHM_MEAN_VARIANCE_ESTIMATOR_GAMMA_SCALING)
-                                      - voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Variance)),
-                fix16_sqrt(fix16_mul(voc_algorithm_parameters->m_Mean_Variance_Estimator_Std,
-                                     fix16_div(voc_algorithm_parameters->m_Mean_Variance_Estimator_Std,
-                                               fix16_mul(F16(VOC_ALGORITHM_MEAN_VARIANCE_ESTIMATOR_GAMMA_SCALING),
+                                     F16(
+                                       VOC_ALGORITHM_MEAN_VARIANCE_ESTIMATOR_GAMMA_SCALING)
+                                     - voc_algorithm_parameters->
+                                     m_Mean_Variance_Estimator_Gamma_Variance)),
+                fix16_sqrt(fix16_mul(voc_algorithm_parameters->
+                                     m_Mean_Variance_Estimator_Std,
+                                     fix16_div(voc_algorithm_parameters->
+                                               m_Mean_Variance_Estimator_Std,
+                                               fix16_mul(F16(
+                                                           VOC_ALGORITHM_MEAN_VARIANCE_ESTIMATOR_GAMMA_SCALING),
                                                          additional_scaling))
-                           + fix16_mul(fix16_div(fix16_mul(voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Variance,
-                                                           delta_sgp),
-                                                 additional_scaling),
-                                       delta_sgp))));
+                                     + fix16_mul(fix16_div(fix16_mul(
+                                                             voc_algorithm_parameters
+                                                             ->
+                                                             m_Mean_Variance_Estimator_Gamma_Variance,
+                                                             delta_sgp),
+                                                           additional_scaling),
+                                                 delta_sgp))));
     voc_algorithm_parameters->m_Mean_Variance_Estimator_Mean =
       (voc_algorithm_parameters->m_Mean_Variance_Estimator_Mean
-       + fix16_mul(voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Mean,
+       + fix16_mul(voc_algorithm_parameters->
+                   m_Mean_Variance_Estimator_Gamma_Mean,
                    delta_sgp));
   }
 }
@@ -661,7 +708,8 @@ static void voc_algorithm_mean_variance_estimator_set_parameters(
   fix16_t tau_mean_variance_hours,
   fix16_t gating_max_duration_minutes)
 {
-  voc_algorithm_parameters->m_Mean_Variance_Estimator_Gating_Max_Duration_Minutes =
+  voc_algorithm_parameters->
+  m_Mean_Variance_Estimator_Gating_Max_Duration_Minutes =
     gating_max_duration_minutes;
   voc_algorithm_parameters->m_Mean_Variance_Estimator_Initialized = false;
   voc_algorithm_parameters->m_Mean_Variance_Estimator_Mean = F16(0.);
@@ -669,18 +717,18 @@ static void voc_algorithm_mean_variance_estimator_set_parameters(
   voc_algorithm_parameters->m_Mean_Variance_Estimator_Std = std_initial;
   voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma =
     fix16_div(F16((VOC_ALGORITHM_MEAN_VARIANCE_ESTIMATOR_GAMMA_SCALING
-                    * (VOC_ALGORITHM_SAMPLING_INTERVAL / 3600.))),
+                   * (VOC_ALGORITHM_SAMPLING_INTERVAL / 3600.))),
               tau_mean_variance_hours
-               + F16((VOC_ALGORITHM_SAMPLING_INTERVAL / 3600.)));
+              + F16((VOC_ALGORITHM_SAMPLING_INTERVAL / 3600.)));
   voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Initial_Mean =
     F16(((VOC_ALGORITHM_MEAN_VARIANCE_ESTIMATOR_GAMMA_SCALING
-         * VOC_ALGORITHM_SAMPLING_INTERVAL)
+          * VOC_ALGORITHM_SAMPLING_INTERVAL)
          / (VOC_ALGORITHM_TAU_INITIAL_MEAN + VOC_ALGORITHM_SAMPLING_INTERVAL)));
   voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Initial_Variance =
     F16(((VOC_ALGORITHM_MEAN_VARIANCE_ESTIMATOR_GAMMA_SCALING
-         * VOC_ALGORITHM_SAMPLING_INTERVAL)
+          * VOC_ALGORITHM_SAMPLING_INTERVAL)
          / (VOC_ALGORITHM_TAU_INITIAL_VARIANCE
-           + VOC_ALGORITHM_SAMPLING_INTERVAL)));
+            + VOC_ALGORITHM_SAMPLING_INTERVAL)));
   voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Mean = F16(0.);
   voc_algorithm_parameters->m_Mean_Variance_Estimator_Gamma_Variance = F16(0.);
   voc_algorithm_parameters->m_Mean_Variance_Estimator_Uptime_Gamma = F16(0.);
@@ -969,4 +1017,30 @@ static fix16_t fix16_exp(fix16_t x)
     arg >>= 3;
   }
   return res;
+}
+
+static sl_status_t i2c_read_blocking(sgp40_handle_t *handle,
+                                     uint8_t *dest,
+                                     uint32_t len)
+{
+  if (I2C_MASTER_SUCCESS != i2c_master_read(handle,
+                                            dest,
+                                            len)) {
+    return SL_STATUS_TRANSMIT;
+  }
+
+  return SL_STATUS_OK;
+}
+
+static sl_status_t i2c_write_blocking(sgp40_handle_t *handle,
+                                      uint8_t *src,
+                                      uint32_t len)
+{
+  if (I2C_MASTER_SUCCESS != i2c_master_write(handle,
+                                             src,
+                                             len)) {
+    return SL_STATUS_TRANSMIT;
+  }
+
+  return SL_STATUS_OK;
 }

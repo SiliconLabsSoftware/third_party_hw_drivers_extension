@@ -39,16 +39,17 @@
 #ifndef MIKROE_A3967_CONFIG_H_
 #define MIKROE_A3967_CONFIG_H_
 
+#include "em_gpio.h"
+
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu
 
 // <o MIKROE_A3967_STEP_FREQUENCY> Stepper Motor Step Frequency
 // <i> Default: 500
-#define MIKROE_A3967_STEP_FREQUENCY    500
+#define MIKROE_A3967_STEP_FREQUENCY             500
 // </h> end Stepper Motor config
 
 // <<< end of configuration section >>>

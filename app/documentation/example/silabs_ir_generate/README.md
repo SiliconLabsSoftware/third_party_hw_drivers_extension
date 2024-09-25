@@ -9,14 +9,6 @@ This project shows the implementation of IR generator driver using WSTK kit. IR 
 - [EFR32xG21 Wireless Gecko Starter Kit](https://www.silabs.com/development-tools/wireless/efr32xg21-wireless-starter-kit?tab=overview)
 - [IR Led](https://www.robomart.com/ir-led-3mm)
 
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD4180A | [SiLabs EFR32xG21 Radio Board BRD4180A](https://www.silabs.com/development-tools/wireless)    |
-| BRD4182A | [SiLabs EFR32xG22 Radio Board BRD4182A](https://www.silabs.com/development-tools/wireless/slwrb4182a-efr32xg22-wireless-gecko-radio-board) |
-
 ## Hardware Connection ##
 
 The hardware connection is shown in the image below:

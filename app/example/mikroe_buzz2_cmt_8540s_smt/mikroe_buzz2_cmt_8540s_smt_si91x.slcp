@@ -1,8 +1,8 @@
 project_name: mikroe_buzz2_cmt_8540s_smt_si91x
 package: platform
-label: Third Party Hardware Drivers - CMT-8540S-SMT - Buzz 2 Click (Mikroe) - Si91x
+label: Third Party Hardware Drivers - CMT-8540S-SMT - Buzz 2 Click (Mikroe)
 description: |
-  This example project shows an example for Mikroe Buzz 2 Click board driver integration on Si91x.
+  This example project shows an example for Mikroe Buzz 2 Click board driver integration.
 category: Example|Platform
 quality: evaluation
 
@@ -43,14 +43,12 @@ component:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 - id: wiseconnect3_sdk
-  version: 3.2.0
+  version: 3.3.4
 
 other_file:
   - path: ../../documentation/example/mikroe_buzz2_cmt_8540s_smt/image/create_example.png
-    directory: "image"
-  - path: ../../documentation/example/mikroe_buzz2_cmt_8540s_smt/image/create_example_si91x.png
     directory: "image"
   - path: ../../documentation/example/mikroe_buzz2_cmt_8540s_smt/image/log.png
     directory: "image"

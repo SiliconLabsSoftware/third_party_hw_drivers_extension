@@ -321,7 +321,7 @@ static inline uint16_t w5x00_writeSn_buf(w5x00_socket_t s,
 }
 
 #define w5x00_get_socket_tx_max_size(sn) \
-        (((uint16_t)w5x00_readSnTX_SIZE(sn)) << 10)
+  (((uint16_t)w5x00_readSnTX_SIZE(sn)) << 10)
 
 /***************************************************************************//**
  * @brief
@@ -443,7 +443,7 @@ void w5x00_exec_cmd_socket(w5x00_socket_t s, uint8_t cmd);
  * @return
  *    true on success, false on failure
  ******************************************************************************/
-bool w5x00_init(SPIDRV_Handle_t handle);
+bool w5x00_init(mikroe_spi_handle_t  handle);
 
 /***************************************************************************//**
  * @brief
@@ -456,35 +456,35 @@ uint8_t w5x00_soft_reset(void);
 /** @cond hidden */
 // -----------------------------------------------------------------------------
 // Common Registers IOMAP
-#define __GP_REGISTER8(name, address)                       \
-  static inline uint16_t w5x00_write##name(uint8_t data) {  \
-    uint8_t bw = data;                                      \
-    return w5x00_write(address, &bw, 1);                    \
-  }                                                         \
-  static inline uint8_t w5x00_read##name() {                \
-    uint8_t br;                                             \
-    w5x00_read(address, &br, 1);                            \
-    return br;                                              \
-        }
-#define __GP_REGISTER16(name, address)                      \
-  static inline void w5x00_write##name(uint16_t _data) {    \
-    uint8_t buf[2];                                         \
-    buf[0] = _data >> 8;                                    \
-    buf[1] = _data & 0xFF;                                  \
-    w5x00_write(address, buf, 2);                           \
-  }                                                         \
-  static inline uint16_t w5x00_read##name() {               \
-    uint8_t buf[2];                                         \
-    w5x00_read(address, buf, 2);                            \
-    return (buf[0] << 8) | buf[1];                          \
-        }
+#define __GP_REGISTER8(name, address)                        \
+  static inline uint16_t w5x00_write ## name(uint8_t data) { \
+    uint8_t bw = data;                                       \
+    return w5x00_write(address, &bw, 1);                     \
+  }                                                          \
+  static inline uint8_t w5x00_read ## name() {               \
+    uint8_t br;                                              \
+    w5x00_read(address, &br, 1);                             \
+    return br;                                               \
+  }
+#define __GP_REGISTER16(name, address)                     \
+  static inline void w5x00_write ## name(uint16_t _data) { \
+    uint8_t buf[2];                                        \
+    buf[0] = _data >> 8;                                   \
+    buf[1] = _data & 0xFF;                                 \
+    w5x00_write(address, buf, 2);                          \
+  }                                                        \
+  static inline uint16_t w5x00_read ## name() {            \
+    uint8_t buf[2];                                        \
+    w5x00_read(address, buf, 2);                           \
+    return (buf[0] << 8) | buf[1];                         \
+  }
 #define __GP_REGISTER_N(name, address, size)                          \
-  static inline uint16_t w5x00_write##name(const uint8_t *_buff) {    \
-          return w5x00_write(address, _buff, size);                         \
-        }                                                                   \
-  static inline uint16_t w5x00_read##name(uint8_t *_buff) {           \
-          return w5x00_read(address, _buff, size);                          \
-        }
+  static inline uint16_t w5x00_write ## name(const uint8_t * _buff) { \
+    return w5x00_write(address, _buff, size);                         \
+  }                                                                   \
+  static inline uint16_t w5x00_read ## name(uint8_t * _buff) {        \
+    return w5x00_read(address, _buff, size);                          \
+  }
 
 __GP_REGISTER8(MR, 0x0000);             // Mode
 __GP_REGISTER_N(GAR, 0x0001, 4);        // Gateway IP address
@@ -526,36 +526,36 @@ __GP_REGISTER16(PMRU, 0x0026);          // PPP Maximum Segment Size
 // -----------------------------------------------------------------------------
 // Socket Registers IOMAP
 
-#define __SOCKET_REGISTER8(name, address)                             \
-        static inline void w5x00_write ## name(w5x00_socket_t _s,     \
-                                               uint8_t _data) {       \
-          w5x00_writeSn(_s, address, _data);                          \
-        }                                                             \
-        static inline uint8_t w5x00_read ## name(w5x00_socket_t _s) { \
-          return w5x00_readSn(_s, address);                           \
-        }
-#define __SOCKET_REGISTER16(name, address)                             \
-        static inline void w5x00_write ## name(w5x00_socket_t _s,      \
-                                               uint16_t _data) {       \
-          uint8_t buf[2];                                              \
-          buf[0] = _data >> 8;                                         \
-          buf[1] = _data & 0xFF;                                       \
-          w5x00_writeSn_buf(_s, address, buf, 2);                      \
-        }                                                              \
-        static inline uint16_t w5x00_read ## name(w5x00_socket_t _s) { \
-          uint8_t buf[2];                                              \
-          w5x00_readSn_buf(_s, address, buf, 2);                       \
-          return (buf[0] << 8) | buf[1];                               \
-        }
-#define __SOCKET_REGISTER_N(name, address, size)                      \
-        static inline uint16_t w5x00_write ## name(w5x00_socket_t _s, \
-                                                   uint8_t * _buff) { \
-          return w5x00_writeSn_buf(_s, address, _buff, size);         \
-        }                                                             \
-        static inline uint16_t w5x00_read ## name(w5x00_socket_t _s,  \
-                                                  uint8_t * _buff) {  \
-          return w5x00_readSn_buf(_s, address, _buff, size);          \
-        }
+#define __SOCKET_REGISTER8(name, address)                       \
+  static inline void w5x00_write ## name(w5x00_socket_t _s,     \
+                                         uint8_t _data) {       \
+    w5x00_writeSn(_s, address, _data);                          \
+  }                                                             \
+  static inline uint8_t w5x00_read ## name(w5x00_socket_t _s) { \
+    return w5x00_readSn(_s, address);                           \
+  }
+#define __SOCKET_REGISTER16(name, address)                       \
+  static inline void w5x00_write ## name(w5x00_socket_t _s,      \
+                                         uint16_t _data) {       \
+    uint8_t buf[2];                                              \
+    buf[0] = _data >> 8;                                         \
+    buf[1] = _data & 0xFF;                                       \
+    w5x00_writeSn_buf(_s, address, buf, 2);                      \
+  }                                                              \
+  static inline uint16_t w5x00_read ## name(w5x00_socket_t _s) { \
+    uint8_t buf[2];                                              \
+    w5x00_readSn_buf(_s, address, buf, 2);                       \
+    return (buf[0] << 8) | buf[1];                               \
+  }
+#define __SOCKET_REGISTER_N(name, address, size)                \
+  static inline uint16_t w5x00_write ## name(w5x00_socket_t _s, \
+                                             uint8_t * _buff) { \
+    return w5x00_writeSn_buf(_s, address, _buff, size);         \
+  }                                                             \
+  static inline uint16_t w5x00_read ## name(w5x00_socket_t _s,  \
+                                            uint8_t * _buff) {  \
+    return w5x00_readSn_buf(_s, address, _buff, size);          \
+  }
 
 __SOCKET_REGISTER8(SnMR, 0x0000)               // Mode
 __SOCKET_REGISTER8(SnCR, 0x0001)               // Command

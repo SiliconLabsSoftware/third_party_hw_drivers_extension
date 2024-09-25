@@ -7,30 +7,10 @@ category: Human Machine Interface
 quality: evaluation
 root_path: driver
 requires:
-  - name: emlib_iadc
-  - name: udelay
+  - name: touch_screen_analog_interface
 provides:
   - name: touch_screen_analog
     allow_multiple: false
-config_file:
-  - path: public/silabs/services_touch_screen/config/brd2601b/touch_screen_config.h
-    file_id: touch_screen_config
-    condition: [brd2601b]
-  - path: public/silabs/services_touch_screen/config/brd2703a/touch_screen_config.h
-    file_id: touch_screen_config
-    condition: [brd2703a]
-  - path: public/silabs/services_touch_screen/config/brd2704a/touch_screen_config.h
-    file_id: touch_screen_config
-    condition: [brd2704a]
-  - path: public/silabs/services_touch_screen/config/brd4314a/touch_screen_config.h
-    file_id: touch_screen_config
-    condition: [brd4314a]
-  - path: public/silabs/services_touch_screen/config/brd4108a/touch_screen_config.h
-    file_id: touch_screen_config
-    condition: [brd4108a]
-  - path: public/silabs/services_touch_screen/config/other/adafruit_ili9341_config.h
-    file_id: adafruit_ili9341_config
-    unless: [brd2601b, brd2703a, brd2704a, brd4314a, brd4108a]
 template_contribution:
   - name: component_catalog
     value: services_touch_screen

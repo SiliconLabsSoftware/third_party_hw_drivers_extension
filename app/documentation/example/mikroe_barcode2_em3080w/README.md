@@ -8,15 +8,28 @@ Barcode 2 Click is an adapter add-on board that contains a computerized image re
 
 ## Required Hardware ##
 
-- [A BGM220P Explorer Kit board.](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
-
-- [A MikroE Barcode 2 click board.](https://www.mikroe.com/barcode-2-click)
+- [A BGM220P Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- [A MikroE Barcode2 Click board](https://www.mikroe.com/barcode-2-click)
 
 ## Hardware Connection ##
 
-The Barcode 2 Click board can just be "clicked" into its place. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+- **If BGM220P Explorer Kit is used:**
 
-![board](image/hardware_connection.png)
+    The MikroE Barcode2 Click board supports MikroBus; therefore, it can easily connect to the MikroBus socket of the BGM220P Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit. The hardware connection is shown in the image below:
+
+    ![board](image/hardware_connection.png)
+
+- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+
+    The hardware connection is shown in the table below:
+
+    | Description  | BRD4338A GPIO   | BRD4002 EXP Header | MikroE Barcode2 Click board |
+    | ------------ | --------------- | ------------------ | --------------------------- |
+    | UART1_RX_PIN | GPIO_6          | P19                | TX                          |
+    | UART1_TX_PIN | GPIO_7          | P20                | RX                          |
+    | GPIO         | GPIO_46         | P24                | RST                         |
+    | GPIO         | GPIO_47         | P26                | TRG                         |
 
 ## Setup ##
 
@@ -24,16 +37,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter EM3080-W.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by "em3080-w".
 
 2. Click **Create** button on the **Third Party Hardware Drivers - EM3080-W - Barcode 2 Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+    ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_barcode2_em3080w/app.c` into the project root folder (overwriting the existing file).
 
@@ -45,32 +59,33 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
+      **If BGM220P Explorer Kit is used:**
+
         - [Services] → [Timers] → [Sleep Timer]
+        - [Application] → [Utility] → [Assert]
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
-        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: mikroe -> Set Baud rate to 9600 and Receiver buffer size to 256 as below
-        ![UART config](image/uart_config.png)
+        - [Services] → [IO Stream] → [IO Stream: USART] → [mikroe] → Set "Receiver buffer size" to **256**
         - [Third Party Hardware Drivers] → [Sensors] → [EM3080-W - Barcode 2 Click (Mikroe)] → use default configuration
-        ![Barcode 2 config](image/barcode2_config.png)
+
+        **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [Application] → [Utility] → [Assert]
+        - [Third Party Hardware Drivers] → [Sensors] → [EM3080-W - Barcode 2 Click (Mikroe)] → use default configuration
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [UART] → disable "UART1 DMA"
 
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide)
 
-- SDK Extension must be enabled for the project to install "EM3080-W - Barcode 2 Click (Mikroe)" component.
+- Third-party Drivers Extension must be enabled for the project to install "EM3080-W - Barcode 2 Click (Mikroe)" component.
 
 ## How It Works ##
 
-This is an example that demonstrates the use of the Barcode 2 Click board:
-
-- First, it enables scanning and waits for the barcode to be detected.
-- If the barcode or QR Code is detected, it displays its content to the USB UART.
-- After that, disables scanning for 1 second.
-- Results are being sent to the USART Terminal where you can track their changes.
-
-You can launch Console that's integrated into Simplicity Studio or use a third-party terminal tool like Putty to receive the data from the USB. A screenshot of the console output is shown in the figure below.
+After you flash the code to your board and power the connected boards, the application starts running automatically. Use Putty/Tera Term (or another program) to read the values of the serial output. Note that your board uses the default baud rate of 115200. First, the main program performs sensor initialization, after that it enables scanning and waits for the barcode to be detected. If the barcode or QR Code is detected, it displays the barcode's content to the console. After that, it disables scanning for 1 second. In the image below, you can see an example of how the output is displayed.
 
 ![usb_debug](image/log.png "USB Debug Output Data")
 

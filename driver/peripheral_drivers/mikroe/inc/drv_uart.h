@@ -44,10 +44,11 @@
 extern "C" {
 #endif
 
+#include <stddef.h>
+#include <stdbool.h>
 #include "drv_name.h"
-#include "sl_iostream.h"
-#include "sl_iostream_uart.h"
-#include "sl_iostream_usart.h"
+
+typedef const void *mikroe_uart_handle_t; ///< Created UART handle type
 
 typedef enum
 {
@@ -98,7 +99,7 @@ typedef struct
 
 typedef struct
 {
-  sl_iostream_uart_t *handle;
+  mikroe_uart_handle_t handle;
   void *tx_ring_buffer;
   void *rx_ring_buffer;
   uart_config_t config;

@@ -1,0 +1,71 @@
+project_name: pn7150_nci_t2t_write
+label: Third Party Hardware Drivers - PN7150 - Write to a T2T Tag with NCI
+package: platform
+description: |
+  This example project demonstrates the interface of the NFC NCI service by the NFC controller PN7150 to write to a T2T Tag.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_nfc2_pn7150_nci_t2t_write/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: app_assert
+- id: services_nfc_tag
+  from: third_party_hw_drivers
+- id: services_nfc_nci
+  from: third_party_hw_drivers
+- id: services_nfc_ndef
+  from: third_party_hw_drivers
+- id: mikroe_nfc2
+  from: third_party_hw_drivers
+- id: sleeptimer_si91x
+  from: wiseconnect3_sdk
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- instance: [i2c2]
+  from: wiseconnect3_sdk
+  id: i2c_instance
+
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+other_file:
+  - path: ../../documentation/example/mikroe_nfc2_pn7150_nci_t2t_write/image/hardware_connection.png
+    directory: image
+  - path: ../../documentation/example/mikroe_nfc2_pn7150_nci_t2t_write/image/create_example.png
+    directory: image
+  - path: ../../documentation/example/mikroe_nfc2_pn7150_nci_t2t_write/image/log.png
+    directory: image
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

@@ -38,14 +38,14 @@
  * Includes
  ******************************************************************************/
 #include "sparkfun_rfid_id12la.h"
+#include "sparkfun_rfid_id12la_config.h"
 #include "sl_sleeptimer.h"
 
 /*******************************************************************************
  * Variables
  ******************************************************************************/
-static sl_i2cspm_t *id12la_i2cpsm_instance;
 static bool id12la_is_initialized = false;
-static uint8_t id12la_address_i2c = 0x7D;
+static i2c_master_t rfid_id12la_i2c;
 
 /** @cond DO_NOT_INCLUDE_WITH_DOXYGEN */
 // Local prototypes
@@ -59,11 +59,12 @@ static sl_status_t get_tag(uint8_t *i2c_rx_buffer);
 /***************************************************************************//**
  *    Initialize the id12la
  ******************************************************************************/
-sl_status_t sparkfun_id12la_init(sl_i2cspm_t *i2cspm)
+sl_status_t sparkfun_id12la_init(mikroe_i2c_handle_t i2c)
 {
-  sl_status_t ret;
+  i2c_master_config_t rfid_id12la_cfg;
+  uint8_t data;
 
-  if (i2cspm == NULL) {
+  if (i2c == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
 
@@ -73,11 +74,24 @@ sl_status_t sparkfun_id12la_init(sl_i2cspm_t *i2cspm)
   }
 
   // Update i2cspm instance
-  id12la_i2cpsm_instance = i2cspm;
+  rfid_id12la_i2c.handle = i2c;
+  rfid_id12la_cfg.addr = SPARKFUN_RFID_ID12LA_ADDR;
+  rfid_id12la_cfg.speed = I2C_MASTER_SPEED_FULL; // ID12LA only run at 400KHz
 
-  ret = i2c_write_blocking(NULL, 0);
-  if (ret != SL_STATUS_OK) {
-    return ret;
+  if (i2c_master_open(&rfid_id12la_i2c, &rfid_id12la_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  i2c_master_set_speed(&rfid_id12la_i2c, rfid_id12la_cfg.speed);
+  i2c_master_set_timeout(&rfid_id12la_i2c, 0);
+  // Wait for module to become ready
+  sl_sleeptimer_delay_millisecond(100);
+
+  /* Try to read a byte from device to check device is
+   * present on the I2C bus or not
+   */
+  if (i2c_read_blocking(&data, 1) != SL_STATUS_OK) {
+    return SL_STATUS_NOT_AVAILABLE;
   }
 
   id12la_is_initialized = true;
@@ -94,10 +108,6 @@ sl_status_t sparkfun_id12la_get_all_tag(id12la_tag_list_t *tag_list,
   sl_status_t ret;
   uint8_t i;
   uint8_t tag_infor[10] = { 0 };
-
-  if (!id12la_i2cpsm_instance) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
 
   if (tag_list == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
@@ -145,10 +155,6 @@ sl_status_t sparkfun_id12la_change_address_i2c(uint8_t new_address)
 {
   sl_status_t ret;
 
-  if (!id12la_i2cpsm_instance) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
-
   // Range of legal addresses
   if ((new_address < 0x07) || (new_address > 0x78)) {
     return SL_STATUS_FAIL;
@@ -163,7 +169,7 @@ sl_status_t sparkfun_id12la_change_address_i2c(uint8_t new_address)
   ret = i2c_write_blocking(data_to_send, 2);
 
   if (ret == SL_STATUS_OK) {
-    id12la_address_i2c = new_address;
+    i2c_master_set_slave_address(&rfid_id12la_i2c, new_address);
   }
   return ret;
 }
@@ -173,12 +179,11 @@ sl_status_t sparkfun_id12la_change_address_i2c(uint8_t new_address)
  ******************************************************************************/
 sl_status_t sparkfun_id12la_scan_address()
 {
-  if (!id12la_i2cpsm_instance) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
+  uint8_t data;
+
   for (uint8_t address = 1; address < 127; address++) {
-    id12la_address_i2c = address;
-    if (i2c_write_blocking(NULL, 0) == SL_STATUS_OK) {
+    i2c_master_set_slave_address(&rfid_id12la_i2c, address);
+    if (i2c_read_blocking(&data, 1) == SL_STATUS_OK) {
       return SL_STATUS_OK;
     }
   }
@@ -190,7 +195,7 @@ sl_status_t sparkfun_id12la_scan_address()
  ******************************************************************************/
 uint8_t sparkfun_id12la_get_i2c_address(void)
 {
-  return id12la_address_i2c;
+  return rfid_id12la_i2c.config.addr;
 }
 
 /***************************************************************************//**
@@ -226,38 +231,24 @@ static bool compare_checksum(uint8_t *ptag)
   }
 }
 
-/*Block write to RFID*/
+// Block write to RFID
 static sl_status_t i2c_write_blocking(uint8_t *src, uint32_t len)
 {
-  I2C_TransferSeq_TypeDef seq;
-
-  seq.addr = id12la_address_i2c << 1;
-  seq.flags = I2C_FLAG_WRITE;
-
-  /*Write buffer*/
-  seq.buf[0].data = src;
-  seq.buf[0].len = len;
-
-  if (I2CSPM_Transfer(id12la_i2cpsm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&rfid_id12la_i2c,
+                                             src,
+                                             len)) {
     return SL_STATUS_TRANSMIT;
   }
 
   return SL_STATUS_OK;
 }
 
-/* Block read from RFID */
+// Block read from RFID
 static sl_status_t i2c_read_blocking(uint8_t *dest, uint32_t len)
 {
-  I2C_TransferSeq_TypeDef seq;
-
-  seq.addr = id12la_address_i2c << 1;
-  seq.flags = I2C_FLAG_READ;
-
-  /*Read buffer*/
-  seq.buf[0].data = dest;
-  seq.buf[0].len = len;
-
-  if (I2CSPM_Transfer(id12la_i2cpsm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&rfid_id12la_i2c,
+                                            dest,
+                                            len)) {
     return SL_STATUS_TRANSMIT;
   }
 

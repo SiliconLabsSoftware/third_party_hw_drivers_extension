@@ -8,16 +8,21 @@ quality: evaluation
 root_path: driver
 requires:
   - name: status
-  - name: i2cspm
-recommends:
-  - id: i2cspm
-    instance: [mikroe]
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_i2c
 provides:
   - name: pm_sps30_i2c
     allow_multiple: false
 template_contribution:
   - name: component_catalog
     value: pm_sps30_i2c
+
+config_file:
+  - path: public/silabs/particulate_matter_sensor_sps30/config/particulate_matter_sensor_sps30_i2c_config.h
+    file_id: particulate_matter_sensor_sps30_i2c_config_id
+
 include:
   - path: inc
     file_list:

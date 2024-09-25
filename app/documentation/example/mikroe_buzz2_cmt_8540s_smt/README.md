@@ -16,7 +16,7 @@ This project shows the driver implementation of a magnetic buzzer using the CMT-
 
 - If the BGM220 Explorer Kit is used:
 
-  The BUZZ2 Click board supports MikroBus, so it can connect easily to BGM220P Explorer Kit's MikroBus header. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+  The BUZZ2 Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of Click board matches the 45-degree white line of the Explorer Kit.
 
   The hardware connection is shown in the image below:
 
@@ -36,14 +36,9 @@ You can either create a project based on an example project or start with an emp
 
 1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *buzz*.
 
-2. Click **Create** button on the project:
+2. Click **Create** button on the **Third Party Hardware Drivers - CMT-8540S-SMT - Buzz 2 Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 
-   - **Third Party Hardware Drivers - CMT-8540S-SMT - Buzz 2 Click (Mikroe)** example if the BGM220 Explorer Kit is used.
    ![Create_example](image/create_example.png)
-   - **Third Party Hardware Drivers - CMT-8540S-SMT - Buzz 2 Click (Mikroe) - Si91x** example if the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used.
-   ![Create_example](image/create_example_si91x.png)
-
-   Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 
 3. Build and flash this example to the board.
 
@@ -78,7 +73,7 @@ You can either create a project based on an example project or start with an emp
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "CMT-8540S-SMT - Buzz 2 Click (Mikroe)" component.
 

@@ -37,37 +37,38 @@
  *
  ******************************************************************************/
 #include "mikroe_adpd188bi_i2c.h"
-#include "mikroe_smoke2_adpd188bi_config.h"
+#include "mikroe_smoke2_adpd188bi_i2c_config.h"
 
 static smoke2_t smoke2;
 static smoke2_cfg_t smoke2_cfg;
 
-sl_status_t mikroe_adpd188bi_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_adpd188bi_init(mikroe_i2c_handle_t i2cspm_instance)
 {
-  sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
+  if (NULL == i2cspm_instance) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+  smoke2.i2c.handle = i2cspm_instance;
+  smoke2_cfg_setup(&smoke2_cfg);
 
-  if (NULL != i2cspm_instance) {
-    smoke2.i2c.handle = i2cspm_instance;
-    smoke2_cfg_setup(&smoke2_cfg);
-
-#if defined(MIKROE_SMOKE2_ADPD188BI_INT_PORT) \
-    && defined(MIKROE_SMOKE2_ADPD188BI_INT_PIN)
-    smoke2_cfg.int_pin = hal_gpio_pin_name(MIKROE_SMOKE2_ADPD188BI_INT_PORT,
-                                           MIKROE_SMOKE2_ADPD188BI_INT_PIN);
+#if defined(MIKROE_SMOKE2_INT_PORT) && defined(MIKROE_SMOKE2_INT_PIN)
+  smoke2_cfg.int_pin = hal_gpio_pin_name(MIKROE_SMOKE2_INT_PORT,
+                                         MIKROE_SMOKE2_INT_PIN);
 #endif
 
-    smoke2_drv_interface_selection(&smoke2_cfg, SMOKE2_DRV_SEL_I2C);
+#if (MIKROE_SMOKE2_I2C_UC == 1)
+  smoke2_cfg.i2c_speed = MIKROE_SMOKE2_I2C_SPEED_MODE;
+#endif
 
-    if (I2C_MASTER_SUCCESS == smoke2_init(&smoke2, &smoke2_cfg)) {
-      stt = SL_STATUS_OK;
-    } else {
-      stt = SL_STATUS_FAIL;
-    }
+  smoke2_drv_interface_selection(&smoke2_cfg, SMOKE2_DRV_SEL_I2C);
+
+  if (SMOKE2_OK != smoke2_init(&smoke2, &smoke2_cfg)) {
+    return SL_STATUS_INITIALIZATION;
   }
-  return stt;
+  return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_adpd188bi_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_adpd188bi_set_i2csmp_instance(
+  mikroe_i2c_handle_t i2cspm_instance)
 {
   sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
 

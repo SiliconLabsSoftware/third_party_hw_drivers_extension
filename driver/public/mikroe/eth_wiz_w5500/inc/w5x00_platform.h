@@ -41,11 +41,10 @@
 #define W5x00_PLATFORM_H_
 
 #include "sl_status.h"
-#include "sl_udelay.h"
-#include "spidrv.h"
 #include "sl_sleeptimer.h"
 #include "mikroe_w5500_config.h"
 #include "w5x00_common.h"
+#include "drv_spi_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -71,14 +70,14 @@ extern "C" {
  ******************************************************************************/
 #ifdef W5x00_LOG_ENABLE
 #define w5x00_log_info(tag, fmt, ...) \
-        w5x00_log_printf("[ I: %s ] " fmt, tag, ## __VA_ARGS__)
+  w5x00_log_printf("[ I: %s ] " fmt, tag, ## __VA_ARGS__)
 #define w5x00_log_error(tag, fmt, ...) \
-        w5x00_log_printf("[ E: %s ] " fmt, tag, ## __VA_ARGS__)
-#define w5x00_log_print_ip(ip)                                          \
-        w5x00_log_printf("%d.%d.%d.%d", w5x00_ip4_addr_get_byte(ip, 0), \
-                         w5x00_ip4_addr_get_byte(ip, 1),                \
-                         w5x00_ip4_addr_get_byte(ip, 2),                \
-                         w5x00_ip4_addr_get_byte(ip, 3))
+  w5x00_log_printf("[ E: %s ] " fmt, tag, ## __VA_ARGS__)
+#define w5x00_log_print_ip(ip)                                    \
+  w5x00_log_printf("%d.%d.%d.%d", w5x00_ip4_addr_get_byte(ip, 0), \
+                   w5x00_ip4_addr_get_byte(ip, 1),                \
+                   w5x00_ip4_addr_get_byte(ip, 2),                \
+                   w5x00_ip4_addr_get_byte(ip, 3))
 #else
 #define w5x00_log_printf(...)
 #define w5x00_log_info(...)
@@ -88,21 +87,12 @@ extern "C" {
 
 /***************************************************************************//**
  * @brief
- *    Delay microseconds
- * @param[in] us
- *    Microseconds
- ******************************************************************************/
-#define w5x00_delay_us(us) \
-        sl_udelay_wait(us)
-
-/***************************************************************************//**
- * @brief
  *    Delay milliseconds
  * @param[in] ms
  *    Milliseconds
  ******************************************************************************/
 #define  w5x00_delay_ms(ms) \
-        sl_sleeptimer_delay_millisecond(ms)
+  sl_sleeptimer_delay_millisecond(ms)
 
 /***************************************************************************//**
  * @brief
@@ -111,7 +101,7 @@ extern "C" {
  *    Current tick count
  ******************************************************************************/
 #define w5x00_get_tick_count() \
-        sl_sleeptimer_get_tick_count()
+  sl_sleeptimer_get_tick_count()
 
 /***************************************************************************//**
  * @brief
@@ -120,7 +110,7 @@ extern "C" {
  *    Current tick count in milliseconds
  ******************************************************************************/
 #define w5x00_get_tick_ms() \
-        sl_sleeptimer_tick_to_ms(sl_sleeptimer_get_tick_count())
+  sl_sleeptimer_tick_to_ms(sl_sleeptimer_get_tick_count())
 
 /***************************************************************************//**
  * @brief
@@ -151,7 +141,7 @@ long w5x00_random(long howbig);
  * @brief
  *    Init platform bus
  ******************************************************************************/
-void  w5x00_bus_init(SPIDRV_Handle_t handle);
+void  w5x00_bus_init(mikroe_spi_handle_t handle);
 
 /***************************************************************************//**
  * @brief
@@ -167,16 +157,23 @@ void  w5x00_bus_deselect(void);
 
 /***************************************************************************//**
  * @brief
- *    Read from SPI bus
- * @param[out] buf
- *    Pointer to the read buffer
- * @param len
+ *    Write data then Read data from SPI bus
+ * @param[in] write_data_buffer
+ *    Pointer to the write data buffer
+ * @param length_write_data
+ *    Number of byte to be write
+ * @param[out] read_data_buffer
+ *    Pointer to the read data buffer
+ * @param length_read_data
  *    Number of byte to be read
  * @return
  *    0 on success
  *    non-zero on failure
  ******************************************************************************/
-uint32_t  w5x00_bus_read(uint8_t *buf, uint16_t len);
+uint32_t w5x00_bus_write_then_read(uint8_t *write_data_buffer,
+                                   size_t length_write_data,
+                                   uint8_t *read_data_buffer,
+                                   size_t length_read_data);
 
 /***************************************************************************//**
  * @brief

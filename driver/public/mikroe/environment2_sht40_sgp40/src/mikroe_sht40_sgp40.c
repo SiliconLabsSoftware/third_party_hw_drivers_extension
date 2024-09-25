@@ -38,12 +38,12 @@
  ******************************************************************************/
 
 #include "mikroe_sht40_sgp40.h"
-#include "drv_i2c_master.h"
+#include "mikroe_sht40_sgp40_config.h"
 
 static environment2_t environment2;
 // ------------------------------------------------ PUBLIC FUNCTION DEFINITIONS
 
-sl_status_t mikroe_environment2_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_environment2_init(mikroe_i2c_handle_t i2cspm_instance)
 {
   environment2_cfg_t environment2_cfg;
 
@@ -56,13 +56,18 @@ sl_status_t mikroe_environment2_init(sl_i2cspm_t *i2cspm_instance)
 
   // Call basic setup functions
   environment2_cfg_setup(&environment2_cfg);
+
+#if (MIKROE_I2C_SHT40_SGP40_UC == 1)
+  environment2_cfg.i2c_speed = MIKROE_I2C_SHT40_SGP40_SPEED_MODE;
+#endif
+
   if (I2C_MASTER_SUCCESS
       != environment2_init(&environment2, &environment2_cfg)) {
-    return SL_STATUS_FAIL;
-  } else {
-    return (ENVIRONMENT2_OK == environment2_config_sensors())
-           ? SL_STATUS_OK : SL_STATUS_FAIL;
+    return SL_STATUS_INITIALIZATION;
   }
+
+  return (ENVIRONMENT2_OK == environment2_config_sensors())
+         ? SL_STATUS_OK : SL_STATUS_FAIL;
 }
 
 sl_status_t mikroe_environment2_generic_write(

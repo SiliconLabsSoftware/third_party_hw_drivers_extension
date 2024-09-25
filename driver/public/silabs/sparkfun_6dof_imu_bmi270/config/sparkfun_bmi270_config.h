@@ -46,12 +46,12 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>SPARKFUN BMI270 I2C Configuration
+// <h> SPARKFUN BMI270 I2C Configuration
 
-//  <e>SPARKFUN BMI270 I2C UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> SPARKFUN BMI270 I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define SPARKFUN_BMI270_I2C_UC                  0
 
 // <o SPARKFUN_BMI270_I2C_SPEED_MODE> Speed mode

@@ -32,15 +32,43 @@
  * It is not suitable for production environments.
  * This code will not be maintained.
  ******************************************************************************/
+#include "sl_component_catalog.h"
+#include "sl_sleeptimer.h"
 #include "bma400.h"
-#include "printf.h"
 
 #define MIKROE_BMA400_READ_MODE_INTERRUPT
 // #define MIKROE_BMA400_READ_MODE_POLLING
 
-#ifdef MIKROE_BMA400_READ_MODE_POLLING
-#include "sl_sleeptimer.h"
+#if (defined(SLI_SI917))
+#include "rsi_debug.h"
+
+#ifdef SL_CATALOG_MIKROE_ACCEL5_BMA400_SPI_PRESENT
+#include "mikroe_bma400_spi.h"
+#include "mikroe_bma400_spi_config.h"
+#include "sl_si91x_gspi.h"
+
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #endif
+
+#ifdef SL_CATALOG_MIKROE_ACCEL5_BMA400_I2C_PRESENT
+#include "mikroe_bma400_i2c.h"
+#include "mikroe_bma400_i2c_config.h"
+#include "sl_i2c_instances.h"
+
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
+
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+
+#ifdef MIKROE_BMA400_READ_MODE_INTERRUPT
+#include "sl_driver_gpio.h"
+#define GPIO_M4_INTR              7 // M4 Pin interrupt number
+#define AVL_INTR_NO               0 // available interrupt number
+#endif
+
+#else /* None Si91x device */
+#include "app_log.h"
 
 #ifdef MIKROE_BMA400_READ_MODE_INTERRUPT
 #include "gpiointerrupt.h"
@@ -57,6 +85,9 @@
 #include "sl_i2cspm_instances.h"
 #include "mikroe_bma400_i2c.h"
 #include "mikroe_bma400_i2c_config.h"
+#endif
+
+#define app_printf(...) app_log(__VA_ARGS__)
 #endif
 
 #define READING_INTERVAL_MSEC 200
@@ -84,13 +115,20 @@ static sl_status_t app_bma400_init(void);
 static sl_status_t app_bma400_read_data(void);
 static float lsb_to_ms2(int16_t accel_data, uint8_t g_range, uint8_t bit_width);
 
+#ifdef SL_CATALOG_MIKROE_ACCEL5_BMA400_SPI_PRESENT
+mikroe_spi_handle_t app_spi_instance = NULL;
+#endif
+#ifdef SL_CATALOG_MIKROE_ACCEL5_BMA400_I2C_PRESENT
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
+#endif
+
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
 void app_init(void)
 {
   if (app_bma400_init() != SL_STATUS_OK) {
-    printf("Initialization error. Please check again ...\r\n");
+    app_printf("Initialization error. Please check again ...\r\n");
   }
 }
 
@@ -102,7 +140,7 @@ void app_process_action(void)
   if (enable_reading_data) {
     enable_reading_data = false;
     if (app_bma400_read_data() != SL_STATUS_OK) {
-      printf("Reading error. Please check again ...\r\n");
+      app_printf("Reading error. Please check again ...\r\n");
     }
   }
 }
@@ -146,16 +184,28 @@ static sl_status_t app_bma400_init(void)
   struct bma400_int_enable int_en;
 
 #ifdef SL_CATALOG_MIKROE_ACCEL5_BMA400_SPI_PRESENT
-  // Initialize an I2C interface for BMA400
-  rslt = bma400_spi_init(sl_spidrv_mikroe_handle, &bma);
+#if (defined(SLI_SI917))
+  app_spi_instance = &gspi_instance;
+#else
+  app_spi_instance = sl_spidrv_mikroe_handle;
+#endif
+
+  // Initialize an SPI interface for BMA400
+  rslt = bma400_spi_init(app_spi_instance, &bma);
   if (rslt != BMA400_OK) {
     return SL_STATUS_FAIL;
   }
 #endif
 
 #ifdef SL_CATALOG_MIKROE_ACCEL5_BMA400_I2C_PRESENT
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_mikroe;
+#endif
+
   // Initialize an I2C interface for BMA400
-  rslt = bma400_i2c_init(sl_i2cspm_mikroe, MIKROE_BMA400_ADDR, &bma);
+  rslt = bma400_i2c_init(app_i2c_instance, MIKROE_BMA400_ADDR, &bma);
   if (rslt != BMA400_OK) {
     return SL_STATUS_FAIL;
   }
@@ -204,19 +254,29 @@ static sl_status_t app_bma400_init(void)
     return SL_STATUS_FAIL;
   }
 
-  printf("Accel Gravity data in m/s^2\r\n");
+  app_printf("Accel Gravity data in m/s^2\r\n");
 
 #ifdef MIKROE_BMA400_READ_MODE_POLLING
   // Start timer used for periodic indications.
-  sl_sleeptimer_start_periodic_timer(&app_periodic_timer,
-                                     READING_INTERVAL_MSEC,
-                                     app_periodic_timer_cb,
-                                     (void *) NULL,
-                                     0,
-                                     0);
+  sl_sleeptimer_start_periodic_timer_ms(&app_periodic_timer,
+                                        READING_INTERVAL_MSEC,
+                                        app_periodic_timer_cb,
+                                        (void *) NULL,
+                                        0,
+                                        0);
 #endif
 
 #ifdef MIKROE_BMA400_READ_MODE_INTERRUPT
+#if (defined(SLI_SI917))
+  sl_gpio_t gpio_port_pin =
+  { MIKROE_BMA400_INT1_PIN / 16, MIKROE_BMA400_INT1_PIN % 16 };
+  sl_gpio_driver_configure_interrupt(&gpio_port_pin,
+                                     GPIO_M4_INTR,
+                                     SL_GPIO_INTERRUPT_RISING_EDGE,
+                                     (void *)&app_gpio_int_cb,
+                                     AVL_INTR_NO);
+#else
+
   GPIO_PinModeSet(MIKROE_BMA400_INT1_PORT,
                   MIKROE_BMA400_INT1_PIN,
                   gpioModeInputPullFilter,
@@ -224,11 +284,11 @@ static sl_status_t app_bma400_init(void)
   GPIO_ExtIntConfig(MIKROE_BMA400_INT1_PORT,
                     MIKROE_BMA400_INT1_PIN,
                     MIKROE_BMA400_INT1_PIN,
-                    1,
-                    0,
-                    1);
+                    true,
+                    false,
+                    true);
   GPIOINT_CallbackRegister(MIKROE_BMA400_INT1_PIN, app_gpio_int_cb);
-  GPIO_IntEnable(MIKROE_BMA400_INT1_PIN);
+#endif
 #endif
 
   return SL_STATUS_OK;
@@ -257,8 +317,8 @@ static sl_status_t app_bma400_read_data(void)
     y = lsb_to_ms2(accel.y, 2, 12);
     z = lsb_to_ms2(accel.z, 2, 12);
     t = (float)accel.sensortime * SENSOR_TICK_TO_S;
-    printf(
-      "Gravity-x : %.2f,   Gravity-y : %.2f,  Gravity-z :  %.2f,   t(s) : %.4f\r\n",
+    app_printf(
+      "Gravity-x : %.2f, Gravity-y : %.2f, Gravity-z : %.2f, t(s) : %.4f\r\n",
       x,
       y,
       z,

@@ -44,7 +44,7 @@
 
 #include <stdint.h>
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 
 #define LOWER true
 #define UPPER false
@@ -80,8 +80,7 @@ extern "C" {
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_TRANSMIT if I2C transmit failed.
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_read_command(sl_i2cspm_t *i2cspm,
-                                               uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_read_command(i2c_master_t *i2cspm,
                                                uint8_t command,
                                                uint16_t *data);
 
@@ -99,8 +98,7 @@ sl_status_t sparkfun_vcnl4040_i2c_read_command(sl_i2cspm_t *i2cspm,
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_TRANSMIT if I2C transmit failed.
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_write_command(sl_i2cspm_t *i2cspm,
-                                                uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_write_command(i2c_master_t *i2cspm,
                                                 uint8_t command,
                                                 uint16_t data);
 
@@ -118,8 +116,7 @@ sl_status_t sparkfun_vcnl4040_i2c_write_command(sl_i2cspm_t *i2cspm,
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_TRANSMIT if I2C transmit failed.
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_read_command_lower(sl_i2cspm_t *i2cspm,
-                                                     uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_read_command_lower(i2c_master_t *i2cspm,
                                                      uint8_t command,
                                                      uint8_t *data);
 
@@ -137,8 +134,7 @@ sl_status_t sparkfun_vcnl4040_i2c_read_command_lower(sl_i2cspm_t *i2cspm,
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_TRANSMIT if I2C transmit failed.
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_read_command_upper(sl_i2cspm_t *i2cspm,
-                                                     uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_read_command_upper(i2c_master_t *i2cspm,
                                                      uint8_t command,
                                                      uint8_t *data);
 
@@ -156,8 +152,7 @@ sl_status_t sparkfun_vcnl4040_i2c_read_command_upper(sl_i2cspm_t *i2cspm,
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_TRANSMIT if I2C transmit failed.
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_write_command_lower(sl_i2cspm_t *i2cspm,
-                                                      uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_write_command_lower(i2c_master_t *i2cspm,
                                                       uint8_t command,
                                                       uint8_t data);
 
@@ -175,8 +170,7 @@ sl_status_t sparkfun_vcnl4040_i2c_write_command_lower(sl_i2cspm_t *i2cspm,
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_TRANSMIT if I2C transmit failed.
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_write_command_upper(sl_i2cspm_t *i2cspm,
-                                                      uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_write_command_upper(i2c_master_t *i2cspm,
                                                       uint8_t command,
                                                       uint8_t data);
 
@@ -200,8 +194,7 @@ sl_status_t sparkfun_vcnl4040_i2c_write_command_upper(sl_i2cspm_t *i2cspm,
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_TRANSMIT if I2C transmit failed.
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_i2c_masked_write_command(sl_i2cspm_t *i2cspm,
-                                                       uint8_t address,
+sl_status_t sparkfun_vcnl4040_i2c_masked_write_command(i2c_master_t *i2cspm,
                                                        uint8_t command,
                                                        bool command_height,
                                                        uint8_t mask,
@@ -213,4 +206,4 @@ sl_status_t sparkfun_vcnl4040_i2c_masked_write_command(sl_i2cspm_t *i2cspm,
 }
 #endif
 
-#endif /* SPARKFUN_VCNL4040_PLATFORM_H_ */
+#endif // SPARKFUN_VCNL4040_PLATFORM_H_

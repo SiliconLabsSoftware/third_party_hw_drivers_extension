@@ -8,29 +8,30 @@ Stepper click is a complete solution for driving bipolar stepper motors with ful
 
 ## Required Hardware ##
 
-### Silabs Development Kits ###
-
 - [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
 
-### External Hardware ###
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit?tab=overview) (BRD4002 + BRD4338A)
 
 - [Stepper Click](https://www.mikroe.com/stepper-click)
 
 - [Step Motor 5v](https://www.mikroe.com/step-motor-5v)
 
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2703A | [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)  |
-| BRD4108A | [EFR32BG22 Explorer Kit Board](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)  |
-
 ## Hardware Connection ##
 
-The Stepper Click Board™ supports MikroBus, so it can connect easily to EFR32xG24 Explorer Kit's MikroBus header. Be sure that the 45-degree corner of the Click Board™ matches the 45-degree white line of the Silicon Labs Explorer Kit. In this example, we use a 28BYJ-48 5V stepper motor, so the +5V power supply and GND are connected to the Stepper Click Board™. Also, four control signals for the stepper motor are connected to pins 1A, 1B, 2A, and 2B respectively. The hardware connection is shown in the image below:
-![board](image/hardware_connection.png)
+- If the EFR32xG24 Explorer Kit is used:
+
+  The Stepper Click board supports MikroBus. Therefore, it can connect easily to the MikroBus header of the Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit. In this example, we use a 28BYJ-48 5V stepper motor, so the +5V power supply and GND are connected to the Stepper Click Board™. Also, four control signals for the stepper motor are connected to pins 1A, 1B, 2A, and 2B respectively.
+
+  ![board](image/hardware_connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description     | BRD4338A GPIO | BRD4002 Breakout Pad | Stepper Click                |
+  | ----------------| ------------- | -------------------- | ---------------------------- |
+  | Step size bit 1 | GPIO_48       | P28                  | MS1                          |
+  | Step size bit 2 | GPIO_49       | P30                  | MS2                          |
+  | Direction       | GPIO_47       | P26                  | DIR                          |
+  | Step trigger    | GPIO_46       | P24                  | STP                          |
 
 ## Setup ##
 
@@ -38,16 +39,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter "stepper".
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by "stepper".
 
 2. Click **Create** button on the **Third Party Hardware Drivers - A3967 - Stepper Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+    ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for the your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_stepper_a3967/app.c` into the project root folder (overwriting existing file).
 
@@ -58,16 +60,22 @@ You can either create a project based on an example project or start with an emp
     - Select the SOFTWARE COMPONENTS tab.
 
     - Install the following components:
+
+      **If the EFR32xG24 Explorer Kit is used:**
         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
         - [Third-Party Hardware Drivers] → [Motor Control] → [A3967 - Stepper Click (Mikroe)]
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+        - [Third-Party Hardware Drivers] → [Motor Control] → [A3967 - Stepper Click (Mikroe)]
+
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "A3967 - Stepper Click (Mikroe)" component.
+- Third-party Drivers Extension must be enabled for the project to install **"A3967 - Stepper Click (Mikroe)"** component.
 
 ## How It Works ##
 

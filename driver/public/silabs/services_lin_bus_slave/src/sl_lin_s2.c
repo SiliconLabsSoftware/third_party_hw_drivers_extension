@@ -60,6 +60,7 @@
 #include "sl_lin_slave_config.h"
 #include "sl_lin.h"
 
+#include <em_core.h>
 #include <em_emu.h>
 #include <em_cmu.h>
 #include <em_gpio.h>

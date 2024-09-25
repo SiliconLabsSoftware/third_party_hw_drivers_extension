@@ -40,23 +40,42 @@ extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
+
+// <h> SPARKFUN MLX90640 I2C Configuration
+
+// <e> SPARKFUN MLX90640 I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define SPARKFUN_MLX90640_I2C_UC                  0
+
+// <o SPARKFUN_MLX90640_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define SPARKFUN_MLX90640_I2C_SPEED_MODE          0
+
+// </e>
+// </h>
+
 // <h> Connection
-// <o MLX90640_I2C_ADDRESS> I2C Address <0x1..0x7E:0x1><f.h>
+// <o SPARKFUN_MLX90640_I2C_ADDRESS> I2C Address <0x1..0x7E:0x1><f.h>
 // <i> Default: 0x33
-#define MLX90640_I2C_ADDRESS                        0x33
+#define SPARKFUN_MLX90640_I2C_ADDRESS             0x33
 // </h>
 
 // <h> User-Settings
-
-// <q MLX90640_CONFIG_ENABLE_LOG> Enable log
+// <q SPARKFUN_MLX90640_CONFIG_ENABLE_LOG> Enable log
 // <i> Default: 0
-#define MLX90640_CONFIG_ENABLE_LOG                  0
+#define SPARKFUN_MLX90640_CONFIG_ENABLE_LOG       0
 
 // </h>
+  
 // <<< end of configuration section >>>
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* SPARKFUN_MLX90640_CONFIG_H_ */
+#endif // SPARKFUN_MLX90640_CONFIG_H_

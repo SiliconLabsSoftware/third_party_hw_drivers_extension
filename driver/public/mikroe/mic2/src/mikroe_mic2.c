@@ -40,25 +40,18 @@
 #include "mic2.h"
 #include "mikroe_mic2.h"
 #include "mikroe_mic2_config.h"
-#include "third_party_hw_drivers_helpers.h"
 
 static mic2_t mic2;
 static mic2_cfg_t mic2_cfg;
 
-void mikroe_mic2_cfg_setup(void)
+sl_status_t mikroe_mic2_init(mikroe_i2c_handle_t i2c_instance,
+                             mikroe_adc_handle_t adc)
 {
-  mic2_cfg_setup(&mic2_cfg);
-}
-
-sl_status_t mikroe_mic2_init(sl_i2cspm_t *i2cspm_instance, adc_t *adc)
-{
-  if ((NULL == i2cspm_instance) || (NULL == adc)) {
+  if ((NULL == i2c_instance) || (NULL == adc)) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
-  mic2.i2c.handle = i2cspm_instance;
+  mic2.i2c.handle = i2c_instance;
   mic2.slave_address = MIC2_I2C_ADDRESS;
   mic2.adc.handle = adc;
 
@@ -69,9 +62,15 @@ sl_status_t mikroe_mic2_init(sl_i2cspm_t *i2cspm_instance, adc_t *adc)
                                       MIC2_ANALOG_OUTPUT_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(mic2_init(&mic2, &mic2_cfg));
+#if (MIKROE_MIC2_I2C_UC == 1)
+  mic2_cfg.i2c_speed = MIKROE_MIC2_I2C_SPEED_MODE;
+#endif
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  if (mic2_init(&mic2, &mic2_cfg) != MIC2_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  return SL_STATUS_OK;
 }
 
 void mikroe_mic2_set_potentiometer(uint8_t ptt_value)
@@ -90,13 +89,13 @@ sl_status_t mikroe_mic2_generic_read(mikroe_mic2_data_t *data)
   return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_mic2_set_i2cspm_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_mic2_set_i2c_instance(mikroe_i2c_handle_t i2c_instance)
 {
-  if (NULL == i2cspm_instance) {
+  if (NULL == i2c_instance) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  mic2.i2c.handle = i2cspm_instance;
+  mic2.i2c.handle = i2c_instance;
 
   return SL_STATUS_OK;
 }

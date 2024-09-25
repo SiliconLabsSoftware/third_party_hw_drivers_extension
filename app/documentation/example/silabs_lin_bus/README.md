@@ -11,13 +11,6 @@ A key point was to not disturb the Bluetooth LE communication due to its time-cr
 
 - 3 x [EFR32MG22 2.4 GHz 6 dBm Radio Board BRD4182A](https://www.silabs.com/documents/public/user-guides/ug430-brd4182a-user-guide.pdf)
 
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| --- | --- |
-| BRD4182A | [EFR32MG22 2.4 GHz 6 dBm Radio Board BRD4182A](https://www.silabs.com/documents/public/user-guides/ug430-brd4182a-user-guide.pdf) |
-
 ## Connections Required ##
 
 The testing environment consists of a master device and two slave devices. Connections are made through the expansion header. All the LIN_TX and LIN_RX pins should be connected together on every devices, connected to the single-wire bus, and at least pulled up by a 5-10K resistor to 3.3V. An external USB-to-serial converter is required to access the console. For more detail please refer to the ["Pin assignments](#pin-assignments) and ["Testing environment"](#testing-environment) section.

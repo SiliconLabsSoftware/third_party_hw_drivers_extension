@@ -46,11 +46,12 @@ extern "C" {
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
-#include "em_cmu.h"
-#include "em_usart.h"
-#include "sl_iostream_handles.h"
 #include "sl_status.h"
+#include "drv_digital_in.h"
+#include "drv_digital_out.h"
 #include "at_parser_core.h"
+#include "drv_uart.h"
+#include "mikroe_bg96_config.h"
 
 /*******************************************************************************
  ********************************   MACROS   ***********************************
@@ -95,7 +96,7 @@ typedef struct {
  *   BG96 module initialize function.
  *
  *****************************************************************************/
-void bg96_init(sl_iostream_t *iostream_handle);
+void bg96_init(mikroe_uart_handle_t handle);
 
 /**************************************************************************//**
  * @brief
@@ -183,7 +184,7 @@ sl_status_t bg96_gnss_stop(at_scheduler_status_t *output_object);
  *    BG96 NB IoT initialization.
  *
  *****************************************************************************/
-void bg96_nb_init(sl_iostream_t *iostream_handle);
+void bg96_nb_init(mikroe_uart_handle_t handle);
 
 /**************************************************************************//**
  * @brief

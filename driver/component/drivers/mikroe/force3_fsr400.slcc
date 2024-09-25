@@ -12,13 +12,15 @@ requires:
   - name: status
   - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_i2c
-config_file:
 provides:
   - name: mikroe_force3
     allow_multiple: false
 template_contribution:
   - name: component_catalog
     value: mikroe_force3
+config_file:
+  - path: public/mikroe/force3_fsr400/config/mikroe_fsr400_config.h
+    file_id: driver_config_fsr400
 include:
   - path: inc
     file_list:

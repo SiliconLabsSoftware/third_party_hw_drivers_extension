@@ -40,9 +40,35 @@
 #ifndef MIKROE_L9958_CONFIG_H_
 #define MIKROE_L9958_CONFIG_H_
 
+#ifndef SLI_SI917
 #include "em_gpio.h"
+#endif
+
+// <<< Use Configuration Wizard in Context Menu >>>
+
+// <h> MIKROE L9958 SPI Configuration
+
+// <e> MIKROE L9958 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_L9958_SPI_UC                   0
+
+// <o MIKROE_L9958_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
+// <i> Default: 10000000
+#define MIKROE_L9958_SPI_BITRATE              10000000
+
+// </e>
+// </h>
+// <<< end of configuration section >>>
 
 // <<< sl:start pin_tool >>>
+
+// <gpio optional=true> DCMOTOR24_CS
+// $[GPIO_DCMOTOR24_CS]
+// #define DCMOTOR24_CS_PORT                  0
+// #define DCMOTOR24_CS_PIN                   0
+// [GPIO_DCMOTOR24_CS]$
 
 // <gpio optional=true> DCMOTOR24_DIRECTION
 // $[GPIO_DCMOTOR24_DIRECTION]
@@ -60,4 +86,4 @@
 
 // <<< sl:end pin_tool >>>
 
-#endif /* MIKROE_L9958_CONFIG_H_ */
+#endif // MIKROE_L9958_CONFIG_H_

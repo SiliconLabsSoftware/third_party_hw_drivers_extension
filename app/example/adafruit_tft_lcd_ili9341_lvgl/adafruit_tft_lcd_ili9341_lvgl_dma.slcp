@@ -18,7 +18,7 @@ readme:
 - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/README.md
 
 source:
-- path: app.c
+- path: gecko/app.c
 - path: main.c
 - path: app_ui/brd2703a/double_buffered_dma/ui_events.c
 - path: app_ui/brd2703a/double_buffered_dma/ui_helpers.c
@@ -30,7 +30,7 @@ source:
 - path: app_ui/brd2703a/double_buffered_dma/screens/ui_main.c
 
 include:
-- path: ''
+- path: 'gecko'
   file_list:
   - path: app.h
 - path: app_ui/brd2703a/double_buffered_dma
@@ -43,8 +43,7 @@ component:
 - id: sl_system
 - id: device_init
 - id: sleeptimer
-- id: spidrv
-  instance: [ili9341]
+- id: udelay
 - id: simple_led
   instance: [led0, led1]
 - id: simple_button
@@ -55,12 +54,14 @@ component:
   from: third_party_hw_drivers
 - id: touch_screen_analog
   from: third_party_hw_drivers
+- id: touch_screen_analog_gecko
+  from: third_party_hw_drivers
 define:
 - name: DEBUG_EFM
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 configuration:
   - name: LV_BUFFER_MODE
@@ -72,16 +73,20 @@ configuration:
   - name: LV_INPUT_TYPE
     value: "LV_INPUT_TYPE_POINTER"
 other_file:
-  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/create_example.png
-    directory: "image"
-  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/single_buffered_lvgl_settings.png
-    directory: "image"
-  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/double_buffered_lvgl_settings.png
-    directory: "image"
-  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/double_buffer_lvgl.gif
-    directory: "image"
-  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/single_buffer_lvgl.gif
-    directory: "image"
+- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/create_example.png
+  directory: "image"
+- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/single_buffered_lvgl_settings.png
+  directory: "image"
+- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/double_buffered_lvgl_settings.png
+  directory: "image"
+- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/double_buffer_lvgl.gif
+  directory: "image"
+- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/single_buffer_lvgl.gif
+  directory: "image"
+- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/gspi.png
+  directory: "image"
+- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/gspi_dma.png
+  directory: "image"
 
 ui_hints:
   highlight:

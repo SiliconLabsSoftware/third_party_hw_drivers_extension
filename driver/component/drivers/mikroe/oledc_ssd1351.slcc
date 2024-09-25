@@ -21,12 +21,17 @@ config_file:
   - path: public/mikroe/oledc_ssd1351/config/brd4314a/mikroe_ssd1351_config.h
     file_id: driver_config_oledc
     condition: [brd4314a]
+  - path: public/mikroe/oledc_ssd1351/config/brd4338a/mikroe_ssd1351_config.h
+    file_id: driver_config_oledc
+    condition: [brd4338a]
   - path: public/mikroe/oledc_ssd1351/config/other/mikroe_ssd1351_config.h
     file_id: driver_config_oledc
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
+
 template_contribution:
   - name: component_catalog
     value: oledc_ssd1351
+    
 include:
   - path: inc
     file_list:

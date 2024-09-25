@@ -1,0 +1,63 @@
+project_name: mikroe_ph2
+package: platform
+label: Third Party Hardware Drivers - PH2 Click (Mikroe)
+description: |
+  This example project shows an example for - PH2 Click (Mikroe).
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_ph2/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: device_init
+- id: ph2
+  from: third_party_hw_drivers
+- id: iostream_usart
+  instance: [vcom]
+- id: i2cspm
+  instance: [mikroe]
+- id: sleeptimer
+- id: app_log
+- id: app_assert
+
+toolchain_settings:
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+  
+other_file:
+  - path: ../../documentation/example/mikroe_ph2/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_ph2/image/hardware_connection.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_ph2/image/ph2_click.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_ph2/image/log.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true

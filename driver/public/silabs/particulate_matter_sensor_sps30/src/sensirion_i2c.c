@@ -33,7 +33,7 @@
 #include "sensirion_common.h"
 #include "sensirion_i2c_hal.h"
 
-sl_status_t sensirion_i2c_init(sl_i2cspm_t *i2c_handle)
+sl_status_t sensirion_i2c_init(mikroe_i2c_handle_t i2c_handle)
 {
   return sensirion_i2c_hal_init(i2c_handle);
 }

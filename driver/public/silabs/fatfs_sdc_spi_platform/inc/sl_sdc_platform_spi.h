@@ -36,7 +36,7 @@
 #define SL_SDC_PLATFORM_SPI_H
 
 #include "sl_status.h"
-#include "spidrv.h"
+#include "drv_spi_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,7 +52,7 @@ extern "C" {
  * @return
  *   @ref SL_STATUS_OK on success or @ref SL_STATUS_TRANSMIT on failure
  ******************************************************************************/
-sl_status_t sdc_xchg_spi(SPIDRV_Handle_t spi_handle, uint8_t tx, uint8_t *rx);
+sl_status_t sdc_xchg_spi(spi_master_t *spi_handle, uint8_t tx, uint8_t *rx);
 
 /***************************************************************************//**
  * @brief
@@ -67,7 +67,7 @@ sl_status_t sdc_xchg_spi(SPIDRV_Handle_t spi_handle, uint8_t tx, uint8_t *rx);
  * @return
  *   @ref SL_STATUS_OK on success or @ref SL_STATUS_TRANSMIT on failure
  ******************************************************************************/
-sl_status_t sdc_xmit_spi_multi(SPIDRV_Handle_t spi_handle,
+sl_status_t sdc_xmit_spi_multi(spi_master_t *spi_handle,
                                const uint8_t *buff,
                                uint16_t cnt);
 
@@ -84,11 +84,11 @@ sl_status_t sdc_xmit_spi_multi(SPIDRV_Handle_t spi_handle,
  * @return
  *   @ref SL_STATUS_OK on success or @ref SL_STATUS_TRANSMIT on failure
  ******************************************************************************/
-sl_status_t sdc_rcvr_spi_multi(SPIDRV_Handle_t spi_handle,
+sl_status_t sdc_rcvr_spi_multi(spi_master_t *spi_handle,
                                uint8_t *buff,
                                uint16_t cnt);
 
-sl_status_t sdc_platform_set_bit_rate(SPIDRV_Handle_t spi_handle,
+sl_status_t sdc_platform_set_bit_rate(spi_master_t *spi_handle,
                                       uint32_t bit_rate);
 
 #ifdef __cplusplus

@@ -37,18 +37,23 @@
  *
  ******************************************************************************/
 #include "mikroe_scd41.h"
+#include "mikroe_scd41_config.h"
 #include "hvac.h"
 
 static hvac_t scd41;
 static hvac_cfg_t scd41_cfg;
 
-sl_status_t mikroe_scd41_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_scd41_init(mikroe_i2c_handle_t i2c_instance)
 {
   sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
 
-  if (NULL != i2cspm_instance) {
-    scd41.i2c.handle = i2cspm_instance;
+  if (NULL != i2c_instance) {
+    scd41.i2c.handle = i2c_instance;
     hvac_cfg_setup(&scd41_cfg);
+
+#if (MIKROE_SCD41_I2C_UC == 1)
+    scd41_cfg.i2c_speed = MIKROE_SCD41_I2C_SPEED_MODE;
+#endif
 
     if (I2C_MASTER_SUCCESS == hvac_init(&scd41, &scd41_cfg)) {
       stt = SL_STATUS_OK;
@@ -59,12 +64,12 @@ sl_status_t mikroe_scd41_init(sl_i2cspm_t *i2cspm_instance)
   return stt;
 }
 
-sl_status_t mikroe_scd41_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_scd41_set_i2csmp_instance(mikroe_i2c_handle_t i2c_instance)
 {
   sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
 
-  if (NULL != i2cspm_instance) {
-    scd41.i2c.handle = i2cspm_instance;
+  if (NULL != i2c_instance) {
+    scd41.i2c.handle = i2c_instance;
     stt = SL_STATUS_OK;
   }
   return stt;

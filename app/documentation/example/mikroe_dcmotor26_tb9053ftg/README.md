@@ -4,33 +4,40 @@
 
 MikroE DC Motor 26 Click features the TB9053FTG, a PWM-type, dual-channel, H-bridge, brushed DC motor driver. The TB9053FTG is rated for an operating voltage range from 4.5V to 28V, with the motor controlled directly through a PWM signal or SPI serial interface. This board can control one or two DC motors, selectable motor control functions and operational modes, current monitoring and more.
 
-The example demonstrates the use of MikroE DC Motor 26 Click board by controlling the speed of a DC motor over the PWM duty cycle as well as displaying the current consumption of the motor by using APIs of GSDK.
-
+The example demonstrates the use of MikroE DC Motor 26 Click board by controlling the speed of a DC motor over the PWM duty cycle as well as displaying the current consumption of the motor with the Silicon Labs Platform.
 
 ## Required Hardware ##
 
 - [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
 
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
 - [MikroE DC Motor 26 Click](https://www.mikroe.com/dc-motor-26-click)
-
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| -------- | ------------ |
-| BRD2703A | [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)  |
-| BRD4108A | [EFR32BG22 Explorer Kit Board](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)  |
 
 ## Hardware Connection ##
 
-The DC Motor 26 Click board supports mikroBUS™, so it can connect easily to the header of the EFR32xG24 Explorer Kit.
+- If the EFR32xG24 Explorer Kit is used:
 
-During the assembly process, make sure that the 45-degree corner of the Click board matches the 45-degree white line of the Silicon Labs Explorer Kit.
+  The DC Motor 26 Click board supports mikroBUS™, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of Click board matches the 45-degree white line of the Explorer Kit.
 
-The hardware connection is shown in the image below:
+  The hardware connection is shown in the image below:
 
-![hardware_connection](image/hardware_connection.png)
+  ![hardware_connection](image/hardware_connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description              | BRD4338A GPIO | BRD4002 EXP Header | DC Motor 26 Click |
+  | ------------------------ | ------------- | ------------------ | ----------------- |
+  | I2C_SDA                  | ULP_GPIO_6    | EXP_16             | SDA               |
+  | I2C_SCL                  | ULP_GPIO_7    | EXP_15             | SCL               |
+  | Channel Current Monitor  | ULP_GPIO_1    | P16                | CM                |
+  | Sleep / ID SEL           | GPIO_46       | P24                | SLP               |
+  | Interrupt                | GPIO_47       | P26                | INT               |
+  | PWM Signal               | GPIO_48       | P28                | PWM               |
+  | CS                       | GPIO_49       | P30                | CS                |
+  | RTE_SSI_MASTER_SCK_PIN   | GPIO_25       | P25                | SCK               |
+  | RTE_SSI_MASTER_MOSI_PIN  | GPIO_26       | P27                | SDI               |
+  | RTE_SSI_MASTER_MISO_PIN  | GPIO_27       | P29                | SDO               |
 
 **Note:**
 
@@ -42,16 +49,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter **"motor 26"**.
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **"motor 26"**.
 
 2. Click the **Create** button on the **Third Party Hardware Drivers - TB9053FTG - DC Motor 26 Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![create_project](image/create_project.png)
+
+    ![create_project](image/create_project.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_dcmotor26_tb9053ftg/app.c` into the project root folder (overwriting the existing file).
 
@@ -63,28 +71,32 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
-        - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom.
+    **If the BGM220P Explorer Kit is used:**
 
-        - [Application] → [Utility] → [Log]
+      - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom.
+      - [Application] → [Utility] → [Log]
+      - [Application] → [Utility] → [Assert]
+      - [Services] → [Timers] → [Sleep Timer]
+      - [Third Party Hardware Drivers] → [Motor Control] → [TB9053FTG - DC Motor 26 Click (Mikroe)]
 
-        - [Application] → [Utility] → [Assert]
+    **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
 
-        - [Services] → [Timers] → [Sleep Timer]
-
-        - [Third Party Hardware Drivers] → [Motor Control] → [TB9053FTG - DC Motor 26 Click (Mikroe)]
+      - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+      - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [PWM] → [channel_0] → use default configuration
+      - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [ADC] → [channel_1] → use default configuration
+      - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+      - [Third Party Hardware Drivers] → [Motor Control] → [TB9053FTG - DC Motor 26 Click (Mikroe)]
 
 4. Install **printf float**
 
-    - Open **Properties** of the project.
-
-    - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General. Check **Printf float**.
-    ![install_float](image/install_float.png)
+    - Open Properties of the Project.
+    - Select C/C++ Build > Settings > Tool Settings >GNU ARM C Linker > General. Check Printf float.
 
 5. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension has already been installed. If not, please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - Third Party Hardware Drivers extension must be enabled for the project to install the **"TB9053FTG - DC Motor 26 Click (Mikroe)"** component.
 

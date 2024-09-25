@@ -1,6 +1,6 @@
 /***************************************************************************//**
  * @file mikroe_bma400_i2c_config.h
- * @brief Configuration file for Sparkfun VLX53L1X
+ * @brief Configuration file for BMA400
  * @version 1.0.0
  *******************************************************************************
  * # License
@@ -48,6 +48,24 @@ extern "C" {
 
 // A CMSIS annotation block starts with the following line:
 // <<< Use Configuration Wizard in Context Menu >>>
+
+//<h>MIKROE BMA400 I2C Configuration
+
+//  <e>MIKROE BMA400 I2C UC Configuration
+//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+//  <i> Default: 0
+#define MIKROE_BMA400_I2C_UC                  0
+
+// <o MIKROE_BMA400_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define MIKROE_BMA400_I2C_SPEED_MODE          0
+
+// </e>
+// </h>
 
 // <o MIKROE_BMA400_ADDR> BMA400 I2C ADDRESS
 // <0x14=> 0x14

@@ -40,6 +40,8 @@
 #ifndef SCL_MAXM86161_CONFIG_H_
 #define SCL_MAXM86161_CONFIG_H_
 
+#include "em_gpio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -70,4 +72,4 @@ extern "C" {
 }
 #endif
 
-#endif /* SCL_MAXM86161_CONFIG_H_ */
+#endif // SCL_MAXM86161_CONFIG_H_

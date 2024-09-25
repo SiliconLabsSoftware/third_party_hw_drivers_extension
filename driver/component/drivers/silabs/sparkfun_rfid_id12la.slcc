@@ -9,41 +9,14 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: i2cspm
-recommends:
-  - id: i2cspm
-    instance: [rfid]
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_i2c
+
 config_file:
-  - override:
-      component: i2cspm
-      file_id: i2cspm_config
-      instance: rfid
-    path: public/silabs/rfid_id12la/config/brd2601b/sl_i2cspm_rfid_config.h
-    condition: [brd2601b]
-  - override:
-      component: i2cspm
-      file_id: i2cspm_config
-      instance: rfid
-    path: public/silabs/rfid_id12la/config/brd2703a/sl_i2cspm_rfid_config.h
-    condition: [brd2703a]
-  - override:
-      component: i2cspm
-      file_id: i2cspm_config
-      instance: rfid
-    path: public/silabs/rfid_id12la/config/brd2704a/sl_i2cspm_rfid_config.h
-    condition: [brd2704a]
-  - override:
-      component: i2cspm
-      file_id: i2cspm_config
-      instance: rfid
-    path: public/silabs/rfid_id12la/config/brd4108a/sl_i2cspm_rfid_config.h
-    condition: [brd4108a]
-  - override:
-      component: i2cspm
-      file_id: i2cspm_config
-      instance: rfid
-    path: public/silabs/rfid_id12la/config/brd4314a/sl_i2cspm_rfid_config.h
-    condition: [brd4314a]
+  - path: public/silabs/rfid_id12la/config/sparkfun_rfid_id12la_config.h
+    file_id: sparkfun_rfid_id12la_config
+
 provides:
   - name: sparkfun_rfid_id12la
 template_contribution:

@@ -39,17 +39,13 @@ component:
 - id: mikroe_gps
   from: third_party_hw_drivers
 
-configuration:
-  - name: SL_IOSTREAM_USART_MIKROE_BAUDRATE
-    value: 9600
-
 toolchain_settings:
   - option: gcc_linker_option
     value: "-u _printf_float"
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/mikroe_gps_lea6s/image/create_example.png

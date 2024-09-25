@@ -9,6 +9,9 @@ ui_hints:
   visibility: basic
 root_path: driver
 requires:
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
   - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_uart
 config_file:
@@ -21,9 +24,12 @@ config_file:
   - path: public/mikroe/fingerprint2_a172mrq/config/brd4314a/mikroe_a172mrq_config.h
     file_id: driver_config_fingerprint2
     condition: [brd4314a]
+  - path: public/mikroe/fingerprint2_a172mrq/config/brd4338a/mikroe_a172mrq_config.h
+    file_id: driver_config_fingerprint2
+    condition: [brd4338a]
   - path: public/mikroe/fingerprint2_a172mrq/config/other/mikroe_a172mrq_config.h
     file_id: driver_config_fingerprint2
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
 provides:
   - name: mikroe_fingerprint2
     allow_multiple: false

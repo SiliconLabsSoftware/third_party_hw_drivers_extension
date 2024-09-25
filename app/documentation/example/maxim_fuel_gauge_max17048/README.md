@@ -12,31 +12,41 @@ The block diagram of this example is shown in the image below:
 
 - [MAX17048XEVKIT Evalue Kit](https://www.maximintegrated.com/en/products/power/battery-management/MAX17048XEVKIT.html)
 
-- [Wireless Starter Kit Mainboard](https://www.silabs.com/development-tools/wireless/wireless-starter-kit-mainboard)
+- [Wireless Starter Kit Mainboard](https://www.silabs.com/development-tools/wireless/wireless-starter-kit-mainboard) and [10dBm EFR32xG21 Radio Board](https://www.silabs.com/development-tools/wireless/slwrb4181b-efr32xg21-wireless-gecko-radio-board)
 
-- [10dBm EFR32xG21 Radio Board](https://www.silabs.com/development-tools/wireless/slwrb4181b-efr32xg21-wireless-gecko-radio-board)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit?tab=overview) (BRD4002 + BRD4338A)
 
 - [Lithium Ion Battery](https://www.sparkfun.com/products/13851)
 
 - A high power resistor (e.g. 220Ω/5W) is as the load of the battery.
 
-## Connections Required ##
+## Hardware Connection ##
 
-We can use some [Wire Jumpers Female to Female](https://www.mikroe.com/wire-jumpers-female-to-female-30cm-10pcs) to connect between the EFR32xG21 Wireless Starter Kit and the MAX17048XEVKIT Evalue Kit, and between the MAX17048XEVKIT Evalue Kit to the Lithium Ion Battery and the load as shown below.
+- If the EFR32xG21 Radio Board is used:
 
-![connection](image/connection.png)
+  We can use some [Wire Jumpers Female to Female](https://www.mikroe.com/wire-jumpers-female-to-female-30cm-10pcs) to connect between the EFR32xG21 Wireless Starter Kit and the MAX17048XEVKIT Evalue Kit, and between the MAX17048XEVKIT Evalue Kit to the Lithium Ion Battery and the load as shown below.
 
-| WSTK markings             |  MAX17048XEVKIT Evalue Kit markings |
-|---------------------------|:-----------------------------------:|
-| Extension PIN 1  - GND    |  J2-4: GND                          |
-| Extension PIN 9 - PD03    |  J2-5: SDA                          |
-| Extension PIN 7 - PD02    |  J2-3: SCL                          |
-| Extension PIN 6 - PC01    |  J2-6: ALRT                         |
+    ![connection](image/connection.png)
 
-| MAX17048XEVKIT Evalue Kit markings |  Lithium Ion Battery |
-|:----------------------------------:|:--------------------:|
-| PK+                                |  BAT+                |
-| PK-                                |  BAT-                |
+  | WSTK markings             |  MAX17048XEVKIT Evalue Kit markings |
+  |---------------------------|:-----------------------------------:|
+  | Extension PIN 1  - GND    |  J2-4: GND                          |
+  | Extension PIN 9 - PD03    |  J2-5: SDA                          |
+  | Extension PIN 7 - PD02    |  J2-3: SCL                          |
+  | Extension PIN 6 - PC00    |  J2-6: ALRT                         |
+  
+  | MAX17048XEVKIT Evalue Kit markings |  Lithium Ion Battery |
+  |:----------------------------------:|:--------------------:|
+  | PK+                                |  BAT+                |
+  | PK-                                |  BAT-                |
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description  | BRD4338A GPIO | BRD4002 EXP/Breakout Header | Maxim Battery Fuel Gauge MAX17048 |
+  | -------------| ------------- | ------------------ | ---------------------------- |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | J2-5: SDA                    |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | J2-3: SCL                    |
+  | ALRT         | GPIO_46       | P24                | J2-6: ALRT                   |
 
 **Note:** The MAX17048 EV kit is set by default to evaluate 1-cell Li+ batteries. LDO U2 is provided so that only a single supply is needed to power the EV kit in the case a 2-cell battery is used. When evaluating the MAX17048, set jumper JU1 to pins 1-2 and remove any shunt installed on JU2 to bypass the LDO.
 
@@ -46,51 +56,59 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4181B to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter max17048evkit.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **max17048evkit**.
 
-2. Click **Create** button on the **Third Party Hardware Drivers - MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+2. Click **Create** button on the **Third Party Hardware Drivers - MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)
+** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+
+    ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG21 2.4 GHz 10 dBm Radio Board (BRD4181B)" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for the your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/maxim_fuel_gauge_max17048/app.c` into the project root folder (overwriting the existing file).
 
 3. Install the software components:
 
-    - Open the .slcp file in the project.
+   - Open the .slcp file in the project.
+   - Select the SOFTWARE COMPONENTS tab.
+   - Install the following components:
 
-    - Select the SOFTWARE COMPONENTS tab.
+     **If the BGM220P Explorer Kit is used:**
 
-    - Install the following components:
+       - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
+       - Set **Enable Virtual COM UART** in **[Platform] > [Board Control]** component.
 
-      - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
-      - Set **Enable Virtual COM UART** in **[Platform] > [Board Control]** component.
+         ![enable_vcom](image/vcom.png)
+       - [Services] → [Timers] → [Sleep Timer]
+       - [Application] → [Utility] → [Log]
+       - [Application] → [Utility] → [Assert]
+       - [Third Party Hardware Drivers] → [Power Management] → [MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)] → use default configuaration
 
-        ![enable_vcom](image/vcom.png)
+         ![max17048_config](image/max17048_config.png)
 
-      - [Application] → [Utility] → [Log]
-      - [Third Party Hardware Drivers] → [Power Management] → [MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)] → use default configuaration
+       - [Third Party] → [Tiny printf]
 
-        ![max17048_config](image/max17048_config.png)
+     **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
 
-    - Install printf float
+       - [Application] → [Utility] → [Assert]
+       - [Third Party Hardware Drivers] → [Power Management] → [MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)] → use default configuaration
 
-      - Open Properties of the project.
-      - Select **C/C++ Build > Settings > Tool Settings >GNU ARM C Linker > General**. Check **Printf float**.
-
-        ![enable_print_float](image/float.png)
+         ![max17048_config](image/max17048_config.png)
+       - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+       - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+       - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [BJT Temperature Sensor]
 
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)" component. Selecting this component will also include the "I2CSPM" component with default configurated instance: **fuel_gauge**.
+- Third-party Drivers Extension must be enabled for the project to install "MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)" component.
 
 ## How It Works ##
 

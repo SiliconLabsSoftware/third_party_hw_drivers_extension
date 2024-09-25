@@ -37,8 +37,8 @@
  ******************************************************************************/
 
 #include <mma8452q.h>
-#include <string.h>
-#include <sl_udelay.h>
+#include "sl_sleeptimer.h"
+#include "mma8452q_config.h"
 
 /***************************************************************************//**
  * Definition
@@ -91,7 +91,7 @@
  * Local Variables
  ******************************************************************************/
 static mma8452q_sensor_config_t mma8452q_cfg = {
-  .dev_addr = SL_MMA8452Q_I2C_BUS_ADDRESS1,
+  .dev_addr = SL_MMA8452Q_I2C_BUS_ADDRESS2,
   .scale = MMA8452Q_SCALE_2G,
   .odr = MMA8452Q_ODR_800,
   .alsp_rate = MMA8452Q_ASLP_ODR_50,
@@ -165,7 +165,14 @@ static mma8452q_sensor_config_t mma8452q_cfg = {
   },
   .enable = true
 }; /* Structure to hold MMA8452Q driver config */
-static sl_i2cspm_t *_mma8452q_i2cspm_instance = NULL;
+
+typedef struct
+{
+  i2c_master_t i2c;
+} mma8452q_handle_t;
+
+static mma8452q_handle_t mma8452q_handle;
+
 static bool mma8452q_is_initialized = false;
 
 /***************************************************************************//**
@@ -182,25 +189,43 @@ void mma8452q_get_core_version(mma8542q_core_version_t *core_version)
 /***************************************************************************//**
 * Initialize the MMA8452Q.
 *******************************************************************************/
-sl_status_t mma8452q_init(sl_i2cspm_t *i2cspm)
+sl_status_t mma8452q_init(mikroe_i2c_handle_t inst)
 {
   sl_status_t status = SL_STATUS_OK;
+  i2c_master_config_t i2c_cfg;
   uint8_t temp = 0;
+
   // If already initialized, return status
   if (mma8452q_is_initialized == true) {
     return SL_STATUS_ALREADY_INITIALIZED;
   }
 
   // Check for Null pointer
-  if (i2cspm == NULL) {
+  if (inst == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  // Update i2cspm instance
-  _mma8452q_i2cspm_instance = i2cspm;
+  mma8452q_handle.i2c.handle = inst;
+  i2c_master_configure_default(&i2c_cfg);
+
+  i2c_cfg.addr = SL_MMA8452Q_I2C_BUS_ADDRESS2;
+
+#if (SPARKFUN_MMA8452Q_I2C_UC == 1)
+  i2c_cfg.speed = SPARKFUN_MMA8452Q_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&mma8452q_handle.i2c, &i2c_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  i2c_master_set_speed(&mma8452q_handle.i2c, i2c_cfg.speed);
+  i2c_master_set_timeout(&mma8452q_handle.i2c, 0);
+
+  mma8452q_is_initialized = true;
 
   // Check WHO_AM_I register
   status = mma8452q_read_register(MMA8452Q_WHO_AM_I, &temp);
+
   if (status == SL_STATUS_TRANSMIT) {
     return SL_STATUS_INVALID_PARAMETER;
   }
@@ -211,7 +236,6 @@ sl_status_t mma8452q_init(sl_i2cspm_t *i2cspm)
   if (status != SL_STATUS_OK) {
     return SL_STATUS_TRANSMIT;
   }
-  mma8452q_is_initialized = true;
 
   return SL_STATUS_OK;
 }
@@ -231,7 +255,7 @@ sl_status_t mma8452q_deinit(void)
   status = mma8452q_write_register(MMA8452Q_CTRL_REG2, 0x40);
 
   // Must to wait after reset device
-  sl_udelay_wait(1000);
+  sl_sleeptimer_delay_millisecond(1);
 
   status |= mma8452q_active(false);
   mma8452q_is_initialized = false;
@@ -258,14 +282,25 @@ sl_status_t mma8452q_set_address(uint8_t i2c_address)
 
   prev_addr = mma8452q_cfg.dev_addr;
   mma8452q_cfg.dev_addr = i2c_address;
+  if (I2C_MASTER_SUCCESS != i2c_master_set_slave_address(&mma8452q_handle.i2c,
+                                                         mma8452q_cfg.dev_addr))
+  {
+    return SL_STATUS_FAIL;
+  }
+
   status |= mma8452q_read_register(MMA8452Q_WHO_AM_I, &temp);
 
   if (status == SL_STATUS_TRANSMIT) {
     mma8452q_cfg.dev_addr = prev_addr;
+    i2c_master_set_slave_address(&mma8452q_handle.i2c,
+                                 mma8452q_cfg.dev_addr);
     return status;
   }
+
   if (temp != SL_MMA8452Q_DEVICE_ID) {
     mma8452q_cfg.dev_addr = prev_addr;
+    i2c_master_set_slave_address(&mma8452q_handle.i2c,
+                                 mma8452q_cfg.dev_addr);
     return SL_STATUS_NOT_FOUND;
   }
 
@@ -281,7 +316,7 @@ sl_status_t mma8452q_set_address(uint8_t i2c_address)
 sl_status_t mma8452q_active(bool enable)
 {
   sl_status_t status = SL_STATUS_OK;
-  uint8_t temp;
+  uint8_t temp = 0x00;
 
   status |= mma8452q_read_register(MMA8452Q_CTRL_REG1, &temp);
 
@@ -308,8 +343,8 @@ sl_status_t mma8452q_active(bool enable)
 sl_status_t mma8452q_auto_calibrate(void)
 {
   sl_status_t status = SL_STATUS_OK;
-  int16_t data[3];
-  uint8_t offset[3];
+  int16_t data[3] = { 0x00, 0x00, 0x00 };
+  uint8_t offset[3] = { 0x00, 0x00, 0x00 };
   mma8452q_odr_t prev_odr = mma8452q_cfg.odr;
   mma8452q_scale_t prev_scale = mma8452q_cfg.scale;
   uint8_t is_data_ready = 0;
@@ -355,7 +390,8 @@ sl_status_t mma8452q_auto_calibrate(void)
 sl_status_t sl_mma8452q_get_acceleration(int16_t avec[3])
 {
   sl_status_t status = SL_STATUS_OK;
-  uint8_t raw_data[6]; // store x, y, z here
+  // store x, y, z here
+  uint8_t raw_data[6] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
   if (mma8452q_cfg.en_fast_read == false) {
     status |= mma8452q_read_block(MMA8452Q_OUT_X_MSB, 6, raw_data);
@@ -381,7 +417,8 @@ sl_status_t sl_mma8452q_get_acceleration(int16_t avec[3])
 sl_status_t sl_mma8452q_get_calculated_acceleration(float avec[3])
 {
   sl_status_t status = SL_STATUS_OK;
-  uint8_t raw_data[6]; // store x, y, z here
+  // store x, y, z here
+  uint8_t raw_data[6] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
   if (mma8452q_cfg.en_fast_read == false) {
     int16_t acceleration[3]; // store raw data of acceleration here
@@ -441,7 +478,7 @@ sl_status_t mma8452q_get_data_status(uint8_t *data_status)
 sl_status_t mma8452q_check_for_data_ready(uint8_t *is_data_ready)
 {
   sl_status_t status = SL_STATUS_OK;
-  uint8_t temp;
+  uint8_t temp = 0x00;
 
   // Check for Null pointer
   if (is_data_ready == NULL) {
@@ -497,7 +534,7 @@ sl_status_t mma8452q_get_int_source(uint8_t *int_source)
 sl_status_t mma8452q_get_pl_status(uint8_t *pl_status)
 {
   sl_status_t status = SL_STATUS_OK;
-  uint8_t plStat;
+  uint8_t plStat = 0x00;
 
   // Check for Null pointer
   if (pl_status == NULL) {
@@ -566,7 +603,7 @@ sl_status_t mma8452q_set_scale(mma8452q_scale_t scale)
 {
   sl_status_t status = SL_STATUS_OK;
   uint8_t sysmode = 0;
-  uint8_t cfg;
+  uint8_t cfg = 0x00;
   if ((scale != MMA8452Q_SCALE_2G) && (scale != MMA8452Q_SCALE_4G)
       && (scale != MMA8452Q_SCALE_8G)) {
     return SL_STATUS_INVALID_PARAMETER;
@@ -601,7 +638,7 @@ sl_status_t mma8452q_set_odr(mma8452q_odr_t odr)
 {
   sl_status_t status = SL_STATUS_OK;
   uint8_t sysmode = 0;
-  uint8_t ctrl;
+  uint8_t ctrl = 0x00;
 
   if (odr > MMA8452Q_ODR_1) {
     return SL_STATUS_INVALID_PARAMETER;
@@ -638,7 +675,7 @@ sl_status_t mma8452q_set_mods(mma8452q_mods_t mods)
 {
   sl_status_t status = SL_STATUS_OK;
   uint8_t sysmode = 0;
-  uint8_t ctrl;
+  uint8_t ctrl = 0x00;
 
   if (mods > MMA8452Q_LPWR) {
     return SL_STATUS_INVALID_PARAMETER;
@@ -674,7 +711,7 @@ sl_status_t mma8452q_config_aslp(mma8452q_aslp_odr_t alsp_rate,
 {
   sl_status_t status = SL_STATUS_OK;
   uint8_t sysmode = 0;
-  uint8_t ctrl;
+  uint8_t ctrl = 0x00;
 
   if ((alsp_rate > MMA8452Q_ASLP_ODR_1p56) || (slp_mode_pwr > MMA8452Q_LPWR)) {
     return SL_STATUS_INVALID_PARAMETER;
@@ -946,7 +983,7 @@ sl_status_t mma8452q_enable_low_noise(bool enable)
 {
   sl_status_t status = SL_STATUS_OK;
   uint8_t sysmode = 0;
-  uint8_t ctrl;
+  uint8_t ctrl = 0x00;
 
   // Change to standby if currently in other state
   status |= mma8452q_get_sysmode(&sysmode);
@@ -980,7 +1017,7 @@ sl_status_t mma8452q_enable_fast_read(bool enable)
 {
   sl_status_t status = SL_STATUS_OK;
   uint8_t sysmode = 0;
-  uint8_t ctrl;
+  uint8_t ctrl = 0x00;
 
   // Change to standby if currently in other state
   status |= mma8452q_get_sysmode(&sysmode);
@@ -1012,32 +1049,22 @@ sl_status_t mma8452q_enable_fast_read(bool enable)
 *******************************************************************************/
 sl_status_t mma8452q_read_register(uint8_t addr, uint8_t *data)
 {
-  I2C_TransferSeq_TypeDef seq;
-  uint8_t i2c_write_data;
-
-  if (_mma8452q_i2cspm_instance == NULL) {
+  if (mma8452q_is_initialized == false) {
     return SL_STATUS_NOT_INITIALIZED;
   }
 
   if (data == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  seq.addr = mma8452q_cfg.dev_addr << 1;
-  seq.flags = (uint16_t)I2C_FLAG_WRITE_READ;
 
-  i2c_write_data = addr;
-
-  /*Write buffer*/
-  seq.buf[0].data = &i2c_write_data;
-  seq.buf[0].len = 1;
-
-  /*Read buffer*/
-  seq.buf[1].data = data;
-  seq.buf[1].len = 1;
-
-  if (I2CSPM_Transfer(_mma8452q_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&mma8452q_handle.i2c,
+                                                       &addr,
+                                                       1,
+                                                       data,
+                                                       1)) {
     return SL_STATUS_TRANSMIT;
   }
+
   return SL_STATUS_OK;
 }
 
@@ -1046,26 +1073,18 @@ sl_status_t mma8452q_read_register(uint8_t addr, uint8_t *data)
 *******************************************************************************/
 sl_status_t mma8452q_write_register(uint8_t addr, uint8_t data)
 {
-  I2C_TransferSeq_TypeDef seq;
-  uint8_t i2c_write_data[2];
-
-  if (_mma8452q_i2cspm_instance == NULL) {
+  if (mma8452q_is_initialized == false) {
     return SL_STATUS_NOT_INITIALIZED;
   }
 
-  seq.addr = mma8452q_cfg.dev_addr << 1;
-  seq.flags = (uint16_t)I2C_FLAG_WRITE;
+  uint8_t i2c_write_data[2] = { addr, data };
 
-  i2c_write_data[0] = addr;
-  i2c_write_data[1] = data;
-
-  /*Write buffer*/
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = 2;
-
-  if (I2CSPM_Transfer(_mma8452q_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&mma8452q_handle.i2c,
+                                             i2c_write_data,
+                                             2)) {
     return SL_STATUS_TRANSMIT;
   }
+
   return SL_STATUS_OK;
 }
 
@@ -1074,32 +1093,22 @@ sl_status_t mma8452q_write_register(uint8_t addr, uint8_t data)
 *******************************************************************************/
 sl_status_t mma8452q_read_block(uint8_t addr, uint8_t num_bytes, uint8_t *data)
 {
-  I2C_TransferSeq_TypeDef seq;
-  uint8_t i2c_write_data;
-
-  if (_mma8452q_i2cspm_instance == NULL) {
+  if (mma8452q_is_initialized == false) {
     return SL_STATUS_NOT_INITIALIZED;
   }
 
   if (data == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  seq.addr = mma8452q_cfg.dev_addr << 1;
-  seq.flags = (uint16_t)I2C_FLAG_WRITE_READ;
 
-  i2c_write_data = addr;
-
-  /*Write buffer*/
-  seq.buf[0].data = &i2c_write_data;
-  seq.buf[0].len = 1;
-
-  /*Read buffer*/
-  seq.buf[1].data = data;
-  seq.buf[1].len = num_bytes;
-
-  if (I2CSPM_Transfer(_mma8452q_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&mma8452q_handle.i2c,
+                                                       &addr,
+                                                       1,
+                                                       data,
+                                                       num_bytes)) {
     return SL_STATUS_TRANSMIT;
   }
+
   return SL_STATUS_OK;
 }
 
@@ -1108,22 +1117,29 @@ sl_status_t mma8452q_read_block(uint8_t addr, uint8_t num_bytes, uint8_t *data)
 *******************************************************************************/
 sl_status_t mma8452q_write_block(uint8_t addr, uint8_t num_bytes, uint8_t *data)
 {
-  I2C_TransferSeq_TypeDef seq;
+  if (mma8452q_is_initialized == false) {
+    return SL_STATUS_NOT_INITIALIZED;
+  }
+
+  if (NULL == data) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
   uint8_t i2c_write_data[num_bytes + 1];
-
-  seq.addr = mma8452q_cfg.dev_addr << 1;
-  seq.flags = (uint16_t)I2C_FLAG_WRITE;
-
   i2c_write_data[0] = addr;
 
-  memcpy(&i2c_write_data[1], data, num_bytes);
+  for (uint8_t i = 0; i < num_bytes; i++)
+  {
+    i2c_write_data[i + 1] = *(data + i);
+  }
 
-  /*Write buffer*/
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = num_bytes;
+  err_t stt = i2c_master_write(&mma8452q_handle.i2c,
+                               i2c_write_data,
+                               num_bytes + 1);
 
-  if (I2CSPM_Transfer(_mma8452q_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != stt) {
     return SL_STATUS_TRANSMIT;
   }
+
   return SL_STATUS_OK;
 }

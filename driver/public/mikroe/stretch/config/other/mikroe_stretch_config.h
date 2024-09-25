@@ -40,6 +40,8 @@
 #ifndef MIKORE_STRETCH_CONFIG_H_
 #define MIKORE_STRETCH_CONFIG_H_
 
+#include "em_gpio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -64,6 +66,5 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-
 #endif
-#endif /* MIKORE_STRETCH_CONFIG_H_ */
+#endif // MIKORE_STRETCH_CONFIG_H_

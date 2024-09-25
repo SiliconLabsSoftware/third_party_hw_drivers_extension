@@ -8,23 +8,32 @@ W5500 enables users to have the Internet connectivity in their applications just
 
 The board can be used for industrial automation systems, IP set-top boxes, VoIP/Video phone systems, security systems, home networks and gateways and test and measurement equipment and for many other applications.
 
-ETH Wiz Click board™ communicates with the target microcontroller over SPI interface that corresponds to the pinout on the mikroBUS™ socket as shown below.
-
-![mikroBus](image/mikrobus.png)
-
 ## Required Hardware ##
 
-- [A BGM220P Explorer Kit board.](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
-
-- [A ETH WIZ Click.](https://www.mikroe.com/eth-wiz-click)
-
-- A Ethernet Cable, e.g. [Ethernet Roll Cable](https://www.mikroe.com/ethernet-roll-transparent).
+- [A BGM220P Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- [A ETH WIZ Click](https://www.mikroe.com/eth-wiz-click)
+- A Ethernet Cable, e.g. [Ethernet Roll Cable](https://www.mikroe.com/ethernet-roll-transparent)
 
 ## Hardware Connection ##
 
-The ETH Wiz click board can just be "clicked" into its place. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+- **If the BGM220P Explorer Kit is used:**
 
-![board](image/board.png)
+    The ETH WIZ Click board supports MikroBus; therefore, it can easily connect to the MikroBus socket of the BGM220P Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit. The hardware connection is shown in the image below:
+
+    ![board](image/board.png)
+
+- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+
+    The hardware connection is shown in the table below:
+
+    | Description  | BRD4338A GPIO | BRD4002 Breakout Pad | The ETH WIZ Click board    |
+    | -------------| ------------- | -------------------- | ---------------------------|
+    | GPIO_RESET   | GPIO_46       | P24                  | RESET                      |
+    | GPIO_CS      | GPIO_47       | P26                  | CS                         |
+    | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25      | SCK                        |
+    | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27      | SDO                        |
+    | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27       | P29      | SDI                        |
 
 ## Setup ##
 
@@ -32,16 +41,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter W5500.
+1. From the Launcher Home, add the your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by "w5500".
 
 2. Click **Create** button on the **Third Party Hardware Drivers - W5500 - ETH Wiz Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![create_example](image/create_example.png)
+
+    ![create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create a "Platform - Empty C Project" project for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings. Be sure to connect and select the BGM220 Explorer Kit Board from the "Debug Adapters" on the left before creating a project.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_eth_wiz_w5500/app.c` into the project root folder (overwriting the existing file).
 
@@ -53,18 +63,27 @@ You can either create a project based on an example project or start with an emp
 
    - Install the following components:
 
-     - [Services] → [IO Stream] → [IO Stream: EUSART] with the default instance name: **vcom**.
-     - [Services] → [Timers] → [Sleep Timer].
-     - [Application] → [Utility] → [Log].
-     - [Application] → [Utility] → [Assert].
-     - [Third Party Hardware Drivers] → [Interface] → [W5500 - ETH WIZ Click (Mikroe)] → use the default configuration.
-     ![config](image/w5500_config.png)
+      **If the BGM220P Explorer Kit is used:**
+       - [Services] → [IO Stream] → [IO Stream: EUSART] with the default instance name: **vcom**
+       - [Application] → [Utility] → [Log]
+       - [Application] → [Utility] → [Assert]
+       - [Platform] → [Driver] → [SPI] → [SPIDRV] → [mikroe] → change the configuration for [SPI master chip select (CS) control scheme] to "CS controlled by the application" and select the CS pin to None as below:
 
+           ![spi config](image/spi_config.png)
+
+       - [Third Party Hardware Drivers] → [Interface] → [W5500 - ETH WIZ Click (Mikroe)] → use the default configuration
+  
+          ![config](image/w5500_config.png)
+  
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+       - [Third Party Hardware Drivers] → [Interface] → [W5500 - ETH WIZ Click (Mikroe)] → use the default configuration
+       - [Application] → [Utility] → [Assert]
+  
 4. Build and flash the project to your device.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install **W5500 - ETH WIZ Click (Mikroe)** component.
 
@@ -114,7 +133,7 @@ The following diagram shows the program flow as implemented in the file `app.c`:
 
 ![Work Flow](image/flow.png)
 
-Use a terminal program, such as the Console that is integrated in Simplicity Studio or a third-party tool terminal like PuTTY to receive the logs from the virtual COM port. You should expect a similar output to the one below.
+Use a terminal program, such as the Console that is integrated in Simplicity Studio or a third-party tool terminal like PuTTY to receive the logs from the virtual COM port. Note that the board uses the default baud rate of 115200. You should expect a similar output to the one below.
 
 ![log](image/log.png)
 

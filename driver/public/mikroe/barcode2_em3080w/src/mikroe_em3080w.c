@@ -37,13 +37,12 @@
 #include "mikroe_em3080w.h"
 
 sl_status_t mikroe_barcode2_init(mikroe_barcode2_t *barcode2,
-                                 sl_iostream_uart_t *stream,
+                                 mikroe_uart_handle_t uart_handle,
                                  uint16_t baud_rate)
 {
   barcode2_cfg_t cfg;
-  BARCODE2_RETVAL retval;
 
-  if (!barcode2 || !stream) {
+  if (!barcode2 || !uart_handle) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
@@ -53,9 +52,11 @@ sl_status_t mikroe_barcode2_init(mikroe_barcode2_t *barcode2,
   if (baud_rate > 0) {
     cfg.baud_rate = baud_rate;
   }
-  barcode2->uart.handle = stream;
-  retval = barcode2_init(barcode2, &cfg);
-  return BARCODE2_OK == retval ? SL_STATUS_OK : SL_STATUS_FAIL;
+  barcode2->uart.handle = uart_handle;
+  if (barcode2_init(barcode2, &cfg) != BARCODE2_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_barcode2_generic_write(mikroe_barcode2_t *barcode2,

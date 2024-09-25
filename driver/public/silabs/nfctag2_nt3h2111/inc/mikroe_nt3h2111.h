@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file   nt3h2111.h
+ * @file   mikroe_nt3h2111.h
  * @brief  APIs and types for high level NT3H2111 functionalities.
  *******************************************************************************
  * # License
@@ -42,9 +42,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "sl_status.h"
-
-#include "mikroe_nt3h2111_i2c.h"
-#include "mikroe_nt3h2111_config.h"
+#include "drv_i2c_master.h"
 
 #define ENABLED                                          1
 #define DISABLED                                         0
@@ -276,7 +274,7 @@ typedef struct {
  * @return
  *   SL_STATUS_OK on success.
  ******************************************************************************/
-sl_status_t nt3h2111_init(sl_i2cspm_t *i2cspm);
+sl_status_t nt3h2111_init(mikroe_i2c_handle_t i2cspm);
 
 /***************************************************************************//**
  * @brief

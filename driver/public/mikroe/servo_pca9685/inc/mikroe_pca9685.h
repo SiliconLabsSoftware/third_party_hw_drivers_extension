@@ -41,7 +41,7 @@
 #define MIKROE_PCA9685_H_
 
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 #include "mikroe_servo_config.h"
 
 typedef struct {
@@ -264,7 +264,7 @@ void mikroe_pca9685_default_cfg(void);
  * @description This function set the I2C instance and the address for PCA9685
  *   and LTC2497.
  */
-sl_status_t mikroe_pca9685_set_i2cspm_instance(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_pca9685_set_i2c_instance(mikroe_i2c_handle_t i2c_instance);
 
 /**
  * @brief Initialization function.
@@ -276,7 +276,7 @@ sl_status_t mikroe_pca9685_set_i2cspm_instance(sl_i2cspm_t *i2cspm_instance);
  * @description This function initializes all necessary pins and peripherals
  *   used for this click.
  */
-sl_status_t mikroe_pca9685_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_pca9685_init(mikroe_i2c_handle_t i2c_instance);
 
 /**
  * @brief Generic write function of pca9685.

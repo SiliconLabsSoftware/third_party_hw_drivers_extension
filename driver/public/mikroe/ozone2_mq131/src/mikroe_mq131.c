@@ -33,47 +33,74 @@
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 
-#include "sl_status.h"
-#include "spidrv.h"
-#include "ozone2.h"
-
 #include "mikroe_mq131.h"
-#include "mikroe_mq131_config.h"
+#include "drv_digital_in.h"
+#include "drv_digital_out.h"
+
+#ifdef SLI_SI917
+#include "RTE_Device_917.h"
+#else
+#include "spidrv.h"
+#endif
 
 static ozone2_t ctx;
 static ozone2_cfg_t cfg;
 
-sl_status_t mikroe_ozone2_init(SPIDRV_Handle_t spidrv)
+sl_status_t mikroe_ozone2_init(mikroe_spi_handle_t spi,
+                               mikroe_adc_handle_t adc)
 {
-  if (spidrv == NULL) {
+  ozone2_cfg_setup(&cfg);
+
+#if MIKROE_OZONE2_ADC_SEL == 0
+
+  if (adc == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
+  (void)spi;
 
-  ozone2_cfg_setup(&cfg);
-#if MIKROE_OZONE2_CLICK_ADC_SEL == 0
+#if defined(MIKROE_OZONE2_AN_PORT) && defined(MIKROE_OZONE2_AN_PIN)
+  cfg.an = hal_gpio_pin_name(MIKROE_OZONE2_AN_PORT, MIKROE_OZONE2_AN_PIN);
+#endif
+
   cfg.adc_sel = OZONE2_ADC_SEL_AN;
   cfg.vref = 3.3;
-#if defined(MIKROE_OZONE2_CLICK_AN_PORT) \
-  && defined(MIKROE_OZONE2_CLICK_AN_PIN)
-  cfg.an = hal_gpio_pin_name(MIKROE_OZONE2_CLICK_AN_PORT,
-                             MIKROE_OZONE2_CLICK_AN_PIN);
-#endif
+  ctx.an.handle = adc;
+
 #else
+  if (spi == NULL) {
+    return SL_STATUS_NULL_POINTER;
+  }
+  (void)adc;
+
   cfg.adc_sel = OZONE2_ADC_SEL_SPI;
-  cfg.miso = hal_gpio_pin_name(spidrv->initData.portRx,
-                               spidrv->initData.pinRx);
-  cfg.cs = hal_gpio_pin_name(spidrv->portCs,
-                             spidrv->pinCs);
-  ctx.spi.handle = spidrv;
+
+#ifdef SLI_SI917
+  cfg.miso = hal_gpio_pin_name(RTE_GSPI_MASTER_MISO_PORT,
+                               RTE_GSPI_MASTER_MISO_PIN);
+#else
+  const SPIDRV_Handle_t ptr = (SPIDRV_Handle_t)spi;
+  cfg.miso = hal_gpio_pin_name(ptr->initData.portRx, ptr->initData.pinRx);
 #endif
+
+#if defined(MIKROE_OZONE2_CS_PORT) && defined(MIKROE_OZONE2_CS_PIN)
+  cfg.cs = hal_gpio_pin_name(MIKROE_OZONE2_CS_PORT, MIKROE_OZONE2_CS_PIN);
+  // CS pin need to init here since the mikroe_sdk_v2 missed this step
+  digital_out_t struct_cs;
+  digital_out_init(&struct_cs, cfg.cs);
+#endif
+
+#if (MIKROE_OZONE2_CLICK_SPI_UC == 1)
+  cfg.spi_speed = MIKROE_OZONE2_CLICK_SPI_UC_BITRATE;
+#endif
+
+  ctx.spi.handle = spi;
+#endif
+
   if (OZONE2_OK == ozone2_init(&ctx, &cfg)) {
     return SL_STATUS_OK;
   }
-  GPIO_PinModeSet(spidrv->initData.portRx,
-                  spidrv->initData.pinRx,
-                  gpioModeInputPull,
-                  0);
-  return SL_STATUS_FAIL;
+
+  return SL_STATUS_INITIALIZATION;
 }
 
 sl_status_t mikroe_ozone2_read_signal_voltage(float *data_out)

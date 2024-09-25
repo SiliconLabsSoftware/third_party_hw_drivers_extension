@@ -39,8 +39,9 @@
 
 #ifndef MIKROE_MLX90632_H_
 #define MIKROE_MLX90632_H_
+
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -208,7 +209,7 @@ extern "C" {
  *    SL_STATUS_OK Successful initialization.
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_mlx90632_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_mlx90632_init(mikroe_i2c_handle_t i2cspm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -239,7 +240,8 @@ void mikroe_mlx90632_default_config(void);
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null.
  ******************************************************************************/
-sl_status_t mikroe_mlx90632_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_mlx90632_set_i2csmp_instance(
+  mikroe_i2c_handle_t i2cspm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -387,4 +389,5 @@ float mikroe_mlx90632_get_object_temperature(void);
 #ifdef __cplusplus
 }
 #endif
-#endif /* MIKROE_MLX90632_H_ */
+
+#endif // MIKROE_MLX90632_H_

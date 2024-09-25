@@ -45,7 +45,7 @@
 
 #include <stdint.h>
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,10 +56,10 @@ extern "C" {
  *    This function sets the IC2SPM instance used by platform functions.
  *
  * @param[in] i2cspm_instance
- *    I2CSPM instance, default: VL53L1X_CONFIG_I2C_INSTANCE
+ *    I2CSPM instance
  *
  ******************************************************************************/
-void vl53l1x_platform_set_i2cspm_instance(sl_i2cspm_t *i2cspm_instance);
+void vl53l1x_platform_set_i2cspm_instance(i2c_master_t *i2cspm_instance);
 
 /** @brief VL53L1_ReadMulti() definition.\n
  *
@@ -95,4 +95,4 @@ sl_status_t VL53L1_RdDWord(uint16_t dev, uint16_t index, uint32_t *pdata);
 }
 #endif
 
-#endif
+#endif // _VL53L1_PLATFORM_H_

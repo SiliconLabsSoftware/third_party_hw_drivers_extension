@@ -33,18 +33,29 @@
  * maintained and there may be no bug maintenance planned for these resources.
  * Silicon Labs may update projects from time to time.
  ******************************************************************************/
+#include "sl_component_catalog.h"
 #include "sl_sleeptimer.h"
-#include "sl_i2cspm_instances.h"
-
-#include "app_log.h"
-
 #include "sparkfun_max30101_max32664.h"
+
+#if (defined(SLI_SI917))
+#include "rsi_debug.h"
+#include "sl_i2c_instances.h"
+
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#else /* None Si91x device */
+#include "sl_i2cspm_instances.h"
+#include "app_log.h"
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
 
 #define READING_INTERVAL_MSEC    250
 
 static bio_hub_data_t libBpm;
 static sl_sleeptimer_timer_handle_t app_timer_handle;
 static volatile bool app_timer_expire = false;
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
 
 static void app_bio_hub_init(void);
 static void app_bio_hub_process(void);
@@ -77,51 +88,57 @@ static void app_bio_hub_init(void)
   uint16_t sample_val;
   sl_status_t ret_code;
 
-  ret_code = bio_hub_init(sl_i2cspm_qwiic, 0);
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_qwiic;
+#endif
+
+  ret_code = bio_hub_init(app_i2c_instance, 0);
   if (SL_STATUS_OK == ret_code) {
-    app_log("Init success\r\n");
+    app_printf("Init success\r\n");
   } else {
-    app_log("Init failed\r\n");
+    app_printf("Init failed\r\n");
   }
 
   // Configuring just the BPM settings.
   if (SL_STATUS_OK == bio_hub_config_bpm(BIO_HUB_ALGO_MODE_ONE)) {
-    app_log("Sensor configured.\r\n");
+    app_printf("Sensor configured.\r\n");
   } else {
-    app_log("Error configuring sensor.\r\n");
+    app_printf("Error configuring sensor.\r\n");
   }
 
   // Set pulse width.
   if (SL_STATUS_OK == bio_hub_set_pulse_width(411)) {
-    app_log("Pulse Width Set.\r\n");
+    app_printf("Pulse Width Set.\r\n");
   } else {
-    app_log("Could not set Pulse Width.\r\n");
+    app_printf("Could not set Pulse Width.\r\n");
   }
 
   // Check that the pulse width was set.
   if (SL_STATUS_OK == bio_hub_read_pulse_width(&pulse_width)) {
-    app_log("Pulse Width: %d\r\n", pulse_width);
+    app_printf("Pulse Width: %d\r\n", pulse_width);
   }
 
   // Set sample rate per second. Remember that not every sample rate is
   // available with every pulse width. Check hookup guide for more information.
   ret_code = bio_hub_set_sample_rate(400);
   if (SL_STATUS_OK == ret_code) {
-    app_log("Sample Rate Set.\r\n");
+    app_printf("Sample Rate Set.\r\n");
   } else {
-    app_log("Could not set Sample Rate!\r\n");
+    app_printf("Could not set Sample Rate!\r\n");
   }
 
   // Check sample rate.
   ret_code = bio_hub_read_sample_rate(&sample_val);
   if (SL_STATUS_OK == ret_code) {
-    app_log("Sample rate is set to: %d\r\n", sample_val);
+    app_printf("Sample rate is set to: %d\r\n", sample_val);
   }
 
   // Data lags a bit behind the sensor, if you're finger is on the sensor when
   // it's being configured this delay will give some time for the data to catch
   // up.
-  app_log("Loading up the buffer with data....\r\n");
+  app_printf("Loading up the buffer with data....\r\n");
   sl_sleeptimer_delay_millisecond(4000);
 
   // starts a periodic timer to get data from sensor
@@ -140,15 +157,15 @@ static void app_bio_hub_process(void)
   // Information from the bio_hub_read_bpm function will be saved to our "body"
   // variable.
   if (SL_STATUS_OK == bio_hub_read_bpm(&libBpm)) {
-    app_log("\r\nCount: %lu\r\n", count++);
-    app_log("Heartrate: %d\r\n", libBpm.heart_rate);
-    app_log("Confidence: %d\r\n", libBpm.confidence);
-    app_log("Oxygen: %d\r\n", libBpm.oxygen);
-    app_log("Status: %d\r\n", libBpm.status);
+    app_printf("\r\nCount: %lu\r\n", count++);
+    app_printf("Heartrate: %d\r\n", libBpm.heart_rate);
+    app_printf("Confidence: %d\r\n", libBpm.confidence);
+    app_printf("Oxygen: %d\r\n", libBpm.oxygen);
+    app_printf("Status: %d\r\n", libBpm.status);
     // Slow it down or your heart rate will go up trying to keep up
     // with the flow of numbers
   } else {
-    app_log("Read failed\r\n");
+    app_printf("Read failed\r\n");
   }
 }
 

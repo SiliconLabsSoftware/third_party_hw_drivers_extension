@@ -37,24 +37,26 @@
  ******************************************************************************/
 
 #include <string.h>
-#include "sl_udelay.h"
+#include "sl_sleeptimer.h"
 #include "sparkfun_ak9753.h"
 #include "sparkfun_ak9753_config.h"
-#include "sparkfun_ak9753_platform.h"
+#include "drv_digital_out.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // instance for I2C communication
-sl_i2cspm_t *sparkfun_ak9753_i2cpsm_instance = NULL;
+i2c_master_t ak9753_i2c;
+pin_name_t pdn_name;
+digital_out_t pdn_out;
 
 /***************************************************************************//**
  * Local Variables
  ******************************************************************************/
 static sparkfun_ak9753_config_t sparkfun_ak9753_cfg = {
   .I2C_address = SPARKFUN_AK9753_ADDR,
-  .sparkfun_ak9753_i2cspm_instance = NULL,
+  .i2cspm_instance = NULL,
   .cut_off_freq = SPARKFUN_AK975X_FREQ_8_8HZ,
   .mode = SPARKFUN_AK975X_MODE_0,
   .upper_threshold13 = 0x00,
@@ -67,6 +69,66 @@ static sparkfun_ak9753_config_t sparkfun_ak9753_cfg = {
   .int_present = false,
   .PDN_present = false
 };      /* Structure to hold AK9753 driver config */
+
+/***************************************************************************//**
+* Read register value
+*******************************************************************************/
+static sl_status_t sparkfun_ak9753_platform_read_register(uint8_t addr,
+                                                          uint8_t *pdata)
+{
+  if ((pdata == NULL) || (ak9753_i2c.handle == NULL)) {
+    return SL_STATUS_INVALID_PARAMETER;
+  } else {
+    if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&ak9753_i2c,
+                                                         &addr,
+                                                         1,
+                                                         pdata,
+                                                         1)) {
+      return SL_STATUS_TRANSMIT;
+    }
+  }
+  return SL_STATUS_OK;
+}
+
+/***************************************************************************//**
+* Write into register
+*******************************************************************************/
+sl_status_t sparkfun_ak9753_platform_write_register(uint8_t addr,
+                                                    uint8_t data)
+{
+  if (ak9753_i2c.handle == NULL) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
+  uint8_t i2c_write_data[2] = { addr, data };
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&ak9753_i2c,
+                                             i2c_write_data,
+                                             2)) {
+    return SL_STATUS_TRANSMIT;
+  }
+  return SL_STATUS_OK;
+}
+
+/***************************************************************************//**
+* Read multiple bytes from sensor
+*******************************************************************************/
+sl_status_t sparkfun_ak9753_platform_read_blocking_register(uint8_t addr,
+                                                            uint8_t *pdata,
+                                                            uint8_t len)
+{
+  if ((pdata == NULL) || (ak9753_i2c.handle == NULL)) {
+    return SL_STATUS_INVALID_PARAMETER;
+  } else {
+    if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&ak9753_i2c,
+                                                         &addr,
+                                                         1,
+                                                         pdata,
+                                                         len)) {
+      return SL_STATUS_TRANSMIT;
+    }
+  }
+  return SL_STATUS_OK;
+}
 
 /***************************************************************************//**
 * Return the version information of the MMA8452Q.
@@ -117,12 +179,10 @@ sl_status_t sparkfun_ak9753_set_mode(sparkfun_ak9753_mode_t mode)
 *******************************************************************************/
 sl_status_t sparkfun_ak9753_power_down(void)
 {
-#if (defined SPARKFUN_AK9753_CONFIG_PDN_PORT) \
-  && (defined SPARKFUN_AK9753_CONFIG_PDN_PIN)
-  GPIO_PinOutClear(SPARKFUN_AK9753_CONFIG_PDN_PORT,
-                   SPARKFUN_AK9753_CONFIG_PDN_PIN);
-  return SL_STATUS_OK;
-#endif
+  if (sparkfun_ak9753_cfg.PDN_present) {
+    digital_out_low(&pdn_out);
+    return SL_STATUS_OK;
+  }
   return SL_STATUS_NOT_INITIALIZED;
 }
 
@@ -131,12 +191,10 @@ sl_status_t sparkfun_ak9753_power_down(void)
 *******************************************************************************/
 sl_status_t sparkfun_ak9753_power_up(void)
 {
-#if (defined SPARKFUN_AK9753_CONFIG_PDN_PORT) \
-  && (defined SPARKFUN_AK9753_CONFIG_PDN_PIN)
-  GPIO_PinOutSet(SPARKFUN_AK9753_CONFIG_PDN_PORT,
-                 SPARKFUN_AK9753_CONFIG_PDN_PIN);
-  return SL_STATUS_OK;
-#endif
+  if (sparkfun_ak9753_cfg.PDN_present) {
+    digital_out_high(&pdn_out);
+    return SL_STATUS_OK;
+  }
   return SL_STATUS_NOT_INITIALIZED;
 }
 
@@ -225,8 +283,34 @@ sl_status_t sparkfun_ak9753_init(
   }
 
   // Update i2cspm instance
-  sparkfun_ak9753_i2cpsm_instance =
-    sparkfun_ak9753_config->sparkfun_ak9753_i2cspm_instance;
+  ak9753_i2c.handle =
+    sparkfun_ak9753_config->i2cspm_instance;
+
+  i2c_master_config_t i2c_cfg;
+  i2c_master_configure_default(&i2c_cfg);
+
+  i2c_cfg.addr = sparkfun_ak9753_config->I2C_address;
+
+#if (SPARKFUN_AK9753_I2C_UC == 1)
+  i2c_cfg.speed = SPARKFUN_AK9753_I2C_SPEED_MODE;
+#endif
+
+#if (defined SPARKFUN_AK9753_CONFIG_PDN_PORT) \
+  && (defined SPARKFUN_AK9753_CONFIG_PDN_PIN)
+  pdn_name = hal_gpio_pin_name(SPARKFUN_AK9753_CONFIG_PDN_PORT,
+                               SPARKFUN_AK9753_CONFIG_PDN_PIN);
+  digital_out_init(&pdn_out, pdn_name);
+  digital_out_high(&pdn_out);
+  sparkfun_ak9753_config->PDN_present = true;
+#endif
+
+  if (i2c_master_open(&ak9753_i2c, &i2c_cfg)
+      == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  i2c_master_set_speed(&ak9753_i2c, i2c_cfg.speed);
+  i2c_master_set_timeout(&ak9753_i2c, 0);
 
   uint8_t device_id = 0;
   sl_status_t sc = SL_STATUS_OK;
@@ -261,18 +345,6 @@ sl_status_t sparkfun_ak9753_init(
 
   sc |= sparkfun_ak9753_get_dummy();
 
-  if (sparkfun_ak9753_config->PDN_present
-      || sparkfun_ak9753_config->int_present) {
-    GPIOINT_Init();
-#if (defined SPARKFUN_AK9753_CONFIG_PDN_PORT) \
-    && (defined SPARKFUN_AK9753_CONFIG_PDN_PIN)
-    GPIO_PinModeSet(SPARKFUN_AK9753_CONFIG_PDN_PORT,
-                    SPARKFUN_AK9753_CONFIG_PDN_PIN,
-                    gpioModePushPull,
-                    1);
-#endif
-  }
-
   if (sc != SL_STATUS_OK) {
     return SL_STATUS_TRANSMIT;
   }
@@ -284,16 +356,6 @@ sl_status_t sparkfun_ak9753_init(
 *******************************************************************************/
 sl_status_t sparkfun_ak9753_deinit(void)
 {
-  if (sparkfun_ak9753_cfg.PDN_present || sparkfun_ak9753_cfg.int_present) {
-    GPIOINT_Init();
-#if (defined SPARKFUN_AK9753_CONFIG_PDN_PORT) \
-    && (defined SPARKFUN_AK9753_CONFIG_PDN_PIN)
-    GPIO_PinModeSet(SPARKFUN_AK9753_CONFIG_PDN_PORT,
-                    SPARKFUN_AK9753_CONFIG_PDN_PIN,
-                    gpioModeDisabled,
-                    1);
-#endif
-  }
   return SL_STATUS_OK;
 }
 
@@ -317,7 +379,7 @@ sl_status_t sparkfun_ak9753_get_ir1_data(int16_t *measurement_data)
   }
 
   sl_status_t sc = SL_STATUS_OK;
-  uint8_t temp[2];
+  uint8_t temp[2] = { 0x00, 0x00 };
 
   sc = sparkfun_ak9753_platform_read_blocking_register(SPARKFUN_AK975X_IR1,
                                                        temp,
@@ -337,7 +399,7 @@ sl_status_t sparkfun_ak9753_get_ir2_data(int16_t *measurement_data)
   }
 
   sl_status_t sc = SL_STATUS_OK;
-  uint8_t temp[2];
+  uint8_t temp[2] = { 0x00, 0x00 };
 
   sc = sparkfun_ak9753_platform_read_blocking_register(SPARKFUN_AK975X_IR2,
                                                        temp,
@@ -357,7 +419,7 @@ sl_status_t sparkfun_ak9753_get_ir3_data(int16_t *measurement_data)
   }
 
   sl_status_t sc = SL_STATUS_OK;
-  uint8_t temp[2];
+  uint8_t temp[2] = { 0x00, 0x00 };
 
   sc = sparkfun_ak9753_platform_read_blocking_register(SPARKFUN_AK975X_IR3,
                                                        temp,
@@ -377,7 +439,7 @@ sl_status_t sparkfun_ak9753_get_ir4_data(int16_t *measurement_data)
   }
 
   sl_status_t sc = SL_STATUS_OK;
-  uint8_t temp[2];
+  uint8_t temp[2] = { 0x00, 0x00 };
 
   sc = sparkfun_ak9753_platform_read_blocking_register(SPARKFUN_AK975X_IR4,
                                                        temp,
@@ -397,7 +459,7 @@ sl_status_t sparkfun_ak9753_get_raw_temp(uint16_t *raw_temperature_data)
   }
 
   sl_status_t sc = SL_STATUS_OK;
-  uint8_t value[2];
+  uint8_t value[2] = { 0x00, 0x00 };
 
   sc = sparkfun_ak9753_platform_read_blocking_register(SPARKFUN_AK975X_TMP,
                                                        value,
@@ -525,28 +587,28 @@ sl_status_t sparkfun_ak9753_set_threshold_eeprom_ir24(bool height,
     // low byte is at adresse 0x55 OR 0X57 11+[6:0] for ETH24H OR ETH24L
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EETH24H_LOW,
                                                   threshold_value);
-    sl_udelay_wait(15000);
+    sl_sleeptimer_delay_millisecond(15);
 
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EKEY,
                                                   SPARKFUN_AK975X_EKEY_ON);
 
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EETH24H_HIGH,
                                                   h);
-    sl_udelay_wait(15000);
+    sl_sleeptimer_delay_millisecond(15);
   } else {
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EKEY,
                                                   SPARKFUN_AK975X_EKEY_ON);
 
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EETH24L_LOW,
                                                   threshold_value);
-    sl_udelay_wait(15000);
+    sl_sleeptimer_delay_millisecond(15);
 
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EKEY,
                                                   SPARKFUN_AK975X_EKEY_ON);
 
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EETH24L_HIGH,
                                                   h);
-    sl_udelay_wait(15000);
+    sl_sleeptimer_delay_millisecond(15);
   }
   sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_ECNTL1,
                                                 current_mode);
@@ -679,7 +741,7 @@ sl_status_t sparkfun_ak9753_set_threshold_eeprom_ir13(bool height,
     // low byte is at adresse 0x52 OR 0X54 11+[6:0] for ETH13H OR ETH13L
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EETH13H_LOW,
                                                   threshold_value);
-    sl_udelay_wait(15000);
+    sl_sleeptimer_delay_millisecond(15);
 
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EKEY,
                                                   SPARKFUN_AK975X_EKEY_ON);
@@ -687,7 +749,7 @@ sl_status_t sparkfun_ak9753_set_threshold_eeprom_ir13(bool height,
     // high byte is at adresse 0x51 OR 0X53 11+[6:0] for ETH13H OR ETH13L
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EETH13H_HIGH,
                                                   h);
-    sl_udelay_wait(15000);
+    sl_sleeptimer_delay_millisecond(15);
   } else {
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EKEY,
                                                   SPARKFUN_AK975X_EKEY_ON);
@@ -695,7 +757,7 @@ sl_status_t sparkfun_ak9753_set_threshold_eeprom_ir13(bool height,
     // low byte is at address 0x52 OR 0X54 11+[6:0] for ETH13H OR ETH13L
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EETH13L_LOW,
                                                   threshold_value);
-    sl_udelay_wait(15000);
+    sl_sleeptimer_delay_millisecond(15);
 
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EKEY,
                                                   SPARKFUN_AK975X_EKEY_ON);
@@ -703,7 +765,7 @@ sl_status_t sparkfun_ak9753_set_threshold_eeprom_ir13(bool height,
     // high byte is at adresse 0x51 OR 0X53 11+[6:0] for ETH13H OR ETH13L
     sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EETH13L_HIGH,
                                                   h);
-    sl_udelay_wait(15000);
+    sl_sleeptimer_delay_millisecond(15);
   }
 
   sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_ECNTL1,
@@ -816,7 +878,7 @@ sl_status_t sparkfun_ak9753_set_hysteresis_eeprom_ir24(uint8_t hysteresis_value)
   // allow EEPROM writing
   sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EEHYS24,
                                                 hysteresis_value);
-  sl_udelay_wait(15000);
+  sl_sleeptimer_delay_millisecond(15);
   sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_ECNTL1,
                                                 current_mode);
 
@@ -911,7 +973,7 @@ sl_status_t sparkfun_ak9753_set_hysteresis_eeprom_ir13(uint8_t hysteresis_value)
   //   allow EEPROM writing
   sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_EEHYS13,
                                                 hysteresis_value);
-  sl_udelay_wait(15000);
+  sl_sleeptimer_delay_millisecond(15);
 
   sc |= sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_ECNTL1,
                                                 current_mode);

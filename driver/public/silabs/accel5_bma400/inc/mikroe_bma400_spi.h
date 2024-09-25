@@ -36,10 +36,9 @@
 #define MIKROE_BMA400_SPI_H
 
 #include "sl_status.h"
-#include "spidrv.h"
-#include "sl_udelay.h"
-
+#include "mikroe_bma400_spi_config.h"
 #include "bma400.h"
+#include "drv_spi_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -123,7 +122,8 @@ extern "C" {
  *  @ref BMA400_OK on success.
  *  @ref On failure, BMA400_E_NULL_PTR is returned.
  ******************************************************************************/
-int8_t bma400_spi_init(SPIDRV_Handle_t spidrv, struct bma400_dev *bma400);
+int8_t bma400_spi_init(mikroe_spi_handle_t spidrv,
+                       struct bma400_dev *bma400);
 
 /** @} (end addtogroup BMA400) */
 

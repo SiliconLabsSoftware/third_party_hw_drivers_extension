@@ -13,8 +13,21 @@ provides:
   - name: fatfs_storage_device
   - name: fatfs_storage_device_sdcard
 config_file:
-  - path: public/mikroe/microsd/config/mikroe_microsd_config.h
+  - path: public/mikroe/microsd/config/brd2703a/mikroe_microsd_config.h
     file_id: driver_config_microsd
+    condition: [brd2703a]
+  - path: public/mikroe/microsd/config/brd4108a/mikroe_microsd_config.h
+    file_id: driver_config_microsd
+    condition: [brd4108a]
+  - path: public/mikroe/microsd/config/brd4314a/mikroe_microsd_config.h
+    file_id: driver_config_microsd
+    condition: [brd4314a]
+  - path: public/mikroe/microsd/config/brd4338a/mikroe_microsd_config.h
+    file_id: driver_config_microsd
+    condition: [brd4338a]
+  - path: public/mikroe/microsd/config/other/mikroe_microsd_config.h
+    file_id: driver_config_microsd
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
 template_contribution:
   - name: component_catalog
     value: fatfs_storage_device_sdcard

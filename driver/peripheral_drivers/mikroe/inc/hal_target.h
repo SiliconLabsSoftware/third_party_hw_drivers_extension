@@ -40,12 +40,16 @@
 #ifndef _HAL_TARGET_H_
 #define _HAL_TARGET_H_
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define HAL_PIN_NC  0xffffffff
-#define HAL_PORT_NC 0xffffffff
+#define HAL_PIN_NC       0xffffffff
+#define HAL_PORT_NC      0xffffffff
+
+#define US_DELAY_COUNTER 5  // Delay count
 
 typedef int32_t err_t;
 
@@ -55,7 +59,20 @@ typedef enum {
   ACQUIRE_FAIL = (-1)
 } acquire_t;
 
+#ifndef SLI_SI917
 extern void sl_udelay_wait(unsigned us);
+
+#else
+static inline void sl_udelay_wait(unsigned us)
+{
+  unsigned timeout = US_DELAY_COUNTER * us;
+  for (unsigned i = 0; i < timeout; i++) {
+    __asm__ __volatile__("nop");
+  }
+}
+
+#endif
+
 extern void sl_sleeptimer_delay_millisecond(uint16_t time_ms);
 
 // Delay functions in microseconds

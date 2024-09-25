@@ -39,6 +39,7 @@
 #define SPARKFUN_BIO_SENSOR_HUB_LIBRARY_H_
 
 #include <stdbool.h>
+#include "drv_i2c_master.h"
 
 /***************************************************************************//**
  * @addtogroup MAX32664
@@ -321,7 +322,7 @@ typedef struct {
  *
  * @return SL_STATUS_OK if successful. Error code otherwise.
  ******************************************************************************/
-sl_status_t bio_hub_init(sl_i2cspm_t *i2cspm_instance, uint8_t address);
+sl_status_t bio_hub_init(mikroe_i2c_handle_t i2cspm_instance, uint8_t address);
 
 /***************************************************************************//**
  * @brief
@@ -341,7 +342,7 @@ sl_status_t bio_hub_init(sl_i2cspm_t *i2cspm_instance, uint8_t address);
  *
  * @return SL_STATUS_OK if successful. Error code otherwise.
  ******************************************************************************/
-sl_status_t bio_hub_init_bootloader_mode(sl_i2cspm_t *i2cspm_instance,
+sl_status_t bio_hub_init_bootloader_mode(mikroe_i2c_handle_t i2cspm_instance,
                                          uint8_t address);
 
 /***************************************************************************//**

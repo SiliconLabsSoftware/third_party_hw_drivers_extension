@@ -39,29 +39,19 @@
 
 #include "mikroe_pl_n823_01.h"
 #include "mikroe_pir_pl_n823_01_config.h"
-#include "third_party_hw_drivers_helpers.h"
+#include "pir.h"
 
 static pir_t pir_ctx;
 static pir_cfg_t pir_cfg;
 
-static void mikroe_pl_n823_01_cfg_setup(void);
-
-static void mikroe_pl_n823_01_cfg_setup(void)
-{
-  pir_cfg_setup(&pir_cfg);
-}
-
-sl_status_t mikroe_pl_n823_01_init(sl_i2cspm_t *instance)
+sl_status_t mikroe_pl_n823_01_init(mikroe_i2c_handle_t instance)
 {
   if (instance == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  mikroe_pl_n823_01_cfg_setup();
+  pir_cfg_setup(&pir_cfg);
   pir_ctx.i2c.handle = instance;
-  pir_ctx.slave_address = PIR_PL_N823_01_I2C_SLAVE_ADDRESS;
-
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
 #if defined(PL_N823_01_ANALOG_OUTPUT_PORT) \
   && defined(PL_N823_01_ANALOG_OUTPUT_PIN)
@@ -69,9 +59,26 @@ sl_status_t mikroe_pl_n823_01_init(sl_i2cspm_t *instance)
                                  PL_N823_01_ANALOG_OUTPUT_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(pir_init(&pir_ctx, &pir_cfg));
+#if (MIKROE_PL_N823_01_I2C_UC == 1)
+  pir_cfg.i2c_speed = MIKROE_PL_N823_01_I2C_SPEED_MODE;
+#endif
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  if (PIR_OK != pir_init(&pir_ctx, &pir_cfg)) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  return SL_STATUS_OK;
+}
+
+sl_status_t mikroe_pl_n823_01_set_i2c_instance(mikroe_i2c_handle_t instance)
+{
+  if (NULL == instance) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
+  pir_ctx.i2c.handle = instance;
+
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_pl_n823_01_generic_write(uint8_t reg, uint8_t *data_buf,

@@ -1,0 +1,64 @@
+project_name: mikroe_radar_mm5d91_00_si91x
+package: platform
+label: Third Party Hardware Drivers - MM5D91-00 - Radar Click (Mikroe)
+description: |
+  This example project shows an example for Mikroe Radar Click board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_radar_mm5d91_00/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: sleeptimer_si91x
+  from: wiseconnect3_sdk
+- id: mikroe_radar
+  from: third_party_hw_drivers
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+configuration:
+  - name: SL_UART1_DMA_CONFIG_ENABLE
+    value: "0"
+
+other_file:
+  - path: ../../documentation/example/mikroe_radar_mm5d91_00/image/hardware_connection.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_radar_mm5d91_00/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_radar_mm5d91_00/image/log.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

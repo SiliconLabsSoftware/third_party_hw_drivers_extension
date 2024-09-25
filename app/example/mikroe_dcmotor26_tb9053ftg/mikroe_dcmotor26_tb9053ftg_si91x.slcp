@@ -1,0 +1,74 @@
+project_name: mikroe_dcmotor26_tb9053ftg
+package: platform
+label: Third Party Hardware Drivers - TB9053FTG - DC Motor 26 Click (Mikroe)
+description: |
+  This example project shows an example for Mikroe DC Motor 26 Click board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_dcmotor26_tb9053ftg/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- id: sleeptimer_si91x
+  from: wiseconnect3_sdk
+- instance: [channel_1]
+  from: wiseconnect3_sdk
+  id: adc_instance
+- instance: [i2c2]
+  from: wiseconnect3_sdk
+  id: i2c_instance
+- id: dcmotor26_tb9053ftg
+  from: third_party_hw_drivers
+- id: app_assert
+
+toolchain_settings:
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+
+define:
+- name: DEBUG_EFM
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+other_file:
+  - path: ../../documentation/example/mikroe_dcmotor26_tb9053ftg/image/create_project.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_dcmotor26_tb9053ftg/image/console_log.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_dcmotor26_tb9053ftg/image/hardware_connection.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

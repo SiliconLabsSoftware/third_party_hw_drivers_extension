@@ -39,11 +39,29 @@
 #ifndef Wx500_CONFIG_H_
 #define Wx500_CONFIG_H_
 
+#ifndef SLI_SI917
+#include "em_gpio.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
+// <h> MIKROE_W5500 SPI Configuration
+
+// <e> MIKROE_W5500 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_W5500_SPI_UC                  0
+
+// <o MIKROE_W5500_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
+// <i> Default: 10000000
+#define MIKROE_W5500_SPI_BITRATE             10000000
+
+// </e>
+// </h>
 
 // <q W5x00_ETHERNET_LARGE_BUFFERS_ENABLE> Use ethernet large buffer
 // <i>
@@ -72,9 +90,24 @@ extern "C" {
 // <gpio optional=true> W5500_RESET
 // $[GPIO_W5500_RESET]
 #warning "GPIO_W5500_RESET is not configured"
-// #define W5500_RESET_PORT                   gpioPortC
-// #define W5500_RESET_PIN                    8
+//fndef W5500_RESET_PORT                        
+//#define W5500_RESET_PORT                         0
+//#endif
+//#ifndef W5500_RESET_PIN                         
+//#define W5500_RESET_PIN                          46
+//#endif
 // [GPIO_W5500_RESET]$
+
+// <gpio optional=true> MIKROE_W5500_CS
+// $[GPIO_MIKROE_W5500_CS]
+#warning "GPIO_MIKROE_W5500_CS is not configured"
+//#ifndef MIKROE_W5500_CS_PORT                   
+//#define MIKROE_W5500_CS_PORT                    0
+//#endif
+//#ifndef MIKROE_W5500_CS_PIN                    
+//#define MIKROE_W5500_CS_PIN                     47
+//#endif
+// [GPIO_MIKROE_W5500_CS]$
 
 // <<< sl:end pin_tool >>>
 

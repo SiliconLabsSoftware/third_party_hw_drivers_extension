@@ -31,9 +31,10 @@
 
 #include "sensirion_uart_hal.h"
 #include "sl_status.h"
-#include "sl_udelay.h"
 
-static sl_iostream_t *s_iostream_handle = NULL;
+static uart_t s_sensirion_uart;
+static uint8_t s_sensirion_tx_buffer[256];
+static uint8_t s_sensirion_rx_buffer[256];
 
 /*
  * INSTRUCTIONS
@@ -47,12 +48,29 @@ static sl_iostream_t *s_iostream_handle = NULL;
  * Initialize all hard- and software components that are needed for the UART
  * communication.
  */
-sl_status_t sensirion_uart_init(sl_iostream_t *iostream_handle)
+sl_status_t sensirion_uart_init(mikroe_uart_handle_t uart_handle)
 {
   uint32_t stt = SL_STATUS_INVALID_PARAMETER;
 
-  if (NULL != iostream_handle) {
-    s_iostream_handle = iostream_handle;
+  if (NULL != uart_handle) {
+    uart_config_t cfg;
+
+    s_sensirion_uart.handle = uart_handle;
+    s_sensirion_uart.tx_ring_buffer = s_sensirion_tx_buffer;
+    s_sensirion_uart.rx_ring_buffer = s_sensirion_rx_buffer;
+    s_sensirion_uart.is_blocking = false;
+
+    uart_configure_default(&cfg);
+
+    cfg.tx_ring_size = sizeof(s_sensirion_tx_buffer);
+    cfg.rx_ring_size = sizeof(s_sensirion_rx_buffer);
+
+    if (uart_open(&s_sensirion_uart, &cfg) != 0) {
+      return SL_STATUS_FAIL;
+    }
+
+    uart_set_blocking(&s_sensirion_uart, false);
+
     stt = SL_STATUS_OK;
   }
   return stt;
@@ -104,16 +122,16 @@ sl_status_t sensirion_uart_tx(uint16_t data_len,
                               const uint8_t *data,
                               uint16_t *tx_bytes)
 {
-  if ((NULL != data) && (NULL != s_iostream_handle)) {
-    sl_status_t status = sl_iostream_write(s_iostream_handle,
-                                           data,
-                                           data_len);
-    if (SL_STATUS_OK == status) {
+  if ((NULL != data) && (NULL != s_sensirion_uart.handle)) {
+    err_t status = uart_write(&s_sensirion_uart, (uint8_t *)data, data_len);
+
+    if (UART_ERROR != status) {
       if (NULL != tx_bytes) {
-        *tx_bytes = data_len;
+        *tx_bytes = status;
       }
+      return SL_STATUS_OK;
     }
-    return status;
+    return SL_STATUS_FAIL;
   }
   return SL_STATUS_INVALID_PARAMETER;
 }
@@ -130,34 +148,16 @@ sl_status_t sensirion_uart_rx(uint16_t max_data_len,
                               uint8_t *data,
                               uint16_t *rx_bytes)
 {
-  if ((NULL != data) && (NULL != s_iostream_handle)) {
-    sl_status_t status = SL_STATUS_OK;
-    size_t read_size;
-    int32_t total_size = 0;
+  if ((NULL != data) && (NULL != s_sensirion_uart.handle)) {
+    err_t status = uart_read(&s_sensirion_uart, data, max_data_len);
 
-    while (max_data_len && (SL_STATUS_OK == status))
-    {
-      status = sl_iostream_read(s_iostream_handle,
-                                data,
-                                max_data_len,
-                                &read_size);
-      if (SL_STATUS_OK == status) {
-        if (read_size > 0) {
-          if (read_size <= max_data_len) {
-            max_data_len -= read_size;
-            data += read_size;
-            total_size += read_size;
-          } else {
-            max_data_len = 0;
-          }
-        }
+    if (UART_ERROR != status) {
+      if (NULL != rx_bytes) {
+        *rx_bytes = status;
       }
+      return SL_STATUS_OK;
     }
-
-    if (NULL != rx_bytes) {
-      *rx_bytes = total_size;
-    }
-    return SL_STATUS_OK;
+    return SL_STATUS_FAIL;
   }
   return SL_STATUS_INVALID_PARAMETER;
 }
@@ -172,5 +172,11 @@ sl_status_t sensirion_uart_rx(uint16_t max_data_len,
  */
 void sensirion_sleep_usec(uint32_t useconds)
 {
-  sl_udelay_wait(useconds);
+  uint32_t delay_ms = 1;
+
+  if (useconds > 1000) {
+    delay_ms = (useconds / 1000) + 1;
+  }
+
+  sl_sleeptimer_delay_millisecond(delay_ms);
 }

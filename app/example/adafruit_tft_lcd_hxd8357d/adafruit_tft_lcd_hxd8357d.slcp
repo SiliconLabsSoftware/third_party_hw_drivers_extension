@@ -18,11 +18,13 @@ readme:
 - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/README.md
 
 source:
-- path: app.c
+- path: gecko/app.c
+- path: app_main_screen.c
+- path: app_calib_screen.c
 - path: main.c
 
 include:
-- path: ''
+- path: 'gecko'
   file_list:
   - path: app.h
 
@@ -34,11 +36,14 @@ component:
 - id: app_assert
 - id: sleeptimer
 - id: app_log
+- id: udelay
 - id: adafruit_tft_lcd_hxd8357d
   from: third_party_hw_drivers
 - id: services_oled_glib
   from: third_party_hw_drivers
 - id: touch_screen_analog
+  from: third_party_hw_drivers
+- id: touch_screen_analog_gecko
   from: third_party_hw_drivers
 
 define:
@@ -46,7 +51,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/create_example_with_dma_mode.png
@@ -55,27 +60,31 @@ other_file:
     directory: image
   - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/result.GIF
     directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/enable_calib_printf.png
+  - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/calib.jpg
     directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/calib_point.png
+  - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/touch_settings.png
     directory: image
   - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/hxd8357d_display.png
     directory: image
   - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/hardware_connect.png
     directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/gspi.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/gspi_dma.png
+    directory: image
 
 configuration:
-- name: CALIB_X_MIN
+- name: TOUCHSCREEN_X_MIN
   value: '428'
-- name: CALIB_X_MAX
+- name: TOUCHSCREEN_X_MAX
   value: '3628'
-- name: CALIB_Y_MIN
+- name: TOUCHSCREEN_Y_MIN
   value: '260'
-- name: CALIB_Y_MAX
+- name: TOUCHSCREEN_Y_MAX
   value: '3776'
-- name: TOUCHSCREEN_WIDTH
+- name: TOUCHSCREEN_HOR_RES
   value: '320'
-- name: TOUCHSCREEN_HEIGHT
+- name: TOUCHSCREEN_VER_RES
   value: '480'
 
 ui_hints:

@@ -42,14 +42,31 @@ extern "C"
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
-// <h> Trellis Keypad Setting
+//<h>ADAFRUIT NEO TRELLIS I2C Configuration
 
-// <o NEOTRELLIS_NUM_COLUMNS> Number NeoTrellis boards by column
-// <i> Default: 1
-#define NEOTRELLIS_NUM_COLUMN_BOARDS           1
-// <o NEOTRELLIS_NUM_ROWS> Number NeoTrellis boards by row
-// <i> Default: 1
-#define NEOTRELLIS_NUM_ROW_BOARDS             1
+//  <e>ADAFRUIT NEO TRELLIS I2C UC Configuration
+//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+//  <i> Default: 0
+#define ADAFRUIT_NEO_TRELLIS_I2C_UC                  0
+
+// <o ADAFRUIT_NEO_TRELLIS_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define ADAFRUIT_NEO_TRELLIS_I2C_SPEED_MODE          0
+// </e>
+// </h>
+
+// <h> ADAFRUIT NEO TRELLIS Setting
+// <o NEOTRELLIS_NUM_COLUMN_BOARDS> Number NeoTrellis boards by column
+// <d> 1
+#define NEOTRELLIS_NUM_COLUMN_BOARDS 1U
+
+// <o NEOTRELLIS_NUM_ROW_BOARDS> Number NeoTrellis boards by row
+// <d> 1
+#define NEOTRELLIS_NUM_ROW_BOARDS 1U
 // </h>
 // <<< end of configuration section >>>
 
@@ -58,4 +75,4 @@ extern "C"
 }
 #endif
 
-#endif /* ADAFRUIT_NEO_TRELLIS_CONFIG_H */
+#endif // ADAFRUIT_NEO_TRELLIS_CONFIG_H

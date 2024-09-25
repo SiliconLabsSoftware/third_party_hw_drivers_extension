@@ -1,0 +1,77 @@
+project_name: sparkfun_particulate_matter_sensor_sps30_uart_si91x
+label: Third Party Hardware Drivers - SPS30 - Particulate Matter Sensor (Sparkfun) - UART
+package: platform
+description: |
+  This project shows an example for Particulate Matter Sensor SPS30 driver using UART interface.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: sleeptimer_si91x
+  from: wiseconnect3_sdk
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- id: pm_sps30_uart
+  from: third_party_hw_drivers
+
+configuration:
+  - name: SL_UART1_DMA_CONFIG_ENABLE
+    value: "0"
+
+toolchain_settings:
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+define:
+- name: DEBUG_EFM
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+other_file:
+  - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/image/hw_connection_1.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/image/hw_connection.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/image/log_i2c.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/image/log_uart.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/image/driver_layer.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/image/install_float.png
+    directory: "image"  
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

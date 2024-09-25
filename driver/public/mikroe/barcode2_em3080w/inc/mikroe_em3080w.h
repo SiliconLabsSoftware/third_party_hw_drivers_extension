@@ -84,7 +84,7 @@ typedef barcode2_t mikroe_barcode2_t;
  *   used for this click.
  ******************************************************************************/
 sl_status_t mikroe_barcode2_init (mikroe_barcode2_t *barcode2,
-                                  sl_iostream_uart_t *stream,
+                                  mikroe_uart_handle_t uart_handle,
                                   uint16_t baud_rate);
 
 /***************************************************************************//**

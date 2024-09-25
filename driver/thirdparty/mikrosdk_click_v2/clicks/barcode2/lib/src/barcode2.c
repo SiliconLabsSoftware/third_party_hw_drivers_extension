@@ -89,12 +89,18 @@ BARCODE2_RETVAL barcode2_init ( barcode2_t *ctx, barcode2_cfg_t *cfg )
 
 void barcode2_generic_write ( barcode2_t *ctx, char *data_buf, uint16_t len )
 {
-    uart_write( &ctx->uart, data_buf, len );
+    // FIXED BARCODE2
+
+    // Silabs - 5/10/2024 Fix issue: type casting for data_buf variable
+    uart_write( &ctx->uart, (uint8_t *)data_buf, len );
 }
 
 int32_t barcode2_generic_read ( barcode2_t *ctx, char *data_buf, uint16_t max_len )
 {
-    return uart_read( &ctx->uart, data_buf, max_len );
+    // FIXED BARCODE2
+
+    // Silabs - 5/10/2024 Fix issue: type casting for data_buf variable
+    return uart_read( &ctx->uart, (uint8_t *)data_buf, max_len );
 }
 
 void barcode2_enable_scaning ( barcode2_t *ctx, uint8_t en_state )

@@ -47,7 +47,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/mikroe_dcmotor26_tb9053ftg/image/create_project.png
@@ -55,8 +55,6 @@ other_file:
   - path: ../../documentation/example/mikroe_dcmotor26_tb9053ftg/image/console_log.png
     directory: "image"
   - path: ../../documentation/example/mikroe_dcmotor26_tb9053ftg/image/hardware_connection.png
-    directory: "image"
-  - path: ../../documentation/example/mikroe_alcohol_mq3/image/install_float.png
     directory: "image"
 
 ui_hints:

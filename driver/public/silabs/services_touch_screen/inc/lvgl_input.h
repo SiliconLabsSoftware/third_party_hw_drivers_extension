@@ -35,7 +35,7 @@
 
 #ifndef LVGL_INPUT_H_
 #define LVGL_INPUT_H_
-
+#include <stdbool.h>
 #include "touch_screen.h"
 
 #ifdef __cplusplus

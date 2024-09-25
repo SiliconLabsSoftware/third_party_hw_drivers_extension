@@ -37,7 +37,8 @@
 
 #include "sl_status.h"
 #include "stdbool.h"
-#include "sl_i2cspm.h"
+
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -137,7 +138,8 @@ typedef struct frw_rev {
  *  @retval SL_STATUS_OK An joystick device is present on the I2C bus
  *  @retval SL_STATUS_INITIALIZATION No Joystick device present
  ******************************************************************************/
-sl_status_t sparkfun_joystick_init(sl_i2cspm_t *i2c_handle, uint8_t address);
+sl_status_t sparkfun_joystick_init(mikroe_i2c_handle_t i2c_handle,
+                                   uint8_t address);
 
 /***************************************************************************//**
  * @brief
@@ -308,4 +310,4 @@ sl_status_t sparkfun_joystick_write_register(uint8_t reg_addr, uint8_t data);
 
 /** @} (end addtogroup sparkfun_joystick) */
 
-#endif /* SPARKFUN_QWIIC_JOYSTICK_H__ */
+#endif // SPARKFUN_QWIIC_JOYSTICK_H__

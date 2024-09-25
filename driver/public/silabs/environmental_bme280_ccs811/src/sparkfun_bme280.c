@@ -38,11 +38,7 @@
 // -----------------------------------------------------------------------------
 
 #include "sl_status.h"
-#include "sl_sleeptimer.h"
 #include "sparkfun_bme280.h"
-
-// Create an I2C Instance for BME280
-static sparkfun_bme280_i2c_t sparkfun_bme280;
 
 // register addresses
 #define  BME280_REGISTER_CONTROLHUMID     0xF2
@@ -81,6 +77,12 @@ static sparkfun_bme280_i2c_t sparkfun_bme280;
 
 #define  BME280_REGISTER_CAL26            0xE1
 
+// Structure to configure the BME280 sensor.
+typedef struct {
+  i2c_master_t i2c;
+  uint8_t     slave_address;     // I2C address of the sensor
+} atmospheric_t;
+
 // variables for calibration
 uint16_t calib_t1 = 0;
 int16_t calib_t2 = 0;
@@ -105,6 +107,8 @@ int16_t calib_p9 = 0;
 
 int32_t t_fine = 0;
 
+// Create an I2C Instance for BME280
+static atmospheric_t atmospheric;
 // -----------------------------------------------------------------------------
 //                     Local Function Definitions
 // -----------------------------------------------------------------------------
@@ -125,10 +129,26 @@ static sl_status_t read_factory_compensation(void);
 //                         Public Functions
 // -----------------------------------------------------------------------------
 
-sl_status_t sparkfun_bme280_i2c(sparkfun_bme280_i2c_t *init)
+sl_status_t sparkfun_bme280_i2c(mikroe_i2c_handle_t i2cspm, uint8_t addr)
 {
-  sparkfun_bme280.i2c_sensor = init->i2c_sensor;
-  sparkfun_bme280.i2c_address = init->i2c_address;
+  i2c_master_config_t atmospheric_config;
+  atmospheric.i2c.handle = i2cspm;
+  atmospheric.slave_address = addr;
+
+  i2c_master_configure_default(&atmospheric_config);
+
+  if (i2c_master_open(&atmospheric.i2c,
+                      &atmospheric_config) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+#if (SPARKFUN_BME280_I2C_UC == 1)
+  atmospheric_config.speed = SPARKFUN_BME280_I2C_SPEED_MODE;
+#endif
+
+  i2c_master_set_slave_address(&atmospheric.i2c, atmospheric.slave_address);
+  i2c_master_set_speed(&atmospheric.i2c, atmospheric_config.speed);
+  i2c_master_set_timeout(&atmospheric.i2c, 0);
   return SL_STATUS_OK;
 }
 
@@ -362,30 +382,14 @@ static sl_status_t read_factory_compensation(void)
  ******************************************************************************/
 static sl_status_t read_one_byte(uint8_t registeraddress, uint8_t *returnbyte)
 {
-  sl_status_t ret_val = SL_STATUS_FAIL;
-  uint8_t data = 0;
-  // Transfer structure.
-  I2C_TransferSeq_TypeDef i2c_transfer;
-
-  // Initializing I2C transfer.
-  i2c_transfer.addr = BME_280_DEFAULT_I2C_ADDR << 1;
-  /// Master write
-  i2c_transfer.flags = I2C_FLAG_WRITE_READ;
-
-  // Transmit buffer, no data to send.
-  i2c_transfer.buf[0].data = &registeraddress;
-  i2c_transfer.buf[0].len = 1;
-
-  // Receive buffer, two bytes to receive.
-  i2c_transfer.buf[1].data = &data;
-  i2c_transfer.buf[1].len = 1;
-
-  if (I2CSPM_Transfer(sparkfun_bme280.i2c_sensor,
-                      &i2c_transfer) == i2cTransferDone) {
-    ret_val = SL_STATUS_OK;
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&atmospheric.i2c,
+                                                       &registeraddress,
+                                                       1,
+                                                       returnbyte,
+                                                       1)) {
+    return SL_STATUS_TRANSMIT;
   }
-  *returnbyte = data;
-  return ret_val;
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
@@ -402,28 +406,14 @@ static sl_status_t read_one_byte(uint8_t registeraddress, uint8_t *returnbyte)
  ******************************************************************************/
 static sl_status_t write_one_byte(uint8_t registeraddress, uint8_t writevalue)
 {
-  sl_status_t ret_val = SL_STATUS_FAIL;
   uint8_t data[2] = { registeraddress, writevalue };
-  // Transfer structure.
-  I2C_TransferSeq_TypeDef i2c_transfer;
 
-  // Initializing I2C transfer.
-  i2c_transfer.addr = BME_280_DEFAULT_I2C_ADDR << 1;
-  // Master write
-  i2c_transfer.flags = I2C_FLAG_WRITE;
-
-  // Transmit buffer, 2 bytes to send.
-  i2c_transfer.buf[0].data = data;
-  i2c_transfer.buf[0].len = 2;
-
-  i2c_transfer.buf[1].data = 0UL;
-  i2c_transfer.buf[1].len = 0;
-
-  if (I2CSPM_Transfer(sparkfun_bme280.i2c_sensor,
-                      &i2c_transfer) == i2cTransferDone) {
-    ret_val = SL_STATUS_OK;
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&atmospheric.i2c,
+                                             data,
+                                             2)) {
+    return SL_STATUS_TRANSMIT;
   }
-  return ret_val;
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
@@ -442,30 +432,15 @@ static sl_status_t write_one_byte(uint8_t registeraddress, uint8_t writevalue)
 static sl_status_t read_two_bytes(uint8_t registeraddress,
                                   uint16_t *returnbyte)
 {
-  sl_status_t ret_val = SL_STATUS_FAIL;
-  uint16_t data = 0;
-
-  // Transfer structure.
-  I2C_TransferSeq_TypeDef i2c_transfer;
-
-  // Initializing I2C transfer.
-  i2c_transfer.addr = BME_280_DEFAULT_I2C_ADDR << 1;
-  // Master write.
-  i2c_transfer.flags = I2C_FLAG_WRITE_READ;
-  // Transmit buffer, no data to send.
-  i2c_transfer.buf[0].data = &registeraddress;
-  i2c_transfer.buf[0].len = 1;
-
-  // Receive buffer, two bytes to receive.
-  i2c_transfer.buf[1].data = (uint8_t *)&data;
-  i2c_transfer.buf[1].len = 2;
-
-  if (I2CSPM_Transfer(sparkfun_bme280.i2c_sensor,
-                      &i2c_transfer) == i2cTransferDone) {
-    ret_val = SL_STATUS_OK;
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&atmospheric.i2c,
+                                                       &registeraddress,
+                                                       1,
+                                                       (uint8_t *)returnbyte,
+                                                       2)) {
+    return SL_STATUS_TRANSMIT;
   }
-  *returnbyte = data;
-  return ret_val;
+
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**

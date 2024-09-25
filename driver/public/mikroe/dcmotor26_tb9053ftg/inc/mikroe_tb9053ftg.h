@@ -41,16 +41,9 @@
 #define _MIKROE_TB9053FTG_H_
 
 #include "sl_status.h"
-#include "spidrv.h"
-#include "sl_i2cspm.h"
-
-#if defined(_SILICON_LABS_32B_SERIES_1)
-#include "em_adc.h"
-typedef ADC_TypeDef adc_t;
-#elif defined(_SILICON_LABS_32B_SERIES_2)
-#include "em_iadc.h"
-typedef IADC_TypeDef adc_t;
-#endif
+#include "drv_analog_in.h"
+#include "drv_i2c_master.h"
+#include "drv_spi_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -236,15 +229,6 @@ extern "C" {
  */
 
 /**
- * @brief DC Motor 26 configuration object setup function.
- * @details This function initializes click configuration structure to initial
- * values.
- * @return Nothing.
- * @note The all used pins will be set to unconnected state.
- */
-void mikroe_tb9053ftg_cfg_setup(void);
-
-/**
  * @brief DC Motor 26 initialization function.
  * @details This function initializes all necessary pins and peripherals used
  * for this click board.
@@ -255,9 +239,9 @@ void mikroe_tb9053ftg_cfg_setup(void);
  *         SL_STATUS_FAIL - Error.
  * @note None.
  */
-sl_status_t mikroe_tb9053ftg_init(SPIDRV_Handle_t spi_instance,
-                                  sl_i2cspm_t *i2c_instance,
-                                  adc_t *adc);
+sl_status_t mikroe_tb9053ftg_init(mikroe_spi_handle_t spi_instance,
+                                  mikroe_i2c_handle_t i2c_instance,
+                                  mikroe_adc_handle_t adc);
 
 /**
  * @brief DC Motor 26 default configuration function.
@@ -522,8 +506,8 @@ sl_status_t mikroe_tb9053ftg_set_ch1_operation_mode(uint8_t mode);
  * @return SL_STATUS_OK - Success,
  *         SL_STATUS_FAIL - Error.
  * See #err_t definition for detailed explanation.
- * @note Ineffective for Combined-Channel Mode (LARGE Mode) (OSEL1 = L and OSEL2
- *   = L).
+ * @note Ineffective for Combined-Channel Mode (LARGE Mode)
+ *       (OSEL1 = L and OSEL2 = L).
  */
 sl_status_t mikroe_tb9053ftg_set_ch2_operation_mode(uint8_t mode);
 
@@ -545,8 +529,8 @@ sl_status_t mikroe_tb9053ftg_set_ch1_drive_frequency(uint16_t drv_freq);
  * @return SL_STATUS_OK - Success,
  *         SL_STATUS_FAIL - Error.
  * See #err_t definition for detailed explanation.
- * @note Ineffective for Combined-Channel Mode (LARGE Mode) (OSEL1 = L and OSEL2
- *   = L).
+ * @note Ineffective for Combined-Channel Mode (LARGE Mode)
+ *       (OSEL1 = L and OSEL2 = L).
  */
 sl_status_t mikroe_tb9053ftg_set_ch2_drive_frequency(uint16_t drv_freq);
 
@@ -568,8 +552,8 @@ sl_status_t mikroe_tb9053ftg_set_ch1_duty_period(uint16_t duty_period);
  * @return SL_STATUS_OK - Success,
  *         SL_STATUS_FAIL - Error.
  * See #err_t definition for detailed explanation.
- * @note Ineffective for Combined-Channel Mode (LARGE Mode) (OSEL1 = L and OSEL2
- *   = L).
+ * @note Ineffective for Combined-Channel Mode (LARGE Mode)
+ *       (OSEL1 = L and OSEL2 = L).
  */
 sl_status_t mikroe_tb9053ftg_set_ch2_duty_period(uint16_t duty_period);
 
@@ -577,4 +561,4 @@ sl_status_t mikroe_tb9053ftg_set_ch2_duty_period(uint16_t duty_period);
 }
 #endif
 
-#endif /* _MIKROE_TB9053FTG_H_ */
+#endif // _MIKROE_TB9053FTG_H_

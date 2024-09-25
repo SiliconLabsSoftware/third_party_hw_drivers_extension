@@ -2,34 +2,34 @@
 
 ## Summary ##
 
-The SparkFun Pulse Oximeter and Heart Rate Sensor is an I2C based biometric sensor, utilizing two chips from Maxim Integrated: the MAX32664 Biometric Sensor Hub and the MAX30101 Pulse Oximetry and Heart Rate Module. While the latter does all the sensing, the former is an incredibly small and fast Cortex M4 processor that handles all of the algorithmic calculations, digital filtering, pressure/position compensation, advanced R-wave detection, and automatic gain control.
+This example project shows an example for health parameters collection with the SparkFun Pulse Oximeter and Heart Rate Sensor driver integration with the Silicon Labs Platform.
 
-The MAX30101 does all the sensing by utilizing its internal LEDs to bounce light off the arteries and arterioles in your finger's subcutaneous layer and sensing how much light is absorbed with its photodetectors. This is known as photoplethysmography. This data is passed onto and analyzed by the MAX32664 which applies its algorithms to determine heart rate and blood oxygen saturation (SpO2). SpO2 results are reported as the percentage of hemoglobin that is saturated with oxygen. It also provides useful information such as the sensor's confidence in its reporting as well as a handy finger detection data point. To get the most out of the sensor we've written an driver that compatible with EFR32 MCU to make it easy to adjust all the possible configurations.
+The SparkFun Pulse Oximeter and Heart Rate Sensor is an I2C based biometric sensor, utilizing two chips from Maxim Integrated: the MAX32664 and MAX30101. MAX32664 is a Biometric Sensor Hub while MAX30101 is a Pulse Oximetry and Heart Rate Module. While the latter does all the sensing, the former is an incredibly small and fast Cortex M4 processor that handles all of the algorithmic calculations, digital filtering, pressure/position compensation, advanced R-wave detection, and automatic gain control.
 
 ## Required Hardware ##
 
-- [A EFR32xG24 Explorer Kit board.](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit)
-
+- [A EFR32xG24 Explorer Kit board](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 - [SparkFun Pulse Oximeter and Heart Rate Sensor - MAX30101 & MAX32664 (Qwiic)](https://www.sparkfun.com/products/15219)
-
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2704A | [SparkFun Thing Plus Matter - MGM240P - BRD2704A](https://www.sparkfun.com/products/20270) |
-| BRD2601B | [EFR32xG24 Dev Kit - xG24-DK2601B](https://www.silabs.com/development-tools/wireless/efr32xg24-dev-kit?tab=overview)   |
-| BRD2703A | [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4108A | [BG22 Bluetooth SoC Explorer Kit - BG22-EK4108A](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)    |
 
 ## Hardware Connection ##
 
-An MAX30101 & MAX32664 sensor board can be easily connected up with two I2C wires (SDA and SCL) along with 3v3 and GND. For the designated boards, SparkFun Qwiic compatible STEMMA QT connectors can be used.
+- **If the EFR32xG24 Explorer Kit is used**:
 
-![hardware_connection](image/hardware_connection.png)
+  The SparkFun Pulse Oximeter and Heart Rate Sensor board support Qwiic, so it can connect easily to the Qwiic header of the Explorer Kit.
 
-**Note:** This board has two additional pins on its header: the RESET and MFIO pin. These pins are required for the board to function because they determine if the board enters data collection mode or not.
+  ![hardware_connection](image/hardware_connection.png)
+
+  **Note:** This board has two additional pins on its header: the RESET and MFIO pin. These pins are required for the board to function because they determine if the board enters data collection mode or not.
+
+- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+
+   The hardware connection is shown in the table below:
+
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | MAX30101 & MAX32664 sensor board |
+  | -------------| ------------- | ------------------ | -------------------------------- |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                              |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                              |
 
 ## Setup ##
 
@@ -37,41 +37,49 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ##
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter MAX32664.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by "max32664".
 
-2. Click **Create** button on the **Third Party Hardware Drivers - MAX30101 & MAX32664 - Pulse Oximeter and Heart Rate Sensor (Sparkfun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![create_example](image/create_example.png)
+2. Click **Create** button on the project **Third Party Hardware Drivers - MAX30101 & MAX32664 - Pulse Oximeter and Heart Rate Sensor (Sparkfun)**. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+
+    ![create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ##
 
-1. Create a "Platform - Empty C Project" project for the "xG24 Explorer Kit (xG24-EK2703A)" using Simplicity Studio v5. Use the default project settings. Be sure to connect and select the xG24 Explorer Kit (xG24-EK2703A) Board from the "Debug Adapters" on the left before creating a project.
+1. Create an "Empty C Project" project for your board using Simplicity Studio v5. Use the default project settings
 
-2. Copy the file `app/example/sparkfun_hr_po_max30101_max32664/app.c` into the project root folder (overwriting existing file).
+2. Copy the file `app/example/sparkfun_hr_po_max30101_max32664/app.c` into the project root folder (overwriting existing file)
 
-3. Set the test mode in the *app.c* file.
+3. Set the test mode in the *app.c* file
 
 4. Install the software components:
 
-    - Open the .slcp file in the project.
+    - Open the .slcp file in the project
 
-    - Select the SOFTWARE COMPONENTS tab.
+    - Select the SOFTWARE COMPONENTS tab
 
     - Install the following components:
 
-      - [Services] → [IO Stream] → [IO Stream: USART] with the default instance name: vcom.
-      - [Services] → [Timer] → [Sleep Timer]
-      - [Application] → [Utility] → [Log].
+      **If the EFR32xG24 Explorer Kit is used:**
+
+      - [Services] → [IO Stream] → [IO Stream: USART] with the default instance name: vcom
+      - [Application] → [Utility] → [Log]
+      - [Platform] → [Driver] → [I2C] → [I2CSPM] → qwiic instance
       - [Third Party Hardware Drivers] → [Sensors] → [MAX30101 & MAX32664 - Pulse Oximeter and Heart Rate Sensor (Sparkfun)] → use default configuration
 
-5. Build and flash the project to your device.
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+      - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+      - [Third Party Hardware Drivers] → [Sensors] → [MAX30101 & MAX32664 - Pulse Oximeter and Heart Rate Sensor (Sparkfun)] → use default configuration
+
+5. Build and flash the project to your device
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/platform_hardware_drivers_sdk_extensions/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide)
 
-- SDK Extension must be enabled for the project to install "MAX30101 & MAX32664 - Pulse Oximeter and Heart Rate Sensor (Sparkfun)" component.
+- Third-party Hardware Drivers Extension must be enabled for the project to install "MAX30101 & MAX32664 - Pulse Oximeter and Heart Rate Sensor (Sparkfun)" component
 
 ## How It Works ##
 
@@ -101,6 +109,7 @@ As shown below, the library uses a type that is unique to the SparkFun Pulse Oxi
 #### BioData Mode 2 ####
 
 In addition to the information above, mode 2 also gives the following two data points.
+
 | BioData Members | Information |
 | --- | --- |
 | body.r_value | Sp02 r Value |
@@ -109,6 +118,7 @@ In addition to the information above, mode 2 also gives the following two data p
 #### Finger Status ####
 
 Below is a reference table for the body.status member which tells you if the sensor has detected a finger or some other object that is not a finger. It relays this information with four numbers: 0-3.
+
 | Status Number | Description |
 | --- | --- |
 | 0 | No Object Detected |
@@ -117,41 +127,44 @@ Below is a reference table for the body.status member which tells you if the sen
 | 3 | Finger Detected |
 
 Below is a reference table for the body.exStatus member which is an expansion of the first finger status messaging. This is enabled in mode 2 and contains 8 different values.
+
 | Status Number | Description |
 | --- | --- |
-| 0 | Success
-| 1 | Not Ready
-| -1 | Object Detected
-| -2 | Excessive Sensor Device Motion
-| -3 | No object detected
-| -4 | Pressing too hard
-| -5 | Object other than finger detected
-| -6 | Excessive finger motion
+|  0  | Success |
+|  1  | Not Ready |
+| -1  | Object Detected |
+| -2  | Excessive Sensor Device Motion |
+| -3  | No object detected |
+| -4  | Pressing too hard |
+| -5  | Object other than finger detected |
+| -6  | Excessive finger motion |
 
 #### Pulse Width vs. Sample Collection ####
 
 There is trade off between higher resolution (i.e. longer pulse width) and the number of samples that you can collect per second. The table below shows how the resolution and sample rate interact.
-| Samples/Second | Pulse  | Width | (uS) |
-| --- | --- | --- | --- |
-| 69 | 118 | 215 | 411
-| 50 | O | O | O | O
-| 100 | O | O | O | O
-| 200 | O | O | O | O
-| 400 | O | O | O |
-| 800 | O | O | O |
-| 1000 | O | O |
-| 1600 | O |
-| Resolution (bits) | 15 | 16 | 17 | 18 |
+
+| Samples/Second | Pulse | Width | (uS) |     |
+| -------------- | ----- | ----- | ---- |-----|
+|                | 69    | 118   | 215  | 411 |
+| 50             | O     | O     | O    | O   |
+| 100            | O     | O     | O    | O   |
+| 200            | O     | O     | O    | O   |
+| 400            | O     | O     | O    | O   |
+| 800            | O     | O     | O    |     |
+| 1000           | O     | O     |      |     |
+| 1600           | O     |       |      |     |
+| 3200           |       |       |      |     |
+| Resolution (bits) | 15 | 16    | 17   | 18  |
 
 ### Testing ###
 
 This example demonstrates some of the available features of the Pulse Oximeter and Heart Rate Sensor. Follow the below steps to test the example:
 
-1. On your PC open a terminal program, such as the Console that is integrated in Simplicity Studio or a third-party tool terminal like TeraTerm to receive the logs from the virtual COM port.
+1. On your PC open a terminal program, such as the Console that is integrated in Simplicity Studio or a third-party tool terminal like TeraTerm to receive the logs from the virtual COM port. Note that your board uses the default baud rate of 115200.
 
 2. Try to put your finger on the sensor with a proper pressure (solid contact between the finger and the sensor without optical leakage and don’t press with force) and check the logs on the terminal.
 
-![logging_screen](image/logs.png)
+    ![logging_screen](image/logs.png)
 
 ## Report Bugs & Get Support ##
 

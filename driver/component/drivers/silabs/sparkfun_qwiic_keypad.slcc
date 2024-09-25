@@ -8,12 +8,16 @@ quality: evaluation
 root_path: driver
 requires:
   - name: status
-  - name: i2cspm
   - name: sleeptimer
   - name: gpiointerrupt
-recommends:
-  - id: i2cspm
-    instance: [qwiic]
+    condition: [device_series_1]
+  - name: gpiointerrupt
+    condition: [device_series_2]
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_i2c
+  - name: mikroe_peripheral_driver_digital_io
+
 provides:
   - name: sparkfun_qwiic_keypad
     allow_multiple: false
@@ -36,9 +40,12 @@ config_file:
   - path: public/silabs/qwiic_keypad/config/brd4314a/sparkfun_keypad_config.h
     file_id: sparkfun_keypad_config
     condition: [brd4314a]
+  - path: public/silabs/qwiic_keypad/config/brd4338a/sparkfun_keypad_config.h
+    file_id: sparkfun_keypad_config
+    condition: [brd4338a]
   - path: public/silabs/qwiic_keypad/config/other/sparkfun_keypad_config.h
     file_id: sparkfun_keypad_config
-    unless: [brd2601b, brd2703a, brd2704a, brd4108a, brd4314a]
+    unless: [brd2601b, brd2703a, brd2704a, brd4108a, brd4314a, brd4338a]
 include:
   - path: public/silabs/qwiic_keypad/inc
     file_list:

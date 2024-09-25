@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file drv_spi_master.h
+ * @file drv_spi_master_si91x.c
  * @brief mikroSDK 2.0 Click Peripheral Drivers - SPI Master for Si91x
  * @version 1.0.0
  *******************************************************************************
@@ -40,6 +40,8 @@
 #include "drv_spi_master.h"
 #include "drv_digital_out.h"
 #include "sl_si91x_gspi.h"
+#include "sl_si91x_clock_manager.h"
+#include "rsi_rom_clks.h"
 
 #define GSPI_INTF_PLL_CLK            180000000 // Intf pll clock frequency
 #define GSPI_INTF_PLL_REF_CLK        40000000  // Intf pll reference clock freq
@@ -52,6 +54,12 @@
 #define GSPI_SWAP_WRITE_DATA         0         // true to enable swap write
 #define GSPI_BITRATE                 10000000  // Bitrate for setting
 #define GSPI_BIT_WIDTH               8         // Default Bit width
+
+#define SOC_PLL_CLK                  ((uint32_t)(180000000)) // 180MHz default SoC PLL Clock as source to Processor
+#define INTF_PLL_CLK                 ((uint32_t)(180000000)) // 180MHz default Interface PLL Clock as source to all peripherals
+#define QSPI_ODD_DIV_ENABLE          0                       // Odd division enable for QSPI clock
+#define QSPI_SWALLO_ENABLE           0                       // Swallo enable for QSPI clock
+#define QSPI_DIVISION_FACTOR         0                       // Division factor for QSPI clock
 
 static spi_master_t *_owner = NULL;
 static sl_gspi_handle_t gspi_driver_handle = NULL;
@@ -67,6 +75,7 @@ static void callback_event(uint32_t event);
 static err_t _acquire(spi_master_t *obj, bool obj_open_state);
 static void spi_master_configure_gpio_pin(digital_out_t *out, pin_name_t name);
 static err_t spi_master_set_configuration(spi_master_t *obj);
+static void default_clock_configuration(void);
 
 void spi_master_configure_default(spi_master_config_t *config)
 {
@@ -96,6 +105,9 @@ err_t spi_master_open(spi_master_t *obj, spi_master_config_t *config)
   if (_acquire(obj, true) == ACQUIRE_FAIL) {
     return SPI_MASTER_ERROR;
   }
+
+  // default clock configuration by application common for whole system
+  default_clock_configuration();
 
   // Configuration of clock with the default clock parameters
   status = sl_si91x_gspi_configure_clock(&clock_config);
@@ -388,11 +400,19 @@ static err_t spi_master_set_configuration(spi_master_t *obj)
   sl_gspi_control_config_t gspi_config = {
     .bit_width = GSPI_BIT_WIDTH,
     .bitrate = obj->config.speed,
-    .clock_mode = obj->config.mode,
     .slave_select_mode = SL_GSPI_MASTER_HW_OUTPUT,
     .swap_read = GSPI_SWAP_READ_DATA,
     .swap_write = GSPI_SWAP_WRITE_DATA
   };
+
+  // GSPI just only support SPI mode 0 & 3
+  if (obj->config.mode == SPI_MASTER_MODE_0) {
+    gspi_config.clock_mode = SL_GSPI_MODE_0;
+  } else if (obj->config.mode == SPI_MASTER_MODE_3) {
+    gspi_config.clock_mode = SL_GSPI_MODE_3;
+  } else {
+    return SPI_MASTER_ERROR;
+  }
 
   last_spi_speed_used = obj->config.speed;
   last_spi_mode_used = obj->config.mode;
@@ -412,6 +432,26 @@ static err_t spi_master_set_configuration(spi_master_t *obj)
   }
 
   return SPI_MASTER_SUCCESS;
+}
+
+// Function to configure clock on powerup
+static void default_clock_configuration(void)
+{
+  // Core Clock runs at 180MHz SOC PLL Clock
+  sl_si91x_clock_manager_m4_set_core_clk(M4_SOCPLLCLK, SOC_PLL_CLK);
+
+  // All peripherals' source to be set to Interface PLL Clock
+  // and it runs at 180MHz
+  sl_si91x_clock_manager_set_pll_freq(INFT_PLL,
+                                      INTF_PLL_CLK,
+                                      PLL_REF_CLK_VAL_XTAL);
+
+  // Configure QSPI clock as input source
+  ROMAPI_M4SS_CLK_API->clk_qspi_clk_config(M4CLK,
+                                           QSPI_INTFPLLCLK,
+                                           QSPI_SWALLO_ENABLE,
+                                           QSPI_ODD_DIV_ENABLE,
+                                           QSPI_DIVISION_FACTOR);
 }
 
 /*******************************************************************************

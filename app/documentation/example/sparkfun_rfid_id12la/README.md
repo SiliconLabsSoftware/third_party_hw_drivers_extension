@@ -2,13 +2,15 @@
 
 ## Summary ##
 
-This project shows the implementation of an RFID module that outputs the 10-character unique ID ( 5 bytes ID + 1 byte checksum + 4 bytes timestamp) of a 125kHz RFID card with **BGM220 Explorer Kit** based on Qwiic communication.
+This project shows the implementation of an RFID module that outputs the 10-character unique ID ( 5 bytes ID + 1 byte checksum + 4 bytes timestamp) of a 125kHz RFID card with Silicon Labs platform based on I2C communication.
 
 It can be used for human tracking, checking event attendance, and is also beneficial for electronic wallet applications.
 
 ## Required Hardware ##
 
 - [A BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 
 - [SparkFun RFID Qwiic Reader](https://www.sparkfun.com/products/15191)
 
@@ -18,9 +20,20 @@ It can be used for human tracking, checking event attendance, and is also benefi
   
 ## Hardware Connection ##
 
-An ID12L RFID module can be easily connected with two I2C wires (SDA and SCL) along with 3v3 and GND. For the designated boards, SparkFun Qwiic compatible STEMMA QT connectors can be used.
+- **If the BGM220P Explorer Kit is used**:
 
-![hardware_connection](image/hardware_connection.png)
+  The SparkFun RFID Qwiic Reader board can be easily connected to your board by using a [Qwiic cable](https://www.sparkfun.com/products/17259). The hardware connection is shown in the image below:
+
+  ![hardware_connection](image/hardware_connection.png)
+
+- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+  
+  The hardware connection is shown in the table below:
+
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | SparkFun RFID Qwiic Reader |
+  | -------------| ------------- | ------------------ | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
 
 ## Setup ##
 
@@ -28,16 +41,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter "ID-12LA".
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by "ID-12LA".
 
 2. Click **Create** button on the **Third Party Hardware Drivers - ID-12LA - RFID Qwiic Reader (Sparkfun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board" using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/sparkfun_rfid_id12la/app.c` into the project root folder (overwriting the existing file).
 
@@ -49,16 +63,23 @@ You can either create a project based on an example project or start with an emp
 
    - Install the following components:
 
-      - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
-      - [Application] → [Utility] → [Log]
-      [Application] → [Utility] → [Assert]
-      - [Third Party Hardware Drivers] → [Wireless Connectivity] → [ID-12LA - RFID Reader (Sparkfun) - I2C]
+     - **If the BGM220P Explorer Kit is used:**
+       - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
+       - [Application] → [Utility] → [Log]
+       - [Application] → [Utility] → [Assert]
+       - [Platform] → [Driver] → [I2C] → [I2CSPM] → qwiic instance
+       - [Third Party Hardware Drivers] → [Wireless Connectivity] → [ID-12LA - RFID Reader (Sparkfun) - I2C]
+
+     - **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+       - [Application] → [Utility] → [Assert]
+       - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+       - [Third Party Hardware Drivers] → [Wireless Connectivity] → [ID-12LA - RFID Reader (Sparkfun) - I2C] → set the correct I2C address of the RFID Reader
 
 4. Build and flash the project to your device.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "ID-12LA - RFID Reader (Sparkfun) - I2C" component.
 

@@ -262,7 +262,7 @@ typedef enum {
   gpgga_element_time_since_last_dgps_e = GPS_GPGGA_TIME_SINCE_LAST_DGPS,
   gpgga_element_dgps_reference_station_id_e =
     GPS_GPGGA_DGPS_REFERENCE_STATION_ID,
-}mikroe_leas6_gpgga_command_elements_t;
+} mikroe_leas6_gpgga_command_elements_t;
 
 /***************************************************************************//**
  * @brief
@@ -271,7 +271,7 @@ typedef enum {
 typedef enum {
   gps_command_nema_gpgga_e = GPS_NEMA_GPGGA,
   gps_command_nema_gpgll_e = GPS_NEMA_GPGLL,
-}mikroe_leas6_gps_command_t;
+} mikroe_leas6_gps_command_t;
 
 /***************************************************************************//**
  * @brief
@@ -284,7 +284,7 @@ typedef enum {
   gps_parser_error_next_element_e = GPS_ERROR_NEXT_ELEMENT,
   gps_parser_error_current_element_e = GPS_ERROR_CURRENT_ELEMENT,
   gps_parser_invalid_input_parameter_e = 0x01,
-}mikroe_leas6_parser_result_t;
+} mikroe_leas6_parser_result_t;
 
 /***************************************************************************//**
  * @brief
@@ -293,11 +293,14 @@ typedef enum {
  * @param[in] uart_handle
  *    IO Stream UART Instance
  *
+ * @param[in] blocking
+ *    Uart functioning mode
+ *
  * @return
  *    SL_STATUS_OK: Successful initialization.
  *    SL_STATUS_INVALID_PARAMETER: if (uart_handle == NULL)
  ******************************************************************************/
-sl_status_t mikroe_lea6s_init(sl_iostream_uart_t *uart_handle);
+sl_status_t mikroe_lea6s_init(mikroe_uart_handle_t uart_handle, bool blocking);
 
 /***************************************************************************//**
  * @brief
@@ -403,4 +406,4 @@ mikroe_lea6s_generic_parser(uint8_t *raw_data_buffer,
 }
 #endif
 
-#endif /* MIKROE_LEA6S_H_ */
+#endif // MIKROE_LEA6S_H_

@@ -9,6 +9,9 @@ root_path: driver
 
 requires:
   - name: status
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
   - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_i2c
 
@@ -26,6 +29,12 @@ config_file:
   - path: public/mikroe/nfc2_pn7150/config/brd2703a/mikroe_pn7150_config.h
     file_id: driver_config_pn7150
     condition: [brd2703a]
+  - path: public/mikroe/nfc2_pn7150/config/brd4338a/mikroe_pn7150_config.h
+    file_id: driver_config_pn7150
+    condition: [brd4338a]
+  - path: public/mikroe/nfc2_pn7150/config/other/mikroe_pn7150_config.h
+    file_id: driver_config_pn7150
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
 
 template_contribution:
   - name: component_catalog

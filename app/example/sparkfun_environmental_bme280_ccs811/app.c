@@ -1,34 +1,66 @@
 /***************************************************************************//**
- * @file  app.c
- * @brief Top level application functions for Qwiic BME280 and CCS811 driver
+ * @file
+ * @brief Top level application functions
  *******************************************************************************
  * # License
- * <b>Copyright 2021 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc. Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement. This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
-
-/***************************************************************************//**
- * Include.
- ******************************************************************************/
-
-#include "sl_i2cspm_instances.h"
-#include "sl_sleeptimer.h"
-
-#include "app_log.h"
 
 #include "sparkfun_bme280.h"
 #include "sparkfun_ccs811.h"
 
-#define READING_INTERVAL_MSEC    1000
+#if (defined(SLI_SI917))
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+#else
+#include "sl_i2cspm_instances.h"
+#include "app_log.h"
+#endif
 
+#if (defined(SLI_SI917))
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
+#define READING_INTERVAL_MSEC        1000
+
+#if (defined(SLI_SI917))
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
+
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
 static sl_sleeptimer_timer_handle_t app_timer_handle;
 static volatile bool app_timer_expire = false;
 
@@ -39,36 +71,39 @@ static void app_timer_cb(sl_sleeptimer_timer_handle_t *handle, void *data);
  ******************************************************************************/
 void app_init(void)
 {
-  sparkfun_bme280_i2c_t bme280_init_default;
+  app_printf("Application Initialization.\n");
 
-  app_log("Application Initialization.\n");
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_qwiic;
+#endif
 
-  bme280_init_default = (sparkfun_bme280_i2c_t) BME280_I2C_DEFAULT;
-  sparkfun_bme280_i2c(&bme280_init_default);
+  sparkfun_bme280_i2c(app_i2c_instance, SPARKFUN_BME280_ADDR);
   if (sparkfun_bme280_init() == SL_STATUS_OK) {
-    app_log("BME280 on 0x%02X I2C address found and initialized.\n",
-            BME_280_DEFAULT_I2C_ADDR);
+    app_printf("BME280 on 0x%02X I2C address found and initialized.\n",
+               SPARKFUN_BME280_ADDR);
   } else {
-    app_log("BME280 on 0x%02X I2C address not found. Check cables. "
-            "\n\r Try also alternative address:", BME_280_DEFAULT_I2C_ADDR);
-    if (BME_280_DEFAULT_I2C_ADDR == 0x77) {
-      app_log(" 0x76\n");
+    app_printf("BME280 on 0x%02X I2C address not found. Check cables. "
+               "\n\r Try also alternative address:", SPARKFUN_BME280_ADDR);
+    if (SPARKFUN_BME280_ADDR == 0x77) {
+      app_printf(" 0x76\n");
     } else {
-      app_log(" 0x77\n");
+      app_printf(" 0x77\n");
     }
   }
 
-  if (!sparkfun_ccs811_init(sl_i2cspm_qwiic)) {
-    app_log("CCS811 on 0x%02X I2C address found and initialized.\n",
-            SPARKFUN_CCS811_DEFAULT_ADDR);
+  if (!sparkfun_ccs811_init(app_i2c_instance)) {
+    app_printf("CCS811 on 0x%02X I2C address found and initialized.\n",
+               SPARKFUN_CCS811_ADDR);
   } else {
-    app_log("CCS811 on 0x%02X I2C address not found. Check cables. "
-            "\n\r Try also alternative address\n",
-            SPARKFUN_CCS811_DEFAULT_ADDR);
-    if (SPARKFUN_CCS811_DEFAULT_ADDR == 0x5B) {
-      app_log(" 0x5A\n");
+    app_printf("CCS811 on 0x%02X I2C address not found. Check cables. "
+               "\n\r Try also alternative address\n",
+               SPARKFUN_CCS811_ADDR);
+    if (SPARKFUN_CCS811_ADDR == 0x5B) {
+      app_printf(" 0x5A\n");
     } else {
-      app_log(" 0x5B\n");
+      app_printf(" 0x5B\n");
     }
   }
 
@@ -98,20 +133,20 @@ void app_process_action(void)
   sparkfun_bme280_ctrl_measure_set_to_work();
 
   if (SL_STATUS_OK == sparkfun_bme280_read_temperature(&temp)) {
-    app_log("Temperature: %ld %cC\n", (temp / 100), 0XF8);
+    app_printf("Temperature: %ld %cC\n", (temp / 100), 0XF8);
   }
 
   if (SL_STATUS_OK == sparkfun_bme280_read_humidity(&hum)) {
-    app_log("Humidity: %ld%%\n", hum / 1000);
+    app_printf("Humidity: %ld%%\n", hum / 1000);
   }
 
   if (SL_STATUS_OK == sparkfun_bme280_read_pressure(&press)) {
-    app_log("Presure: %ld mBar\n", press);
+    app_printf("Presure: %ld mBar\n", press);
   }
 
-  if (!sparkfun_ccs811_get_measurement(sl_i2cspm_qwiic, &eco2, &tvoc)) {
-    app_log("CO2: %d ppm\n", eco2);
-    app_log("TVOC: %d ppb\n", tvoc);
+  if (!sparkfun_ccs811_get_measurement(&eco2, &tvoc)) {
+    app_printf("CO2: %d ppm\n", eco2);
+    app_printf("TVOC: %d ppb\n", tvoc);
   }
 }
 

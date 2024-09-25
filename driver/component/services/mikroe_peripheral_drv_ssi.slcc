@@ -1,0 +1,24 @@
+id: services_mikroe_peripheral_drivers_ssi
+package: third_party_hw_drivers
+label: SPI
+description: >
+  Interface provider for mikroSDK 2.0 SDK SPI peripheral integration.
+category: Services|mikroSDK 2.0 SDK - Peripheral Drivers
+quality: evaluation
+root_path: driver
+requires:
+  - name: sl_ssi
+  - name: sl_clock_manager
+  - name: mikroe_peripheral_driver_digital_io
+provides:
+  - name: mikroe_peripheral_driver_ssi
+    allow_multiple: false
+template_contribution:
+  - name: component_catalog
+    value: services_mikroe_peripheral_drivers_ssi
+include:
+  - path: peripheral_drivers/mikroe/inc
+    file_list:
+      - path: drv_spi_master.h
+source:
+  - path: peripheral_drivers/mikroe/src/drv_ssi_master_si91x.c

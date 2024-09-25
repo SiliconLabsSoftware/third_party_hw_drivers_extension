@@ -19,17 +19,27 @@
  * Initialize application.
  ******************************************************************************/
 #include "app.h"
-#include "em_gpio.h"
-#include "sl_system_init.h"
-#include "sl_event_handler.h"
-#include "port.h"
-#include "deca_probe_interface.h"
+#include "sl_component_catalog.h"
+#include "sl_sleeptimer.h"
+#include "string.h"
+
+#if (defined(SLI_SI917))
+#include "rsi_debug.h"
+#include "sl_si91x_gspi.h"
+
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
+#else
 #include "app_log.h"
+#include "sl_spidrv_instances.h"
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
+#include "deca_probe_interface.h"
+#include "port_dw3000.h"
 #include "shared_functions.h"
 #include "shared_defines.h"
-#include "string.h"
 #include "config_options.h"
-#include "sl_sleeptimer.h"
 
 // Comment out the line below in order to switch the application mode to
 //   receiver
@@ -102,21 +112,29 @@ static uint16_t frame_len;
 
 #endif
 
+mikroe_spi_handle_t app_spi_instance = NULL;
+
 void app_init(void)
 {
-  app_log("DWM3000 - UWB 2 Click Driver\r\n");
+  app_printf("DWM3000 - UWB 2 Click Driver\r\n");
 
 #ifdef DEMO_APP_TRANSMITTER
-  app_log("Application Mode: Transmitter\r\n");
+  app_printf("Application Mode: Transmitter\r\n");
 #else
-  app_log("Application Mode: Receiver\r\n");
+  app_printf("Application Mode: Receiver\r\n");
 #endif
 
-  port_init_dw_chip();
+#if (defined(SLI_SI917))
+  app_spi_instance = &gspi_instance;
+#else
+  app_spi_instance = sl_spidrv_mikroe_handle;
+#endif
+
+  port_init_dw_chip(app_spi_instance);
   reset_DW3000();
 
   if (dwt_probe((struct dwt_probe_s *)&dw3000_probe_interf)) {
-    app_log("DWM 3000 probe fail\r\n");
+    app_printf("DWM 3000 probe fail\r\n");
     while (1) {}
   }
 
@@ -124,7 +142,7 @@ void app_init(void)
    *   that writes inside local data
    *    like setxtaltrim */
   if (dwt_initialise(DWT_DW_INIT) != DWT_SUCCESS) {
-    app_log("DWM 3000 init fail\r\n");
+    app_printf("DWM 3000 init fail\r\n");
     while (1) {}
   }
 
@@ -133,19 +151,19 @@ void app_init(void)
   /* Reads and validate device ID returns DWT_ERROR if it does not match
    *   expected else DWT_SUCCESS */
   if (dwt_check_dev_id() == DWT_SUCCESS) {
-    app_log("DWM3000 dev id = 0x%lx\r\n", dev_id);
+    app_printf("DWM3000 dev id = 0x%lx\r\n", dev_id);
   } else {
-    app_log("DWM3000 read dev id failed\r\n");
+    app_printf("DWM3000 read dev id failed\r\n");
   }
 
   uint32_t part_id = dwt_getpartid();
-  app_log("DWM3000 part id = 0x%lx\r\n", part_id);
+  app_printf("DWM3000 part id = 0x%lx\r\n", part_id);
 
   uint32_t lot_id = dwt_getlotid();
-  app_log("DWM3000 lot id = 0x%lx\r\n", lot_id);
+  app_printf("DWM3000 lot id = 0x%lx\r\n", lot_id);
 
   uint8_t otprevision = dwt_otprevision();
-  app_log("DWM3000 otp revision = 0x%x\r\n", otprevision);
+  app_printf("DWM3000 otp revision = 0x%x\r\n", otprevision);
 
   /* Enabling LEDs here for debug so that for each TX the D1 LED will flash on
    *   DW3000 red eval-shield boards. */
@@ -156,7 +174,7 @@ void app_init(void)
   /* if the dwt_configure returns DWT_ERROR either the PLL or RX calibration has
    *   failed the host should reset the device */
   if (dwt_configure(&config)) {
-    app_log("DWM3000 config failed\r\n");
+    app_printf("DWM3000 config failed\r\n");
     while (1) {}
   }
 
@@ -165,13 +183,13 @@ void app_init(void)
   /* Configure the TX spectrum parameters (power PG delay and PG Count) */
   dwt_configuretxrf(&txconfig_options);
 
-  app_log("Start TX timer periodic = 0x%lx\r\n",
-          sl_sleeptimer_start_periodic_timer_ms(&app_timer_handle,
-                                                TRANSMITTING_INTERVAL_MSEC,
-                                                app_tx_timer_callback,
-                                                NULL,
-                                                0,
-                                                0));
+  app_printf("Start TX timer periodic = 0x%lx\r\n",
+             sl_sleeptimer_start_periodic_timer_ms(&app_timer_handle,
+                                                   TRANSMITTING_INTERVAL_MSEC,
+                                                   app_tx_timer_callback,
+                                                   NULL,
+                                                   0,
+                                                   0));
 #endif
 }
 
@@ -207,7 +225,7 @@ void app_process_action(void)
     /* Clear TX frame sent event. */
     dwt_writesysstatuslo(DWT_INT_TXFRS_BIT_MASK);
 
-    app_log("TX Frame Sent #%d\r\n", tx_msg[BLINK_FRAME_SN_IDX]);
+    app_printf("TX Frame Sent #%d\r\n", tx_msg[BLINK_FRAME_SN_IDX]);
 
     /* Increment the blink frame sequence number (modulo 256). */
     tx_msg[BLINK_FRAME_SN_IDX]++;
@@ -248,8 +266,8 @@ void app_process_action(void)
       memcpy(rx_msg, (rx_buffer + RX_MSG_DATA_IDX),
              (frame_len - FCS_LEN - RX_MSG_DATA_IDX));
 
-      app_log("Message received #%u: %s\r\n",
-              ( uint16_t ) frame_id, rx_msg);
+      app_printf("Message received #%u: %s\r\n",
+                 ( uint16_t ) frame_id, rx_msg);
 
       /* Clear good RX frame event in the DW IC status register. */
       dwt_writesysstatuslo(DWT_INT_RXFCG_BIT_MASK);

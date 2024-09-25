@@ -9,22 +9,27 @@ Adafruit NeoTrellis 4x4 keypad is a trellis 4x4 elastomer-button keypad kit with
 ## Required Hardware ##
 
 - [BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 - [Adafruit NeoTrellis RGB for 4x4 Keypad](https://www.adafruit.com/product/3954)
-
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2704A | [SparkFun Thing Plus Matter - MGM240P](https://www.sparkfun.com/products/20270)    |
-| BRD4314A | [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)  |
-| BRD4108A | [EFR32BG22 Explorer Kit Board](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)  |
 
 ## Hardware Connection ##
 
-Adafruit NeoTrellis can connect with the BGM220 Explorer Kit easily via Qwiic connector. Adafruit NeoTrellis includes a JST-PH 4-pin connector that provides two I2C wires (SDA and SCL), 3v3, and GND. You can use [the JST PH to JST SH (qwiic) Cable](https://www.adafruit.com/product/4424) to connect the Adafruit Neotrellis to the BGM220 as in the picture below:
+- **If the BGM220 Explorer Kit board is used**:
 
-![connection](image/connection.png)
+  Adafruit NeoTrellis can connect with your board easily via the Qwiic connector. It includes a JST-PH 4-pin connector that provides two I2C wires (SDA and SCL), 3v3, and GND. You can use [the JST PH to JST SH (qwiic) Cable](https://www.adafruit.com/product/4424) to connect to your board.
+  
+  The Adafruit NeoTrellis supports Qwiic, so it can connect easily to the Qwiic header of the BGM220 Explorer Kit board. The hardware connection is shown in the image below:
+
+  ![connection](image/connection.png)
+
+- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+  
+  The hardware connection is shown in the table below:
+
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | Adafruit NeoTrellis |
+  | -------------| ------------- | ------------------ | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
 
 ## Setup ##
 
@@ -32,39 +37,43 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter "NeoTrellis".
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by "NeoTrellis".
 
 2. Click **Create** button on the **Third Party Hardware Drivers - Neotrellis RGB 4x4 keypad (Adafruit)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 
-   ![Create_example](image/create_example.png)
+    ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
-2. Copy the file `app/example/adafruit_neotrellis_keypad/app.c` into the project root folder (overwriting existing file).
+2. Copy the file `app/example/adafruit_neotrellis_keypad/app.c` into the project root folder (overwriting the existing file).
 
 3. Install the software components:
 
    - Open the .slcp file in the project.
-
    - Select the SOFTWARE COMPONENTS tab.
-
    - Install the following components:
 
-      - [Services] → [Timers] → [Sleep Timer]
-      - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
-      - [Application] → [Utility] → [Log]
-      - [Application] → [Utility] → [Assert]
-      - [Third Party Hardware Drivers] → [Human Machine Interface] → [NeoTrellis 4x4 Keypad (Adafruit)]
+      **If the BGM220 Explorer Kit is used**
+
+        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
+        - [Application] → [Utility] → [Log]
+        - [Platform] → [Driver] → [I2C] → [I2CSPM] → qwiic instance
+        - [Third Party Hardware Drivers] → [Human Machine Interface] → [NeoTrellis 4x4 Keypad (Adafruit)]
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+        - [Third Party Hardware Drivers] → [Human Machine Interface] → [NeoTrellis 4x4 Keypad (Adafruit)]
 
 4. Build and flash the project to your device.
 
 **Note:**
 
-- Make sure that the SDK extension has already been installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install **NeoTrellis 4x4 Keypad (Adafruit)** component.
 
@@ -82,15 +91,13 @@ You can either create a project based on an example project or start with an emp
 |---------------------------------------------|
 |             adafruit_seesaw.c               |
 |---------------------------------------------|
-|                     emlib                   |
- ---------------------------------------------
 ```
 
 The Adafruit NeoTrellis driver is implemented based on the Adafruit NeoPixel driver for the seesaw chip and the Adafruit seesaw driver.
 
 - `adafruit_neotrellis.c` : Use to control the keypad functions for interacting with multiple neotrellis boards
 - `adafruit_seesawneopixel.c`: This file is part of the Adafruit NeoPixel library used for compatibility with the seesaw chip. It helps control a wide variety of WS2811- and WS2812-based RGB LED devices such as Adafruit FLORA RGB Smart Pixels and NeoPixel strips
-- `adafruit_seesaw.c`: Use to communicate with the Microcontroller via emlib of GSDK.
+- `adafruit_seesaw.c`: Use to communicate with the Microcontroller.
 
 ### Testing ###
 

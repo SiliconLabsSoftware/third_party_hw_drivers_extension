@@ -40,24 +40,23 @@
 #include "fingerprint2.h"
 #include "mikroe_a172mrq.h"
 #include "mikroe_a172mrq_config.h"
-#include "third_party_hw_drivers_helpers.h"
 #include "drv_digital_out.h"
 #include "drv_digital_in.h"
 
 static fingerprint2_t fingerprint2;
 static fingerprint2_cfg_t fingerprint2_cfg;
+static bool initialized = false;
 
 void mikroe_a172mrq_cfg_setup(void)
 {
   fingerprint2_cfg_setup(&fingerprint2_cfg);
 }
 
-sl_status_t mikroe_a172mrq_init(sl_iostream_uart_t *handle)
+sl_status_t mikroe_a172mrq_init(mikroe_uart_handle_t handle)
 {
   if (NULL == handle) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
   fingerprint2.uart.handle = handle;
   fingerprint2_cfg_setup(&fingerprint2_cfg);
@@ -87,14 +86,20 @@ sl_status_t mikroe_a172mrq_init(sl_iostream_uart_t *handle)
                                            A172MRQ_GP2_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(fingerprint2_init(&fingerprint2,
-                                                    &fingerprint2_cfg));
+  if (fingerprint2_init(&fingerprint2, &fingerprint2_cfg) != FINGERPRINT2_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  initialized = true;
+  return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_a172mrq_set_uart_instance(sl_iostream_uart_t *handle)
+sl_status_t mikroe_a172mrq_set_uart_instance(mikroe_uart_handle_t handle)
 {
+  if (!initialized) {
+    return SL_STATUS_NOT_INITIALIZED;
+  }
+
   if (NULL == handle) {
     return SL_STATUS_INVALID_PARAMETER;
   }

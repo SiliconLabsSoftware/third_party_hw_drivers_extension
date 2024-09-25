@@ -486,8 +486,16 @@ uint8_t dev_calc_uart_crc ( uint8_t *data_data, uint8_t len )
     return crc;
 }
 
+/* FIXED HVAC CLICK */
+
+/* Silabs - 2/10/2024 Fix issue: unused ctx parameter. */
+
+/* Original: The dev_calc_concent() function has ctx parameter,
+ * but it is unused in this function. 
+ * ctx has been void. */
 uint32_t dev_calc_concent ( hvac_t *ctx, uint8_t buf_num, uint8_t *tmp_buf )
 {
+    (void) ctx;
     uint32_t result;
     uint8_t n_cnt;
 
@@ -516,6 +524,13 @@ uint32_t dev_calc_concent ( hvac_t *ctx, uint8_t buf_num, uint8_t *tmp_buf )
     return result;
 }
 
+/* FIXED HVAC CLICK */
+
+/* Silabs - 2/10/2024 Fix issue: unused exp_tmp variable. */
+
+/* Original: The dev_ieee_754_floating_point_convert() function has exp_tmp variable,
+ * but it is unused in this function. 
+ * exp_tmp has been commented. */
 float dev_ieee_754_floating_point_convert ( uint32_t fp_data )
 {
     uint8_t n_cnt_j;
@@ -523,7 +538,7 @@ float dev_ieee_754_floating_point_convert ( uint32_t fp_data )
     float tmp;
     uint8_t bit_bit;
     float result;
-    int8_t exp_tmp;
+    // int8_t exp_tmp;
     uint8_t sign_bit;
     uint8_t exponent;
     float mantissa;

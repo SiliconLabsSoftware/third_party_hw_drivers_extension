@@ -34,18 +34,33 @@
  * Silicon Labs may update projects from time to time.
  ******************************************************************************/
 #include "string.h"
-
-#include "diskio.h"
+#include "app_assert.h"
+#include "sl_sleeptimer.h"
 #include "ff.h"
-
-#include "sl_spidrv_instances.h"
+#include "diskio.h"
 #include "sl_sdc_sd_card.h"
 
+#if (defined(SLI_SI917))
+#include "sl_si91x_gspi.h"
+#include "rsi_debug.h"
+#else
+#include "sl_spidrv_instances.h"
 #include "app_log.h"
-#include "app_assert.h"
+#endif
+
+#if (defined(SLI_SI917))
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
+#if (defined(SLI_SI917))
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
+#endif
+
+static mikroe_spi_handle_t app_spi_instance = NULL;
 
 #if !FF_FS_NORTC && !FF_FS_READONLY
-#include "sl_sleeptimer.h"
 #endif
 
 static const char str[] = "Silabs SD Card I/O Example via SPI!\r\n";
@@ -82,16 +97,22 @@ void app_init(void)
   app_assert_status(sc);
 
   time_data = get_fattime();
-  app_log("\nCurrent time is %lu/%lu/%lu %2lu:%02lu:%02lu.\n\n",
-          (time_data >> 25) + 1980,
-          (time_data >> 21) & 0x0f,
-          (time_data >> 16) & 0x1f,
-          (time_data >> 11) & 0x1f,
-          (time_data >> 5) & 0x3f,
-          (time_data << 1) & 0x1f);
+  app_printf("\nCurrent time is %lu/%lu/%lu %2lu:%02lu:%02lu.\n\n",
+             (time_data >> 25) + 1980,
+             (time_data >> 21) & 0x0f,
+             (time_data >> 16) & 0x1f,
+             (time_data >> 11) & 0x1f,
+             (time_data >> 5) & 0x3f,
+             (time_data << 1) & 0x1f);
 #endif
 
-  sd_card_spi_init(sl_spidrv_mikroe_handle);
+#if (defined(SLI_SI917))
+  app_spi_instance = &gspi_instance;
+#else
+  app_spi_instance = sl_spidrv_mikroe_handle;
+#endif
+
+  sd_card_spi_init(app_spi_instance);
 
   // Give a work area to the default drive
   ret_code = f_mount(&fs, "", 0);
@@ -100,27 +121,27 @@ void app_init(void)
   // Show logical drive status
   ret_code = f_getfree("", &fre_clust, &pfs);
   app_assert_status(ret_code);
-  app_log("-------------- Volume status --------------\n\r");
-  app_log(("FAT type = %s\nBytes/Cluster = %lu\nNumber of FATs = %u\n"
-           "Root DIR entries = %u\nSectors/FAT = %lu\n"
-           "Number of clusters = %lu\nVolume start (lba) = %lu\n"
-           "FAT start (lba) = %lu\nDIR start (lba,clustor) = %lu\n"
-           "Data start (lba) = %lu\n%lu KiB total disk space.\n"
-           "%lu KiB available.\n\n"),
-          fst[pfs->fs_type],
-          (DWORD)pfs->csize * 512,
-          pfs->n_fats,
-          pfs->n_rootdir,
-          pfs->fsize,
-          pfs->n_fatent - 2,
-          (DWORD)pfs->volbase,
-          (DWORD)pfs->fatbase,
-          (DWORD)pfs->dirbase,
-          (DWORD)pfs->database,
-          (pfs->n_fatent - 2) * (pfs->csize / 2),
-          fre_clust * (pfs->csize / 2));
+  app_printf("-------------- Volume status --------------\n\r");
+  app_printf(("FAT type = %s\nBytes/Cluster = %lu\nNumber of FATs = %u\n"
+              "Root DIR entries = %u\nSectors/FAT = %lu\n"
+              "Number of clusters = %lu\nVolume start (lba) = %lu\n"
+              "FAT start (lba) = %lu\nDIR start (lba,clustor) = %lu\n"
+              "Data start (lba) = %lu\n%lu KiB total disk space.\n"
+              "%lu KiB available.\n\n"),
+             fst[pfs->fs_type],
+             (DWORD)pfs->csize * 512,
+             pfs->n_fats,
+             pfs->n_rootdir,
+             pfs->fsize,
+             pfs->n_fatent - 2,
+             (DWORD)pfs->volbase,
+             (DWORD)pfs->fatbase,
+             (DWORD)pfs->dirbase,
+             (DWORD)pfs->database,
+             (pfs->n_fatent - 2) * (pfs->csize / 2),
+             fre_clust * (pfs->csize / 2));
 
-  app_log("-------- Open file to write and read again ---------\n\r");
+  app_printf("-------- Open file to write and read again ---------\n\r");
   // Open file to write
   ret_code = f_open(&fil, "hello.txt", FA_OPEN_ALWAYS | FA_READ | FA_WRITE);
   app_assert_status(ret_code);
@@ -128,7 +149,7 @@ void app_init(void)
   // Write a message
   ret_code = f_write(&fil, str, sizeof(str), &bw);
   app_assert_status(ret_code);
-  app_log("Write a message to SD card success! Byte writen = %d\n\r", bw);
+  app_printf("Write a message to SD card success! Byte writen = %d\n\r", bw);
 
   // Close file
   ret_code = f_close(&fil);
@@ -141,8 +162,8 @@ void app_init(void)
   // Read back the content and print on the console
   ret_code = f_read(&fil, f_work, sizeof(f_work), &br);
   app_assert_status(ret_code);
-  app_log("Read a message from SD card success! Byte read = %d\n\r", br);
-  app_log("Content: %s", f_work);
+  app_printf("Read a message from SD card success! Byte read = %d\n\r", br);
+  app_printf("Content: %s", f_work);
 
   // Close file
   ret_code = f_close(&fil);

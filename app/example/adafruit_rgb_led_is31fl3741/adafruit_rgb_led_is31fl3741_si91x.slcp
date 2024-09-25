@@ -1,0 +1,73 @@
+project_name: adafruit_rgb_led_is31fl3741_si91x
+package: platform
+label: Third Party Hardware Drivers - IS31FL3741 - 13x9 PWM RGB LED Matrix (Adafruit)
+description: |
+  This example project shows an example for Adafruit 13x9 PWM RGB LED Matrix driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/adafruit_rgb_led_is31fl3741/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: sleeptimer_si91x
+  from: wiseconnect3_sdk
+- id: adafruit_rgb_led_is31fl3741
+  from: third_party_hw_drivers 
+- id: services_oled_glib
+  from: third_party_hw_drivers
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- id: syscalls
+  from: wiseconnect3_sdk
+- instance: [i2c2]
+  from: wiseconnect3_sdk
+  id: i2c_instance
+- id: app_assert
+
+define:
+- name: DEBUG_EFM
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+other_file:
+  - path: ../../documentation/example/adafruit_rgb_led_is31fl3741/image/connection.png
+    directory: "image"
+  - path: ../../documentation/example/adafruit_rgb_led_is31fl3741/image/config.png
+    directory: "image"
+  - path: ../../documentation/example/adafruit_rgb_led_is31fl3741/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/adafruit_rgb_led_is31fl3741/image/yt_thumbnail.jpg
+    directory: "image"
+  - path: ../../documentation/example/adafruit_rgb_led_is31fl3741/image/result_test.gif
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

@@ -26,17 +26,20 @@ config_file:
   - path: public/mikroe/mic2/config/brd4314a/mikroe_mic2_config.h
     file_id: driver_config_mic2
     condition: [brd4314a]
+  - path: public/mikroe/mic2/config/brd4338a/mikroe_mic2_config.h
+    file_id: driver_config_mic2
+    condition: [device_si91x]
   - path: public/mikroe/mic2/config/other/mikroe_mic2_config.h
     file_id: driver_config_mic2
-    unless: [brd2703a, brd4108a, brd4314a]
+    unless: [brd2703a, brd4108a, brd4314a, device_si91x]
 
 provides:
   - name: mic2
-  - allow_multiple: false
+    allow_multiple: false
 
 template_contribution:
   - name: component_catalog
-  - value: mic2
+    value: mic2
 
 include:
   - path: inc

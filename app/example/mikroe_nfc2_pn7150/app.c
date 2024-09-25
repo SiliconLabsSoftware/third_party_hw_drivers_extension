@@ -3,26 +3,62 @@
  * @brief Top level application functions
  *******************************************************************************
  * # License
- * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc. Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement. This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
 
 #include <string.h>
-#include "sl_i2cspm_instances.h"
 #include "sl_sleeptimer.h"
-#include "app_log.h"
 #include "mikroe_pn7150.h"
+
+#if (defined(SLI_SI917))
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+
+#define app_printf(...)          DEBUGOUT(__VA_ARGS__)
+#define I2C_INSTANCE_USED        SL_I2C2
+
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#else
+#include "sl_i2cspm_instances.h"
+#include "app_log.h"
+
+#define app_printf(...)          app_log(__VA_ARGS__)
+#endif
 
 #define NFC2_IRQ_STATE_LOW    0
 #define NFC2_IRQ_STATE_HIGH   1
+
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
 
 static mikroe_pn7150_control_packet_t ctrl_pck_data;
 
@@ -52,19 +88,25 @@ static void test_antenna(mikroe_pn7150_control_packet_t *ctrl_pck);
 
 void app_init(void)
 {
-  app_log(" Application Init ");
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_mikroe;
+#endif
 
-  if (SL_STATUS_OK != mikroe_pn7150_init(sl_i2cspm_mikroe)) {
-    app_log("> PN7150 - NFC 2 Click board driver init failed.\n");
+  app_printf(" Application Init ");
+
+  if (SL_STATUS_OK != mikroe_pn7150_init(app_i2c_instance)) {
+    app_printf("> PN7150 - NFC 2 Click board driver init failed.\n");
   }
   sl_sleeptimer_delay_millisecond(100);
 
-  app_log("        HW Reset       \r\n");
+  app_printf("        HW Reset       \r\n");
   mikroe_pn7150_hw_reset();
   sl_sleeptimer_delay_millisecond(100);
 
-  app_log("-----------------------\r\n");
-  app_log(" Reset and Init. Core  \r\n");
+  app_printf("-----------------------\r\n");
+  app_printf(" Reset and Init. Core  \r\n");
   mikroe_pn7150_cmd_core_reset();
   sl_sleeptimer_delay_millisecond(100);
 
@@ -80,8 +122,8 @@ void app_init(void)
 
   while (mikroe_pn7150_check_irq() == NFC2_IRQ_STATE_HIGH) {}
 
-  app_log("-----------------------\r\n");
-  app_log(" Disabling Standby Mode \r\n");
+  app_printf("-----------------------\r\n");
+  app_printf(" Disabling Standby Mode \r\n");
   mikroe_pn7150_cmd_disable_standby_mode();
   sl_sleeptimer_delay_millisecond(100);
 
@@ -91,8 +133,8 @@ void app_init(void)
 
   test_antenna(&ctrl_pck_data);
 
-  app_log("-----------------------\r\n");
-  app_log("Starting Test Procedure\r\n");
+  app_printf("-----------------------\r\n");
+  app_printf("Starting Test Procedure\r\n");
   mikroe_pn7150_cmd_test_procedure();
   sl_sleeptimer_delay_millisecond(100);
 
@@ -103,12 +145,12 @@ void app_init(void)
   mikroe_pn7150_hw_reset();
   sl_sleeptimer_delay_millisecond(100);
 
-  app_log("-----------------------\r\n");
-  app_log("       NFC Config.     \r\n");
+  app_printf("-----------------------\r\n");
+  app_printf("       NFC Config.     \r\n");
   mikroe_pn7150_default_cfg(&ctrl_pck_data);
 
-  app_log("-----------------------\r\n");
-  app_log("     Discovery Start   \r\n");
+  app_printf("-----------------------\r\n");
+  app_printf("     Discovery Start   \r\n");
   mikroe_pn7150_cmd_start_discovery();
   sl_sleeptimer_delay_millisecond(100);
 
@@ -116,12 +158,12 @@ void app_init(void)
   sl_sleeptimer_delay_millisecond(100);
   display_packet(&ctrl_pck_data);
 
-  app_log("-----------------------\r\n");
-  app_log("-------- START --------\r\n");
-  app_log("-----------------------\r\n");
+  app_printf("-----------------------\r\n");
+  app_printf("-------- START --------\r\n");
+  app_printf("-----------------------\r\n");
   sl_sleeptimer_delay_millisecond(500);
 
-  app_log(" Application Task ");
+  app_printf(" Application Task ");
 }
 
 /***************************************************************************//**
@@ -135,41 +177,41 @@ void app_process_action(void)
 
   while (mikroe_pn7150_check_irq() == NFC2_IRQ_STATE_LOW) {}
 
-  app_log("-----------------------\r\n");
+  app_printf("-----------------------\r\n");
   sl_sleeptimer_delay_millisecond(1000);
 }
 
 static void display_packet(mikroe_pn7150_control_packet_t *ctrl_pck)
 {
-  app_log("- - - - - - - - - - - -\r\n");
-  app_log(" Message Type   = %d\r\n", ( uint16_t ) ctrl_pck->message_type);
-  app_log(" Pck Bound Flag = %d\r\n", ( uint16_t ) ctrl_pck->pck_bound_flag);
-  app_log(" Group Ident    = %d\r\n", ( uint16_t ) ctrl_pck->group_ident);
-  app_log(" Opcode Ident   = %d\r\n", ( uint16_t ) ctrl_pck->opcode_ident);
-  app_log(" Payload Length = %d\r\n", ( uint16_t ) ctrl_pck->payload_length);
-  app_log("- - - - - - - - - - - -\r\n");
+  app_printf("- - - - - - - - - - - -\r\n");
+  app_printf(" Message Type   = %d\r\n", ( uint16_t ) ctrl_pck->message_type);
+  app_printf(" Pck Bound Flag = %d\r\n", ( uint16_t ) ctrl_pck->pck_bound_flag);
+  app_printf(" Group Ident    = %d\r\n", ( uint16_t ) ctrl_pck->group_ident);
+  app_printf(" Opcode Ident   = %d\r\n", ( uint16_t ) ctrl_pck->opcode_ident);
+  app_printf(" Payload Length = %d\r\n", ( uint16_t ) ctrl_pck->payload_length);
+  app_printf("- - - - - - - - - - - -\r\n");
 
   for (uint8_t n_cnt = 0; n_cnt < ctrl_pck_data.payload_length; n_cnt++) {
-    app_log(" Payload[ %.2d ]  = 0x%.2X\r\n", ( uint16_t ) n_cnt,
-            ( uint16_t ) ( uint16_t ) ctrl_pck_data.payload[n_cnt]);
+    app_printf(" Payload[ %.2d ]  = 0x%.2X\r\n", ( uint16_t ) n_cnt,
+               ( uint16_t ) ( uint16_t ) ctrl_pck_data.payload[n_cnt]);
   }
 
-  app_log("- - - - - - - - - - - -\r\n");
+  app_printf("- - - - - - - - - - - -\r\n");
   memset(ctrl_pck_data.payload, 0x00, 255);
 }
 
 static void display_nfc_data(mikroe_pn7150_control_packet_t *ctrl_pck)
 {
-  app_log("- - - - - - - - - - - -\r\n");
-  app_log(" Read Block:\r\n");
+  app_printf("- - - - - - - - - - - -\r\n");
+  app_printf(" Read Block:\r\n");
 
   for (uint8_t n_cnt = 1; n_cnt < ctrl_pck->payload_length - 2; n_cnt++) {
-    app_log("\t 0x%.2X \r\n", ( uint16_t ) ctrl_pck->payload[n_cnt]);
+    app_printf("\t 0x%.2X \r\n", ( uint16_t ) ctrl_pck->payload[n_cnt]);
   }
-  app_log("\t 0x%.2X \r\n",
-          ( uint16_t ) ctrl_pck->payload[ctrl_pck->payload_length - 2]);
+  app_printf("\t 0x%.2X \r\n",
+             ( uint16_t ) ctrl_pck->payload[ctrl_pck->payload_length - 2]);
 
-  app_log("- - - - - - - - - - - -\r\n");
+  app_printf("- - - - - - - - - - - -\r\n");
   memset(ctrl_pck->payload, 0x00, 255);
 }
 
@@ -177,7 +219,7 @@ static void read_nfc_data(mikroe_pn7150_control_packet_t *ctrl_pck)
 {
   mikroe_pn7150_read_ctrl_packet_data(ctrl_pck);
   display_nfc_data(ctrl_pck);
-  app_log("    Disconnect Card    \r\n");
+  app_printf("    Disconnect Card    \r\n");
   mikroe_pn7150_cmd_card_disconnected();
   sl_sleeptimer_delay_millisecond(10);
   mikroe_pn7150_read_ctrl_packet_data(ctrl_pck);
@@ -191,8 +233,8 @@ static void read_nfc_data(mikroe_pn7150_control_packet_t *ctrl_pck)
 
 static void test_antenna(mikroe_pn7150_control_packet_t *ctrl_pck)
 {
-  app_log("-----------------------\r\n");
-  app_log("    Testing Antenna    ");
+  app_printf("-----------------------\r\n");
+  app_printf("    Testing Antenna    ");
   mikroe_pn7150_cmd_antenna_test(0x01);
   sl_sleeptimer_delay_millisecond(100);
 

@@ -1,0 +1,27 @@
+id: gpio_helper_si91x
+package: third_party_hw_drivers
+label: GPIO helper for SI91X platform
+description: >
+  GPIO helper for SI91X platform.
+category: Services
+quality: evaluation
+root_path: driver
+requires:
+  - name: sl_gpio
+    from: wiseconnect3_sdk
+    condition: 
+      - device_si91x
+provides:
+  - name: gpio_helper_si91x
+    allow_multiple: false
+template_contribution:
+  - name: component_catalog
+    value: gpio_helper_si91x
+include:
+  - path: public/silabs/services_gpio_helper_si91x/inc
+    file_list:
+      - path: gpio_helper_si91x.h
+source:
+  - path: public/silabs/services_gpio_helper_si91x/src/gpio_helper_si91x.c
+    condition: 
+      - device_si91x

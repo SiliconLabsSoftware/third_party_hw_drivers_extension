@@ -35,16 +35,21 @@
 #ifndef SPARKFUN_SGP40_H_
 #define SPARKFUN_SGP40_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdbool.h>
-
-#include "sl_i2cspm.h"
 #include "sl_status.h"
+#include "drv_i2c_master.h"
 
 /***************************************************************************//**
  * @addtogroup SGP40 - Air Quality Sensor
  * @brief This file contains API for Air Quality Sensor SGP40 driver.
  ******************************************************************************/
+#define SGP40_ADDRESS                                     0x59
+
 /// @brief GSP40 Lookup table for CRC8.
 #define SGP40_LOOKUP_TABLE
 
@@ -177,7 +182,7 @@ static const uint8_t CRC8LookupTable[16][16] = {
  *
  *   @li @ref SL_STATUS_FAIL Failure.
  ******************************************************************************/
-sl_status_t sparkfun_sgp40_init(sl_i2cspm_t *i2cspm);
+sl_status_t sparkfun_sgp40_init(mikroe_i2c_handle_t i2cspm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -317,5 +322,9 @@ void sparkfun_sgp40_voc_algorithm_process(int32_t sraw, int32_t *voc_index);
  *  The number CRC8.
  ******************************************************************************/
 uint8_t sparkfun_sgp40_crc8(uint16_t data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

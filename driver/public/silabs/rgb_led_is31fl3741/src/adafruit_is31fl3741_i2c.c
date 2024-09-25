@@ -42,8 +42,7 @@
 // -----------------------------------------------------------------------------
 //                       Local Variables
 // -----------------------------------------------------------------------------
-static sl_i2cspm_t *is31fl3741_i2cspm_instance = NULL;
-static uint8_t is31fl3741_i2cspm_addr = IS31FL3741_DEFAULT_I2C_ADDR;
+static i2c_master_t *is31fl3741_i2c = NULL;
 
 // -----------------------------------------------------------------------------
 //                       Public Function
@@ -52,9 +51,9 @@ static uint8_t is31fl3741_i2cspm_addr = IS31FL3741_DEFAULT_I2C_ADDR;
 /**************************************************************************//**
  *  Assign the I2C instance for adafruit RGB LED.
  *****************************************************************************/
-void adafruit_is31fl3741_i2c_set_instance(sl_i2cspm_t *i2cspm)
+void adafruit_is31fl3741_i2c_set_instance(i2c_master_t *i2cspm)
 {
-  is31fl3741_i2cspm_instance = i2cspm;
+  is31fl3741_i2c = i2cspm;
 }
 
 /**************************************************************************//**
@@ -65,20 +64,18 @@ sl_status_t adafruit_is31fl3741_i2c_write_reg(uint8_t reg_addr,
                                               uint8_t len)
 
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef ret;
+  uint8_t i2c_write_data[len + 1];
 
-  seq.addr = (uint16_t)(is31fl3741_i2cspm_addr << 1);
-  seq.flags = I2C_FLAG_WRITE_WRITE;
+  i2c_write_data[0] = reg_addr;
+  memcpy(i2c_write_data + 1, data, len);
 
-  seq.buf[0].data = &reg_addr;
-  seq.buf[0].len = 1;
+  if (I2C_MASTER_SUCCESS != i2c_master_write(is31fl3741_i2c,
+                                             i2c_write_data,
+                                             len + 1)) {
+    return SL_STATUS_TRANSMIT;
+  }
 
-  seq.buf[1].data = data;
-  seq.buf[1].len = len;
-
-  ret = I2CSPM_Transfer(is31fl3741_i2cspm_instance, &seq);
-  return ret;
+  return SL_STATUS_OK;
 }
 
 /**************************************************************************//**
@@ -89,20 +86,15 @@ sl_status_t adafruit_is31fl3741_i2c_read_reg(uint8_t reg_addr,
                                              uint8_t len)
 
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef ret;
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(is31fl3741_i2c,
+                                                       &reg_addr,
+                                                       1,
+                                                       data,
+                                                       len)) {
+    return SL_STATUS_TRANSMIT;
+  }
 
-  seq.addr = (uint16_t)(is31fl3741_i2cspm_addr << 1);
-  seq.flags = I2C_FLAG_WRITE_READ;
-
-  seq.buf[0].data = &reg_addr;
-  seq.buf[0].len = 1;
-
-  seq.buf[1].data = data;
-  seq.buf[1].len = len;
-
-  ret = I2CSPM_Transfer(is31fl3741_i2cspm_instance, &seq);
-  return ret;
+  return SL_STATUS_OK;
 }
 
 /**************************************************************************//**
@@ -110,17 +102,17 @@ sl_status_t adafruit_is31fl3741_i2c_read_reg(uint8_t reg_addr,
  *****************************************************************************/
 sl_status_t adafruit_is31fl3741_i2c_write(uint8_t *data, uint8_t len)
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef ret;
+  uint8_t i2c_write_data[len];
 
-  seq.addr = (uint16_t)(is31fl3741_i2cspm_addr << 1);
-  seq.flags = I2C_FLAG_WRITE;
+  memcpy(i2c_write_data, data, len);
 
-  seq.buf[0].data = data;
-  seq.buf[0].len = len;
+  if (I2C_MASTER_SUCCESS != i2c_master_write(is31fl3741_i2c,
+                                             i2c_write_data,
+                                             len)) {
+    return SL_STATUS_TRANSMIT;
+  }
 
-  ret = I2CSPM_Transfer(is31fl3741_i2cspm_instance, &seq);
-  return ret;
+  return SL_STATUS_OK;
 }
 
 /**************************************************************************//**
@@ -128,5 +120,5 @@ sl_status_t adafruit_is31fl3741_i2c_write(uint8_t *data, uint8_t len)
  *****************************************************************************/
 void adafruit_is31fl3741_i2c_select_device(uint8_t addr)
 {
-  is31fl3741_i2cspm_addr = addr;
+  i2c_master_set_slave_address(is31fl3741_i2c, addr);
 }

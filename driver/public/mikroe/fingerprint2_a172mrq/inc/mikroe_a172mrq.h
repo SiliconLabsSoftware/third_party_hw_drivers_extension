@@ -89,38 +89,40 @@ void mikroe_a172mrq_cfg_setup(void);
 
 /**
  * @brief Initialization function.
- *
- * @description This function initializes all necessary pins and peripherals
- *   used for this click.
+ * @details This function initializes all necessary pins and peripherals
+ *          used for this click.
+ * @param[in] handle : Click context object.
+ * @return
+ *    SL_STATUS_OK if there are no errors
+ *    SL_STATUS_INVALID_PARAMETER if spi_instance is null
  */
-sl_status_t mikroe_a172mrq_init(sl_iostream_uart_t *handle);
+sl_status_t mikroe_a172mrq_init(mikroe_uart_handle_t handle);
 
 /**
  * @brief Set uart instance function.
- *
- * @description This function sets the uart used for this click.
+ * @details This function sets the uart used for this click.
+ * @param[in] handle : Click context object.
+ * @return
+ *    SL_STATUS_OK if there are no errors
+ *    SL_STATUS_INVALID_PARAMETER if spi_instance is null
  */
-sl_status_t mikroe_a172mrq_set_uart_instance(sl_iostream_uart_t *handle);
+sl_status_t mikroe_a172mrq_set_uart_instance(mikroe_uart_handle_t handle);
 
 /**
  * @brief Generic write function.
- *
+ * @details This function write specific number of bytes
  * @param data_buf    Data buffer for sends.
  * @param len         Number of bytes for sends.
- *
- * @description This function write specific number of bytes
  */
 sl_status_t mikroe_a172mrq_generic_write(char *data_buf, uint16_t len);
 
 /**
  * @brief Generic read function.
- *
+ * @details This function read maximum length of data.
  * @param data_buf    Data buffer for read data.
  * @param max_len     The maximum length of data that can be read.
  * @param rsp_size    Size of data that read.
  * @returns Status of function.
- *
- * @description This function read maximum length of data.
  */
 sl_status_t mikroe_a172mrq_generic_read(char *data_buf,
                                         uint16_t max_len,
@@ -128,71 +130,56 @@ sl_status_t mikroe_a172mrq_generic_read(char *data_buf,
 
 /**
  * @brief Generic function for reading ld1 pin status
- *
+ * @details This function read ld1 pin status.
  * @returns Pin status.
- *
- * @description This function read ld1 pin status.
  */
 uint8_t mikroe_a172mrq_get_ld1_status(void);
 
 /**
  * @brief Generic function for reading ld2 pin status
- *
+ * @details This function read ld2 pin status
  * @returns Pin status
- *
- * @description This function read ld2 pin status
  */
 uint8_t mikroe_a172mrq_get_ld2_status(void);
 
 /**
  * @brief Generic function for setting rst pin status
- *
+ * @details This function sets rst pin status.
  * @param status State of the pin
- *
- * @description This function sets rst pin status.
  */
 void mikroe_a172mrq_set_rst_status(uint8_t status);
 
 /**
  * @brief Generic function for setting gp1 pin status
- *
+ * @details This function sets gp1 pin status.
  * @param status State of the pin.
- *
- * @description This function sets gp1 pin status.
  */
 void mikroe_a172mrq_set_gp1_status(uint8_t status);
 
 /**
  * @brief Generic function for setting gp2 pin status
- *
- * @param status State of the pin
- *
  * @description This function sets gp2 pin status.
+ * @param status State of the pin
  */
 void mikroe_a172mrq_set_gp2_status(uint8_t status);
 
 /**
  * @brief Function for restarting device
- *
  * @description This function restarts device.
  */
 void mikroe_a172mrq_reset(void);
 
 /**
  * @brief Function for fingerprint registration on index
- *
- * @param fp_index Fingerprint index
- *
  * @description This function registrates fingerprint on index.
+ * @param fp_index Fingerprint index
  */
 void mikroe_a172mrq_reg_one_fp(uint8_t fp_index);
 
 /**
  * @brief Function for deleting fingerprint on index
- *
+ * @details This function deletes fingerprint on index
  * @param fp_index Fingerprint index
- *
- * @description This function deletes fingerprint on index
  */
 void mikroe_a172mrq_delete_one_fp(uint8_t fp_index);
 
@@ -202,4 +189,4 @@ void mikroe_a172mrq_delete_one_fp(uint8_t fp_index);
 
 /** @} (end addtogroup a172mrq) */
 
-#endif /* MIKROE_FINGERPRINT2_H_ */
+#endif // MIKROE_FINGERPRINT2_H_

@@ -41,30 +41,49 @@
 #include "sparkfun_vl53l1x_calibration.h"
 #include "sparkfun_vl53l1_platform.h"
 #include "sparkfun_vl53l1x.h"
+#include "sparkfun_vl53l1x_config.h"
 
-#ifdef __cplusplus
-extern "C" {
+static i2c_master_t vl53l1x_inst;
+
+sl_status_t vl53l1x_init(uint16_t dev, mikroe_i2c_handle_t i2c_instance)
+{
+  i2c_master_config_t i2c_cfg;
+
+  if (NULL == i2c_instance) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
+  // Configure default i2csmp instance
+  vl53l1x_inst.handle = i2c_instance;
+
+  i2c_master_configure_default(&i2c_cfg);
+
+  i2c_cfg.addr = VL53L1X_ADDR;
+
+#if (VL53L1X_I2C__UC == 1)
+  i2c_cfg.speed = VL53L1X_I2C_SPEED_MODE;
 #endif
 
-sl_status_t vl53l1x_init(uint16_t dev, sl_i2cspm_t *i2cspm_instance)
-{
-  sl_status_t ret;
-
-  ret = vl53l1x_set_i2cspm_instance(i2cspm_instance);
-  if (ret != SL_STATUS_OK) {
-    return ret;
+  if (i2c_master_open(&vl53l1x_inst, &i2c_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
   }
+
+  i2c_master_set_speed(&vl53l1x_inst, i2c_cfg.speed);
+  i2c_master_set_timeout(&vl53l1x_inst, 0);
+
+  vl53l1x_platform_set_i2cspm_instance(&vl53l1x_inst);
 
   return VL53L1X_SensorInit(dev);
 }
 
-sl_status_t vl53l1x_set_i2cspm_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t vl53l1x_set_i2cspm_instance(mikroe_i2c_handle_t i2c_instance)
 {
-  if (NULL == i2cspm_instance) {
+  if (NULL == i2c_instance) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  vl53l1x_platform_set_i2cspm_instance(i2cspm_instance);
+  vl53l1x_inst.handle = i2c_instance;
+  vl53l1x_platform_set_i2cspm_instance(&vl53l1x_inst);
 
   return SL_STATUS_OK;
 }
@@ -401,7 +420,3 @@ sl_status_t vl53l1x_calibrate_xtalk(uint16_t dev,
   }
   return VL53L1X_CalibrateXtalk(dev, target_distance_in_mm, xtalk);
 }
-
-#ifdef __cplusplus
-}
-#endif

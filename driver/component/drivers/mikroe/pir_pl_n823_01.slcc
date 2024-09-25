@@ -13,6 +13,9 @@ requires:
   - name: mikroe_peripheral_driver_i2c
   - name: mikroe_peripheral_driver_digital_io
 config_file:
+  - path: public/mikroe/pir_pl_n823_01/config/brd4338a/mikroe_pir_pl_n823_01_config.h
+    file_id: driver_config_pir
+    condition: [device_si91x]
   - path: public/mikroe/pir_pl_n823_01/config/brd2703a/mikroe_pir_pl_n823_01_config.h
     file_id: driver_config_pir
     condition: [brd2703a]
@@ -24,7 +27,7 @@ config_file:
     condition: [brd4314a]
   - path: public/mikroe/pir_pl_n823_01/config/other/mikroe_pir_pl_n823_01_config.h
     file_id: driver_config_pir
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, device_si91x]
 provides:
   - name: mikroe_pir_pl_n823_01
     allow_multiple: false

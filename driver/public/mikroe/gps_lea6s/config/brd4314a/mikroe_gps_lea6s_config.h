@@ -39,10 +39,11 @@
 #ifndef MIKROE_GPS_LEA6S_CONFIG_H_
 #define MIKROE_GPS_LEA6S_CONFIG_H_
 
+#include "em_gpio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "em_gpio.h"
 
 // <<< sl:start pin_tool >>>
 
@@ -64,4 +65,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_GPS_LEA6S_CONFIG_H_ */
+#endif // MIKROE_GPS_LEA6S_CONFIG_H_

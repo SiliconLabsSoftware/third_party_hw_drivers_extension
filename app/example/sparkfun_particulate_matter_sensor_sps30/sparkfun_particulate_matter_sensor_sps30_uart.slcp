@@ -29,14 +29,17 @@ include:
 component:
 - id: sl_system
 - id: device_init
-- id: sleeptimer
 - id: app_log
 - id: iostream_usart
-  instance: [sps30]
+  instance: [mikroe]
 - id: iostream_eusart
   instance: [vcom]
 - id: pm_sps30_uart
   from: third_party_hw_drivers
+
+configuration:
+ - name: SL_IOSTREAM_USART_MIKROE_RX_BUFFER_SIZE
+   value: "256"
 
 toolchain_settings:
   - option: gcc_linker_option
@@ -46,7 +49,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/image/hw_connection_1.png

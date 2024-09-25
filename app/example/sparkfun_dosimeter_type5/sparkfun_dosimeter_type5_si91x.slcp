@@ -1,0 +1,64 @@
+project_name: sparkfun_dosimeter_type5_si91x
+label: Third Party Hardware Drivers - Pocket Geiger Radiation Sensor - Type 5 (Sparkfun)
+package: platform
+description: |
+  This example project shows an example for Sparkfun Pocket Geiger Radiation Sensor - Type 5 board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/sparkfun_dosimeter_type5/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- id: sparkfun_dosimeter_type5
+  from: third_party_hw_drivers
+
+toolchain_settings:
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+other_file:
+  - path: ../../documentation/example/sparkfun_dosimeter_type5/image/connection.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_dosimeter_type5/image/log.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_dosimeter_type5/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_dosimeter_type5/image/float.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

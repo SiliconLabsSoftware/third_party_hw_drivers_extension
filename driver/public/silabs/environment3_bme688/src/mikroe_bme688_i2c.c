@@ -34,6 +34,8 @@
  ******************************************************************************/
 
 #include "mikroe_bme688_i2c.h"
+#include "sl_sleeptimer.h"
+#include "mikroe_bme688_i2c_config.h"
 
 // Local prototypes
 static int8_t mikroe_bme688_i2c_read(uint8_t reg_addr,
@@ -47,14 +49,31 @@ static int8_t mikroe_bme688_i2c_write(uint8_t reg_addr,
 static void mikroe_bme688_i2c_delay_us(uint32_t period,
                                        void *intf_ptr);
 
+static i2c_master_t bme68x;
+
 /***************************************************************************//**
  *  Initializes an I2C interface for BME688.
  *  As entry point, call this API before using other APIs.
  ******************************************************************************/
-int8_t mikroe_bme688_i2c_init(bme68x_dev_t *bme688)
+int8_t mikroe_bme688_i2c_init(bme68x_dev_t *bme688,
+                              mikroe_i2c_handle_t i2c_instance)
 {
-  if (bme688 == NULL) {
+  if ((bme688 == NULL) || (NULL == i2c_instance)) {
     return BME68X_E_NULL_PTR;
+  }
+  i2c_master_config_t i2c_cfg;
+  i2c_master_configure_default(&i2c_cfg);
+
+  bme68x.handle = i2c_instance;
+  i2c_cfg.addr = BME68X_I2C_ADDR_LOW;
+  i2c_cfg.timeout_pass_count = 0;
+
+#if (MIKROE_BME688_I2C_UC == 1)
+  i2c_cfg.speed = MIKROE_BME688_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&bme68x, &i2c_cfg) == I2C_MASTER_ERROR) {
+    return BME68X_E_COM_FAIL;
   }
 
   bme688->read = mikroe_bme688_i2c_read;
@@ -93,25 +112,13 @@ static int8_t mikroe_bme688_i2c_read(uint8_t reg_addr,
                                      uint32_t len,
                                      void *intf_ptr)
 {
-  sl_i2cspm_t *i2c_handle = ((bme68x_i2c_t *)intf_ptr)->handle;
-  uint8_t device_addr = ((bme68x_i2c_t *)intf_ptr)->addr;
+  (void)intf_ptr;
 
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef ret;
-  uint8_t i2c_write_data[1];
-
-  seq.addr = device_addr << 1;
-  seq.flags = I2C_FLAG_WRITE_READ;
-
-  i2c_write_data[0] = reg_addr;
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = 1;
-
-  // Select length of data to be read
-  seq.buf[1].data = reg_data;
-  seq.buf[1].len = (uint16_t)len;
-  ret = I2CSPM_Transfer(i2c_handle, &seq);
-  if (ret != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&bme68x,
+                                                       &reg_addr,
+                                                       1,
+                                                       reg_data,
+                                                       len)) {
     return BME68X_E_COM_FAIL;
   }
 
@@ -140,30 +147,18 @@ static int8_t mikroe_bme688_i2c_write(uint8_t reg_addr,
                                       uint32_t len,
                                       void *intf_ptr)
 {
-  sl_i2cspm_t *i2c_handle = ((bme68x_i2c_t *)intf_ptr)->handle;
-  uint8_t device_addr = ((bme68x_i2c_t *)intf_ptr)->addr;
+  (void)intf_ptr;
+  uint8_t write_buff[len + 1];
 
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef ret;
-  uint8_t i2c_write_data[len + 1];
-  uint8_t i2c_read_data[1];
-
-  seq.addr = device_addr << 1;
-  seq.flags = I2C_FLAG_WRITE;
-
-  // Select register and data to write
-  i2c_write_data[0] = reg_addr;
-  for (uint16_t i = 0; i < (uint16_t)len; i++) {
-    i2c_write_data[i + 1] = reg_data[i];
+  write_buff[0] = reg_addr;
+  for (uint32_t i = 0; i < len; i++)
+  {
+    *(write_buff + i + 1) = *(reg_data + i);
   }
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = (uint16_t)len + 1;
 
-  // Select length of data to be read
-  seq.buf[1].data = i2c_read_data;
-  seq.buf[1].len = 0;
-  ret = I2CSPM_Transfer(i2c_handle, &seq);
-  if (ret != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bme68x,
+                                             write_buff,
+                                             1 + len)) {
     return BME68X_E_COM_FAIL;
   }
 
@@ -183,5 +178,11 @@ static int8_t mikroe_bme688_i2c_write(uint8_t reg_addr,
 static void mikroe_bme688_i2c_delay_us(uint32_t period, void *intf_ptr)
 {
   (void) intf_ptr;
-  sl_udelay_wait(period);
+  uint32_t delay_ms = 1;
+
+  if (period > 1000) {
+    delay_ms = (period / 1000) + 1;
+  }
+
+  sl_sleeptimer_delay_millisecond(delay_ms);
 }

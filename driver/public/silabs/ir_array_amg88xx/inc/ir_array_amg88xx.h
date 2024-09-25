@@ -39,8 +39,9 @@
 #ifndef IR_ARRAY_AMG88XX_H_
 #define IR_ARRAY_AMG88XX_H_
 
+#include <stdbool.h>
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 
 // -----------------------------------------------------------------------------
 //                                   Defines
@@ -96,9 +97,9 @@ extern "C" {
  * @param I2C_address The used device address.
  * @param temp_scale  Temperature scale. Can be "celsius" or "fahrenheit".
  ******************************************************************************/
-void amg88xx_init(sl_i2cspm_t *amg88xx_i2c_instance_init,
-                  int16_t I2C_address,
-                  enum temperature_scale_t temp_scale);
+sl_status_t amg88xx_init(mikroe_i2c_handle_t amg88xx_i2c_instance_init,
+                         uint8_t I2C_address,
+                         enum temperature_scale_t temp_scale);
 
 /***************************************************************************//**
  * Sets temperature scale for temperature related functions.

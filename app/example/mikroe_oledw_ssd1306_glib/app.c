@@ -3,29 +3,61 @@
  * @brief Top level application functions
  *******************************************************************************
  * # License
- * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2024 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc. Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement. This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
 
-#include "sl_simple_button_instances.h"
-#include "sl_spidrv_instances.h"
 #include "glib.h"
 #include "glib_font.h"
 #include "mikroe_ssd1306.h"
+#include "sl_sleeptimer.h"
 
-static void oled_app_init(void);
+#if (defined(SLI_SI917))
+#include "sl_si91x_gspi.h"
+#include "sl_si91x_button_instances.h"
+#else
+#include "sl_simple_button_instances.h"
+#include "sl_spidrv_instances.h"
+#endif
+
+#define DISPLAY_MODE_COUNT  (15)
+
+#if (defined(SLI_SI917))
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
+#endif
 
 static glib_context_t glib_context;
-#define DISPLAY_MODE_COUNT  (15)
 static uint8_t display_mode = 0;
+static mikroe_spi_handle_t app_spi_instance = NULL;
 
 static const unsigned char silicon_labs_logo_96x35[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -70,8 +102,19 @@ static const unsigned char silicon_labs_logo_96x35[] = {
  ******************************************************************************/
 void app_init(void)
 {
-  /* Initialize the oled. */
-  oled_app_init();
+#if (defined(SLI_SI917))
+  app_spi_instance = &gspi_instance;
+#else
+  app_spi_instance = sl_spidrv_mikroe_handle;
+#endif
+  // Initialize the display
+  mikroe_ssd1306_init(app_spi_instance);
+  glib_init(&glib_context);
+
+  // Fill lcd with background color
+  glib_clear(&glib_context);
+
+  display_mode = 0;
 }
 
 /***************************************************************************//**
@@ -240,27 +283,27 @@ void app_process_action(void)
                         96, 35, GLIB_WHITE);
       glib_update_display();
 
-      sl_udelay_wait(500000);
+      sl_sleeptimer_delay_millisecond(500);
       glib_set_invert_color();
-      sl_udelay_wait(500000);
+      sl_sleeptimer_delay_millisecond(500);
       glib_set_normal_color();
-      sl_udelay_wait(500000);
+      sl_sleeptimer_delay_millisecond(500);
       glib_set_invert_color();
-      sl_udelay_wait(500000);
+      sl_sleeptimer_delay_millisecond(500);
       glib_set_normal_color();
 
       for (i = 0x8F; i > 0x00; i--) {
         glib_set_contrast(i);
-        sl_udelay_wait(5000);
+        sl_sleeptimer_delay_millisecond(5);
       }
 
       for (i = 0x00; i < 0x8F; i++) {
         glib_set_contrast(i);
-        sl_udelay_wait(5000);
+        sl_sleeptimer_delay_millisecond(5);
       }
 
       glib_scroll_right(0x00, 0x06);
-      sl_udelay_wait(1000000);
+      sl_sleeptimer_delay_millisecond(1000);
       glib_stop_scroll();
       glib_draw_xbitmap(&glib_context,
                         0, 0, silicon_labs_logo_96x35,
@@ -268,7 +311,7 @@ void app_process_action(void)
       glib_update_display();
 
       glib_scroll_left(0x00, 0x06);
-      sl_udelay_wait(1000000);
+      sl_sleeptimer_delay_millisecond(1000);
       glib_stop_scroll();
       glib_draw_xbitmap(&glib_context,
                         0, 0, silicon_labs_logo_96x35,
@@ -276,7 +319,7 @@ void app_process_action(void)
       glib_update_display();
 
       glib_scroll_diag_right(0x00, 0x06);
-      sl_udelay_wait(1000000);
+      sl_sleeptimer_delay_millisecond(1000);
       glib_stop_scroll();
       glib_draw_xbitmap(&glib_context,
                         0, 0, silicon_labs_logo_96x35,
@@ -284,7 +327,7 @@ void app_process_action(void)
       glib_update_display();
 
       glib_scroll_diag_left(0x00, 0x06);
-      sl_udelay_wait(1000000);
+      sl_sleeptimer_delay_millisecond(1000);
       glib_stop_scroll();
       break;
   }
@@ -297,10 +340,17 @@ void app_process_action(void)
  * module. It is triggered when the user activates one of the buttons.
  *
  ******************************************************************************/
+#if (defined(SLI_SI917))
+void sl_si91x_button_isr(uint8_t pin, int8_t state)
+{
+  if (pin == button_btn0.pin) {
+    if (state == BUTTON_PRESSED) {
+#else
 void sl_button_on_change(const sl_button_t *handle)
 {
   if (sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED) {
     if (&sl_button_btn0 == handle) {
+#endif
       if (display_mode < DISPLAY_MODE_COUNT) {
         display_mode++;
       } else {
@@ -308,17 +358,4 @@ void sl_button_on_change(const sl_button_t *handle)
       }
     }
   }
-}
-
-/***************************************************************************//**
- * Initialize example.
- ******************************************************************************/
-static void oled_app_init(void)
-{
-  /* Initialize the display */
-  mikroe_ssd1306_init(sl_spidrv_mikroe_handle);
-  glib_init(&glib_context);
-
-  /* Fill lcd with background color */
-  glib_clear(&glib_context);
 }

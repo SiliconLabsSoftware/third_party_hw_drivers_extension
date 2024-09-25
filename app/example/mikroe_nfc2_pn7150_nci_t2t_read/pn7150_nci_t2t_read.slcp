@@ -1,8 +1,11 @@
 project_name: pn7150_nci_t2t_read
 label: Third Party Hardware Drivers - PN7150 - Read a T2T Tag with NCI
+package: platform
 description: |
   This example project demonstrates the interface of the NFC NCI service by using the NFC controller PN7150 to read a T2T Tag.
 category: Example|Platform
+quality: evaluation
+
 filter:
 - name: Device Type
   value: [SoC]
@@ -10,8 +13,6 @@ filter:
   value: [32-bit MCU]
 - name: Project Difficulty
   value: [Beginner]
-package: platform
-quality: evaluation
 
 readme:
 - path: ../../documentation/example/mikroe_nfc2_pn7150_nci_t2t_read/README.md
@@ -48,7 +49,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/mikroe_nfc2_pn7150_nci_t2t_read/image/hardware_connection.png
@@ -57,6 +58,7 @@ other_file:
     directory: image
   - path: ../../documentation/example/mikroe_nfc2_pn7150_nci_t2t_read/image/log.png
     directory: image
+
 ui_hints:
   highlight:
     - path: README.md

@@ -21,9 +21,12 @@ config_file:
   - path: public/mikroe/barcode2_em3080w/config/brd4314a/mikroe_em3080w_config.h
     file_id: driver_config_barcode2
     condition: [brd4314a]
+  - path: public/mikroe/barcode2_em3080w/config/brd4338a/mikroe_em3080w_config.h
+    file_id: driver_config_barcode2
+    condition: [brd4338a]
   - path: public/mikroe/barcode2_em3080w/config/other/mikroe_em3080w_config.h
     file_id: driver_config_barcode2
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
 provides:
   - name: mikroe_barcode2
     allow_multiple: false
@@ -31,9 +34,6 @@ template_contribution:
   - name: component_catalog
     value: mikroe_barcode2
 include:
-  - path: inc
-    file_list:
-      - path: third_party_hw_drivers_helpers.h
   - path: thirdparty/mikrosdk_click_v2/clicks/barcode2/lib/include
     file_list:
       - path: barcode2.h

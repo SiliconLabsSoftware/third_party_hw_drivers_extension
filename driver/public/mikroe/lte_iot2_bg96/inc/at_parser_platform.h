@@ -36,11 +36,9 @@
 #ifndef AT_PARSER_PLATFORM_H_
 #define AT_PARSER_PLATFORM_H_
 
-#include "em_cmu.h"
-#include "em_eusart.h"
 #include "sl_status.h"
-#include "sl_iostream_handles.h"
-#include "mikroe_lte_iot2_bg96_config.h"
+#include "drv_uart.h"
+#include "mikroe_bg96_config.h"
 
 /*******************************************************************************
  ********************************   MACROS   ***********************************
@@ -63,25 +61,16 @@ typedef struct {
 
 /**************************************************************************//**
  * @brief
- *    CMU initialization.
- *****************************************************************************/
-void initCMU(void);
-
-/**************************************************************************//**
- * @brief
- *    GPIO initialization.
- *****************************************************************************/
-void initGPIO(void);
-
-/**************************************************************************//**
- * @brief
  *   Initialization of platform driver.
  *
+ * @param[in] handle
+ *   Mikroe UART handle instance.
  * @param[in] line_callback
  *   Callback function for new line (and ">" character for special commands).
  *
  *****************************************************************************/
-void at_platform_init(sl_iostream_t *iostream_handle, ln_cb_t line_callback);
+sl_status_t at_platform_init(mikroe_uart_handle_t handle,
+                             ln_cb_t line_callback);
 
 /**************************************************************************//**
  * @brief
@@ -107,8 +96,7 @@ sl_status_t at_platform_check_device_ready(void);
 *   SL_STATUS_OK if there are no errors.
 *   SL_STATUS_INVALID_PARAMETER if cmd == NULL.
 ******************************************************************************/
-sl_status_t at_platform_send_cmd(volatile uint8_t *cmd,
-                                 volatile uint16_t timeout_ms);
+sl_status_t at_platform_send_cmd(uint8_t *cmd, uint16_t timeout_ms);
 
 /**************************************************************************//**
  * @brief

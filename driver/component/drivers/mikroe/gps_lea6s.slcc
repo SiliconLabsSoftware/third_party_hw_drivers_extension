@@ -9,6 +9,9 @@ ui_hints:
   visibility: basic
 root_path: driver
 requires:
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
   - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_uart
 config_file:
@@ -21,9 +24,12 @@ config_file:
   - path: public/mikroe/gps_lea6s/config/brd4314a/mikroe_gps_lea6s_config.h
     file_id: driver_config_gps_lea6s
     condition: [brd4314a]
+  - path: public/mikroe/gps_lea6s/config/brd4338a/mikroe_gps_lea6s_config.h
+    file_id: driver_config_gps_lea6s
+    condition: [brd4338a]
   - path: public/mikroe/gps_lea6s/config/other/mikroe_gps_lea6s_config.h
     file_id: driver_config_gps_lea6s
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
 provides:
   - name: mikroe_gps
     allow_multiple: false

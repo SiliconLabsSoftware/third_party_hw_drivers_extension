@@ -44,19 +44,11 @@
 #define TX_THRESHOLD       0       // tx threshold value
 #define RX_THRESHOLD       0       // rx threshold value
 
-static sl_i2c_config_t i2c_config = {
-  .mode = SL_I2C_LEADER_MODE,
-  .operating_mode = SL_I2C_STANDARD_MODE,
-  .transfer_type = SL_I2C_USING_INTERRUPT,
-  .i2c_callback = NULL,
-};
-
 static i2c_master_t *_owner = NULL;
 static uint32_t last_i2c_speed_used;
 
 static err_t _acquire(i2c_master_t *obj, bool obj_open_state);
 static err_t i2c_master_set_configuration(i2c_master_t *obj);
-static void wait_till_i2c_gets_idle(sl_i2c_instance_t i2c_instance);
 
 void i2c_master_configure_default(i2c_master_config_t *config)
 {
@@ -151,7 +143,7 @@ err_t i2c_master_write(i2c_master_t *obj,
     return I2C_MASTER_ERROR;
   }
 
-  wait_till_i2c_gets_idle(i2c_handle);
+  sl_si91x_i2c_wait_till_i2c_is_idle(i2c_handle);
   return I2C_MASTER_SUCCESS;
 }
 
@@ -178,7 +170,7 @@ err_t i2c_master_read(i2c_master_t *obj,
   if (i2c_status != SL_I2C_SUCCESS) {
     return I2C_MASTER_ERROR;
   }
-  wait_till_i2c_gets_idle(i2c_handle);
+  sl_si91x_i2c_wait_till_i2c_is_idle(i2c_handle);
   return I2C_MASTER_SUCCESS;
 }
 
@@ -224,7 +216,7 @@ err_t i2c_master_write_then_read(i2c_master_t *obj,
   if (i2c_status != SL_I2C_SUCCESS) {
     return I2C_MASTER_ERROR;
   }
-  wait_till_i2c_gets_idle(i2c_handle);
+  sl_si91x_i2c_wait_till_i2c_is_idle(i2c_handle);
   return I2C_MASTER_SUCCESS;
 }
 
@@ -253,6 +245,12 @@ static err_t i2c_master_set_configuration(i2c_master_t *obj)
 {
   sl_i2c_status_t i2c_status;
   sl_i2c_instance_t i2c_handle = *(sl_i2c_instance_t *)obj->handle;
+  sl_i2c_config_t i2c_config = {
+    .mode = SL_I2C_LEADER_MODE,
+    .operating_mode = SL_I2C_STANDARD_MODE,
+    .transfer_type = SL_I2C_USING_INTERRUPT,
+    .i2c_callback = NULL,
+  };
 
   last_i2c_speed_used = obj->config.speed;
 
@@ -273,27 +271,6 @@ static err_t i2c_master_set_configuration(i2c_master_t *obj)
   }
 
   return I2C_MASTER_SUCCESS;
-}
-
-/*******************************************************************************
- * Function to wait till I2C leader/follower comes to idle state
- *
- * @param i2c (I2C_TypeDef) Pointer to the I2C instance base address.
- * @return none
- ******************************************************************************/
-static void wait_till_i2c_gets_idle(sl_i2c_instance_t i2c_instance)
-{
-  I2C_TypeDef *i2c = I2C2;
-
-  if (i2c_instance == SL_I2C0) {
-    i2c = I2C0;
-  } else if (i2c_instance == SL_I2C1) {
-    i2c = I2C1;
-  } else if (i2c_instance == SL_I2C2) {
-    i2c = I2C2;
-  }
-  // waiting for I2C instance to be in idle state
-  while (i2c->IC_STATUS_b.ACTIVITY) {}
 }
 
 // ------------------------------------------------------------------------- END

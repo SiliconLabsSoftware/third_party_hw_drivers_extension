@@ -36,11 +36,12 @@
  * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
-#ifndef MIKROE_FORCE3_FSR400_INC_MIKROE_FORCE3_H_
-#define MIKROE_FORCE3_FSR400_INC_MIKROE_FORCE3_H_
+#ifndef MIKROE_FORCE3_FSR400_H_
+#define MIKROE_FORCE3_FSR400_H_
+
 #include "sl_status.h"
-#include "sl_i2cspm.h"
 #include "force3.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,7 +61,7 @@ extern "C" {
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_fsr400_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_fsr400_init(mikroe_i2c_handle_t i2cspm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -73,7 +74,8 @@ sl_status_t mikroe_fsr400_init(sl_i2cspm_t *i2cspm_instance);
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null.
  ******************************************************************************/
-sl_status_t mikroe_fsr400_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_fsr400_set_i2csmp_instance(
+  mikroe_i2c_handle_t i2cspm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -124,4 +126,4 @@ sl_status_t mikroe_fsr400_get_raw_data (uint16_t *data);
 }
 #endif
 
-#endif /* MIKROE_FORCE3_FSR400_INC_MIKROE_FORCE3_H_ */
+#endif // MIKROE_FORCE3_FSR400_H_

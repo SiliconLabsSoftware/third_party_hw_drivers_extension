@@ -47,17 +47,6 @@ extern "C"
 // <<< Use Configuration Wizard in Context Menu
 // <h> SPI Driver settings
 
-// <o DWM3000_SPI_TYPE> HAL SPI TYPE
-// <USART=> USART
-// <EUSART=> EUSART
-#define DWM3000_SPI_TYPE        EUSART
-
-// <o DWM3000_SPI_NUMBER> HAL SPI NUMBER
-// <0=> 0
-// <1=> 1
-// <2=> 2
-#define DWM3000_SPI_NUMBER        1
-
 // <o DWM3000_FREQ_MIN> SPI FREQUENCY MIN (Hz)
 // <d> 2000000
 #define DWM3000_FREQ_MIN 2000000
@@ -125,39 +114,6 @@ extern "C"
 // #define DWM3000_CS_PIN                           0
 // #endif
 // [GPIO_DWM3000_CS]$
-
-// <gpio optional=true> DWM3000_CLK
-// $[GPIO_DWM3000_CLK]
-#warning "DWM3000_CLK is not configured"
-// #ifndef DWM3000_CLK_PORT                        
-// #define DWM3000_CLK_PORT                         gpioPortC
-// #endif
-// #ifndef DWM3000_CLK_PIN                         
-// #define DWM3000_CLK_PIN                          1
-// #endif
-// [GPIO_DWM3000_CLK]$
-
-// <gpio optional=true> DWM3000_MISO
-// $[GPIO_DWM3000_MISO]
-#warning "DWM3000_MISO is not configured"
-// #ifndef DWM3000_MISO_PORT                       
-// #define DWM3000_MISO_PORT                        gpioPortC
-// #endif
-// #ifndef DWM3000_MISO_PIN                        
-// #define DWM3000_MISO_PIN                         2
-// #endif
-// [GPIO_DWM3000_MISO]$
-
-// <gpio optional=true> DWM3000_MOSI
-// $[GPIO_DWM3000_MOSI]
-#warning "DWM3000_MOSI is not configured"
-// #ifndef DWM3000_MOSI_PORT                       
-// #define DWM3000_MOSI_PORT                        gpioPortC
-// #endif
-// #ifndef DWM3000_MOSI_PIN                        
-// #define DWM3000_MOSI_PIN                         3
-// #endif
-// [GPIO_DWM3000_MOSI]$
 
 // <<< sl:end pin_tool >>>
 

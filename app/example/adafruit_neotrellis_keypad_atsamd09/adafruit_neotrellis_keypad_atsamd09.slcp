@@ -28,8 +28,6 @@ component:
   instance: [vcom]
 - id: i2cspm
   instance: [qwiic]
-- id: app_assert
-- id: sleeptimer
 - id: app_log
 - id: adafruit_neotrellis_keypad_atsamd09
   from: third_party_hw_drivers
@@ -39,7 +37,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/adafruit_neotrellis_keypad_atsamd09/image/connection.png

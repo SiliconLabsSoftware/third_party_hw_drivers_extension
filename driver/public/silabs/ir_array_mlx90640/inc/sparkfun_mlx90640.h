@@ -43,8 +43,13 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
-#include "sl_i2cspm.h"
 #include "sl_status.h"
+
+#include "drv_i2c_master.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // -----------------------------------------------------------------------------
 //                              Macros and Typedefs
@@ -112,7 +117,7 @@ typedef struct
  *
  * @param[in] i2cspm_instace - Pointer to the I2CSPM instance
  ******************************************************************************/
-sl_status_t sparkfun_mlx90640_init(sl_i2cspm_t *i2cspm_instance,
+sl_status_t sparkfun_mlx90640_init(mikroe_i2c_handle_t i2c_instance,
                                    uint8_t i2c_addr);
 
 /***************************************************************************//**
@@ -128,13 +133,13 @@ sl_status_t sparkfun_mlx90640_get_image_array(float *pixel_array);
 /***************************************************************************//**
  * Change slave address to the value of "new_addr"
  ******************************************************************************/
-sl_status_t sparkfun_mlx90640_set_slave_addr(sl_i2cspm_t *i2cspm_instance,
+sl_status_t sparkfun_mlx90640_set_slave_addr(mikroe_i2c_handle_t i2c_instance,
                                              uint8_t new_addr);
 
 /***************************************************************************//**
  * Changes which I2C bus and slave address does the driver use
  ******************************************************************************/
-sl_status_t sparkfun_mlx90640_change_devices(sl_i2cspm_t *i2cspm_instance,
+sl_status_t sparkfun_mlx90640_change_devices(mikroe_i2c_handle_t i2c_instance,
                                              uint8_t new_addr);
 
 /***************************************************************************//**
@@ -326,4 +331,7 @@ sl_status_t sparkfun_mlx90640_bad_pixels_correction(uint16_t *pixels,
                                                     int mode,
                                                     paramsMLX90640 *params);
 
-#endif /* SPARKFUN_MLX90640_H_ */
+#ifdef __cplusplus
+}
+#endif
+#endif // SPARKFUN_MLX90640_H_

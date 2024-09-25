@@ -1,37 +1,36 @@
-# ADPD188BI Smoke 2 Click (Mikroe) #
+# ADPD188BI - Smoke 2 Click (Mikroe) #
 
 ## Summary ##
+
+This project shows the driver implementation of the Smoke 2 Click module, which implements the ADPD188BI IC with the Silicon Labs Platform.
 
 Smoke 2 Click is based on the ADPD188BI, a complete photometric system for smoke detection using optical dual-wavelength technology from Analog Devices. The module combines the dual photodetector with two separate LEDs and a mixed-signal photometric front-end ASIC, and prevents light from going directly from the LED to the photodiode without first entering the smoke detection chamber. The dual-wavelength combination in a scattering measurement, a 470nm blue LED and an 850nm IR LED, allows particle size discrimination between different types of smoke, dust, or steam. The core circuitry stimulates the LEDs and measures the corresponding optical return signals. This integrated solution enables low power and reduces false smoke alarms in harsh environments due to dust, steam, and other nuisance sources.
 
 ![Intro_1](image/smoke2_click_details.png)
 
-The smoke chamber 28800X is designed to be used with the ADPD188BI and minimize background response while controlling the environment around the ADPD188BI module by limiting dust accumulation and keeping out insects. The ADPD188BI registers a positive signal due to light scattering from the smoke chamber. Although the smoke chamber minimizes this positive signal, there is a nonzero response in the absence of smoke. When using a smoke chamber, this background response must be accounted for if you want to accurately measure the level of particles present in the smoke chamber.
-
-The ADPD188BI operates in one of the following three modes: Standby, Program, or Normal Sampling Mode. Standby Mode is a power-saving mode in which data collection does not occur, while the Program Mode configures and program registers. During regular operation, the ADPD188BI pulses light and collects data, and in this mode, power consumption depends on the pulse count and data rate. Besides, the ADPD188BI also requires a supply voltage of 1.8V to work regularly. Therefore, a small regulating LDO, the ADP160 from Analog Devices, provides a 1.8V out of 3.3V mikroBUS™ rail, or optionally, from a battery power source.
-
-Smoke 2 Click provides the possibility of using both I2C and SPI serial interfaces, although only one is allowed at any given time in the actual application. All internal registers of the ADPD188BI are accessed through the selected communications interface. I2C supports Fast mode with data transfer of 400 kbps, while SPI interface support frequency up to 10MHz. This selection can be performed by positioning SMD jumpers labeled as COMM SEL to an appropriate position. Note that all the jumpers must be lined to the same side, or else the Click board™ may become unresponsive.
-
 ## Required Hardware ##
 
 - [**XG24-EK2703A** EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
 
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
 - [**Smoke 2 Click**](https://www.mikroe.com/smoke-2-click)
-
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2703A | [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)  |
-| BRD4108A | [EFR32BG22 Explorer Kit Board](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)  |
 
 ## Hardware Connection ##
 
-The Smoke 2 Click board supports MikroBus, so it can connect easily to MikroBus header of EFR32xG24 Explorer Kit. Be sure that the 45-degree corner of the Click Board™ matches the 45-degree white line of the Silicon Labs Explorer Kit. The hardware connection is shown in the image below:
+- **If the EFR32xG24 Explorer Kit is used**:
 
-![board](image/hardware_connection.png)
+    The Smoke 2 Click board supports MikroBus, so it can connect easily to MikroBus header of EFR32xG24 Explorer Kit. Be sure that the 45-degree corner of the Click Board™ matches the 45-degree white line of the Silicon Labs Explorer Kit. The hardware connection is shown in the image below:
+
+    ![board](image/hardware_connection.png)
+
+- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+
+    | Description  | BRD4338A GPIO | BRD4002 Breakout   | Smoke 2 Click Board |
+    | ------------ | ------------- | ------------------ | ------------------- |
+    | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                 |
+    | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                 |
+    | GPIO_INT     | GPIO_46       | P24                | INT                 |
 
 ## Setup ##
 
@@ -39,17 +38,19 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter "smoke".
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **"smoke"**.
 
-2. Click **Create** button on the **Third Party Hardware Drivers - Smoke 2 Click (Mikroe) - I2C** example if user want to uses with I2C interface or **Third Party Hardware Drivers - Smoke 2 Click (Mikroe) - SPI** example if user want to uses with SPI interface. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+2. Click on the **Create** button on the **Third Party Hardware Drivers - Smoke 2 Click (Mikroe) - I2C** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+
+    ![Create_example](image/create_example.png)
+
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
-2. Copy the file 'app/example/mikroe_smoke2_adpd188bi/app.c' into the project root folder (overwriting the existing file).
+2. Copy the file `app/example/mikroe_smoke2_adpd188bi/app.c` into the project root folder (overwriting the existing file).
 
 3. Install the software components:
 
@@ -59,18 +60,27 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
+      **If the EFR32xG24 Explorer Kit is used:**
+
         - [Services] → [Timers] → [Sleep Timer]
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
-        - [Third Party Hardware Drivers] → [Sensors] → [ADPD188BI - Smoke 2 Click (Mikroe) - I2C] or [ADPD188BI - Smoke 2 Click (Mikroe) - SPI]
+        - [Platform] → [Driver] → [I2C] → [I2CSPM] → default instance name: **mikroe**
+        - [Third Party Hardware Drivers] → [Sensors] → [ADPD188BI - Smoke 2 Click (Mikroe) - I2C]
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [Third Party Hardware Drivers] → [Sensors] → [ADPD188BI - Smoke 2 Click (Mikroe) - I2C]
+        - If using the I2C interface: [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
 
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "ADPD188BI - Smoke 2 Click (Mikroe) - I2C" or "ADPD188BI - Smoke 2 Click (Mikroe) - SPI" component.
+- Third-party Drivers Extension must be enabled for the project to install "ADPD188BI - Smoke 2 Click (Mikroe) - I2C" component.
 
 ## How It Works ##
 

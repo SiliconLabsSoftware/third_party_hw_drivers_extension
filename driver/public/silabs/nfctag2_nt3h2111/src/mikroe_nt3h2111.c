@@ -37,16 +37,24 @@
  ******************************************************************************/
 
 #include <string.h>
-#include "em_gpio.h"
 #include "sl_sleeptimer.h"
 #include "mikroe_nt3h2111.h"
+#include "mikroe_nt3h2111_config.h"
+#include "drv_i2c_master.h"
+#include "drv_digital_in.h"
 
 #if !defined (min)
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
+typedef struct
+{
+  i2c_master_t i2c;
+  digital_in_t fd_pin;
+}mikroe_nt3h2111_t;
+
 // Global variables
-static sl_i2cspm_t  *nt3h2111_i2cspm_instance = NULL;
+static mikroe_nt3h2111_t s_nt3h2111;
 static bool nt3h2111_is_initialized = false;
 
 /**************************************************************************//**
@@ -56,7 +64,65 @@ static bool nt3h2111_is_initialized = false;
  * @param[in] init
  *  Initialization settings.
  *****************************************************************************/
-sl_status_t nt3h2111_init(sl_i2cspm_t *i2cspm)
+
+/**************************************************************************//**
+ * @brief
+ *  Read data through I2C.
+ *
+ * @param[in] size
+ *  Number of bytes to be read
+ *
+ * @param[out] pdata
+ *  Buffer to store read data
+ *
+ * @returns
+ *  I2C transfer result code.
+ *****************************************************************************/
+static sl_status_t nt3h2111_i2c_read_bytes(uint32_t size, uint8_t *pdata)
+{
+  if (NULL == pdata) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&s_nt3h2111.i2c,
+                                            pdata,
+                                            size)) {
+    return SL_STATUS_TRANSMIT;
+  }
+
+  return SL_STATUS_OK;
+}
+
+/**************************************************************************//**
+ * @brief
+ *  Write data through I2C.
+ *
+ * @param[in] size
+ *  Number of bytes to be written
+ *
+ * @param[out] pdata
+ *  Buffer of data to be written
+ *
+ * @returns
+ *  I2C transfer result code.
+ *****************************************************************************/
+sl_status_t nt3h2111_i2c_write_bytes(uint32_t size,
+                                     uint8_t *pdata)
+{
+  if (NULL == pdata) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&s_nt3h2111.i2c,
+                                             pdata,
+                                             size)) {
+    return SL_STATUS_TRANSMIT;
+  }
+
+  return SL_STATUS_OK;
+}
+
+sl_status_t nt3h2111_init(mikroe_i2c_handle_t i2cspm)
 {
   if (i2cspm == NULL) {
     return SL_STATUS_NULL_POINTER;
@@ -68,13 +134,27 @@ sl_status_t nt3h2111_init(sl_i2cspm_t *i2cspm)
   }
 
   // Update i2cspm instance and i2c addr
-  nt3h2111_i2cspm_instance = i2cspm;
+  s_nt3h2111.i2c.handle = i2cspm;
+
+  i2c_master_config_t i2c_cfg;
+  i2c_master_configure_default(&i2c_cfg);
+
+  i2c_cfg.addr = MIKROE_NT3H211_ADDR;
+  i2c_cfg.timeout_pass_count = 0;
+
+#if (MIKROE_NT3H211_I2C_UC == 1)
+  i2c_cfg.speed = MIKROE_NT3H211_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&s_nt3h2111.i2c, &i2c_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
 #if defined(MIKROE_NT3H211_FD_PORT) && defined(MIKROE_NT3H211_FD_PIN)
-  GPIO_PinModeSet(MIKROE_NT3H211_FD_PORT,
-                  MIKROE_NT3H211_FD_PIN,
-                  gpioModeInputPullFilter,
-                  1);
+  pin_name_t pin = hal_gpio_pin_name(MIKROE_NT3H211_FD_PORT,
+                                     MIKROE_NT3H211_FD_PIN);
+
+  digital_in_init(&s_nt3h2111.fd_pin, pin);
 #endif
 
   return SL_STATUS_OK;
@@ -85,19 +165,13 @@ sl_status_t nt3h2111_init(sl_i2cspm_t *i2cspm)
  ******************************************************************************/
 sl_status_t nt3h2111_deinit(void)
 {
-  if (nt3h2111_i2cspm_instance == false) {
+  if (s_nt3h2111.i2c.handle == false) {
     return SL_STATUS_NOT_INITIALIZED;
   }
+  i2c_master_close(&s_nt3h2111.i2c);
 
-  // De-initialization tasks
-#if defined(MIKROE_NT3H211_FD_PORT) && defined(MIKROE_NT3H211_FD_PIN)
-  GPIO_PinModeSet(MIKROE_NT3H211_FD_PORT,
-                  MIKROE_NT3H211_FD_PIN,
-                  gpioModeDisabled,
-                  1);
-#endif
   // Mark driver as not initialized
-  nt3h2111_i2cspm_instance = false;
+  nt3h2111_is_initialized = false;
 
   return SL_STATUS_OK;
 }
@@ -121,19 +195,13 @@ sl_status_t nt3h2111_get_config(nt3h2111_config_reg_addr_t rega, uint8_t *data)
   buff[1] = rega;
 
   /* Write addresses. */
-  result = nt3h2111_i2c_write_bytes(nt3h2111_i2cspm_instance,
-                                    MIKROE_NT3H211_ADDR,
-                                    2,
-                                    buff);
+  result = nt3h2111_i2c_write_bytes(2, buff);
   if (result != SL_STATUS_OK) {
     return result;
   }
 
   /* Read regdat from NT3H2111.  */
-  return nt3h2111_i2c_read_bytes(nt3h2111_i2cspm_instance,
-                                 MIKROE_NT3H211_ADDR,
-                                 1,
-                                 data);
+  return nt3h2111_i2c_read_bytes(1, data);
 }
 
 /***************************************************************************//**
@@ -158,10 +226,7 @@ sl_status_t nt3h2111_set_config(nt3h2111_config_reg_addr_t rega,
   buff[3] = regd;
 
   /* Write to NT3H2111. */
-  return nt3h2111_i2c_write_bytes(nt3h2111_i2cspm_instance,
-                                  MIKROE_NT3H211_ADDR,
-                                  4,
-                                  buff);
+  return nt3h2111_i2c_write_bytes(4, buff);
 }
 
 /***************************************************************************//**
@@ -184,19 +249,13 @@ sl_status_t nt3h2111_get_session(nt3h2111_session_reg_addr_t rega,
   buff[1] = rega;
 
   /* Write addresses. */
-  result = nt3h2111_i2c_write_bytes(nt3h2111_i2cspm_instance,
-                                    MIKROE_NT3H211_ADDR,
-                                    2,
-                                    buff);
+  result = nt3h2111_i2c_write_bytes(2, buff);
   if (result != SL_STATUS_OK) {
     return result;
   }
 
   /* Read regdat from NT3H2111.  */
-  return nt3h2111_i2c_read_bytes(nt3h2111_i2cspm_instance,
-                                 MIKROE_NT3H211_ADDR,
-                                 1,
-                                 data);
+  return nt3h2111_i2c_read_bytes(1, data);
 }
 
 /***************************************************************************//**
@@ -221,10 +280,7 @@ sl_status_t nt3h2111_set_session(nt3h2111_session_reg_addr_t rega,
   buff[3] = regd;
 
   /* Write to NT3H2111. */
-  return nt3h2111_i2c_write_bytes(nt3h2111_i2cspm_instance,
-                                  MIKROE_NT3H211_ADDR,
-                                  4,
-                                  buff);
+  return nt3h2111_i2c_write_bytes(4, buff);
 }
 
 /***************************************************************************//**
@@ -239,19 +295,14 @@ sl_status_t nt3h2111_read_block(uint8_t mema, uint8_t *data)
   }
 
   /* Write memory address of the block of memory that is intended to be read */
-  result = nt3h2111_i2c_write_bytes(nt3h2111_i2cspm_instance,
-                                    MIKROE_NT3H211_ADDR,
-                                    1,
+  result = nt3h2111_i2c_write_bytes(1,
                                     &mema);
   if (result != SL_STATUS_OK) {
     return result;
   }
 
   /* Read a block. */
-  return nt3h2111_i2c_read_bytes(nt3h2111_i2cspm_instance,
-                                 MIKROE_NT3H211_ADDR,
-                                 NT3H2111_BLOCK_SIZE,
-                                 data);
+  return nt3h2111_i2c_read_bytes(NT3H2111_BLOCK_SIZE, data);
 }
 
 /***************************************************************************//**
@@ -275,10 +326,7 @@ sl_status_t nt3h2111_write_block(uint8_t mema, const uint8_t *data)
   memcpy(&buff[1], data, NT3H2111_BLOCK_SIZE);
 
   /* Write to NT3H2111. */
-  result = nt3h2111_i2c_write_bytes(nt3h2111_i2cspm_instance,
-                                    MIKROE_NT3H211_ADDR,
-                                    sizeof(buff),
-                                    buff);
+  result = nt3h2111_i2c_write_bytes(sizeof(buff), buff);
   if (result != SL_STATUS_OK) {
     return result;
   }

@@ -16,16 +16,16 @@ requires:
 
 provides:
   - name: mirkoe_rf_meter
-  - allow_multiple: false
+    allow_multiple: false
 
 template_contribution:
   - name: component_catalog
-  - value: rf_meter_ad8318
+    value: rf_meter_ad8318
 
+config_file:
+  - path: public/mikroe/rf_meter_ad8318/config/mikroe_ad8318_config.h
+    file_id: mikroe_ad8318_config_id
 include:
-  - path: inc
-    file_list:
-      - path: third_party_hw_drivers_helpers.h
   - path: thirdparty/mikrosdk_click_v2/clicks/rfmeter/lib_rfmeter/include
     file_list:
       - path: rfmeter.h

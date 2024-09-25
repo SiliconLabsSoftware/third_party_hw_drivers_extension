@@ -37,37 +37,30 @@
  *
  ******************************************************************************/
 
-#include "sl_i2cspm.h"
 #include "mikroe_tb9053ftg.h"
 #include "mikroe_dcmotor26_config.h"
 #include "dcmotor26.h"
-#include "third_party_hw_drivers_helpers.h"
 
 static dcmotor26_t ctx;
 static dcmotor26_cfg_t ctx_cfg;
 
-void mikroe_tb9053ftg_cfg_setup(void)
-{
-  dcmotor26_cfg_setup(&ctx_cfg);
-}
-
-sl_status_t mikroe_tb9053ftg_init(SPIDRV_Handle_t spi_instance,
-                                  sl_i2cspm_t *i2c_instance,
-                                  adc_t *adc)
+sl_status_t mikroe_tb9053ftg_init(mikroe_spi_handle_t spi_instance,
+                                  mikroe_i2c_handle_t i2c_instance,
+                                  mikroe_adc_handle_t adc)
 {
   if ((NULL == spi_instance)
       || (NULL == i2c_instance) || (NULL == adc)) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
-  mikroe_tb9053ftg_cfg_setup();
+  dcmotor26_cfg_setup(&ctx_cfg);
 
   ctx.i2c.handle = i2c_instance;
   ctx.spi.handle = spi_instance;
   ctx.slave_address = DCMOTOR26_PCA9538A_ADDRESS;
   ctx.adc.handle = adc;
+
+  ctx_cfg.spi_speed = 1000000;
 
 #if defined(DCMOTOR26_CHANNEL_MONITOR_PORT) \
   && defined(DCMOTOR26_CHANNEL_MONITOR_PIN)
@@ -90,9 +83,27 @@ sl_status_t mikroe_tb9053ftg_init(SPIDRV_Handle_t spi_instance,
                                   DCMOTOR26_PWM_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(dcmotor26_init(&ctx, &ctx_cfg));
+#if (MIKROE_DCMOTOR26_SPI_UC == 1)
+  ctx_cfg.spi_speed = MIKROE_DCMOTOR26_SPI_BITRATE;
+#endif
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+#if defined(DCMOTOR26_CS_PORT) && defined(DCMOTOR26_CS_PIN)
+  ctx_cfg.cs = hal_gpio_pin_name(DCMOTOR26_CS_PORT,
+                                 DCMOTOR26_CS_PIN);
+  // CS pin need to init here since the mikroe_sdk_v2 missed this step
+  digital_out_t struct_cs;
+  digital_out_init(&struct_cs, ctx_cfg.cs);
+#endif
+
+#if (MIKROE_DCMOTOR26_I2C_UC == 1)
+  ctx_cfg.i2c_speed = MIKROE_DCMOTOR26_I2C_SPEED_MODE;
+#endif
+
+  if (dcmotor26_init(&ctx, &ctx_cfg) != DCMOTOR26_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_tb9053ftg_default_cfg(void)

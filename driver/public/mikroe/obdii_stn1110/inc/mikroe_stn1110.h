@@ -121,7 +121,7 @@ extern "C" {
  *   SL_STATUS_OK if successful initialization.
  *   Other status if initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_stn1110_init(sl_iostream_uart_t *handle);
+sl_status_t mikroe_stn1110_init(mikroe_uart_handle_t handle);
 
 /***************************************************************************//**
  * @brief
@@ -134,7 +134,7 @@ sl_status_t mikroe_stn1110_init(sl_iostream_uart_t *handle);
  *   SL_STATUS_OK if there are no errors.
  *   SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null.
  ******************************************************************************/
-sl_status_t mikroe_stn1110_set_uart_instance(sl_iostream_uart_t *handle);
+sl_status_t mikroe_stn1110_set_uart_instance(mikroe_uart_handle_t handle);
 
 /***************************************************************************//**
  * @brief

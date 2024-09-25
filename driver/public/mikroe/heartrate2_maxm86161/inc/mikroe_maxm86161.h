@@ -41,7 +41,7 @@
 #define MIKROE_MAXM86161_H_
 
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -550,7 +550,7 @@ typedef struct
  *    SL_STATUS_OK Successful initialization.
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_maxm86161_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_maxm86161_init(mikroe_i2c_handle_t i2cspm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -563,7 +563,8 @@ sl_status_t mikroe_maxm86161_init(sl_i2cspm_t *i2cspm_instance);
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null.
  ******************************************************************************/
-sl_status_t mikroe_maxm86161_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_maxm86161_set_i2csmp_instance(
+  mikroe_i2c_handle_t i2cspm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -591,7 +592,7 @@ sl_status_t mikroe_maxm86161_default_cfg(mikroe_maxm86161_config_led_t cfg_led);
  * @return
  *    None
  ******************************************************************************/
-void mikroe_maxm86161_generic_write (
+void mikroe_maxm86161_generic_write(
   uint8_t register_address,
   uint8_t write_data);
 
@@ -605,7 +606,7 @@ void mikroe_maxm86161_generic_write (
  * @return
  *    Data is read from register
  ******************************************************************************/
-uint8_t mikroe_maxm86161_generic_read (uint8_t register_address);
+uint8_t mikroe_maxm86161_generic_read(uint8_t register_address);
 
 /***************************************************************************//**
  * @brief
@@ -624,7 +625,7 @@ uint8_t mikroe_maxm86161_generic_read (uint8_t register_address);
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if data_buf is NULL
  ******************************************************************************/
-sl_status_t mikroe_maxm86161_read_buf (
+sl_status_t mikroe_maxm86161_read_buf(
   uint8_t reg,
   uint8_t *data_buf,
   uint8_t len);
@@ -640,7 +641,7 @@ sl_status_t mikroe_maxm86161_read_buf (
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if mikroe_fifo is NULL
  ******************************************************************************/
-sl_status_t mikroe_maxm86161_read_fifo (
+sl_status_t mikroe_maxm86161_read_fifo(
   mikroe_maxm86161_fifo_data_t *mikroe_fifo);
 
 /***************************************************************************//**
@@ -654,7 +655,7 @@ sl_status_t mikroe_maxm86161_read_fifo (
  *    You should enable die temperature interrupt status,
  *    and you should turn off leds to get right temperature.
  ******************************************************************************/
-float mikroe_maxm86161_read_temp (void);
+float mikroe_maxm86161_read_temp(void);
 
 /***************************************************************************//**
  * @brief
@@ -663,7 +664,7 @@ float mikroe_maxm86161_read_temp (void);
  * @return
  *    None
  ******************************************************************************/
-void mikroe_maxm86161_soft_reset (void);
+void mikroe_maxm86161_soft_reset(void);
 
 /***************************************************************************//**
  * @brief
@@ -676,7 +677,7 @@ void mikroe_maxm86161_soft_reset (void);
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if mikroe_ppg_cfg is NULL
  ******************************************************************************/
-sl_status_t mikroe_maxm86161_ppg_config (
+sl_status_t mikroe_maxm86161_ppg_config(
   mikroe_maxm86161_ppg_cfg_t *mikroe_ppg_cfg);
 
 /***************************************************************************//**
@@ -690,7 +691,7 @@ sl_status_t mikroe_maxm86161_ppg_config (
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if mikroe_ledpa is NULL
  ******************************************************************************/
-sl_status_t mikroe_maxm86161_ledpa_config (
+sl_status_t mikroe_maxm86161_ledpa_config(
   mikroe_maxm86161_ledpa_t *mikroe_ledpa);
 
 /***************************************************************************//**
@@ -704,7 +705,7 @@ sl_status_t mikroe_maxm86161_ledpa_config (
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if mikroe_led_range is NULL
  ******************************************************************************/
-sl_status_t mikroe_maxm86161_led_range_curr_config (
+sl_status_t mikroe_maxm86161_led_range_curr_config(
   mikroe_maxm86161_led_range_curr_t *mikroe_led_range);
 
 /***************************************************************************//**
@@ -718,7 +719,7 @@ sl_status_t mikroe_maxm86161_led_range_curr_config (
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if mikroe_ledsq is NULL
  ******************************************************************************/
-sl_status_t mikroe_maxm86161_led_sequence_config (
+sl_status_t mikroe_maxm86161_led_sequence_config(
   mikroe_maxm86161_ledsq_cfg_t *mikroe_ledsq);
 
 /***************************************************************************//**
@@ -732,7 +733,7 @@ sl_status_t mikroe_maxm86161_led_sequence_config (
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if mikroe_int_ctrl is NULL
  ******************************************************************************/
-sl_status_t mikroe_maxm86161_int_control (
+sl_status_t mikroe_maxm86161_int_control(
   mikroe_maxm86161_int_t *mikroe_int_ctrl);
 
 /***************************************************************************//**
@@ -746,7 +747,7 @@ sl_status_t mikroe_maxm86161_int_control (
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if mikroe_int_status is NULL
  ******************************************************************************/
-sl_status_t mikroe_maxm86161_int_status (
+sl_status_t mikroe_maxm86161_int_status(
   mikroe_maxm86161_int_t *mikroe_int_status);
 
 /***************************************************************************//**
@@ -756,7 +757,7 @@ sl_status_t mikroe_maxm86161_int_status (
  * @return
  *    uint8_t int pin status.
  ******************************************************************************/
-uint8_t mikroe_maxm86161_get_int (void);
+uint8_t mikroe_maxm86161_get_int(void);
 
 /***************************************************************************//**
  * @brief
@@ -765,7 +766,7 @@ uint8_t mikroe_maxm86161_get_int (void);
  * @return
  *    gp pin status.
  ******************************************************************************/
-uint8_t mikroe_maxm86161_get_gp (void);
+uint8_t mikroe_maxm86161_get_gp(void);
 
 /***************************************************************************//**
  * @brief
@@ -778,11 +779,11 @@ uint8_t mikroe_maxm86161_get_gp (void);
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER
  ******************************************************************************/
-sl_status_t mikroe_maxm86161_set_en (mikroe_state_pin_t state);
+sl_status_t mikroe_maxm86161_set_en(mikroe_state_pin_t state);
 
 #ifdef __cplusplus
 }
 #endif
 
 /** @} */
-#endif /* MIKROE_MAXM86161_H_ */
+#endif // MIKROE_MAXM86161_H_

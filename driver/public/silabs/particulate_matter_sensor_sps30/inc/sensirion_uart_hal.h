@@ -31,9 +31,9 @@
 
 #ifndef SENSIRION_UART_H
 #define SENSIRION_UART_H
-
 #include "sensirion_common.h"
-#include "sl_iostream.h"
+#include "sl_status.h"
+#include "drv_uart.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,7 +43,7 @@ extern "C" {
  * Initialize all hard- and software components that are needed for the UART
  * communication.
  */
-sl_status_t sensirion_uart_init(sl_iostream_t *iostream_handle);
+sl_status_t sensirion_uart_init(mikroe_uart_handle_t uart_handle);
 
 /**
  * sensirion_uart_select_port() - select the UART port index to use

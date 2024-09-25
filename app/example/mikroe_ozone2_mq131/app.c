@@ -35,14 +35,36 @@
  ******************************************************************************/
 
 #include "sl_sleeptimer.h"
-#include "sl_spidrv_instances.h"
-
-#include "app_log.h"
-
 #include "mikroe_mq131.h"
+
+#if (defined(SLI_SI917))
+#include "sl_adc_instances.h"
+#include "sl_si91x_gspi.h"
+#include "rsi_debug.h"
+#else
+#include "em_iadc.h"
+#include "sl_spidrv_instances.h"
+#include "app_log.h"
+#endif
+
+#if (defined(SLI_SI917))
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
 
 #define READING_INTERVAL_MSEC 1000
 
+#if (defined(SLI_SI917))
+#if MIKROE_OZONE2_ADC_SEL == 0
+static uint8_t channel = SL_ADC_CHANNEL_1;
+#else
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
+#endif
+#endif
+
+static mikroe_adc_handle_t app_adc_instance = NULL;
+static mikroe_spi_handle_t app_spi_instance = NULL;
 static volatile bool app_timer_expire = false;
 static sl_sleeptimer_timer_handle_t app_timer;
 
@@ -55,11 +77,39 @@ void app_init(void)
 {
   sl_status_t sc;
 
-  app_log("---- Application Init ----\r\n");
-  sc = mikroe_ozone2_init(sl_spidrv_mikroe_handle);
+#if (defined(SLI_SI917))
+#if MIKROE_OZONE2_ADC_SEL == 0
+  app_adc_instance = &channel;
+#else
+  app_spi_instance = &gspi_instance;
+#endif
+
+#else
+#if MIKROE_OZONE2_ADC_SEL == 0
+  app_adc_instance = IADC0;
+#else
+  app_spi_instance = sl_spidrv_mikroe_handle;
+#endif
+
+#endif
+
+  app_printf("---- Application Init ----\r\n");
+  sc = mikroe_ozone2_init(app_spi_instance, app_adc_instance);
+
+#if (defined(SLI_SI917))
+
+  /**
+   * Due to calling trim_efuse API on ADC init in driver
+   * it will change the clock frequency,
+   * if we are not initialize the debug again
+   * it will print the garbage data in console output.
+   */
+  DEBUGINIT();
+#endif
+
   if (sc != SL_STATUS_OK) {
-    app_log("---- Application Init Error ----");
-    app_log("---- Please, run program again ----");
+    app_printf("---- Application Init Error ----");
+    app_printf("---- Please, run program again ----");
     for ( ; ; ) {}
   }
   sl_sleeptimer_start_periodic_timer_ms(&app_timer,
@@ -83,7 +133,7 @@ void app_process_action(void)
   app_timer_expire = false;
 
   if (mikroe_ozone2_read_measurement(&o3_ppm) == SL_STATUS_OK) {
-    app_log("  O3 [ppm] : %u\r\n", o3_ppm);
+    app_printf("  O3 [ppm] : %u\r\n", o3_ppm);
   }
 }
 

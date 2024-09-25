@@ -1,0 +1,39 @@
+id: accurrent
+package: third_party_hw_drivers
+label: AC Current Click (Mikroe)
+description: >
+  Driver for the AC Current Click board.
+category: Sensors
+quality: evaluation
+ui_hints:
+  visibility: basic
+root_path: driver
+requires:
+  - name: status
+  - name: mikroe_peripheral_driver_spi
+config_file:
+  - path: public/mikroe/accurrent/config/brd2703a/mikroe_accurrent_config.h
+    file_id: driver_config_accurrent
+    condition: [brd2703a]
+  - path: public/mikroe/accurrent/config/brd4314a/mikroe_accurrent_config.h
+    file_id: driver_config_accurrent
+    condition: [brd4314a]
+  - path: public/mikroe/accurrent/config/brd4338a/mikroe_accurrent_config.h
+    file_id: driver_config_accurrent
+    condition: [brd4338a]
+  - path: public/mikroe/accurrent/config/other/mikroe_accurrent_config.h
+    file_id: driver_config_accurrent
+    unless: [brd4314a, brd2703a, brd4338a]
+template_contribution:
+  - name: component_catalog
+    value: accurrent
+include:
+  - path: thirdparty/mikrosdk_click_v2/clicks/accurrent/lib/include
+    file_list:
+      - path: accurrent.h
+  - path: public/mikroe/accurrent/inc
+    file_list:
+      - path: mikroe_accurrent.h
+source:
+  - path: thirdparty/mikrosdk_click_v2/clicks/accurrent/lib/src/accurrent.c
+  - path: public/mikroe/accurrent/src/mikroe_accurrent.c

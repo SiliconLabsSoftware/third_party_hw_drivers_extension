@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file drv_spi_master.h
+ * @file drv_spi_master.c
  * @brief mikroSDK 2.0 Click Peripheral Drivers - SPI Master
  * @version 1.0.0
  *******************************************************************************

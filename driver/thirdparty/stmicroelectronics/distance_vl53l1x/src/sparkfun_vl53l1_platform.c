@@ -35,17 +35,19 @@
  */
 #include <string.h>
 #include "sparkfun_vl53l1_platform.h"
+#include "drv_i2c_master.h"
 
-static sl_i2cspm_t *_vl53l1x_i2cspm_instance;
+static i2c_master_t *_vl53l1x_instance = NULL;
 
-static sl_status_t
-i2c_write_blocking(uint8_t addr, uint16_t index, const uint8_t *src, int len);
-static sl_status_t
-i2c_write_read_blocking(uint8_t addr, uint16_t index, uint8_t *data, int len);
+static sl_status_t i2c_write_blocking(uint8_t addr, uint16_t index,
+                                      const uint8_t *src, int len);
 
-void vl53l1x_platform_set_i2cspm_instance(sl_i2cspm_t *i2cspm_instance)
+static sl_status_t i2c_write_read_blocking(uint8_t addr, uint16_t index,
+                                           uint8_t *data, int len);
+
+void vl53l1x_platform_set_i2cspm_instance(i2c_master_t *i2cspm_instance)
 {
-  _vl53l1x_i2cspm_instance = i2cspm_instance;
+  _vl53l1x_instance = i2cspm_instance;
 }
 
 sl_status_t VL53L1_ReadMulti(uint16_t dev, uint16_t index, uint8_t *pdata,
@@ -105,54 +107,59 @@ sl_status_t VL53L1_RdDWord(uint16_t dev, uint16_t index, uint32_t *data)
   return status;
 }
 
-// Silicon Labs I2C platform component integration
-
 static sl_status_t i2c_write_blocking(uint8_t addr, uint16_t index,
                                       const uint8_t *src, int len)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t i2c_write_data[len + 2];
+  uint8_t len_write_data = len + 2;
 
-  seq.addr = addr << 1;
-  seq.flags = I2C_FLAG_WRITE;
+  if (addr != _vl53l1x_instance->config.addr) {
+    if (I2C_MASTER_SUCCESS
+        != i2c_master_set_slave_address(_vl53l1x_instance,
+                                        addr)) {
+      return SL_STATUS_TRANSMIT;
+    }
+  }
 
   i2c_write_data[0] = index >> 8;
   i2c_write_data[1] = index & 0xFF;
 
   memcpy(&i2c_write_data[2], src, len);
 
-  /*Write buffer*/
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = len + 2;
-
-  if (I2CSPM_Transfer(_vl53l1x_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(_vl53l1x_instance,
+                                             i2c_write_data,
+                                             len_write_data)) {
     return SL_STATUS_TRANSMIT;
   }
+
   return SL_STATUS_OK;
 }
 
 static sl_status_t i2c_write_read_blocking(uint8_t addr, uint16_t index,
                                            uint8_t *data, int len)
 {
-  I2C_TransferSeq_TypeDef seq;
-  uint8_t i2c_write_data[len];
+  uint8_t i2c_write_data[2];
+  uint8_t len_write_data;
 
-  seq.addr = addr << 1;
-  seq.flags = I2C_FLAG_WRITE_READ;
+  if (addr != _vl53l1x_instance->config.addr) {
+    if (I2C_MASTER_SUCCESS
+        != i2c_master_set_slave_address(_vl53l1x_instance,
+                                        addr)) {
+      return SL_STATUS_TRANSMIT;
+    }
+  }
 
   i2c_write_data[0] = index >> 8;
   i2c_write_data[1] = index & 0xFF;
+  len_write_data = 2;
 
-  /*Write buffer*/
-  seq.buf[0].data = i2c_write_data;
-  seq.buf[0].len = 2;
-
-  /*Read buffer*/
-  seq.buf[1].data = data;
-  seq.buf[1].len = len;
-
-  if (I2CSPM_Transfer(_vl53l1x_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(_vl53l1x_instance,
+                                                       i2c_write_data,
+                                                       len_write_data,
+                                                       data,
+                                                       len)) {
     return SL_STATUS_TRANSMIT;
   }
+
   return SL_STATUS_OK;
 }

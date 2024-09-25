@@ -3,22 +3,40 @@
  * @brief Top level application functions
  *******************************************************************************
  * # License
- * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc. Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement. This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
 #include <string.h>
-#include "sl_i2cspm_instances.h"
 #include "sl_sleeptimer.h"
-#include "gpiointerrupt.h"
-#include "app_log.h"
 #include "app_assert.h"
 
 #include "t2t.h"
@@ -28,6 +46,27 @@
 
 #include "mikroe_pn7150_config.h"
 #include "mikroe_pn7150.h"
+
+#if (defined(SLI_SI917))
+#include "sl_driver_gpio.h"
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+
+#define app_printf(...)           DEBUGOUT(__VA_ARGS__)
+#define I2C_INSTANCE_USED         SL_I2C2
+#define GPIO_M4_INTR              0 // M4 Pin interrupt number
+#define AVL_INTR_NO               0 // available interrupt number
+
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#else
+#include "sl_i2cspm_instances.h"
+#include "gpiointerrupt.h"
+#include "app_log.h"
+
+#define app_printf(...)          app_log(__VA_ARGS__)
+#endif
+
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
 
 static void app_int_callback(uint8_t intNo);
 
@@ -92,31 +131,49 @@ uint32_t write_size;
  ******************************************************************************/
 void app_init(void)
 {
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_mikroe;
+#endif
+
   // Initialize PN71x0 I2C communication.
-  if (SL_STATUS_OK != mikroe_pn7150_init(sl_i2cspm_mikroe)) {
-    app_log("> PN7150 - NFC 2 Click board driver init failed.\n");
+  if (SL_STATUS_OK != mikroe_pn7150_init(app_i2c_instance)) {
+    app_printf("> PN7150 - NFC 2 Click board driver init failed.\n");
   }
 
+#if (defined(SLI_SI917))
+  sl_gpio_t gpio_port_pin = {
+    MIKROE_PN7150_INT_PIN / 16,
+    MIKROE_PN7150_INT_PIN % 16
+  };
+  sl_gpio_driver_configure_interrupt(&gpio_port_pin,
+                                     GPIO_M4_INTR,
+                                     SL_GPIO_INTERRUPT_RISING_EDGE,
+                                     (void *)&app_int_callback,
+                                     AVL_INTR_NO);
+#else
   GPIO_ExtIntConfig(MIKROE_PN7150_INT_PORT,
                     MIKROE_PN7150_INT_PIN,
                     MIKROE_PN7150_INT_PIN,
-                    1,
-                    0,
-                    1);
+                    true,
+                    false,
+                    true);
   GPIOINT_CallbackRegister(MIKROE_PN7150_INT_PIN, app_int_callback);
-  GPIO_IntEnable(MIKROE_PN7150_INT_PIN);
-  app_log("        HW Reset       \r\n");
+#endif
+
+  app_printf("        HW Reset       \r\n");
   mikroe_pn7150_hw_reset();
 
   // Initialize NCI.
   nci_init();
 
   /* Print project name. */
-  app_log("\r\n******************************\r\n*\r\n");
-  app_log("* NCI T2T Write Demo\r\n");
-  app_log("*\r\n******************************\r\n");
+  app_printf("\r\n******************************\r\n*\r\n");
+  app_printf("* NCI T2T Write Demo\r\n");
+  app_printf("*\r\n******************************\r\n");
 
-  app_log("Write content: %s\r\n", content);
+  app_printf("Write content: %s\r\n", content);
 
   record.payload = payload;
   // prefix + content
@@ -133,7 +190,7 @@ void app_init(void)
   ndef_message_encode_result = ndef_message_encode(ndef_message_buff,
                                                    ndef_message);
   if (ndef_message_encode_result.err == ndefMessageEncodeFail) {
-    app_log("NDEF message encode failed:(\r\n");
+    app_printf("NDEF message encode failed:(\r\n");
     return;
   }
 
@@ -146,7 +203,7 @@ void app_init(void)
                  ndef_message_encode_result.size,    // L
                  ndef_message_buff                   // V
                  ) != tlvEncodeCompleted) {
-    app_log("NDEF TLV encode failed:(\r\n");
+    app_printf("NDEF TLV encode failed:(\r\n");
     return;
   }
 
@@ -158,7 +215,7 @@ void app_init(void)
                  0,                             // L
                  NULL                           // V
                  ) != tlvEncodeCompleted) {
-    app_log("Terminator TLV encode failed:(\r\n");
+    app_printf("Terminator TLV encode failed:(\r\n");
     return;
   }
 
@@ -208,9 +265,9 @@ void app_process_action(void)
         nci_evt->data.payload.nci_data.core_reset_rsp.config_status;
 
       /* Log NCI version of NFCC. */
-      app_log("NFCC's NCI Version is %x.%x\r\n",
-              ((nci_version & 0xF0) >> 4),
-              (nci_version & 0x0F));
+      app_printf("NFCC's NCI Version is %x.%x\r\n",
+                 ((nci_version & 0xF0) >> 4),
+                 (nci_version & 0x0F));
 
       /* Log configuration status. */
       if (config_status == nci_core_reset_keep_config) {
@@ -234,9 +291,9 @@ void app_process_action(void)
       uint8_t *manu_spec_info =
         nci_evt->data.payload.nci_data.core_init_rsp.manu_spec_info;
 
-      app_log("NFCC's Firmware Version is %02x.%02x\r\n",
-              manu_spec_info[2],
-              manu_spec_info[3]);
+      app_printf("NFCC's Firmware Version is %02x.%02x\r\n",
+                 manu_spec_info[2],
+                 manu_spec_info[3]);
 
       /* Activate NXP proprietary extensions,
        * send command and check for error.
@@ -328,7 +385,7 @@ void app_process_action(void)
     case nci_evt_data_packet_rec: {
       if (nci_evt->data.payload.nci_data.rec_data_packet.payload[0]
           != T2T_RSP_ACK) {
-        app_log("T2T Write NACK response. \r\n");
+        app_printf("T2T Write NACK response. \r\n");
       }
 
       write_index++;
@@ -359,7 +416,7 @@ void app_process_action(void)
         };
         nci_data_packet_send(&pakcet);
       } else {
-        app_log("T2T write completed.\r\n");
+        app_printf("T2T write completed.\r\n");
         write_index = 0;
         nci_rf_deactivate_cmd_t cmd = {
           .deactivate_type = nci_rf_deact_type_discovery_mode

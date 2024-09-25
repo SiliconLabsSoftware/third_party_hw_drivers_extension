@@ -18,11 +18,11 @@ readme:
 - path: ../../documentation/example/adafruit_touchscreen_tsc2007/README.md
 
 source:
-- path: app.c
+- path: gecko/app.c
 - path: main.c
 
 include:
-- path: ''
+- path: 'gecko'
   file_list:
   - path: app.h
 
@@ -33,6 +33,8 @@ component:
   instance: [vcom]
 - id: app_assert
 - id: app_log
+- id: i2cspm
+  instance: [qwiic]
 - id: adafruit_touchscreen_tsc2007
   from: third_party_hw_drivers
 - id: services_oled_glib
@@ -45,7 +47,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/adafruit_touchscreen_tsc2007/image/calib.png

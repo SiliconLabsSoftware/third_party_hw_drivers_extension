@@ -32,10 +32,17 @@
 extern "C"{
 #endif
 
+/* FIXED HVAC CLICK */
+
+/* Silabs - 2/10/2024 Fix issue: unused library. */
+
+/* Original: The source file include the drv_uart.h file,
+ * but it is unused in this file. 
+ * ctx has been commented. */
 #include "drv_digital_out.h"
 #include "drv_digital_in.h"
 #include "drv_i2c_master.h"
-#include "drv_uart.h"
+// #include "drv_uart.h"
 
 /*!
  * @addtogroup hvac HVAC Click Driver
@@ -188,6 +195,14 @@ typedef struct
     float typ_ptcl_size;
 } mass_and_num_cnt_data_t;
 
+/* FIXED HVAC CLICK */
+
+/* Silabs - 2/10/2024 Fix issue: unused library. */
+
+/* Original: The hvac_t struct has the uart member,
+ * but it is unused in this driver. 
+ * uart has been commented. */
+
 /**
  * @brief HVAC Click context object.
  * @details Context object definition of HVAC Click driver.
@@ -196,7 +211,7 @@ typedef struct
 {
     // Modules
     i2c_master_t i2c;      /**< I2C driver object. */
-    uart_t uart;           /**< UART driver object. */
+    // uart_t uart;           /**< UART driver object. */
 
     // I2C slave address
     uint8_t slave_address; /**< Device slave address (used for I2C driver). */

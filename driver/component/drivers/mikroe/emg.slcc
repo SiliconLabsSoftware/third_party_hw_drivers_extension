@@ -25,17 +25,20 @@ config_file:
   - path: public/mikroe/emg/config/brd4314a/mikroe_emg_config.h
     file_id: driver_config_emg
     condition: [brd4314a]
+  - path: public/mikroe/emg/config/brd4338a/mikroe_emg_config.h
+    file_id: driver_config_alcohol
+    condition: [device_si91x]
   - path: public/mikroe/emg/config/other/mikroe_emg_config.h
     file_id: driver_config_emg
-    unless: [brd2703a, brd4108a, brd4314a]
+    unless: [brd2703a, brd4108a, brd4314a, device_si91x]
 
 provides:
   - name: emg
-  - allow_multiple: false
+    allow_multiple: false
 
 template_contribution:
   - name: component_catalog
-  - value: emg
+    value: emg
 
 include:
   - path: inc

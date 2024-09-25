@@ -42,11 +42,8 @@
 // -----------------------------------------------------------------------------
 //                               Includes
 // -----------------------------------------------------------------------------
-
 #include "sl_status.h"
-#include "spidrv.h"
 #include "thunder.h"
-#include "mikroe_thunder_as3935_config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,7 +64,21 @@ extern "C" {
  *    SL_STATUS_OK Successful initialization.
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_thunder_as3935_init(SPIDRV_Handle_t spi_instance);
+sl_status_t mikroe_thunder_as3935_init(mikroe_spi_handle_t spi_instance);
+
+/***************************************************************************//**
+ * @brief
+ *    Thunder click set instance.
+ *
+ * @param[in] spi_instance
+ *    SPI instance.
+ *
+ * @return
+ *    SL_STATUS_OK Successful initialization.
+ *    SL_STATUS_FAIL Initialization failed.
+ ******************************************************************************/
+sl_status_t mikroe_thunder_as3935_set_spi_instance(
+  mikroe_spi_handle_t spi_instance);
 
 /***************************************************************************//**
  * @brief

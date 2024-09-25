@@ -3,36 +3,69 @@
  * @brief Top level application functions
  *******************************************************************************
  * # License
- * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc. Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement. This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
  *
- ******************************************************************************/
-
-/***************************************************************************//**
- *    //                       Include
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #include <string.h>
-#include "app_log.h"
-#include "app_assert.h"
-#include "sl_i2cspm_instances.h"
+#include "sl_sleeptimer.h"
 #include "adafruit_neotrellis.h"
 #include "adafruit_neotrellis_config.h"
-#include "sl_sleeptimer.h"
+
+#if (defined(SLI_SI917))
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+#else
+#include "sl_i2cspm_instances.h"
+#include "app_log.h"
+#endif
+
+#if (defined(SLI_SI917))
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
+#if (defined(SLI_SI917))
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
 
 /***************************************************************************//**
  *    //                       Definition
  ******************************************************************************/
 
-#define NUMBER_NEOTRELLIS_BOARD (NEOTRELLIS_NUM_COLUMN_BOARDS \
-                                 * NEOTRELLIS_NUM_ROW_BOARDS)
+#define NUMBER_NEOTRELLIS_BOARD      (NEOTRELLIS_NUM_COLUMN_BOARDS \
+                                      * NEOTRELLIS_NUM_ROW_BOARDS)
 
 /***************************************************************************//**
  *    //                       Global Variables
@@ -48,29 +81,39 @@ static uint32_t color_list[8] = { 0xff0000, 0xff00ff, 0xffff00, 0x00ff00,
 
 static TrellisCallback blink(keyEvent evt);
 
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
+
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
 void app_init(void)
 {
-  sl_status_t sc;
+  sl_status_t sc = SL_STATUS_OK;
 
-  app_log("\rAdafruit NeoTrellis 4x4 Keypad Initializing....\n");
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_qwiic;
+#endif
 
-  sc = adafruit_neotrellis_init(sl_i2cspm_qwiic,
+  app_printf("Adafruit NeoTrellis 4x4 Keypad Initializing....\r\n");
+
+  sc = adafruit_neotrellis_init(app_i2c_instance,
                                 keypad_addr_list,
                                 NUMBER_NEOTRELLIS_BOARD);
-  app_assert(sc == SL_STATUS_OK, "Keypad Initilization fail\n");
 
-  app_log("number keypad: %d\n", NUMBER_NEOTRELLIS_BOARD);
+  if (sc != SL_STATUS_OK) {
+    app_printf("Keypad Initilization fail\r\n");
+    while (1) {}
+  }
+
+  app_printf("number keypad: %d\r\n", NUMBER_NEOTRELLIS_BOARD);
 
   for (uint8_t i = 0; i < 16; i++) {
     sc |= adafruit_neotrellis_activateKey(i, SEESAW_KEYPAD_EDGE_FALLING, true);
     sc |= adafruit_neotrellis_activateKey(i, SEESAW_KEYPAD_EDGE_RISING, true);
     adafruit_neotrellis_registerCallback(i, blink);
   }
-
-  app_assert_status(sc);
 
   for (uint8_t i = 0; i < 16; i++) {
     adafruit_neotrellis_setPixelColor(i, 0xff00ff);
@@ -80,7 +123,12 @@ void app_init(void)
     adafruit_neotrellis_show();
   }
 
-  app_log("\rApplication Initialization done.\n");
+  if (sc != SL_STATUS_OK) {
+    app_printf("\rApplication Initialization fail.\r\n");
+    while (1) {}
+  } else {
+    app_printf("\rApplication Initialization done.\r\n");
+  }
 }
 
 /***************************************************************************//**

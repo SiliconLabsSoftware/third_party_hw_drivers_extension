@@ -1,0 +1,48 @@
+id: ph2
+package: third_party_hw_drivers
+label: PH2 Click (Mikroe)
+description: >
+  Driver for the PH2 Click board.
+category: Sensors
+quality: evaluation
+ui_hints:
+  visibility: basic
+root_path: driver
+requires:
+  - name: status
+  - name: mikroe_peripheral_drivers_onewire
+  - name: mikroe_peripheral_driver_digital_io
+  - name: mikroe_peripheral_driver_i2c
+  - name: mikroe_peripheral_driver_adc
+config_file:
+  - path: public/mikroe/ph2/config/brd2703a/mikroe_ph2_config.h
+    file_id: mikroe_ph2_config_id
+    condition: [brd2703a]
+  - path: public/mikroe/ph2/config/brd4108a/mikroe_ph2_config.h
+    file_id: mikroe_ph2_config_id
+    condition: [brd4108a]
+  - path: public/mikroe/ph2/config/brd4314a/mikroe_ph2_config.h
+    file_id: mikroe_ph2_config_id
+    condition: [brd4314a]
+  - path: public/mikroe/ph2/config/brd4338a/mikroe_ph2_config.h
+    file_id: mikroe_ph2_config_id
+    condition: [brd4338a]
+  - path: public/mikroe/ph2/config/other/mikroe_ph2_config.h
+    file_id: mikroe_ph2_config_id
+    unless: [brd2703a, brd4108a, brd4314a, brd4338a]
+provides:
+  - name: ph2
+    allow_multiple: false
+template_contribution:
+  - name: component_catalog
+    value: ph2
+include:
+  - path: thirdparty/mikrosdk_click_v2/clicks/ph2/lib_ph2/include
+    file_list:
+      - path: ph2.h
+  - path: public/mikroe/ph2/inc
+    file_list:
+      - path: mikroe_ph2.h
+source:
+  - path: thirdparty/mikrosdk_click_v2/clicks/ph2/lib_ph2/src/ph2.c
+  - path: public/mikroe/ph2/src/mikroe_ph2.c

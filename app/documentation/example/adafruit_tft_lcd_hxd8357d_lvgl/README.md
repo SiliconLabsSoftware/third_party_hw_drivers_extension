@@ -15,23 +15,24 @@ For testing, you'll need a HXD8357D display breakout, like [this large 3.5" TFT 
 ## Required Hardware ##
 
 - [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 - [Adafruit HXD8357D - 3.5" TFT LCD with Touchscreen](https://www.adafruit.com/product/2050)
 
 ## Hardware Connection ##
 
-To connect the Adafruit 3.5" TFT LCD (with Touchscreen) with the EFR32xG24 Explorer Kit, you can see the pins mapping table below.
+To connect the Adafruit 3.5" TFT LCD (with Touchscreen) with your board, you can see the pins mapping table below.
 
-| Pin | Connection | Pin function |
-|:---:|:-------------:|:---------------|
-| PC8 | D/C | GPIO |
-| PC0 | CS | SPI CS |
-| PC1 | CLK | SPI SCK |
-| PC2 | MISO | SPI MISO |
-| PC3 | MOSI | SPI MOSI |
-| PD5 | XP(X+) | AN |
-| PD4 | YP(Y+) | AN |
-| PB1 | YM(Y-) | AN |
-| PA0 | XM(X-) | AN |
+| EFR32xG24 Explorer Kit | SiWx917-RB4338A Radio Board  | Connection | Pin function |
+| --- | --- | --- | --- |
+| PC8 | GPIO_47 (P26) | D/C | GPIO |
+| PC0 | GPIO_28 (P31) | CS | SPI CS |
+| PC1 | GPIO_25 (P25) | CLK | SPI SCK |
+| PC2 | GPIO_26 (P27) | MISO | SPI MISO |
+| PC3 | GPIO_27 (P29) | MOSI | SPI MOSI |
+| PD5 | GPIO_7 (P20) | XP(X+) | AN |
+| PD4 | ULP_GPIO_1 (P16) | YP(Y+) | AN |
+| PB1 | GPIO_6 (P19) | YM(Y-) | AN |
+| PA0 | ULP_GPIO_8 (P15) | XM(X-) | AN |
 
 *Note: To be able to communicate with TFT LCD using SPI mode, you need to solder closed the IM2 jumper on the back of the PCB.*
 
@@ -41,7 +42,7 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter **hxd8357d**.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **hxd8357d**.
 
 2. Click **Create** button on the example:
 
@@ -57,37 +58,49 @@ You can either create a project based on an example project or start with an emp
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
-
-2. Copy all the file in `app_ui/brd2703a` and the file `app/example/adafruit_tft_lcd_hxd8357d_lvgl/app.c` into the project root folder (overwriting the existing files).
-
+1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Board" or "SiWx917-RB4338A Radio Board" using Simplicity Studio v5. Use the default project settings.
+2. Copy source files:
+    - With Gecko EFR32 SOCs:
+      - Copy all files in `app/example/adafruit_tft_lcd_hxd8357d_lvgl/app_ui` except `ui_events_si91x.c` into the project root folder
+      - Copy the file `app/example/adafruit_tft_lcd_hxd8357d_lvgl/gecko/app.c` into the project root folder (overwriting the existing files)
+    - With SiWx917 SoCs:
+      - Copy all files in `app/example/adafruit_tft_lcd_hxd8357d_lvgl/app_ui` except `ui_events_gecko.c` into the project root folder
+      - Copy the file `app/example/adafruit_tft_lcd_hxd8357d_lvgl/gecko/app.c` into the project root folder (overwriting the existing files)
 3. Install the software components:
-
    - Open the .slcp file in the project.
-
    - Select the SOFTWARE COMPONENTS tab.
-
    - Install the following components:
-
-      - [Services] → [Timers] → [Sleep Timer]
-      - [Platform] → [Driver] → [LED] → [Simple LED] → [led0, led1]
-      - [Platform] → [Driver] → [Button] → [Simple Button] → [btn0]
+      - With Gecko EFR32 SOCs:
+         - [Services] → [Timers] → [Sleep Timer]
+         - [Platform] → [Driver] → [LED] → [Simple LED] → [led0, led1]
+         - [Platform] → [Driver] → [Button] → [Simple Button] → [btn0, btn1]
+         - [Third Party Hardware Drivers] → [Human Machine Interface] → [Touch Screen Analog Interface (Gecko)] → use the default configuration
+      - With SiWx917 SoCs:
+         - [WiSeConnect 3 SDK] → [Device] → [MCU] → [Service] → [Power Manager] → [Sleep Timer for Si91x]
+         - [WiSeConnect 3 SDK] → [Device] → [MCU] → [Hardware] → [LED] → [led0, led1]
+         - [WiSeConnect 3 SDK] → [Device] → [MCU] → [Hardware] → [Button] → [btn0, btn1]
+         - [Third Party Hardware Drivers] → [Human Machine Interface] → [Touch Screen Analog Interface (Si91x)] → use the default configuration
       - If using single buffer mode without DMA:
         - [Third Party Hardware Drivers] → [Display & LED] → [HXD8357D - TFT LCD Display (Adafruit) - SPI]
-        - [Third Party Hardware Drivers] → [Human Machine Interface] → [Touch Screen (Analog)] → use default configuration
-        - [Third Party Hardware Drivers] → [Services] → [LVGL - Graphic Library] → Using settings as below:
-          ![Create_example](image/single_buffered_lvgl_settings.png)
       - If using double buffered DMA mode:
         - [Third Party Hardware Drivers] → [Display & LED] → [HXD8357D - TFT LCD Display (Adafruit) - SPI with DMA]
-        - [Third Party Hardware Drivers] → [Human Machine Interface] → [Touch Screen (Analog)] → use default configuration
-        - [Third Party Hardware Drivers] → [Services] → [LVGL - Graphic Library] → Using settings as below:
-          ![Create_example](image/double_buffered_lvgl_settings.png)
+      - [Third Party Hardware Drivers] → [Human Machine Interface] → [Touch Screen (Analog)]
+      - [Third Party Hardware Drivers] → [Services] → [LVGL - Graphic Library] → Using settings as below:
+      ![Create_example](image/double_buffered_lvgl_settings.png)
 
-4. Build and flash the project to your device.
+4. Enable DMA support for SPI module (for SiWx917 SoCs)
+
+   To improve SPI transfer speed, enable DMA support by changing configuration of GSPI component at: **[WiSeConnect 3 SDK] → [Device] → [Si91X] → [MCU] → [Peripheral] → [GSPI]** as the picture bellow
+
+   | | |
+   | - | - |
+   | ![gspi](image/gspi.png) | ![gspi_dma](image/gspi_dma.png) |
+
+5. Build and flash the project to your device.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 ## Calibration for Touch function ##
 

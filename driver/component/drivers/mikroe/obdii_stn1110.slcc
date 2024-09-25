@@ -21,9 +21,12 @@ config_file:
   - path: public/mikroe/obdii_stn1110/config/brd4314a/mikroe_stn1110_config.h
     file_id: driver_config_obdii
     condition: [brd4314a]
+  - path: public/mikroe/obdii_stn1110/config/brd4338a/mikroe_stn1110_config.h
+    file_id: driver_config_obdii
+    condition: [brd4338a]
   - path: public/mikroe/obdii_stn1110/config/other/mikroe_stn1110_config.h
     file_id: driver_config_obdii
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
 provides:
   - name: obdii_stn1110
     allow_multiple: false

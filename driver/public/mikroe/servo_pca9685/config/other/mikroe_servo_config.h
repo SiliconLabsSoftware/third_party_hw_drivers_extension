@@ -40,14 +40,35 @@
 #ifndef MIKORE_SERVO_CONFIG_H_
 #define MIKORE_SERVO_CONFIG_H_
 
+#ifndef SLI_SI917
+#include "em_gpio.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
+// <h> MIKROE SERVO CLICK I2C Configuration
+
+// <e> MIKROE SERVO CLICK I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_SERVO_CLICK_I2C_UC                 0
+
+// <o MIKROE_SERVO_CLICK_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define MIKROE_SERVO_CLICK_I2C_SPEED_MODE         0
+// </e>
+// </h>
+
 // <h> I2C address
-// <o SERVO_PCA9685_ADDRESS> SERVO PCA9685 ADDRESS
+// <o PCA9685_ADDRESS> PCA9685 ADDRESS
 // <0=> None
 // <0x40=> 0x40
 // <0x41=> 0x41
@@ -58,9 +79,9 @@ extern "C" {
 // <0x46=> 0x46
 // <0x47=> 0x47
 // <i> Default: 0
-#define SERVO_PCA9685_ADDRESS           0x40
+#define PCA9685_ADDRESS                           0x40
 
-// <o SERVO_LTC2497_ADDRESS> SERVO LTC2497 ADDRESS
+// <o LTC2497_ADDRESS> LTC2497 ADDRESS
 // <0=> None
 // <0x14=> 0x14
 // <0x16=> 0x16
@@ -71,7 +92,7 @@ extern "C" {
 // <0x74=> 0x74
 // <0x76=> 0x76
 // <i> Default: 0x14
-#define SERVO_LTC2497_ADDRESS           0x14
+#define LTC2497_ADDRESS                           0x14
 // </h>
 
 // <<< end of configuration section >>>
@@ -81,8 +102,8 @@ extern "C" {
 // <gpio optional=true> SERVO_OUTPUT_ENABLE
 // $[GPIO_SERVO_OUTPUT_ENABLE]
 #warning "OE pin for Servo Click is not configured"
-// #define SERVO_OUTPUT_ENABLE_PORT                   gpioPortB
-// #define SERVO_OUTPUT_ENABLE_PIN                    0
+// #define SERVO_OUTPUT_ENABLE_PORT               gpioPortB
+// #define SERVO_OUTPUT_ENABLE_PIN                0
 // [GPIO_SERVO_OUTPUT_ENABLE]$
 
 // <<< sl:end pin_tool >>>

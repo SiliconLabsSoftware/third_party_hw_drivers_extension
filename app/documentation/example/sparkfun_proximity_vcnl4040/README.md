@@ -2,7 +2,7 @@
 
 ## Summary ##
 
-This project aims to implement a hardware driver interacting with the [VCNL4040 proximity sensor](https://www.vishay.com/ppg?84274) via APIs of GSDK.
+This project aims to implement a hardware driver interacting with the [VCNL4040 proximity sensor](https://www.vishay.com/ppg?84274) using Silicon Labs platform.
 
 VCNL4040 integrates a proximity sensor (PS), ambient light sensor (ALS), and a high power IRED into one small package. It incorporates photodiodes, amplifiers, and analog to digital converting circuits into a single chip by CMOS process. The 16-bit high resolution ALS offers excellent sensing capabilities with sufficient selections to fulfill most applications whether dark or high transparency lens design. High and low interrupt thresholds can be programmed for both ALS and PS, allowing the component to use a minimal amount of the microcontroller's resources. With the ability to detect objects up to 20 cm, it is often used in automatic towel and soap dispensers or automatic faucets.
 
@@ -11,13 +11,23 @@ The patented Filtron technology achieves ambient light spectral sensitivity clos
 ## Required Hardware ##
 
 - [BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit?tab=overview) (BRD4002 + BRD4338A)
 - [SparkFun Proximity Sensor Breakout - 20cm, VCNL4040 (Qwiic)](https://www.sparkfun.com/products/15177)
 
 ## Hardware Connection ##
 
-A VCNL4040 sensor board can be easily connected up with two I2C wires (SDA and SCL) along with 3v3 and GND. For the designated boards, SparkFun Qwiic compatible STEMMA QT connectors can be used.
+- If the BGM220P Explorer Kit is used:
 
-![connection](image/connection.png)
+  A VCNL4040 sensor board can be easily connected up with two I2C wires (SDA and SCL) along with 3v3 and GND. For the designated boards, SparkFun Qwiic compatible STEMMA QT connectors can be used.
+
+    ![connection](image/connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | SparkFun Proximity VCNL4040 |
+  | -------------| ------------- | ------------------ | ---------------------------- |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                          |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                          |
 
 ## Setup ##
 
@@ -25,39 +35,47 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter "VCNL4040".
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter **"VCNL4040"**.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - VCNL4040 - Proximity Sensor (Sparkfun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+    ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for the your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/sparkfun_proximity_vcnl4040/app.c` into the project root folder (overwriting the existing file).
 
 3. Install the software components:
 
-   - Open the .slcp file in the project.
+    - Open the .slcp file in the project.
 
-   - Select the SOFTWARE COMPONENTS tab.
+    - Select the SOFTWARE COMPONENTS tab.
 
-   - Install the following components
-      - [Services] → [Timers] → [Sleep Timer]
-      - [Services] →  [IO Stream] → [IO Stream: USART] → instance name: **vcom**
-      - [Application] →  [Utility] → [Log]
-      - [Third Party Hardware Drivers] -> [Sensors] -> [VCNL4040 - Proximity Sensor (Sparkfun)] → use default configuration
-      ![config](image/config.png)
+    - Install the following components:
+
+      **If the BGM220P Explorer Kit is used:**
+        - [Services] → [Timers] → [Sleep Timer]
+        - [Services] →  [IO Stream] → [IO Stream: USART] → instance name: **vcom**
+        - [Application] →  [Utility] → [Log]
+        - [Platform] → [Driver] → [I2C] → [I2CSPM] → default instance name: **qwiic**
+        - [Third Party Hardware Drivers] -> [Sensors] -> [VCNL4040 - Proximity Sensor (Sparkfun)] → use default configuration
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+        - [Third Party Hardware Drivers] -> [Sensors] -> [VCNL4040 - Proximity Sensor (Sparkfun)] → use default configuration
 
 4. Build and flash the project to your device
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "VCNL4040 - Proximity Sensor (Sparkfun)" component.
+- Third-party Drivers Extension must be enabled for the project to install **"VCNL4040 - Proximity Sensor (Sparkfun)"** component.
 
 ## How It Works ##
 

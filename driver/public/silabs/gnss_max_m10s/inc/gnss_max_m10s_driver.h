@@ -57,7 +57,6 @@ extern "C" {
 #define TX_LEN                     2                      ///< Write buffer length 2 bytes
 #define RD_BUF                     6                      ///< Read buffer length 6 bytes
 #define WR_BUF                     1                      ///< Write buffer length 1 byte
-// #define I2C_BASE                  I2C2                    ///< Value of I2C base
 #define MS_DELAY_COUNTER           4600                   ///< Value of delay counter for milli seconds delay
 #define MAX_PAYLOAD_SIZE           276                    ///< Value of maximum payload size for UBX
 #define UBX_NAV_PVT_LEN            92                     ///< Value for position/velocity/time type UBX packet length

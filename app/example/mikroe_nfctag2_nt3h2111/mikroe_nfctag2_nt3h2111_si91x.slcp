@@ -1,0 +1,60 @@
+project_name: mikroe_nfctag2_nt3h2111
+label: Third Party Hardware Drivers - NT3H2111 - NFC Tag 2 Click (Mikroe) - I2C
+description: |
+  This example project shows an example for NT3H2111 - NFC Tag 2 Click board driver integration on I2C communication.
+category: Example|Platform
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+package: platform
+quality: evaluation
+readme:
+- path: ../../documentation/example/mikroe_nfctag2_nt3h2111/README.md
+source:
+- path: app.c
+- path: main.c
+include:
+- path: ''
+  file_list:
+  - path: app.h
+component:
+- id: sl_system
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- instance: [i2c2]
+  from: wiseconnect3_sdk
+  id: i2c_instance
+- id: mikroe_nfctag2
+  from: third_party_hw_drivers
+
+define:
+- name: DEBUG_EFM
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+other_file:
+  - path: ../../documentation/example/mikroe_nfctag2_nt3h2111/image/hardware_connection.png
+    directory: image
+  - path: ../../documentation/example/mikroe_nfctag2_nt3h2111/image/create_example.png
+    directory: image
+  - path: ../../documentation/example/mikroe_nfctag2_nt3h2111/image/log.png
+    directory: image
+  - path: ../../documentation/example/mikroe_nfctag2_nt3h2111/image/nfc_tools.png
+    directory: image
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

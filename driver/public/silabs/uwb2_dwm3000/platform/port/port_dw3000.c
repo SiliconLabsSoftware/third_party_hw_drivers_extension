@@ -11,45 +11,291 @@
  * @author
  */
 
-#include "port.h"
-#include "em_gpio.h"
-#include "sl_udelay.h"
-#include "gpiointerrupt.h"
+#include "port_dw3000.h"
+#include "sl_sleeptimer.h"
+#include "drv_spi_master.h"
+#include "drv_digital_in.h"
+#include "drv_digital_out.h"
+#include "uwb2_dwm3000_config.h"
+#include "deca_device_api.h"
 
-#if defined(HAL_UWB_WAKEUP_PORT) && defined(HAL_UWB_WAKEUP_PIN)
-#define port_wakeup_start()  GPIO_PinModeSet(HAL_UWB_WAKEUP_PORT, \
-                                             HAL_UWB_WAKEUP_PIN,  \
-                                             gpioModePushPull,    \
-                                             1);
-#define port_wakeup_end()    GPIO_PinModeSet(HAL_UWB_WAKEUP_PORT, \
-                                             HAL_UWB_WAKEUP_PIN,  \
-                                             gpioModePushPull,    \
-                                             0);
+#if (defined(SLI_SI917))
+#include "sl_driver_gpio.h"
+#define GPIO_M4_INTR              7 // M4 Pin interrupt number
+#define AVL_INTR_NO               0 // available interrupt number
+#define DWM3000_INT_CH_AND_FLAG   ((GPIO_M4_INTR << \
+                                    16) | SL_GPIO_INTERRUPT_RISE_EDGE)
 #else
-#define port_wakeup_start()  GPIO_PinModeSet(HAL_SPI_CS_PORT,  \
-                                             HAL_SPI_CS_PIN,   \
-                                             gpioModePushPull, \
-                                             0);
-#define port_wakeup_end()    GPIO_PinModeSet(HAL_SPI_CS_PORT,  \
-                                             HAL_SPI_CS_PIN,   \
-                                             gpioModePushPull, \
-                                             1);
+#include "gpiointerrupt.h"
 #endif
 
-/* @brief     manually configuring of EXTI priority
- * */
-void init_dw3000_irq(void)
+typedef struct port_dw3000
 {
+  spi_master_t spi;
+
+#if defined (DWM3000_RESET_PORT)
+  digital_out_t gpio_reset;
+#endif
+
+#if defined (DWM3000_WAKE_PORT)
+  digital_out_t gpio_wake;
+#endif
+
+#if defined (DWM3000_ON_PORT)
+  digital_in_t gpio_on;
+#endif
+
+#if defined (DWM3000_CS_PORT)
+  digital_out_t gpio_cs;
+#endif
+
+#if defined (DWM3000_INT_PORT)
+  digital_in_t gpio_int;
+#endif
+}uwb2_dwm300_t;
+
+static uwb2_dwm300_t uwb2_dwm3000;
+
+static void process_deca_irq(uint8_t interrupt_number);
+
+#if defined(HAL_UWB_WAKEUP_PORT) && defined(HAL_UWB_WAKEUP_PIN)
+#define port_wakeup_start()  digital_out_high(&uwb2_dwm3000.gpio_wake);
+#define port_wakeup_end()    digital_out_low(&uwb2_dwm3000.gpio_wake);
+#else
+#if defined(DWM3000_CS_PORT) && defined(DWM3000_CS_PIN)
+#define port_wakeup_start()  digital_out_low(&uwb2_dwm3000.gpio_cs);
+#define port_wakeup_end()    digital_out_high(&uwb2_dwm3000.gpio_cs);
+#else
+#define port_wakeup_start()
+#define port_wakeup_end()
+#endif
+#endif
+
+int uwb2_dwm3000_spi_init(mikroe_spi_handle_t spidrv)
+{
+  if (NULL == spidrv) {
+    return _ERR;
+  }
+
+  spi_master_config_t spi_cfg;
+  spi_master_configure_default(&spi_cfg);
+  spi_cfg.mode = SPI_MASTER_MODE_0;
+  spi_cfg.speed = DWM3000_FREQ_MIN;
+
+  uwb2_dwm3000.spi.handle = spidrv;
+
+  if (spi_master_open(&uwb2_dwm3000.spi, &spi_cfg) == SPI_MASTER_ERROR) {
+    return _ERR;
+  }
+
+#if defined (DWM3000_RESET_PORT)
+  pin_name_t gpio_reset_pin = hal_gpio_pin_name(DWM3000_RESET_PORT,
+                                                DWM3000_RESET_PIN);
+  digital_out_init(&uwb2_dwm3000.gpio_reset, gpio_reset_pin);
+#endif
+
+#if defined (DWM3000_WAKE_PORT)
+  pin_name_t gpio_wake_pin = hal_gpio_pin_name(DWM3000_WAKE_PORT,
+                                               DWM3000_WAKE_PIN);
+  digital_out_init(&uwb2_dwm3000.gpio_wake, gpio_wake_pin);
+#endif
+
+#if defined (DWM3000_ON_PORT)
+  pin_name_t gpio_on_pin = hal_gpio_pin_name(DWM3000_ON_PORT,
+                                             DWM3000_ON_PIN);
+  digital_in_init(&uwb2_dwm3000.gpio_on, gpio_on_pin);
+#endif
+
+#if defined (DWM3000_CS_PORT)
+  pin_name_t gpio_cs_pin = hal_gpio_pin_name(DWM3000_CS_PORT,
+                                             DWM3000_CS_PIN);
+  digital_out_init(&uwb2_dwm3000.gpio_cs, gpio_cs_pin);
+#endif
+
+#if defined  DWM3000_INT_PORT
+  pin_name_t gpio_int_pin = hal_gpio_pin_name(DWM3000_INT_PORT,
+                                              DWM3000_INT_PIN);
+  digital_in_init(&uwb2_dwm3000.gpio_int, gpio_int_pin);
+
+#if (defined(SLI_SI917))
+  sl_gpio_t gpio_port_pin = { DWM3000_INT_PIN / 16,
+                              DWM3000_INT_PIN % 16 };
+  sl_gpio_driver_configure_interrupt(&gpio_port_pin,
+                                     GPIO_M4_INTR,
+                                     SL_GPIO_INTERRUPT_RISING_EDGE,
+                                     (void *)process_deca_irq,
+                                     AVL_INTR_NO);
+
+  sl_gpio_driver_disable_interrupts(DWM3000_INT_CH_AND_FLAG);
+
+#else /* None Si91x device */
+  GPIOINT_CallbackRegister(DWM3000_INT_PIN,
+                           process_deca_irq);
+  GPIO_ExtIntConfig(DWM3000_INT_PORT,
+                    DWM3000_INT_PIN,
+                    DWM3000_INT_PIN,
+                    true,
+                    false,
+                    false);
+#endif
+#endif
+
+  return _NO_ERR;
+}
+
+int uwb2_dwm3000_spi_close(void)
+{
+  spi_master_close(&uwb2_dwm3000.spi);
+  return _NO_ERR;
+}
+
+static void port_spi_set_bitrate(uint32_t goal_bitrate)
+{
+  spi_master_set_speed(&uwb2_dwm3000.spi, goal_bitrate);
+}
+
+void set_dw_spi_slow_rate(void)
+{
+  port_spi_set_bitrate(DWM3000_FREQ_MIN);
+}
+
+void set_dw_spi_fast_rate(void)
+{
+  port_spi_set_bitrate(DWM3000_FREQ_MAX);
+}
+
+static inline void spi_transfer_open(void)
+{
+#if (!SPI_USE_SPIDRV_API) && defined (SL_CATALOG_POWER_MANAGER_PRESENT)
+  sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
+#endif
+
+#if defined (DWM3000_CS_PORT)
+  digital_out_low(&uwb2_dwm3000.gpio_cs);
+#endif
+}
+
+static inline void spi_transfer_close(void)
+{
+#if defined (DWM3000_CS_PORT)
+  digital_out_high(&uwb2_dwm3000.gpio_cs);
+#endif
+
+#if (!SPI_USE_SPIDRV_API) && defined (SL_CATALOG_POWER_MANAGER_PRESENT)
+  sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1);
+#endif
+}
+
+int readfromspi(uint16_t headerLength,
+                uint8_t *headerBuffer,
+                uint16_t readLength,
+                uint8_t *readBuffer)
+{
+  dwt_error_e sc = DWT_SUCCESS;
+
+  spi_transfer_open();
+
+  if ((headerBuffer) && (headerLength) && (readBuffer) && (readLength)) {
+    if (spi_master_write_then_read(&uwb2_dwm3000.spi, headerBuffer,
+                                   headerLength,
+                                   readBuffer,
+                                   readLength) != SPI_MASTER_SUCCESS) {
+      sc = DWT_ERROR;
+    }
+  }
+  spi_transfer_close();
+
+  return sc;
+}
+
+static int spi_write(uint16_t headerLength,
+                     const uint8_t *headerBuffer,
+                     uint16_t bodyLength,
+                     const uint8_t *bodyBuffer,
+                     uint8_t *crc8)
+{
+  dwt_error_e sc = DWT_SUCCESS;
+  uint32_t total_length = 0;
+
+  spi_transfer_open();
+
+  if (headerBuffer && headerLength) {
+    total_length += headerLength;
+  }
+
+  if (bodyBuffer && bodyLength) {
+    total_length += bodyLength;
+  }
+
+  if (crc8) {
+    total_length += 1;
+  }
+
+  uint8_t tx_buff[total_length];
+  uint16_t tx_idx = 0;
+
+  if (headerBuffer && headerLength) {
+    for (uint16_t i = 0; i < headerLength; i++)
+    {
+      tx_buff[tx_idx] = headerBuffer[i];
+      tx_idx++;
+    }
+  }
+
+  if (bodyBuffer && bodyLength) {
+    for (uint16_t i = 0; i < bodyLength; i++)
+    {
+      tx_buff[tx_idx] = bodyBuffer[i];
+      tx_idx++;
+    }
+  }
+
+  if (crc8) {
+    tx_buff[tx_idx] = *crc8;
+  }
+
+  if (spi_master_write(&uwb2_dwm3000.spi, tx_buff,
+                       total_length) != SPI_MASTER_SUCCESS) {
+    sc = DWT_ERROR;
+  }
+  spi_transfer_close();
+
+  return sc;
+}
+
+int writetospi(uint16_t headerLength,
+               const uint8_t *headerBuffer,
+               uint16_t bodyLength,
+               const uint8_t *bodyBuffer)
+{
+  return spi_write(headerLength, headerBuffer, bodyLength, bodyBuffer, NULL);
+}
+
+int writetospiwithcrc(uint16_t headerLength,
+                      const uint8_t *headerBuffer,
+                      uint16_t bodyLength,
+                      const uint8_t *bodyBuffer,
+                      uint8_t crc8)
+{
+  return spi_write(headerLength, headerBuffer, bodyLength, bodyBuffer, &crc8);
 }
 
 void disable_dw3000_irq(void)
 {
-  GPIO_IntDisable(1 << HAL_UWB_IRQ_IT_NBR);
+#if (defined(SLI_SI917))
+  sl_gpio_driver_disable_interrupts(DWM3000_INT_CH_AND_FLAG);
+#else
+  GPIO_IntDisable(1 << DWM3000_INT_PIN);
+#endif
 }
 
 void enable_dw3000_irq(void)
 {
-  GPIO_IntEnable(1 << HAL_UWB_IRQ_IT_NBR);
+#if (defined(SLI_SI917))
+  sl_gpio_driver_enable_interrupts(DWM3000_INT_CH_AND_FLAG);
+#else
+  GPIO_IntEnable(1 << DWM3000_INT_PIN);
+#endif
 }
 
 /* @fn      reset_DW1000
@@ -60,10 +306,17 @@ void enable_dw3000_irq(void)
  * */
 void reset_DW3000(void)
 {
-  GPIO_PinModeSet(HAL_UWB_RST_PORT, HAL_UWB_RST_PIN, gpioModePushPull, 0);
-  sl_udelay_wait(2000);
-  GPIO_PinModeSet(HAL_UWB_RST_PORT, HAL_UWB_RST_PIN, gpioModeInputPull, 1);
-  sl_udelay_wait(2000);
+#if defined (DWM3000_RESET_PORT)
+  digital_out_low(&uwb2_dwm3000.gpio_reset);
+#endif
+
+  deca_sleep(2);
+
+#if defined (DWM3000_RESET_PORT)
+  digital_out_high(&uwb2_dwm3000.gpio_reset);
+#endif
+
+  deca_sleep(2);
 }
 
 __attribute__((weak)) void wakeup_device_with_io(void)
@@ -82,7 +335,7 @@ __attribute__((weak)) void wakeup_device_with_io(void)
 error_e port_wakeup_dw3000_fast(void)
 {
   port_wakeup_start();
-  sl_udelay_wait(500);
+  deca_usleep(500);
   port_wakeup_end();
 
   return _NO_ERR;
@@ -157,11 +410,11 @@ error_e port_disable_wake_init_dw(void)
   return _NO_ERR;
 }
 
-error_e port_init_dw_chip(void)
+error_e port_init_dw_chip(mikroe_spi_handle_t spidrv)
 {
   dwt_setlocaldataptr(0);
 
-  int sc = openspi();
+  int sc = uwb2_dwm3000_spi_init(spidrv);
   if (0 != sc) {
     return _ERR_SPI;
   }
@@ -192,11 +445,16 @@ void port_stop_all_UWB(void)
  */
 decaIrqStatus_t decamutexon(void)
 {
+#if (defined(SLI_SI917))
+  sl_gpio_driver_disable_interrupts(DWM3000_INT_CH_AND_FLAG);
+  return 0;
+#else
   uint32_t s = GPIO_EnabledIntGet();
-  if (s & (1 << HAL_UWB_IRQ_IT_NBR)) {
-    GPIO_IntDisable(1 << HAL_UWB_IRQ_IT_NBR);
+  if (s & (1 << DWM3000_INT_PIN)) {
+    GPIO_IntDisable(1 << DWM3000_INT_PIN);
   }
   return s;
+#endif
 }
 
 /*! ----------------------------------------------------------------------------
@@ -215,9 +473,14 @@ decaIrqStatus_t decamutexon(void)
  */
 void decamutexoff(decaIrqStatus_t s)
 {
-  if (s & (1 << HAL_UWB_IRQ_IT_NBR)) {
-    GPIO_IntEnable(1 << HAL_UWB_IRQ_IT_NBR);
+#if (defined(SLI_SI917))
+  (void)s;
+  sl_gpio_driver_enable_interrupts(DWM3000_INT_CH_AND_FLAG);
+#else
+  if (s & (1 << DWM3000_INT_PIN)) {
+    GPIO_IntEnable(1 << DWM3000_INT_PIN);
   }
+#endif
 }
 
 /* @fn      process_deca_irq
@@ -229,19 +492,10 @@ static void process_deca_irq(uint8_t interrupt_number)
 {
   (void)interrupt_number;
 
-  while (GPIO_PinInGet(HAL_UWB_IRQ_PORT, HAL_UWB_IRQ_PIN) != 0)
+  while (digital_in_read(&uwb2_dwm3000.gpio_int) != 0)
   {
     dwt_isr();
   }   // while DW3000 IRQ line active
-}
-
-void dw_irq_init(void)
-{
-  GPIO_PinModeSet(HAL_UWB_IRQ_PORT, HAL_UWB_IRQ_PIN, gpioModeInputPull, 0);
-
-  GPIOINT_CallbackRegister(HAL_UWB_IRQ_IT_NBR, process_deca_irq);
-  GPIO_ExtIntConfig(HAL_UWB_IRQ_PORT, HAL_UWB_IRQ_PIN,
-                    HAL_UWB_IRQ_IT_NBR, true, false, false);
 }
 
 /*
@@ -260,4 +514,16 @@ error_e port_disable_dw_irq_and_reset(int reset)
   }
 
   return _NO_ERR;
+}
+
+/* Wrapper function to be used by decadriver. Declared in deca_device_api.h */
+void deca_sleep(unsigned int time_ms)
+{
+  sl_sleeptimer_delay_millisecond(time_ms);
+}
+
+/* Wrapper function to be used by decadriver. Declared in deca_device_api.h */
+void deca_usleep(unsigned long time_us)
+{
+  sl_udelay_wait(time_us);
 }

@@ -3,33 +3,65 @@
  * @brief Top level application functions
  *******************************************************************************
  * # License
- * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2024 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc. Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement. This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
  *
- ******************************************************************************/
-
-/***************************************************************************//**
- * Initialize application.
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #include <string.h>
 #include <stdlib.h>
-#include "sl_sleeptimer.h"
-#include "sl_iostream_init_usart_instances.h"
-#include "app_log.h"
 #include "app_queue.h"
+#include "sl_sleeptimer.h"
 #include "mikroe_lea6s.h"
 
-#define PROCESS_RX_BUFFER_SIZE     500
-#define PROCESS_PARSER_BUFFER_SIZE PROCESS_RX_BUFFER_SIZE
-#define PROCESS_QUEUE_SIZE         (PROCESS_RX_BUFFER_SIZE * 2)
+#if (defined(SLI_SI917))
+#include "sl_si91x_usart.h"
+#include "rsi_debug.h"
+#else
+#include "sl_iostream_init_usart_instances.h"
+#include "sl_iostream_init_eusart_instances.h"
+#include "app_log.h"
+#endif
+
+#define PROCESS_RX_BUFFER_SIZE         500
+#define PROCESS_PARSER_BUFFER_SIZE     PROCESS_RX_BUFFER_SIZE
+#define PROCESS_QUEUE_SIZE             (PROCESS_RX_BUFFER_SIZE * 2)
+
+#if (defined(SLI_SI917))
+#define app_printf(...)                DEBUGOUT(__VA_ARGS__)
+#define USART_INSTANCE_USED            UART_1
+static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
+#else
+#define app_printf(...)                app_log(__VA_ARGS__)
+#endif
 
 static void gps_process (void);
 static void parser_application (void);
@@ -41,27 +73,34 @@ static uint8_t parser_buffer[PROCESS_PARSER_BUFFER_SIZE];
 APP_QUEUE(uart_rx_queue, uint8_t, PROCESS_QUEUE_SIZE);
 static sl_sleeptimer_timer_handle_t timer_handle;
 static bool trigger_gps_process = false;
+mikroe_uart_handle_t app_uart_instance = NULL;
 
 void app_init(void)
 {
+  sl_status_t sc;
+
+#if (defined(SLI_SI917))
+  app_uart_instance = &uart_instance;
+#else
+  app_uart_instance = sl_iostream_uart_mikroe_handle;
   app_log_iostream_set(sl_iostream_vcom_handle);
-  app_log("Hello World GPS Click !!!\r\n");
-  app_log("mikroe_lea6s_init = 0x%lx\r\n",
-          mikroe_lea6s_init(sl_iostream_uart_mikroe_handle));
-  app_log("app_queue_init = 0x%lx\r\n", APP_QUEUE_INIT(&uart_rx_queue,
-                                                       uint8_t,
-                                                       PROCESS_QUEUE_SIZE));
+#endif
+
+  app_printf("Hello World GPS Click !!!\r\n");
+  sc = mikroe_lea6s_init(app_uart_instance, true);
+  app_printf("mikroe_lea6s_init = 0x%lx\r\n", sc);
+  sc = APP_QUEUE_INIT(&uart_rx_queue, uint8_t, PROCESS_QUEUE_SIZE);
+  app_printf("app_queue_init = 0x%lx\r\n", sc);
   mikroe_lea6s_wakeup();
   sl_sleeptimer_delay_millisecond(5000);
-  app_log("mikroe_lea6s_wakeup done\r\n");
-
-  app_log("sl_sleeptimer_start_periodic = 0x%lx\r\n",
-          sl_sleeptimer_start_periodic_timer_ms(&timer_handle,
-                                                1000,
-                                                timer_callback_fcn,
-                                                NULL,
-                                                0,
-                                                0));
+  app_printf("mikroe_lea6s_wakeup done\r\n");
+  sc = sl_sleeptimer_start_periodic_timer_ms(&timer_handle,
+                                             800,
+                                             timer_callback_fcn,
+                                             NULL,
+                                             0,
+                                             0);
+  app_printf("sl_sleeptimer_start_periodic = 0x%lx\r\n", sc);
 }
 
 /***************************************************************************//**
@@ -149,7 +188,7 @@ static void parser_application(void)
          * + 24.86183, + 121.0165 and enter the field of Google Map to find the
          * actual corresponding location.
          */
-        app_log("**************************************************\r\n");
+        app_printf("**************************************************\r\n");
 
         memcpy((void *)latitude_int, (const void *)element_buf, 2);
         memcpy((void *)latitude_decimal,
@@ -157,7 +196,7 @@ static void parser_application(void)
                strlen((const char *)element_buf) - 2);
         double latitude = (atof((const char *)latitude_int)
                            + (atof((const char *)(latitude_decimal)) / 60.0));
-        app_log("Latitude:  %.6f\r\n", latitude);
+        app_printf("Latitude:  %.6f\r\n", latitude);
         memset(element_buf, 0, sizeof(element_buf));
 
         mikroe_lea6s_generic_parser(parser_buffer,
@@ -172,14 +211,14 @@ static void parser_application(void)
         double longtitude = (atof((const char *)longitude_int)
                              + (atof((const char *)(longitude_decimal))
                                 / 60.0));
-        app_log("Longitude:  %.6f\r\n", longtitude);
+        app_printf("Longitude:  %.6f\r\n", longtitude);
         memset(element_buf, 0, sizeof(element_buf));
 
         mikroe_lea6s_generic_parser(parser_buffer,
                                     gps_command_nema_gpgga_e,
                                     gpgga_element_altitude_e,
                                     element_buf);
-        app_log("Altitude: %s \r\n", element_buf);
+        app_printf("Altitude: %s \r\n", element_buf);
       }
 
       index = 0;

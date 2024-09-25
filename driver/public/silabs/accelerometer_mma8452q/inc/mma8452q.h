@@ -43,7 +43,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -79,9 +79,9 @@ extern "C" {
 #define SL_MMA8452Q_I2C_BUS_ADDRESS1          0x1C    /**< I2C address of the
                                                        *   MMA8452Q chip: SA0
                                                        *   low-logic */
-#define SL_MMA8452Q_I2C_BUS_ADDRESS2          0x1D    /**< I2C address of the
-                                                       *   MMA8452Q chip: SA0
-                                                       *   hi-logic  */
+#define SL_MMA8452Q_I2C_BUS_ADDRESS2          0x1D   /**< I2C address of the
+                                                      *   MMA8452Q chip: SA0
+                                                      *   hi-logic  */
 
 /***************************************************************************//**
  * @brief
@@ -617,7 +617,7 @@ sl_status_t mma8452q_get_pulse_status(uint8_t *pulse_status);
  *   @li @ref SL_STATUS_INVALID_PARAMETER invalid parameters.
  *
  ******************************************************************************/
-sl_status_t mma8452q_init(sl_i2cspm_t *i2cspm);
+sl_status_t mma8452q_init(mikroe_i2c_handle_t inst);
 
 /***************************************************************************//**
  * @brief

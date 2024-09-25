@@ -1,0 +1,69 @@
+project_name: mikroe_eth_wiz_w5500
+package: platform
+label: Third Party Hardware Drivers - W5500 - ETH Wiz Click (Mikroe)
+description: |
+  This example project shows an example for Mikroe ETH WIZ Click board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_eth_wiz_w5500/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: app_assert
+- id: sl_system
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- id: mikroe_eth_wiz
+  from: third_party_hw_drivers
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+other_file:
+  - path: ../../documentation/example/mikroe_eth_wiz_w5500/image/board.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_eth_wiz_w5500/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_eth_wiz_w5500/image/diagram.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_eth_wiz_w5500/image/flow.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_eth_wiz_w5500/image/log.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_eth_wiz_w5500/image/software_layers.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_eth_wiz_w5500/image/w5500_config.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_eth_wiz_w5500/image/spi_config.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

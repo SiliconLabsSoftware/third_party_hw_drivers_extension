@@ -8,15 +8,18 @@ quality: evaluation
 root_path: driver
 requires:
   - name: status
-  - name: i2cspm
-recommends:
-  - id: i2cspm
-    instance: [qwiic]
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_i2c
 provides:
   - name: sparkfun_soil_moisture
 template_contribution:
   - name: component_catalog
     value: sparkfun_soil_moisture
+config_file:
+  - path: public/silabs/soil_moisture/config/sparkfun_soil_moisture_config.h
+    file_id: sparkfun_soil_moisture_config
 include:
   - path: public/silabs/soil_moisture/inc
     file_list:

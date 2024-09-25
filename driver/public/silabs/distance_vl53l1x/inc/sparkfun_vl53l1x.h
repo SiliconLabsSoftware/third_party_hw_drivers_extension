@@ -41,7 +41,7 @@
 #define VL53L1X_H_
 
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -99,25 +99,27 @@ typedef struct {
  * @param[in] dev
  *    Device address. (Default: 0x29[0x52])
  *
+ * @param[in] i2c_instance
+ *   I2C instance
  *
  * @return
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_TRANSMIT if I2C transmit failed.
  ******************************************************************************/
-sl_status_t vl53l1x_init(uint16_t dev, sl_i2cspm_t *i2cspm_instance);
+sl_status_t vl53l1x_init(uint16_t dev, mikroe_i2c_handle_t i2c_instance);
 
 /***************************************************************************//**
  * @brief
  *    This function sets the IC2SPM instance used by platform functions.
  *
- * @param[in] i2cspm_instance
- *    I2CSPM instance, default: VL53L1X_CONFIG_I2C_INSTANCE
+ * @param[in] i2c_instance
+ *    I2C instance
  *
  * @return
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if int_pol is invalid.
  ******************************************************************************/
-sl_status_t vl53l1x_set_i2cspm_instance(sl_i2cspm_t *i2cspm_instance);
+sl_status_t vl53l1x_set_i2cspm_instance(mikroe_i2c_handle_t i2c_instance);
 
 /***************************************************************************//**
  * @brief
@@ -915,4 +917,4 @@ sl_status_t vl53l1x_calibrate_xtalk(uint16_t dev,
 
 /** @} */
 
-#endif /* VL53L1X_H_ */
+#endif // VL53L1X_H_

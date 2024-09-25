@@ -37,9 +37,11 @@
  *
  ******************************************************************************/
 
+#include "drv_digital_out.h"
+#include "drv_digital_in.h"
 #include "mikroe_dps310_i2c.h"
+#include "mikroe_dps310_i2c_config.h"
 #include "pressure3.h"
-#include "sl_status.h"
 
 /********************************************************************************
  * static variables
@@ -51,24 +53,29 @@ static pressure3_t ctx;
 /********************************************************************************
  * public function
  *******************************************************************************/
-sl_status_t mikroe_pressure3_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_pressure3_init(mikroe_i2c_handle_t i2c_instance)
 {
   pressure3_cfg_t cfg;
 
-  if (i2cspm_instance == NULL) {
+  if (i2c_instance == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
   // Call basic setup functions
   pressure3_cfg_setup(&cfg);
   // Configure default i2csmp instance
-  ctx.i2c.handle = i2cspm_instance;
+  ctx.i2c.handle = i2c_instance;
+
+#if (MIKROE_DPS310_I2C_UC == 1)
+  cfg.i2c_speed = MIKROE_DPS310_I2C_SPEED_MODE;
+#endif
+
   if (PRESSURE3_OK != pressure3_init(&ctx, &cfg)) {
-    return SL_STATUS_FAIL;
-  } else {
-    pressure3_default_cfg(&ctx);
-    return SL_STATUS_OK;
+    return SL_STATUS_INITIALIZATION;
   }
+
+  pressure3_default_cfg(&ctx);
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_pressure3_generic_write(uint8_t reg,

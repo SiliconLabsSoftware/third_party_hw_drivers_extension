@@ -37,12 +37,8 @@
  *
  ******************************************************************************/
 
-#include "captouch2.h"
 #include "mikroe_cap1166.h"
 #include "mikroe_cap1166_config.h"
-#include "third_party_hw_drivers_helpers.h"
-#include "drv_digital_out.h"
-#include "drv_digital_in.h"
 
 static captouch2_t captouch2;
 static captouch2_cfg_t captouch2_cfg;
@@ -52,13 +48,11 @@ void mikroe_cap1166_default_cfg(void)
   captouch2_default_cfg(&captouch2);
 }
 
-sl_status_t mikroe_cap1166_init(SPIDRV_Handle_t spi_instance)
+sl_status_t mikroe_cap1166_init(mikroe_spi_handle_t spi_instance)
 {
   if (NULL == spi_instance) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
   // Configure default spi instance
   captouch2.spi.handle = spi_instance;
@@ -74,12 +68,22 @@ sl_status_t mikroe_cap1166_init(SPIDRV_Handle_t spi_instance)
   captouch2_cfg.alt = hal_gpio_pin_name(CAP1166_ALERT_PORT, CAP1166_ALERT_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(captouch2_init(&captouch2, &captouch2_cfg));
+#if defined(CAP1166_CS_PORT) && defined(CAP1166_CS_PIN)
+  captouch2_cfg.cs = hal_gpio_pin_name(CAP1166_CS_PORT, CAP1166_CS_PIN);
+#endif
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+#if (MIKROE_CAP1166_SPI_UC == 1)
+  captouch2_cfg.spi_speed = MIKROE_CAP1166_SPI_BITRATE;
+#endif
+
+  if (captouch2_init(&captouch2, &captouch2_cfg) != CAPTOUCH2_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_cap1166_set_spi_instance(SPIDRV_Handle_t spi_instance)
+sl_status_t mikroe_cap1166_set_spi_instance(mikroe_spi_handle_t spi_instance)
 {
   if (NULL == spi_instance) {
     return SL_STATUS_INVALID_PARAMETER;

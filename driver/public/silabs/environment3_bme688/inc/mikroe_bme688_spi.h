@@ -34,12 +34,9 @@
  ******************************************************************************/
 #ifndef MIKROE_BME688_SPI_H
 #define MIKROE_BME688_SPI_H
-
-#include "spidrv.h"
-#include "sl_udelay.h"
-
 #include "bme68x_defs.h"
 #include "bme68x.h"
+#include "drv_spi_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,9 +46,6 @@ typedef struct bme68x_conf bme68x_conf_t;
 typedef struct bme68x_data bme68x_data_t;
 typedef struct bme68x_heatr_conf bme68x_heatr_conf_t;
 typedef struct bme68x_dev bme68x_dev_t;
-typedef struct {
-  SPIDRV_Handle_t handle;
-} bme68x_spi_t;
 
 /***************************************************************************//**
  * @addtogroup BME688 - GAS Sensor
@@ -125,7 +119,8 @@ typedef struct {
  *  @ref BME68X_OK on success.
  *  @ref On failure, BME68X_E_NULL_PTR is returned.
  ******************************************************************************/
-int8_t mikroe_bme688_spi_init(bme68x_dev_t *bme688);
+int8_t mikroe_bme688_spi_init(bme68x_dev_t *bme688,
+                              mikroe_spi_handle_t spi_handle);
 
 /** @} (end addtogroup BME688) */
 

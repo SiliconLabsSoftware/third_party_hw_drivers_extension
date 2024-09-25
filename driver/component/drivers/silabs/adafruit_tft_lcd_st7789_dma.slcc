@@ -8,73 +8,44 @@ quality: evaluation
 root_path: driver
 requires:
   - name: status
-  - name: spidrv
-recommends:
-  - id: spidrv
-    instance: [st7789]
+  - name: sleeptimer_si91x
+    condition: 
+      - device_si91x
+  - name: sleeptimer
+    condition: 
+      - device # Enable for gecko device
+  - name: mipi_dbi_spi_dma
 provides:
   - name: oled_display
   - name: lvgl_display
 config_file:
-  - override:
-      component: spidrv
-      file_id: spidrv_config
-      instance: st7789
-    path: public/silabs/tft_lcd_st7789/config/brd2601b/sl_spidrv_st7789_config.h
-    condition: [brd2601b]
-  - path: public/silabs/tft_lcd_st7789/config/brd2601b/adafruit_st7789_spi_dma_config.h
+  - path: public/silabs/tft_lcd_st7789/config/brd2601b/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd2601b]
 
-  - override:
-      component: spidrv
-      file_id: spidrv_config
-      instance: st7789
-    path: public/silabs/tft_lcd_st7789/config/brd2703a/sl_spidrv_st7789_config.h
-    condition: [brd2703a]
-  - path: public/silabs/tft_lcd_st7789/config/brd2703a/adafruit_st7789_spi_dma_config.h
+  - path: public/silabs/tft_lcd_st7789/config/brd2703a/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd2703a]
 
-  - override:
-      component: spidrv
-      file_id: spidrv_config
-      instance: st7789
-    path: public/silabs/tft_lcd_st7789/config/brd2704a/sl_spidrv_st7789_config.h
-    condition: [brd2704a]
-  - path: public/silabs/tft_lcd_st7789/config/brd2704a/adafruit_st7789_spi_dma_config.h
+  - path: public/silabs/tft_lcd_st7789/config/brd2704a/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd2704a]
 
-  - override:
-      component: spidrv
-      file_id: spidrv_config
-      instance: st7789
-    path: public/silabs/tft_lcd_st7789/config/brd4314a/sl_spidrv_st7789_config.h
-    condition: [brd4314a]
-  - path: public/silabs/tft_lcd_st7789/config/brd4314a/adafruit_st7789_spi_dma_config.h
+  - path: public/silabs/tft_lcd_st7789/config/brd4314a/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd4314a]
 
-  - override:
-      component: spidrv
-      file_id: spidrv_config
-      instance: st7789
-    path: public/silabs/tft_lcd_st7789/config/brd4108a/sl_spidrv_st7789_config.h
-    condition: [brd4108a]
-  - path: public/silabs/tft_lcd_st7789/config/brd4108a/adafruit_st7789_spi_dma_config.h
+  - path: public/silabs/tft_lcd_st7789/config/brd4108a/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd4108a]
 
-  - override:
-      component: spidrv
-      file_id: spidrv_config
-      instance: st7789
-    path: public/silabs/tft_lcd_st7789/config/other/sl_spidrv_st7789_config.h
-    unless: [brd2601b, brd2703a, brd2704a, brd4314a, brd4108a]
-  - path: public/silabs/tft_lcd_st7789/config/other/adafruit_st7789_spi_dma_config.h
+  - path: public/silabs/tft_lcd_st7789/config/brd4338a/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
-    unless: [brd2601b, brd2703a, brd2704a, brd4314a, brd4108a]
+    condition: [brd4338a]
+
+  - path: public/silabs/tft_lcd_st7789/config/other/adafruit_st7789_spi_config.h
+    file_id: adafruit_st7789_config
+    unless: [brd2601b, brd2703a, brd2704a, brd4314a, brd4108a, brd4338a]
 
 template_contribution:
   - name: component_catalog
@@ -85,7 +56,8 @@ include:
       - path: adafruit_st7789.h
       - path: oled_display.h
       - path: lvgl_display.h
+
 source:
-  - path: public/silabs/tft_lcd_st7789/src/adafruit_st7789_dma.c
+  - path: public/silabs/tft_lcd_st7789/src/adafruit_st7789.c
   - path: public/silabs/tft_lcd_st7789/src/oled_display.c
   - path: public/silabs/tft_lcd_st7789/src/lvgl_display.c

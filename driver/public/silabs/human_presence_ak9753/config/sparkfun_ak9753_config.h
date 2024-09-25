@@ -39,6 +39,10 @@
 #ifndef SPARKFUN_AK9753_CONFIG_H_
 #define SPARKFUN_AK9753_CONFIG_H_
 
+#ifndef SLI_SI917
+#include "em_gpio.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -54,6 +58,24 @@ extern "C" {
 /************************************************/
 
 // <<< Use Configuration Wizard in Context Menu >>>
+
+//<h>SPARKFUN AK9753 I2C Configuration
+
+//  <e>SPARKFUN AK9753 I2C UC Configuration
+//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+//  <i> Default: 0
+#define SPARKFUN_AK9753_I2C_UC                  0
+
+// <o SPARKFUN_AK9753_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define SPARKFUN_AK9753_I2C_SPEED_MODE          0
+
+// </e>
+// </h>
 
 // <h>Address settings
 
@@ -96,4 +118,4 @@ extern "C" {
 }
 #endif
 
-#endif /* SPARKFUN_AK9753_CONFIG_H_ */
+#endif // SPARKFUN_AK9753_CONFIG_H_

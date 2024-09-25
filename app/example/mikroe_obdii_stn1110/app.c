@@ -3,44 +3,77 @@
  * @brief Top level application functions
  *******************************************************************************
  * # License
- * <b>Copyright 2020 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
- * The licensor of this software is Silicon Laboratories Inc. Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement. This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
 
-/***************************************************************************//**
- * Initialize application.
- ******************************************************************************/
 #include <string.h>
 #include <stdlib.h>
-
 #include "sl_status.h"
-#include "sl_sleeptimer.h"
-#include "sl_iostream_init_usart_instances.h"
-#include "sl_iostream_init_eusart_instances.h"
-
-#include "app_log.h"
 #include "app_assert.h"
-
+#include "sl_sleeptimer.h"
 #include "mikroe_stn1110.h"
 
-#define PROCESS_BUFFER_SIZE   200
-#define READING_INTERVAL_MSEC 1000
+#if (defined(SLI_SI917))
+#include "sl_si91x_usart.h"
+#include "rsi_debug.h"
+#else
+#include "sl_iostream_init_usart_instances.h"
+#include "sl_iostream_init_eusart_instances.h"
+#include "app_log.h"
+#endif
+
+#define PROCESS_BUFFER_SIZE            200
+#define READING_INTERVAL_MSEC          1000
+
+#if (defined(SLI_SI917))
+#define app_printf(...)                DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...)                app_log(__VA_ARGS__)
+#endif
+
+#if (defined(SLI_SI917))
+#define USART_INSTANCE_USED            UART_1
+static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
+#endif
+
+static int32_t app_buf_len = 0;
+static uint8_t app_buf[PROCESS_BUFFER_SIZE] = { 0 };
 
 static sl_sleeptimer_timer_handle_t app_timer_handle;
 static volatile bool app_timer_expire = false;
+mikroe_uart_handle_t app_uart_instance = NULL;
 
 static void app_timer_cb(sl_sleeptimer_timer_handle_t *handle, void *data);
-
-static uint8_t app_buf[PROCESS_BUFFER_SIZE] = { 0 };
-static int32_t app_buf_len = 0;
 
 /***************************************************************************//**
  * @brief
@@ -83,11 +116,18 @@ void app_init(void)
 {
   sl_status_t ret_code;
 
-  app_log_iostream_set(sl_iostream_vcom_handle);
+#if (defined(SLI_SI917))
+  app_uart_instance = &uart_instance;
+#else
+  app_uart_instance = sl_iostream_uart_mikroe_handle;
 
-  ret_code = mikroe_stn1110_init(sl_iostream_uart_mikroe_handle);
+  sl_iostream_set_default(sl_iostream_vcom_handle);
+  app_log_iostream_set(sl_iostream_vcom_handle);
+#endif
+
+  ret_code = mikroe_stn1110_init(app_uart_instance);
   app_assert_status(ret_code);
-  app_log("Mikroe OBDii Click is initialized.\r\n");
+  app_printf("Mikroe OBDii Click is initialized.\r\n");
 
   mikroe_stn1110_reset_device();
   sl_sleeptimer_delay_millisecond(1000);
@@ -95,18 +135,18 @@ void app_init(void)
   app_obdii_process();
   app_obdii_clear_buf();
 
-  app_log("> Reset device\r\n");
+  app_printf("> Reset device\r\n");
   mikroe_stn1110_send_command((uint8_t *)MIKROE_OBDII_CMD_RESET_DEVICE);
   app_obdii_rsp_check((uint8_t *)MIKROE_OBDII_RSP_PROMPT);
   app_obdii_log_buf();
   sl_sleeptimer_delay_millisecond(1000);
 
-  app_log(" Disable echo\r\n");
+  app_printf(" Disable echo\r\n");
   mikroe_stn1110_send_command((uint8_t *)MIKROE_OBDII_CMD_DISABLE_ECHO);
   app_obdii_rsp_check((uint8_t *)MIKROE_OBDII_RSP_PROMPT);
   app_obdii_log_buf();
 
-  app_log(" Remove spaces\r\n");
+  app_printf(" Remove spaces\r\n");
   mikroe_stn1110_send_command((uint8_t *)MIKROE_OBDII_CMD_SPACES_OFF);
   app_obdii_rsp_check((uint8_t *)MIKROE_OBDII_RSP_PROMPT);
   app_obdii_log_buf();
@@ -147,7 +187,7 @@ static void application_task(void)
   uint16_t rpm = 0;
   uint8_t speed = 0;
 
-  app_log(" Get current RPM\r\n");
+  app_printf(" Get current RPM\r\n");
   mikroe_stn1110_send_command((uint8_t *)MIKROE_OBDII_CMD_GET_CURRENT_RPM);
   app_obdii_rsp_check((uint8_t *)MIKROE_OBDII_RSP_PROMPT);
   start_ptr = (uint8_t *)strstr((const char *)app_buf,
@@ -156,12 +196,12 @@ static void application_task(void)
     memcpy(data_buf, (start_ptr + 4), 4);
     data_buf[4] = 0;
     rpm = (uint16_t)strtol((const char *)data_buf, &ptr, 16) / 4;
-    app_log("RPM: %u\r\n\n>", rpm);
+    app_printf("RPM: %u\r\n\n>", rpm);
   } else {
     app_obdii_log_buf();
   }
 
-  app_log(" Get current speed\r\n");
+  app_printf(" Get current speed\r\n");
   mikroe_stn1110_send_command((uint8_t *)MIKROE_OBDII_CMD_GET_CURRENT_SPEED);
   app_obdii_rsp_check((uint8_t *)MIKROE_OBDII_RSP_PROMPT);
   start_ptr = (uint8_t *)strstr((const char *)app_buf,
@@ -170,7 +210,7 @@ static void application_task(void)
     memcpy(data_buf, (start_ptr + 4), 2);
     data_buf[2] = 0;
     speed = (uint8_t)strtol((const char *)data_buf, &ptr, 16);
-    app_log("Speed: %u km/h\r\n\n>", ( uint16_t ) speed);
+    app_printf("Speed: %u km/h\r\n\n>", ( uint16_t ) speed);
   } else {
     app_obdii_log_buf();
   }
@@ -207,7 +247,7 @@ static void app_obdii_log_buf(void)
 {
   for ( int32_t buf_cnt = 0; buf_cnt < app_buf_len; buf_cnt++ )
   {
-    app_log("%c", app_buf[buf_cnt]);
+    app_printf("%c", app_buf[buf_cnt]);
   }
 }
 

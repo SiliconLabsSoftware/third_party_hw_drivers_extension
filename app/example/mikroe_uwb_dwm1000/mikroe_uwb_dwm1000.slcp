@@ -27,43 +27,43 @@ include:
     file_list:
       - path: app.h
 component:
-  - id: sl_system
-  - id: device_init
-  - id: uwb_dwm1000
-    from: third_party_hw_drivers
-  - id: iostream_eusart
-    instance:
-      - vcom
-  - id: simple_button
-    instance:
-      - btn0
-  - id: spidrv
-    instance:
-      - mikroe
-  - id: app_assert
-  - id: app_log
-  - id: udelay
+- id: sl_system
+- id: device_init
+- id: uwb_dwm1000
+  from: third_party_hw_drivers
+- id: iostream_eusart
+  instance:
+    - vcom
+- id: simple_button
+  instance:
+    - btn0
+- id: spidrv
+  instance:
+    - mikroe
+- id: app_assert
+- id: app_log
+
 configuration:
   - name: SL_SPIDRV_MIKROE_CS_CONTROL
     value: spidrvCsControlApplication
 sdk_extension:
-  - id: third_party_hw_drivers
-    version: 2.0.1
+- id: third_party_hw_drivers
+  version: 4.0.0
+
 define:
   - name: DEBUG_EFM
 other_file:
-  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/hardware_connection.png
-    directory: image
-  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/sw_layer.png
-    directory: image
-  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/create_example.png
-    directory: image
-  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/receive_cli.png
-    directory: image
-  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/transmit_cli.png
-    directory: image
-  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/uwb_config.png
-    directory: image
+- path: ../../documentation/example/mikroe_uwb_dwm1000/image/hardware_connection.png
+  directory: image
+- path: ../../documentation/example/mikroe_uwb_dwm1000/image/sw_layer.png
+  directory: image
+- path: ../../documentation/example/mikroe_uwb_dwm1000/image/create_example.png
+  directory: image
+- path: ../../documentation/example/mikroe_uwb_dwm1000/image/receive_cli.png
+  directory: image
+- path: ../../documentation/example/mikroe_uwb_dwm1000/image/transmit_cli.png
+  directory: image
+
 ui_hints:
   highlight:
     - path: README.md

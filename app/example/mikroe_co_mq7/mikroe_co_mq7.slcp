@@ -50,15 +50,13 @@ other_file:
   directory: "image"
 - path: ../../documentation/example/mikroe_co_mq7/image/hardware_connection.png
   directory: "image"
-- path: ../../documentation/example/mikroe_co_mq7/image/default_configuration.png
-  directory: "image"
 
 define:
 - name: DEBUG_EFM
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 ui_hints:
   highlight:

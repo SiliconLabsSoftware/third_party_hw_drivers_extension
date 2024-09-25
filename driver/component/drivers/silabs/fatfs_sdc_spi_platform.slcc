@@ -3,7 +3,7 @@ package: third_party_hw_drivers
 label: Storage Device Controls Platform - SPI
 description: >
   Storage device controls platform interfaces for SPI interfaced FatFS storage devices.
-category: Services/FatFS - Generic FAT Filesystem
+category: Services|FatFS - Generic FAT Filesystem
 quality: evaluation
 ui_hints:
   visibility: never
@@ -19,6 +19,6 @@ template_contribution:
 include:
   - path: public/silabs/fatfs_sdc_spi_platform/inc
     file_list:
-      - path: sl_sdc_platform_spi.h	  
+      - path: sl_sdc_platform_spi.h
 source:
   - path: public/silabs/fatfs_sdc_spi_platform/src/sl_sdc_platform_spi.c

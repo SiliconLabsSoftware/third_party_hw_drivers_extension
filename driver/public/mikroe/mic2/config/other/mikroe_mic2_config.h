@@ -40,11 +40,33 @@
 #ifndef MIKORE_MIC2_CONFIG_H_
 #define MIKORE_MIC2_CONFIG_H_
 
+#ifndef SLI_SI917
+#include "em_gpio.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
+
+// <h> MIKROE MIC2 I2C Configuration
+
+// <e> MIKROE MIC2 I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_MIC2_I2C_UC                  0
+
+// <o MIKROE_MIC2_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define MIKROE_MIC2_I2C_SPEED_MODE          0
+
+// </e>
+// </h>
 
 // <o MIC2_I2C_ADDRESS> MIC 2 I2C ADDRESS
 // <0x2C=> AD0_LOW
@@ -69,4 +91,4 @@ extern "C" {
 }
 
 #endif
-#endif /* MIKORE_MIC2_CONFIG_H_ */
+#endif // MIKORE_MIC2_CONFIG_H_

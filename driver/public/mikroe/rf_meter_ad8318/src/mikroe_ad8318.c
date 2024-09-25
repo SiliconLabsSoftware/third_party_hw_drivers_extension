@@ -36,10 +36,9 @@
  * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
-
 #include "mikroe_ad8318.h"
-#include "third_party_hw_drivers_helpers.h"
 #include "rfmeter.h"
+#include "mikroe_ad8318_config.h"
 
 static rfmeter_t rf_meter;
 static rfmeter_cfg_t rf_meter_cfg;
@@ -49,7 +48,7 @@ void mikroe_ad8318_cfg_setup(void)
   rfmeter_cfg_setup(&rf_meter_cfg);
 }
 
-sl_status_t mikroe_ad8318_set_spi_instance(SPIDRV_Handle_t spi_instance)
+sl_status_t mikroe_ad8318_set_spi_instance(mikroe_spi_handle_t spi_instance)
 {
   if (NULL == spi_instance) {
     return SL_STATUS_INVALID_PARAMETER;
@@ -60,23 +59,30 @@ sl_status_t mikroe_ad8318_set_spi_instance(SPIDRV_Handle_t spi_instance)
   return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_ad8318_init(SPIDRV_Handle_t spi_instance)
+sl_status_t mikroe_ad8318_init(mikroe_spi_handle_t spi_instance)
 {
   if (NULL == spi_instance) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
   rfmeter_cfg_setup(&rf_meter_cfg);
 
+#if (MIKROE_AD8318_SPI_UC == 1)
+  rf_meter_cfg.spi_speed = MIKROE_AD8318_SPI_BITRATE;
+#endif
+
   rf_meter.spi.handle = spi_instance;
-  rf_meter_cfg.cs = hal_gpio_pin_name(spi_instance->portCs,
-                                      spi_instance->pinCs);
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(rfmeter_init(&rf_meter, &rf_meter_cfg));
+#if defined(MIKROE_AD8318_CS_PORT) && defined(MIKROE_AD8318_CS_PIN)
+  rf_meter_cfg.cs = hal_gpio_pin_name(MIKROE_AD8318_CS_PORT,
+                                      MIKROE_AD8318_CS_PIN);
+#endif
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  if (rfmeter_init(&rf_meter, &rf_meter_cfg) == RFMETER_OK) {
+    return SL_STATUS_OK;
+  }
+
+  return SL_STATUS_INITIALIZATION;
 }
 
 sl_status_t mikroe_ad8318_read_data(uint16_t *read_data)

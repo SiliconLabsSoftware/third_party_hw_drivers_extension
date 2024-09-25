@@ -6,9 +6,11 @@ This example project shows an example for environmental parameter collection wit
 
 The CCS811/BME280 (Qwiic) Environmental Combo Breakout works together to take care of all of your atmospheric quality sensing needs with the CCS811 and BME280 ICs. The CCS811 is an exceedingly popular sensor, providing readings for equivalent CO2 (or eCO2) in the parts per million (PPM) and total volatile organic compounds in the parts per billion (PPB). The BME280 provides humidity, temperature, and barometric pressure. It is easy to interface with them via I2C.
 
-## Hardware Required ##
+## Required Hardware ##
 
 - [EFR32xG24-EK2703A Explorer Kit Board](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 
 - [BME280 - CCS811 SparkFun Environmental Combo Breakout (Qwiic)](https://www.sparkfun.com/products/14348)
   
@@ -18,15 +20,24 @@ The CCS811/BME280 (Qwiic) Environmental Combo Breakout works together to take ca
 
 ## Connections Required ##
 
-The Environmental Sensor support Qwiic, so it can connect easily to EFR32xG24 Explorer Kit's Qwiic header.
+- If the EFR32xG24 Explorer Kit is used:
 
-The hardware connection is shown in the image below:
+  The Environmental Sensor support Qwiic, so it can connect easily to the Qwiic header of the Explorer Kit.
 
-![board](image/hardware_connection.png)
+  The hardware connection is shown in the image below:
+
+  ![board](image/hardware_connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | SparkFun Environmental Sensor Combo Breakout |
+  | -------------| ------------- | ------------------ | ---------------------------- |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                          |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                          |
 
 **Note:**
 
-- If you want to conserve power, you should connect the **PB0** pin on the EFR32MG24 board to the **WAK** pin on the Environmental Combo Breakout board to change the sensor's active and sleep states.
+- If you want to conserve power, you should connect **WAK** pin on the Environmental Combo Breakout board to your board to change the sensor's active and sleep states.
 
 ## Setup ##
 
@@ -34,16 +45,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter **bme280, ccs811**
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *bme280, ccs811*.
 
-2. Click **Create** button on the **Third Party Hardware Drivers - BME280 & CCS811 - Environmental Sensor Combo Breakout (Sparkfun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+2. Click Create button on the project **Third Party Hardware Drivers - BME280 & CCS811 - Environmental Sensor Combo Breakout (Sparkfun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+
+    ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32MG24 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for the your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file [app.c](https://github.com/SiliconLabs/third_party_hw_drivers_extension/tree/master/app/example/sparkfun_environmental_bme280_ccs811) (overwriting the existing file), into the project root folder.
 
@@ -55,19 +67,29 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
-        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
-        - [Application] → [Utility] → [Log]
-        - [Services] → [Timers] → [Sleep Timer]
-        - [Third Party Hardware Drivers] → [Sensors] → [BME28 - Atmospheric Sensor (Sparkfun)]
-        - [Third Party Hardware Drivers] → [Sensors] → [CCS811 - Air Quality Sensor (Sparkfun)]
+        **If the EFR32xG24 Explorer Kit is used:**
+
+          - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
+          - [Application] → [Utility] → [Log]
+          - [Platform] → [Driver] → [I2C] → [I2CSPM] → qwiic instance
+          - [Services] → [Timers] → [Sleep Timer]
+          - [Third Party Hardware Drivers] → [Sensors] → [BME28 - Atmospheric Sensor (Sparkfun)]
+          - [Third Party Hardware Drivers] → [Sensors] → [CCS811 - Air Quality Sensor (Sparkfun)]
+
+        **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+          - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+          - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+          - [Third Party Hardware Drivers] → [Sensors] → [BME28 - Atmospheric Sensor (Sparkfun)]
+          - [Third Party Hardware Drivers] → [Sensors] → [CCS811 - Air Quality Sensor (Sparkfun)]
 
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the **Third-party Drivers Extensions** is installed. To install the extension, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- **Third-party Drivers Extensions** must be enabled for the project to install "BME280 - Atmospheric Sensor (Sparkfun)" or "CCS811 - Air Quality Sensor (Sparkfun)" component.
+- Third-party Drivers Extension must be enabled for the project to install "BME280 - Atmospheric Sensor (Sparkfun)" or "CCS811 - Air Quality Sensor (Sparkfun)" component.
 
 ## How It Works ##
 
@@ -86,5 +108,3 @@ You can launch Console that's integrated into Simplicity Studio or use a third-p
 To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
 
 Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo.
-
-

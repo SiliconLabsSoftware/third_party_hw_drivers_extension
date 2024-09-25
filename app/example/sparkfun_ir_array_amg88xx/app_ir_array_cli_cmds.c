@@ -63,8 +63,9 @@ void app_get_sensor_array_temperatures(sl_cli_command_arg_t *arguments)
   float temperature_grid[8][8];
   int8_t i = 0;
   int8_t j = 0;
-  I2C_TransferReturn_TypeDef read_result;
-  read_result = amg88xx_get_sensor_array_temperatures(temperature_grid);
+
+  sl_status_t read_result = amg88xx_get_sensor_array_temperatures(
+    temperature_grid);
   if (read_result != SL_STATUS_OK) {
     printf("Error: i2c read failed");
   } else {
@@ -88,8 +89,9 @@ void app_get_sensor_array_temperatures_raw(sl_cli_command_arg_t *arguments)
   uint16_t temperature_grid[8][8];
   int8_t i = 0;
   int8_t j = 0;
-  I2C_TransferReturn_TypeDef read_result;
-  read_result = amg88xx_get_sensor_array_temperatures_raw(temperature_grid);
+
+  sl_status_t read_result = amg88xx_get_sensor_array_temperatures_raw(
+    temperature_grid);
   if (read_result != SL_STATUS_OK) {
     printf("Error: i2c read failed");
   } else {

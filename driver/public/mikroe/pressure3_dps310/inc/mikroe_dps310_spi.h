@@ -41,10 +41,13 @@
 #define MIKROE_PRESSURE3_H
 
 #include "sl_status.h"
-#include "spidrv.h"
 #include "drv_digital_out.h"
 #include "drv_digital_in.h"
 #include "drv_spi_master.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // -------------------------------------------------------------- PUBLIC MACROS
 
@@ -257,10 +260,6 @@ typedef struct
  * \{
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /**
  * @brief Initialization function.
  *
@@ -269,7 +268,7 @@ extern "C" {
  * @description This function initializes all necessary pins and peripherals
  *   used for this click.
  */
-sl_status_t mikroe_pressure3_init(SPIDRV_Handle_t spidrv_inst);
+sl_status_t mikroe_pressure3_init(mikroe_spi_handle_t spidrv_inst);
 
 /**
  * @brief Generic write function.

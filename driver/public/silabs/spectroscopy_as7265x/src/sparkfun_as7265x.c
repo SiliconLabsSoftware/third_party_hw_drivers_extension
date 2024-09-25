@@ -38,11 +38,7 @@
 
 #include "string.h"
 #include "sparkfun_as7265x.h"
-#include "sparkfun_as7265x_platform.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "spectroscopy_as7265x_config.h"
 
 // I2C physical registers.
 #define STATUS_REG                          0x00
@@ -96,8 +92,6 @@ extern "C" {
 // Default integration cycles.
 #define DEFAULT_INTEGRATION_CYCLE           20
 
-sl_i2cspm_t *sparkfun_as7265x_i2cpsm_instance = NULL;
-
 // Raw data channel register array.
 static const uint8_t channel_register[6] = { R_G_A_REG, S_H_B_REG, T_I_C_REG,
                                              U_J_D_REG, V_K_E_REG, W_L_F_REG };
@@ -114,6 +108,8 @@ static const uint8_t device_type[3] = { SPARKFUN_AS72653_UV,
 
 // Max wait time
 static uint32_t max_wait_time;
+
+static i2c_master_t as7265_i2c_master;
 
 // Virtual register function
 static sl_status_t read_virtual_register(uint8_t virtual_addr, uint8_t *pdata);
@@ -133,9 +129,44 @@ static sl_status_t get_calibrated_value(uint8_t cal_address,
                                         float *cal_val);
 
 /***************************************************************************//**
+* Read register value
+*******************************************************************************/
+static sl_status_t sparkfun_as7265x_platform_read_register(uint8_t addr,
+                                                           uint8_t *pdata)
+{
+  if ((pdata == NULL) || (as7265_i2c_master.handle == NULL)) {
+    return SL_STATUS_INVALID_PARAMETER;
+  } else {
+    if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&as7265_i2c_master,
+                                                         &addr,
+                                                         1,
+                                                         pdata,
+                                                         1)) {
+      return SL_STATUS_TRANSMIT;
+    }
+  }
+  return SL_STATUS_OK;
+}
+
+/***************************************************************************//**
+* Write into register
+*******************************************************************************/
+static sl_status_t sparkfun_as7265x_platform_write_register(uint8_t addr,
+                                                            uint8_t data)
+{
+  uint8_t i2c_write_data[2] = { addr, data };
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&as7265_i2c_master,
+                                             i2c_write_data,
+                                             2)) {
+    return SL_STATUS_TRANSMIT;
+  }
+  return SL_STATUS_OK;
+}
+
+/***************************************************************************//**
 * Initialize as7265x sensor
 *******************************************************************************/
-sl_status_t sparkfun_as7265x_init(sl_i2cspm_t *i2cspm)
+sl_status_t sparkfun_as7265x_init(mikroe_i2c_handle_t i2cspm)
 {
   uint8_t value = 0;
   sl_status_t sc = SL_STATUS_OK;
@@ -145,7 +176,23 @@ sl_status_t sparkfun_as7265x_init(sl_i2cspm_t *i2cspm)
   }
 
   // Update i2cspm instance
-  sparkfun_as7265x_i2cpsm_instance = i2cspm;
+  i2c_master_config_t i2c_cfg;
+  i2c_master_configure_default(&i2c_cfg);
+
+  i2c_cfg.addr = SPARKFUN_AS7265X_ADDR;
+
+  as7265_i2c_master.handle = i2cspm;
+
+#if (SPECTROSCOPY_AS7265X_I2C_UC == 1)
+  i2c_cfg.speed = SPECTROSCOPY_AS7265X_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&as7265_i2c_master, &i2c_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  i2c_master_set_speed(&as7265_i2c_master, i2c_cfg.speed);
+  i2c_master_set_timeout(&as7265_i2c_master, 0);
 
   // Init default max wait time.
   max_wait_time = (uint32_t)(DEFAULT_INTEGRATION_CYCLE * 2 * 2.8 * 2);
@@ -468,11 +515,6 @@ sl_status_t sparkfun_as7265x_set_measurement_mode(
 
   sc |= read_virtual_register(INTERGRATION_TIME_REG, &value);
 
-  if ((mode == SPARKFUN_AS7265X_MEASUREMENT_MODE_6CHAN_CONTINUOUS)
-      || (mode == SPARKFUN_AS7265X_MEASUREMENT_MODE_6CHAN_ONE_SHOT)) {
-    max_wait_time = value * 2.8 * 2 * 2;
-  }
-
   if (sc != SL_STATUS_OK) {
     return SL_STATUS_FAIL;
   }
@@ -524,15 +566,6 @@ sl_status_t sparkfun_as7265x_set_integration_cycles(uint8_t cycle_value)
   }
   mode &= 0b00001100;
   mode >>= 2;
-
-  if ((mode == SPARKFUN_AS7265X_MEASUREMENT_MODE_6CHAN_CONTINUOUS)
-      || (mode == SPARKFUN_AS7265X_MEASUREMENT_MODE_6CHAN_ONE_SHOT)) {
-    // Wait for integration time * 2 + 100%
-    max_wait_time = (uint32_t)(cycle_value * 2 * 2.8 * 2);
-  } else {
-    // Wait for integration time + 100%
-    max_wait_time = (uint32_t)(cycle_value * 2.8 * 2);
-  }
 
   // Write
   return write_virtual_register(INTERGRATION_TIME_REG, cycle_value);
@@ -906,8 +939,7 @@ static sl_status_t write_virtual_register(uint8_t virtual_addr, uint8_t data)
       // Sensor failed to respond
       return SL_STATUS_TIMEOUT;
     }
-    sc = sparkfun_as7265x_platform_read_register(SPARKFUN_AS7265X_ADDR,
-                                                 STATUS_REG,
+    sc = sparkfun_as7265x_platform_read_register(STATUS_REG,
                                                  &status);
     if (sc != SL_STATUS_OK) {
       return SL_STATUS_FAIL;
@@ -921,8 +953,7 @@ static sl_status_t write_virtual_register(uint8_t virtual_addr, uint8_t data)
 
   // Send the virtual register address (setting bit 7 to indicate we are writing
   // to a register).
-  sc = sparkfun_as7265x_platform_write_register(SPARKFUN_AS7265X_ADDR,
-                                                WRITE_REG,
+  sc = sparkfun_as7265x_platform_write_register(WRITE_REG,
                                                 (virtual_addr | 1 << 7));
 
   if (sc != SL_STATUS_OK) {
@@ -939,8 +970,7 @@ static sl_status_t write_virtual_register(uint8_t virtual_addr, uint8_t data)
       return SL_STATUS_TIMEOUT;
     }
 
-    sc = sparkfun_as7265x_platform_read_register(SPARKFUN_AS7265X_ADDR,
-                                                 STATUS_REG,
+    sc = sparkfun_as7265x_platform_read_register(STATUS_REG,
                                                  &status);
 
     if (sc != SL_STATUS_OK) {
@@ -955,8 +985,7 @@ static sl_status_t write_virtual_register(uint8_t virtual_addr, uint8_t data)
   }
 
   // Send the data to complete the operation.
-  sc = sparkfun_as7265x_platform_write_register(SPARKFUN_AS7265X_ADDR,
-                                                WRITE_REG,
+  sc = sparkfun_as7265x_platform_write_register(WRITE_REG,
                                                 data);
 
   if (sc != SL_STATUS_OK) {
@@ -976,8 +1005,7 @@ static sl_status_t read_virtual_register(uint8_t virtual_addr, uint8_t *pdata)
   uint32_t start_time = 0;
 
   // Do a prelim check of the read register
-  sc = sparkfun_as7265x_platform_read_register(SPARKFUN_AS7265X_ADDR,
-                                               STATUS_REG,
+  sc = sparkfun_as7265x_platform_read_register(STATUS_REG,
                                                &status);
 
   if (sc != SL_STATUS_OK) {
@@ -986,8 +1014,7 @@ static sl_status_t read_virtual_register(uint8_t virtual_addr, uint8_t *pdata)
 
   if ((status & RX_VALID) != 0) {
     // There is data to be read. Read the byte but do nothing with it
-    sc = sparkfun_as7265x_platform_read_register(SPARKFUN_AS7265X_ADDR,
-                                                 READ_REG,
+    sc = sparkfun_as7265x_platform_read_register(READ_REG,
                                                  &data);
     if (sc != SL_STATUS_OK) {
       return SL_STATUS_FAIL;
@@ -1003,8 +1030,7 @@ static sl_status_t read_virtual_register(uint8_t virtual_addr, uint8_t *pdata)
       // Sensor failed to respond
       return SL_STATUS_TIMEOUT;
     }
-    sc = sparkfun_as7265x_platform_read_register(SPARKFUN_AS7265X_ADDR,
-                                                 STATUS_REG,
+    sc = sparkfun_as7265x_platform_read_register(STATUS_REG,
                                                  &status);
     if (sc != SL_STATUS_OK) {
       return SL_STATUS_FAIL;
@@ -1018,8 +1044,7 @@ static sl_status_t read_virtual_register(uint8_t virtual_addr, uint8_t *pdata)
 
   // Send the virtual register address (bit 7 should be 0 to indicate we are
   // reading a register).
-  sc = sparkfun_as7265x_platform_write_register(SPARKFUN_AS7265X_ADDR,
-                                                WRITE_REG,
+  sc = sparkfun_as7265x_platform_write_register(WRITE_REG,
                                                 virtual_addr);
 
   // Wait for READ flag to be set
@@ -1033,8 +1058,7 @@ static sl_status_t read_virtual_register(uint8_t virtual_addr, uint8_t *pdata)
       return SL_STATUS_TIMEOUT;
     }
 
-    sc = sparkfun_as7265x_platform_read_register(SPARKFUN_AS7265X_ADDR,
-                                                 STATUS_REG,
+    sc = sparkfun_as7265x_platform_read_register(STATUS_REG,
                                                  &status);
 
     if (sc != SL_STATUS_OK) {
@@ -1049,8 +1073,7 @@ static sl_status_t read_virtual_register(uint8_t virtual_addr, uint8_t *pdata)
     sparkfun_as7265x_delay_ms(POLLING_DELAY);
   }
 
-  sc = sparkfun_as7265x_platform_read_register(SPARKFUN_AS7265X_ADDR,
-                                               READ_REG,
+  sc = sparkfun_as7265x_platform_read_register(READ_REG,
                                                pdata);
 
   if (sc != SL_STATUS_OK) {
@@ -1058,7 +1081,3 @@ static sl_status_t read_virtual_register(uint8_t virtual_addr, uint8_t *pdata)
   }
   return SL_STATUS_OK;
 }
-
-#ifdef __cplusplus
-}
-#endif

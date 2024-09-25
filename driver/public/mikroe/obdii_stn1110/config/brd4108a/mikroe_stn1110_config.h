@@ -6,6 +6,8 @@ extern "C"
 {
 #endif
 
+#include "em_gpio.h"
+
 // <<< sl:start pin_tool >>>
 
 // <gpio optional=true> STN1110_RESET

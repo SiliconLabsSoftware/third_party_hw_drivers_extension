@@ -9,35 +9,44 @@ quality: evaluation
 root_path: driver
 requires:
   - name: status
-  - name: emlib_usart
+  - name: sleeptimer_si91x
+    condition: 
+      - device_si91x
   - name: sleeptimer
+    condition: 
+      - device # Enable for gecko device
+  - name: mipi_dbi_spi
 provides:
   - name: oled_display
   - name: lvgl_display
 config_file:
-  - path: public/silabs/tft_lcd_ili9341/config/brd2601b/adafruit_ili9341_spi_usart_config.h
+  - path: public/silabs/tft_lcd_ili9341/config/brd2601b/adafruit_ili9341_spi_config.h
     file_id: adafruit_ili9341_config
     condition: [brd2601b]
 
-  - path: public/silabs/tft_lcd_ili9341/config/brd2703a/adafruit_ili9341_spi_usart_config.h
+  - path: public/silabs/tft_lcd_ili9341/config/brd2703a/adafruit_ili9341_spi_config.h
     file_id: adafruit_ili9341_config
     condition: [brd2703a]
 
-  - path: public/silabs/tft_lcd_ili9341/config/brd2704a/adafruit_ili9341_spi_usart_config.h
+  - path: public/silabs/tft_lcd_ili9341/config/brd2704a/adafruit_ili9341_spi_config.h
     file_id: adafruit_ili9341_config
     condition: [brd2704a]
 
-  - path: public/silabs/tft_lcd_ili9341/config/brd4314a/adafruit_ili9341_spi_usart_config.h
+  - path: public/silabs/tft_lcd_ili9341/config/brd4314a/adafruit_ili9341_spi_config.h
     file_id: adafruit_ili9341_config
     condition: [brd4314a]
 
-  - path: public/silabs/tft_lcd_ili9341/config/brd4108a/adafruit_ili9341_spi_usart_config.h
+  - path: public/silabs/tft_lcd_ili9341/config/brd4108a/adafruit_ili9341_spi_config.h
     file_id: adafruit_ili9341_config
     condition: [brd4108a]
 
-  - path: public/silabs/tft_lcd_ili9341/config/other/adafruit_ili9341_spi_usart_config.h
+  - path: public/silabs/tft_lcd_ili9341/config/brd4338a/adafruit_ili9341_spi_config.h
     file_id: adafruit_ili9341_config
-    unless: [brd2601b, brd2703a, brd2704a, brd4314a, brd4108a]
+    condition: [brd4338a]
+
+  - path: public/silabs/tft_lcd_ili9341/config/other/adafruit_ili9341_spi_config.h
+    file_id: adafruit_ili9341_config
+    unless: [brd2601b, brd2703a, brd2704a, brd4314a, brd4108a, brd4338a]
 
 template_contribution:
   - name: component_catalog

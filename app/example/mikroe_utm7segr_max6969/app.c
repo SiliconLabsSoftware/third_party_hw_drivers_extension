@@ -1,9 +1,9 @@
 /***************************************************************************//**
- * @file
+ * @file app.c
  * @brief Top level application functions
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2024 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -27,25 +27,33 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- *
- * EVALUATION QUALITY
- * This code has been minimally tested to ensure that it builds with the
- * specified dependency versions and is suitable as a demonstration for
- * evaluation purposes only.
- * This code will be maintained at the sole discretion of Silicon Labs.
- *
+ * # Experimental Quality
+ * This code has been minimally tested to ensure that it builds and is suitable
+ * as a demonstration for evaluation purposes only. This code will be maintained
+ * at the sole discretion of Silicon Labs.
  ******************************************************************************/
-
-#include "sl_spidrv_instances.h"
-#include "sl_pwm_instances.h"
-#include "sl_sleeptimer.h"
-
 #include "mikroe_max6969.h"
+#include "sl_sleeptimer.h"
+#include "sl_pwm_instances.h"
+#include "app_assert.h"
+
+#if (defined(SLI_SI917))
+#include "rsi_debug.h"
+#include "sl_si91x_gspi.h"
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else /* None Si91x device */
+#include "app_log.h"
+#include "sl_spidrv_instances.h"
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
 
 #define TIMEOUT_MS    1000
 
 static sl_sleeptimer_timer_handle_t app_timer_handle;
 static volatile bool app_timer_expire = false;
+mikroe_pwm_handle_t app_pwm_instance = NULL;
+static mikroe_spi_handle_t app_spi_instance = NULL;
 
 static void app_timer_cb(sl_sleeptimer_timer_handle_t *handle, void *data);
 
@@ -54,7 +62,34 @@ static void app_timer_cb(sl_sleeptimer_timer_handle_t *handle, void *data);
  ******************************************************************************/
 void app_init(void)
 {
-  mikroe_max6969_init(sl_spidrv_mikroe_handle, &sl_pwm_mikroe);
+  app_printf("UT-M 7-SEG R Click Example\r\n");
+#if (defined(SLI_SI917))
+  app_spi_instance = &gspi_instance;
+  app_pwm_instance = &sl_pwm_channel_0_config;
+#else
+  app_spi_instance = sl_spidrv_mikroe_handle;
+  app_pwm_instance = &sl_pwm_mikroe;
+#endif
+  sl_status_t stt = mikroe_max6969_init(app_spi_instance, app_pwm_instance);
+  app_assert_status(stt);
+
+  mikroe_max6969_display_number(0x00, MIKROE_UTM7SEGR_NO_DOT);
+  app_printf("UT-M 7-SEG R Test contrast:\r\n");
+  app_printf("Value(%%):");
+
+  for (uint8_t i = 0; i < 10; i++)
+  {
+    uint8_t contrast_value = (i + 1) * 10;
+    app_printf(" %02d", contrast_value);
+    mikroe_max6969_set_contrast(contrast_value);
+
+    sl_sleeptimer_delay_millisecond(1000);
+  }
+
+  app_printf("\r\nUT-M 7-SEG R set contrast default: 50%%\r\n");
+  mikroe_max6969_set_contrast(50);
+
+  app_printf("Start periodic timer %d(ms)\r\n", TIMEOUT_MS);
   sl_sleeptimer_start_periodic_timer_ms(&app_timer_handle,
                                         TIMEOUT_MS,
                                         app_timer_cb,
@@ -74,8 +109,8 @@ void app_process_action(void)
     return;
   }
   app_timer_expire = false;
-
-  mikroe_max6969_display_number(cnt, MIKROE_UTM7SEGR_DOT_LEFT);
+  app_printf("mikroe_max6969_display_number: %d\r\n", cnt);
+  mikroe_max6969_display_number(cnt, MIKROE_UTM7SEGR_NO_DOT);
   cnt++;
   if (cnt >= 100) {
     cnt = 0;

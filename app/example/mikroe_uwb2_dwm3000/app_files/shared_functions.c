@@ -13,7 +13,6 @@
 #include "config_options.h"
 #include <deca_device_api.h>
 #include <deca_types.h>
-#include <port.h>
 #include "shared_defines.h"
 #include "shared_functions.h"
 #include <stdlib.h>

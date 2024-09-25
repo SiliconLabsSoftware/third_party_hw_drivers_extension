@@ -35,9 +35,7 @@ component:
   instance: [vcom]
 - id: i2cspm
   instance: [qwiic]
-- id: sleeptimer
-- id: printf
-- id: gpiointerrupt
+- id: app_log
 
 config_file:
   - override:
@@ -52,7 +50,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/sparkfun_qwiic_keypad/image/logs.png

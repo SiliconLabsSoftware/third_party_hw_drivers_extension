@@ -53,7 +53,7 @@
 
 #define SPS30_SERIAL_NUM_WORDS            ((SPS30_MAX_SERIAL_LEN) / 2)
 
-sl_status_t sps30_init(sl_i2cspm_t *i2cspm)
+sl_status_t sps30_init(mikroe_i2c_handle_t i2cspm)
 {
   return sensirion_i2c_init(i2cspm);
 }

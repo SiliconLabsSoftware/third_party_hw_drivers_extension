@@ -46,10 +46,8 @@ static bool initialized = false;
 /**************************************************************************//**
 *  RTC clicks initialization.
 ******************************************************************************/
-sl_status_t mikroe_ds3231m_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_ds3231m_init(mikroe_i2c_handle_t i2cspm_instance)
 {
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
   if (i2cspm_instance == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
@@ -66,10 +64,30 @@ sl_status_t mikroe_ds3231m_init(sl_i2cspm_t *i2cspm_instance)
   rtc_cfg.int_pin = hal_gpio_pin_name(MIKROE_DS3231M_INT_PORT,
                                       MIKROE_DS3231M_INT_PIN);
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(rtc10_init(&rtc_ctx, &rtc_cfg));
+#if (MIKROE_DS3231M_I2C_UC == 1)
+  rtc_cfg.i2c_speed = MIKROE_DS3231M_I2C_SPEED_MODE;
+#endif
+
+  if (RTC10_OK != rtc10_init(&rtc_ctx, &rtc_cfg)) {
+    return SL_STATUS_INITIALIZATION;
+  }
   initialized = true;
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
+}
+
+/**************************************************************************//**
+*  Set I2C instance.
+******************************************************************************/
+sl_status_t mikroe_ds3231m_set_i2c_instance(mikroe_i2c_handle_t i2c_instance)
+{
+  if (NULL == i2c_instance) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
+  rtc_ctx.i2c.handle = i2c_instance;
+
+  return SL_STATUS_OK;
 }
 
 /**************************************************************************//**

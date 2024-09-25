@@ -2,7 +2,7 @@
 
 ## Summary ##
 
-This project aims to show the hardware driver that is used to interface with the SPS30 sensor via GSDK APIs. This driver is based on [SPS30 Sensor API](https://github.com/Sensirion/embedded-sps) from Sensirion.
+This project aims to show the hardware driver that is used to interface with the SPS30 sensor using Silicon Labs platform. This driver is based on [SPS30 Sensor API](https://github.com/Sensirion/embedded-sps) from Sensirion.
 
 The Sensirion Particulate Matter Sensor SPS30 is a compact, high quality, optical particle sensor that uses laser scattering and the innovative contamination resistance technology of Sensirion to achieve superior binning and particle measurement. This sensor allows users to measure mass concentration and number of particles of 1 µg/m^3, 2.5 µg/m^3, 4 µg/m^3, and 10 µg/m^3.
 
@@ -12,34 +12,54 @@ The SPS30 has a five-pin interface that can communicate over two different proto
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview).
-
-- [**Particulate Matter Sensor - SPS30**](https://www.sparkfun.com/products/15103)
-
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2703A | [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)  |
-| BRD4108A | [EFR32BG22 Explorer Kit Board](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)  |
+- [EFR32xG24-EK2703A EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- [Particulate Matter Sensor - SPS30](https://www.sparkfun.com/products/15103)
 
 ## Hardware Connection ##
-The hardware connection is shown in the image below:
 
-![hw_connection_1](image/hw_connection_1.png)
-![hw_connection](image/hw_connection.png)
+- **If the EFR32xG24 Explorer Kit is used**:
 
-----------------------------------------------------------
-| Pin | SPS30      | Connect to | EFR32xG24 Explorer Kit |
-| --- | ---------- | ---------- | ---------------------- |
-| 1.  | VDD        | <========> | 5V                     |
-| 2.  | RX/SDA     | <========> | TX/SDA                 |
-| 3.  | TX/SCL     | <========> | RX/SCL                 |
-| 4.  | SEL        | <========> | Leave floating to select UART or Pull to GND to select I2C                                               |
-| 5.  | GND        | <========> | GND                    |
-----------------------------------------------------------
+  The hardware connection is shown in the image below:
+
+  ![hw_connection_1](image/hw_connection_1.png)
+  ![hw_connection](image/hw_connection.png)
+
+  ---------------------------------------------------------------------------------------------
+
+  | Pin | SPS30      | Connect to | EFR32xG24 Explorer Kit                                     |
+  | --- | ---------- | ---------- | -----------------------------------------------------------|
+  | 1.  | VDD        | <========> | 5V                                                         |
+  | 2.  | RX/SDA     | <========> | TX/SDA                                                     |
+  | 3.  | TX/SCL     | <========> | RX/SCL                                                     |
+  | 4.  | SEL        | <========> | Leave floating to select UART or Pull to GND to select I2C |
+  | 5.  | GND        | <========> | GND                                                        |
+
+  ---------------------------------------------------------------------------------------------
+
+- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+
+  The hardware connection is shown in the table below:
+
+  **- If using I2C interface:**
+
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | SPS30               |
+  | -------------| ------------- | ------------------ | ------------------- |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | PIN 2 (SDA)         |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | PIN 3 (SCL)         |
+  | GND          |               |                    | PIN 4 (SEL)         |
+  | +5V          |               |                    | PIN 1 (+5V)         |
+  | GND          |               |                    | PIN 5 (GND)         |
+
+  **- If using UART interface:**
+
+  | Description  | BRD4338A GPIO  | BRD4002 Breakout Header | SPS30               |
+  | ------------ | -------------- | ----------------------- | ------------------- |
+  | UART1_RX_PIN | GPIO_6         | P19                     | PIN 3 (TX)                  |
+  | UART1_TX_PIN | GPIO_7         | P20                     | PIN 2 (RX)          |
+  | Floating     |                |                         | PIN 4 (SEL)         |
+  | +5V          |                | +5V                     | PIN 1 (+5V)         |
+  | GND          |                | GND                     | PIN 5 (GND)         |
 
 ## Setup ##
 
@@ -47,22 +67,23 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter: 'sps30'.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by 'sps30'.
 
 2. Click **Create** button on the example:
 
-    - **Third Party Hardware Drivers - SPS30 - Particulate Matter Sensor (Sparkfun) - I2C** if using the I2C interface.  
+   - **Third Party Hardware Drivers - SPS30 - Particulate Matter Sensor (Sparkfun) - I2C** if using the I2C interface.  
 
-    - **Third Party Hardware Drivers - SPS30 - Particulate Matter Sensor (Sparkfun) - UART** if using the UART interface.
+   - **Third Party Hardware Drivers - SPS30 - Particulate Matter Sensor (Sparkfun) - UART** if using the UART interface.
 
-    Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-    ![Create_example](image/create_example.png)
+   Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+
+      ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for the your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/sparkfun_particulate_matter_sensor_sps30/app.c` into the project root folder (overwriting the existing file).
 
@@ -74,11 +95,23 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
-        - [Services] → [Timers] → [Sleep Timer]
+        **If the EFR32xG24 Explorer Kit is used**:
+
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
-        - If using the I2C interface: [Third Party Hardware Drivers] → [Sensors] → [SPS30 - Particulate Matter Sensor (Sparkfun) - I2C] → use default configuration
-        - If using the UART interface: [Third Party Hardware Drivers] → [Sensors] → [SPS30 - Particulate Matter Sensor (Sparkfun) - UART] → use default configuration
+        - If using the I2C interface:
+          - [Third Party Hardware Drivers] → [Sensors] → [SPS30 - Particulate Matter Sensor (Sparkfun) - I2C] → use default configuration
+        - If using the UART interface:
+          - [Services] → [IO Stream] → [IO Stream: USART] → [mikroe] → set "Receive buffer size" to 256
+          - [Third Party Hardware Drivers] → [Sensors] → [SPS30 - Particulate Matter Sensor (Sparkfun) - UART] → use default configuration
+
+        **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+        - If using the I2C interface:
+          - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+          - [Third Party Hardware Drivers] → [Sensors] → [SPS30 - Particulate Matter Sensor (Sparkfun) - I2C] → use default configuration
+        - If using the UART interface:
+          - [Third Party Hardware Drivers] → [Sensors] → [SPS30 - Particulate Matter Sensor (Sparkfun) - UART] → use default configuration
+          - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [UART] → disable "UART1 DMA"
 
 4. Install **printf float**
 
@@ -86,16 +119,15 @@ You can either create a project based on an example project or start with an emp
 
     - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General. Check Printf float.
 
-    ![install_float](image/install_float.png)
+        ![install_float](image/install_float.png)
 
 5. Build and flash this example to the board.
 
-
 **Note:**
 
-- Make sure that the SDK extension is already installed. If not, please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "SPS30 - Particulate Matter Sensor (Sparkfun) - I2C" or "SPS30 - Particulate Matter Sensor (Sparkfun) - UART" component.
+- Third-party Drivers Extension must be enabled for the project to install "SPS30 - Particulate Matter Sensor (Sparkfun) - I2C" or "SPS30 - Particulate Matter Sensor (Sparkfun) - UART" component
 
 ## How It Works ##
 
@@ -103,7 +135,7 @@ Driver Layer Diagram is shown in the image below:
 
 ![driver_layer](image/driver_layer.png)
 
-After you flash the code to the Explorer Kit and power the connected boards, the application starts running automatically. Use Putty/Tera Term (or another program) to read the values of the serial output. Note that the EFR32xG24 Explorer Kit board uses the default baud rate of 115200.
+After you flash the code to the Explorer Kit and power the connected boards, the application starts running automatically. Use Putty/Tera Term (or another program) to read the values of the serial output. Note that your board uses the default baud rate of 115200.
 
 In the image below, you can see an example how the output is displayed. The main program performs a sensor probing at first, then it reads the serial number and feature set version. The main program starts the measurements and continuously receives measured values ​​(pm1.0, pm2.5, pm4.0, pm10.0 ... concentration).
 
@@ -111,6 +143,7 @@ There is a periodic timer in the code, which determines the sampling intervals; 
 
 ![log_i2c](image/log_i2c.png "USB Debug Output Data")
 ![log_uart](image/log_uart.png "USB Debug Output Data")
+
 ## Report Bugs & Get Support ##
 
 To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.

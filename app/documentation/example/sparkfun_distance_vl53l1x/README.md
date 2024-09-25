@@ -2,40 +2,50 @@
 
 ## Summary ##
 
-This project shows the integration of the ST's [VL53L1x distance sensor ultra-lite driver](https://www.st.com/en/imaging-and-photonics-solutions/vl53l1x.html#tools-software) API with GSDK.
+This project shows the integration of the ST's [VL53L1x distance sensor ultra-lite driver](https://www.st.com/en/imaging-and-photonics-solutions/vl53l1x.html#tools-software) APIs using Silicon Labs platform.
 
 VL53L1X is a state-of-the-art, Time-of-Flight (ToF), laser-ranging sensor.
 It is the fastest miniature ToF sensor on the market with accurate ranging up to 4 m and fast ranging frequency up to 50 Hz. It is housed in a miniature and reflowable package, which integrates an SPAD receiving array from a 940 nm invisible Class1 laser emitter. It incorporates physical infrared filters and optics to achieve the best ranging performance in various ambient lighting conditions. By combining this sensor with Silicon Labs wireless technology, you can make your own applications, such as distance monitoring, people counting and so on.
 
 ## Hardware Required ##
 
-- [BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- [BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 - [SparkFun Distance Sensor Breakout - 4 Meter, VL53L1X (Qwiic)](https://www.sparkfun.com/products/14722) or [MikroE LIGHTRANGER 4 Click](https://www.mikroe.com/lightranger-4-click)
 
 ## Connections Required ##
 
 A VL53L1X sensor board can be easily connected up with two I2C wires (SDA and SCL) along with 3v3 and GND. For the designated boards, SparkFun Qwiic compatible STEMMA QT connectors can be used.
 
-![connection](image/connection.png)
+- If the BGM220P Explorer Kit is used:
+
+  The hardware connection is shown in the image below:
+
+  ![connection](image/connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | Sparkfun AK9753 sensor board |
+  | -------------| ------------- | ------------------ | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
 
 ## Setup ##
-
-To test this application, you should connect the BMG220 Explorer Kit Board to the PC using a microUSB cable. 
 
 You can either create a project based on an example project or start with an empty example project.
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter: vl53l1x.
+1. From the Launcher Home, add used board BRD4314A(BGM220) or BRD4338A(SiWx917)  to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *vl53l1x*.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - VL53L1X - Distance Sensor (Sparkfun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" project for the "BGM220 Explorer Kit Board" using Simplicity Studio 5. Use the default project settings. Be sure to connect and select the BGM220 Explorer Kit Board from the "Debug Adapters" on the left before creating a project.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/sparkfun_distance_vl53l1x/app.c` into the project root folder (overwriting the existing file).
 
@@ -46,17 +56,26 @@ You can either create a project based on an example project or start with an emp
    - Select the SOFTWARE COMPONENTS tab.
 
    - Install the following components
-      - [Services] → [Timers] → [Sleep Timer]
-      - [Services] → [IO Stream] → [IO Stream: USART] → instance name: **vcom**
-      - [Application] →  [Utility] → [Log]
-      - **[Third Party Hardware Drivers] → [Sensors] → [VL53L1X - Distance Sensor Breakout (Sparkfun)]**
-    ***
+
+      - If the **BGM220P Explorer Kit** is used:
+
+         - [Services] → [Timers] → [Sleep Timer]
+         - [Services] → [IO Stream] → [IO Stream: USART] → instance name: **vcom**
+         - [Application] →  [Utility] → [Log]
+         - [Platform] → [Driver] → [I2C] → [I2CSPM] → default instance name: **qwiic**
+         - [Third Party Hardware Drivers] → [Sensors] → [**VL53L1X - Distance Sensor Breakout (Sparkfun)**]
+
+      - If the **SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit** is used:
+
+         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+         - [Third Party Hardware Drivers] → [Sensors] → [**VL53L1X - Distance Sensor Breakout (Sparkfun)**]
 
 4. Build and flash the project to your device.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install **VL53L1X - Distance Sensor Breakout (Sparkfun) - I2C** component.
 
@@ -64,7 +83,7 @@ You can either create a project based on an example project or start with an emp
 
 ### API Overview ###
 
-The driver is divided into three layers, a platform, a core, and an interface layer. The core layer implements the key features, the platform layer provides integration to the host microcontroller hardware-dependent codes. (In practice it integrates the I2CSPM platform service.). Above these levels, the upper layer provides an interface with standard Silabs return codes and complies with Silicon Labs coding standards. 
+The driver is divided into three layers, a platform, a core, and an interface layer. The core layer implements the key features, the platform layer provides integration to the host microcontroller hardware-dependent codes. (In practice it integrates the I2CSPM platform service.). Above these levels, the upper layer provides an interface with standard Silabs return codes and complies with Silicon Labs coding standards.
 
 ![software_layers](image/software_layers.png)
 
@@ -78,7 +97,7 @@ The driver is divided into three layers, a platform, a core, and an interface la
 
 ### Testing ###
 
-Use Putty or another program to read the serial output. The BGM220P uses by default a baudrate of 115200. You should expect a similar output to the one below.
+Use Putty or another program to read the serial output. Configure right baudrate for the connection. You should expect a similar output to the one below.
 
 ![console](image/console.png)
 

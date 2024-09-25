@@ -37,29 +37,34 @@
  *
  ******************************************************************************/
 #include "mikroe_fsr400.h"
+#include "mikroe_fsr400_config.h"
 #include "force3.h"
 
 static force3_t force3;
 static force3_cfg_t force3_cfg;
 
-sl_status_t mikroe_fsr400_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_fsr400_init(mikroe_i2c_handle_t i2cspm_instance)
 {
-  sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
-
-  if (NULL != i2cspm_instance) {
-    force3.i2c.handle = i2cspm_instance;
-    force3_cfg_setup(&force3_cfg);
-
-    if (I2C_MASTER_SUCCESS == force3_init(&force3, &force3_cfg)) {
-      stt = SL_STATUS_OK;
-    } else {
-      stt = SL_STATUS_FAIL;
-    }
+  if (NULL == i2cspm_instance) {
+    return SL_STATUS_INVALID_PARAMETER;
   }
-  return stt;
+
+  force3.i2c.handle = i2cspm_instance;
+  force3_cfg_setup(&force3_cfg);
+
+#if (MIKROE_I2C_FSR400_UC == 1)
+  force3_cfg.i2c_speed = MIKROE_I2C_FSR400_SPEED_MODE;
+#endif
+
+  if (FORCE3_OK != force3_init(&force3, &force3_cfg)) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_fsr400_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_fsr400_set_i2csmp_instance(
+  mikroe_i2c_handle_t i2cspm_instance)
 {
   sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
 

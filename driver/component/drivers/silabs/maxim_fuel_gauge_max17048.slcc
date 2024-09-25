@@ -6,36 +6,76 @@ description: >
 category: Power Management
 quality: evaluation
 root_path: driver
+
 requires:
   - name: status
   - name: sleeptimer
-  - name: i2cspm
   - name: tempdrv
+    condition: [device_series_1]
+  - name: tempdrv
+    condition: [device_series_2]
+  - name: sl_bjt_temperature_sensor
+    condition: [device_si91x]
   - name: gpiointerrupt
+    condition: [device_series_1]
+  - name: gpiointerrupt
+    condition: [device_series_2]
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: sl_power_manager
+    condition: [device_si91x]
+  - name: power_manager
+    condition: [device_series_1]
+  - name: power_manager
+    condition: [device_series_2]
+  - name: power_manager_no_deepsleep
+    condition: [device_series_1]
+  - name: power_manager_no_deepsleep
+    condition: [device_series_2]
+  - name: mikroe_peripheral_driver_i2c
+  - name: mikroe_peripheral_driver_digital_io
+
 recommends:
   - id: i2cspm
     instance: [fuel_gauge]
+
 config_file:
   - path: public/silabs/fuel_gauge_max17048/config/brd4181b/maxim_max17048_config.h
     file_id: maxim_max17048_config
     condition: [brd4181b]
+  - path: public/silabs/fuel_gauge_max17048/config/brd4180a/maxim_max17048_config.h
+    file_id: maxim_max17048_config
+    condition: [brd4180a]
+  - path: public/silabs/fuel_gauge_max17048/config/brd4338a/maxim_max17048_config.h
+    file_id: maxim_max17048_config
+    condition: [brd4338a]
   - path: public/silabs/fuel_gauge_max17048/config/other/maxim_max17048_config.h
     file_id: maxim_max17048_config
-    unless: [brd4181b]
+    unless: [brd4181b, brd4180a, brd4338a]
+  - override:
+      component: i2cspm
+      file_id: i2cspm_config
+      instance: fuel_gauge
+    path: public/silabs/fuel_gauge_max17048/config/brd4180a/sl_i2cspm_fuel_gauge_config.h
+    condition: [brd4180a]
   - override:
       component: i2cspm
       file_id: i2cspm_config
       instance: fuel_gauge
     path: public/silabs/fuel_gauge_max17048/config/brd4181b/sl_i2cspm_fuel_gauge_config.h
     condition: [brd4181b]
+
 provides:
   - name: maxim_fuel_gauge_max17048
+
 template_contribution:
   - name: component_catalog
     value: maxim_fuel_gauge_max17048 
+
 include:
   - path: public/silabs/fuel_gauge_max17048/inc
     file_list:
-      - path: maxim_fuel_gauge_max17048.h   
+      - path: maxim_fuel_gauge_max17048.h  
+
 source:
   - path: public/silabs/fuel_gauge_max17048/src/maxim_fuel_gauge_max17048.c

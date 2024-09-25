@@ -45,62 +45,76 @@ extern "C"
 
 // <h>Touch settings
 
-// <o TOUCHSCREEN_WIDTH> Touch screen width
+// <o TOUCHSCREEN_HOR_RES> Touch Screen Horizontal Resolution
 // <i> Default: 240
-#define TOUCHSCREEN_WIDTH              240
+#define TOUCHSCREEN_HOR_RES              240
 
-// <o TOUCHSCREEN_HEIGHT> Touch screen height
+// <o TOUCHSCREEN_VER_RES> Touch Screen Vertical Resolution
 // <i> Default: 320
-#define TOUCHSCREEN_HEIGHT              320
+#define TOUCHSCREEN_VER_RES              320
+
+// <o TOUCHSCREEN_XPLATE_RES> X-plate resistance
+// <i> Default: 200
+// <d> 200
+#define TOUCHSCREEN_XPLATE_RES              200
+
+// <q TOUCHSCREEN_X_INV> Invert X-axis
+// <i> Default: 0
+// <d> 0
+#define TOUCHSCREEN_X_INV                   1
+
+// <q TOUCHSCREEN_Y_INV> Invert Y-axis
+// <i> Default: 0
+// <d> 0
+#define TOUCHSCREEN_Y_INV                   1
+
+// <q TOUCHSCREEN_XY_SWAP> XY Swap
+// <i> Default: 0
+// <d> 0
+#define TOUCHSCREEN_XY_SWAP             0
 
 // </h>
 
-// <h>CALIBRATION settings
-
-// <q CALIBRATION_PRINTF> Enable calibration printf
-// <i> Default: 0
-#define CALIBRATION_PRINTF       0
-
-// <o CALIB_X_MIN> Calib X-min
+// <o TOUCHSCREEN_X_MIN> Calib X-min
 // <i> Default: 460
-#define CALIB_X_MIN              460
+#define TOUCHSCREEN_X_MIN              460
 
-// <o CALIB_X_MAX> Calib X-max
+// <o TOUCHSCREEN_X_MAX> Calib X-max
 // <i> Default: 3620
-#define CALIB_X_MAX              3620
+#define TOUCHSCREEN_X_MAX              3620
 
-// <o CALIB_Y_MIN> Calib Y-min
+// <o TOUCHSCREEN_Y_MIN> Calib Y-min
 // <i> Default: 340
-#define CALIB_Y_MIN              340
+#define TOUCHSCREEN_Y_MIN              340
 
-// <o CALIB_Y_MAX> Calib Y-max
+// <o TOUCHSCREEN_Y_MAX> Calib Y-max
 // <i> Default: 3580
-#define CALIB_Y_MAX              3580
+#define TOUCHSCREEN_Y_MAX              3580
 
 // </h>
 
 // <<< end of configuration section >>>
 
 // <<< sl:start pin_tool >>>
-// <gpio optional=true> XP
-// $[GPIO_XP]
+// <gpio optional=true> TOUCHSCREEN_XP
+// $[GPIO_TOUCHSCREEN_XP]
 #warning "Touch screen X+ Pin not configured"
-// [GPIO_XP]$
+// [GPIO_TOUCHSCREEN_XP]$
 
-// <gpio optional=true> YP
-// $[GPIO_YP]
+// <gpio optional=true> TOUCHSCREEN_YP
+// $[GPIO_TOUCHSCREEN_YP]
 #warning "Touch screen Y+ Pin not configured"
-// [GPIO_YP]$
+// [GPIO_TOUCHSCREEN_YP]$
 
-// <gpio optional=true> XM
-// $[GPIO_XM]
+// <gpio optional=true> TOUCHSCREEN_XM
+// $[GPIO_TOUCHSCREEN_XM]
 #warning "Touch screen X- Pin not configured"
-// [GPIO_XM]$
+// [GPIO_TOUCHSCREEN_XM]$
 
-// <gpio optional=true> YM
-// $[GPIO_YM]
+// <gpio optional=true> TOUCHSCREEN_YM
+// $[GPIO_TOUCHSCREEN_YM]
 #warning "Touch screen Y- Pin not configured"
-// [GPIO_YM]$
+// [GPIO_TOUCHSCREEN_YM]$
 
 // <<< sl:end pin_tool >>>
 

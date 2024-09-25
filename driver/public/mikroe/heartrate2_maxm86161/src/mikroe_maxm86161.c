@@ -40,23 +40,22 @@
 #include "heartrate2.h"
 #include "mikroe_maxm86161.h"
 #include "mikroe_maxm86161_config.h"
-#include "third_party_hw_drivers_helpers.h"
 
 static heartrate2_t heartrate2;
 static heartrate2_cfg_t heartrate2_cfg;
 
-sl_status_t mikroe_maxm86161_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_maxm86161_init(mikroe_i2c_handle_t i2cspm_instance)
 {
   if (i2cspm_instance == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
   // Configure default i2csmp instance
   heartrate2.i2c.handle = i2cspm_instance;
 
   // Call basic setup functions
   heartrate2_cfg_setup(&heartrate2_cfg);
+
 #if defined(MAXM86161_EN_PORT) && defined(MAXM86161_EN_PIN)
   heartrate2_cfg.cs = hal_gpio_pin_name(MAXM86161_EN_PORT, MAXM86161_EN_PIN);
 #endif
@@ -70,13 +69,15 @@ sl_status_t mikroe_maxm86161_init(sl_i2cspm_t *i2cspm_instance)
                                              MAXM86161_INT_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(heartrate2_init(&heartrate2,
-                                                  &heartrate2_cfg));
+  if (heartrate2_init(&heartrate2, &heartrate2_cfg) != HEARTRATE2_OK_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_maxm86161_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_maxm86161_set_i2csmp_instance(
+  mikroe_i2c_handle_t i2cspm_instance)
 {
   if (NULL == i2cspm_instance) {
     return SL_STATUS_INVALID_PARAMETER;
@@ -146,7 +147,7 @@ sl_status_t mikroe_maxm86161_read_fifo(
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  heartrate2_read_fifo(&heartrate2, mikroe_fifo);
+  heartrate2_read_fifo(&heartrate2, (heartrate2_fifo_data_t *)mikroe_fifo);
   return SL_STATUS_OK;
 }
 
@@ -167,7 +168,9 @@ sl_status_t mikroe_maxm86161_ppg_config(
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  if (HEARTRATE2_ERROR == heartrate2_ppg_config(&heartrate2, mikroe_ppg_cfg)) {
+  if (HEARTRATE2_ERROR
+      == heartrate2_ppg_config(&heartrate2,
+                               (heartrate2_ppg_cfg_t *)mikroe_ppg_cfg)) {
     return SL_STATUS_FAIL;
   }
 
@@ -181,7 +184,7 @@ sl_status_t mikroe_maxm86161_ledpa_config(
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  heartrate2_ledpa_config(&heartrate2, mikroe_ledpa);
+  heartrate2_ledpa_config(&heartrate2, (heartrate2_ledpa_t *)mikroe_ledpa);
   return SL_STATUS_OK;
 }
 
@@ -192,8 +195,9 @@ sl_status_t mikroe_maxm86161_led_range_curr_config(
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  if (HEARTRATE2_ERROR == heartrate2_led_range_curr_config(&heartrate2,
-                                                           mikroe_led_range)) {
+  if (HEARTRATE2_ERROR == heartrate2_led_range_curr_config(
+        &heartrate2,
+        (heartrate2_led_range_curr_t *)mikroe_led_range)) {
     return SL_STATUS_FAIL;
   }
 
@@ -208,7 +212,8 @@ sl_status_t mikroe_maxm86161_led_sequence_config(
   }
 
   if (HEARTRATE2_ERROR == heartrate2_led_sequence_config(&heartrate2,
-                                                         mikroe_ledsq)) {
+                                                         (heartrate2_ledsq_cfg_t
+                                                          *)mikroe_ledsq)) {
     return SL_STATUS_FAIL;
   }
 
@@ -223,6 +228,7 @@ sl_status_t mikroe_maxm86161_int_control(
   }
 
   if (HEARTRATE2_ERROR == heartrate2_int_control(&heartrate2,
+                                                 (heartrate2_int_t *)
                                                  mikroe_int_ctrl)) {
     return SL_STATUS_FAIL;
   }
@@ -236,7 +242,7 @@ sl_status_t mikroe_maxm86161_int_status(
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  heartrate2_int_status(&heartrate2, mikroe_int_status);
+  heartrate2_int_status(&heartrate2, (heartrate2_int_t *)mikroe_int_status);
   return SL_STATUS_OK;
 }
 

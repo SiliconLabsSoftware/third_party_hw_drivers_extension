@@ -2,7 +2,6 @@
 #define _ADAFRUIT_TSC2007_H
 
 #include "sl_status.h"
-#include "sl_i2cspm.h"
 
 /*!
  *    @brief  Different function commands
@@ -38,6 +37,10 @@ typedef enum {
   TSC2007_ADC_8BIT = 1,
 } adafruit_tsc2007_resolution_t;
 
+struct adafruit_tsc2007_config {
+  void *mikroe_drv_i2c_handle;
+};
+
 /***************************************************************************//**
  *    @brief
  *      TSC2007 Initialization.
@@ -46,7 +49,7 @@ typedef enum {
  *    @return
  *     Returns SL_STATUS_OK on success, or else error code
  ******************************************************************************/
-sl_status_t adafruit_tsc2007_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t adafruit_tsc2007_init(const struct adafruit_tsc2007_config *config);
 
 /***************************************************************************//**
  *    @brief

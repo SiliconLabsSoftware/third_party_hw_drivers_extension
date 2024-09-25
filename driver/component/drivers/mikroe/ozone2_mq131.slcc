@@ -9,8 +9,10 @@ root_path: driver
 requires:
   - name: status
   - name: udelay
+    condition: [device_series_1]
+  - name: udelay
+    condition: [device_series_2]
   - name: mikroe_peripheral_driver_spi
-  - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_adc
 provides:
   - name: mikroe_ozone2
@@ -24,9 +26,12 @@ config_file:
   - path: public/mikroe/ozone2_mq131/config/brd4314a/mikroe_mq131_config.h
     file_id: driver_config_mq131
     condition: [brd4314a]
+  - path: public/mikroe/ozone2_mq131/config/brd4338a/mikroe_mq131_config.h
+    file_id: driver_config_mq131
+    condition: [brd4338a]
   - path: public/mikroe/ozone2_mq131/config/other/mikroe_mq131_config.h
     file_id: driver_config_mq131
-    unless: [brd2703a, brd4108a, brd4314a]
+    unless: [brd2703a, brd4108a, brd4314a, brd4338a]
 template_contribution:
   - name: component_catalog
     value: mikroe_ozone2

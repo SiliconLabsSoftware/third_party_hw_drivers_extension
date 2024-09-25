@@ -41,7 +41,7 @@
 #define _MIKROE_PN7150_H_
 
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -84,23 +84,23 @@ typedef struct
  * @brief
  *    Initialization function.
  *
- * @param[in] i2cspm_instance
+ * @param[in] i2c_instance
  *    I2CSPM instance
  *
  * @return SL_STATUS_OK if there are no errors.
  ******************************************************************************/
-sl_status_t mikroe_pn7150_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_pn7150_init(mikroe_i2c_handle_t i2c_instance);
 
 /***************************************************************************//**
  * @brief
  *    This function sets the IC2SPM instance used by platform functions.
  *
- * @param[in] i2cspm_instance
+ * @param[in] i2c_instance
  *    I2CSPM instance
  *
  * @return SL_STATUS_OK if there are no errors.
  ******************************************************************************/
-sl_status_t mikroe_pn7150_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_pn7150_set_i2csmp_instance(mikroe_i2c_handle_t i2c_instance);
 
 /***************************************************************************//**
  * @brief NFC 2 default configuration function.

@@ -39,10 +39,8 @@
 #include <string.h>
 #include "sl_status.h"
 #include "sl_sleeptimer.h"
-#include "sl_i2cspm.h"
-
-#include "sparkfun_max30101_max32664_config.h"
 #include "sparkfun_max30101_max32664.h"
+#include "sparkfun_max30101_max32664_config.h"
 
 #define BIO_HUB_ADDRESS           0x55
 
@@ -64,8 +62,7 @@
 #define NO_WRITE                  0x00
 
 // Variables ------------
-static sl_i2cspm_t *bio_hub_i2cspm_instance = NULL;
-static uint8_t i2c_address = BIO_HUB_ADDRESS;
+static i2c_master_t bio_hub;
 static bio_hub_algo_mode_t user_selected_mode;
 static uint8_t sample_rate = 100;
 
@@ -129,7 +126,7 @@ static sl_status_t read_fill_array(uint8_t family_byte,
  *
  * @return SL_STATUS_OK if successful. Error code otherwise.
  ******************************************************************************/
-sl_status_t bio_hub_init(sl_i2cspm_t *i2cspm_instance, uint8_t address)
+sl_status_t bio_hub_init(mikroe_i2c_handle_t i2cspm_instance, uint8_t address)
 {
   uint8_t response_byte;
   sl_status_t sc;
@@ -138,9 +135,25 @@ sl_status_t bio_hub_init(sl_i2cspm_t *i2cspm_instance, uint8_t address)
     return SL_STATUS_NULL_POINTER;
   }
 
-  bio_hub_i2cspm_instance = i2cspm_instance;
+  bio_hub.handle = i2cspm_instance;
+
+  i2c_master_config_t i2c_cfg;
+  i2c_master_configure_default(&i2c_cfg);
+
   if (address) {
-    i2c_address = address;
+    i2c_cfg.addr = address;
+  } else {
+    i2c_cfg.addr = BIO_HUB_ADDRESS;
+  }
+
+  i2c_cfg.timeout_pass_count = 0;
+
+#if (SPARKFUN_MAX30101_I2C_UC == 1)
+  i2c_cfg.speed = SPARKFUN_MAX30101_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&bio_hub, &i2c_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_FAIL;
   }
 
   // The following function initializes the sensor. To place the MAX32664 into
@@ -1396,7 +1409,7 @@ sl_status_t bio_hub_read_register_accel(uint8_t reg_addr, uint8_t *reg_cont)
  ******************************************************************************/
 sl_status_t bio_hub_get_afe_attributes_max30101(bio_hub_sensor_attr_t *max_attr)
 {
-  uint8_t temp_array[2];
+  uint8_t temp_array[2] = { 0x00 };
   sl_status_t sc;
 
   if (max_attr == NULL) {
@@ -1428,7 +1441,7 @@ sl_status_t bio_hub_get_afe_attributes_max30101(bio_hub_sensor_attr_t *max_attr)
 sl_status_t bio_hub_get_afe_attributes_accelerometer(
   bio_hub_sensor_attr_t *max_attr)
 {
-  uint8_t temp_array[2];
+  uint8_t temp_array[2] = { 0x00 };
   sl_status_t sc;
 
   if (max_attr == NULL) {
@@ -1804,41 +1817,31 @@ sl_status_t bio_hub_set_num_pages(uint8_t total_pages)
  ******************************************************************************/
 sl_status_t bio_hub_erase_flash(void)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t buf[2];
   uint8_t status;
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_WRITE;
 
   buf[0] = BOOTLOADER_FLASH;
   buf[1] = ERASE_FLASH;
 
-  // Write buffer
-  seq.buf[0].data = buf;
-  seq.buf[0].len = 2;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             buf,
+                                             2)) {
     return SL_STATUS_TRANSMIT;
   }
 
   sl_sleeptimer_delay_millisecond(CMD_DELAY);
 
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
-
-  // Read buffer
-  seq.buf[0].data = &status;
-  seq.buf[0].len = 1;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                            &status,
+                                            1)) {
     return SL_STATUS_TRANSMIT;
   }
-  return status == 0 ? SL_STATUS_OK:SL_STATUS_FAIL;
+
+  return (status == 0) ? SL_STATUS_OK : SL_STATUS_FAIL;
 }
 
 /***************************************************************************//**
@@ -2180,37 +2183,26 @@ static sl_status_t read_version(uint8_t family,
                                 uint8_t index,
                                 bio_hub_version_t *vers)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t buf[4];
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_WRITE;
 
   buf[0] = family;
   buf[1] = index;
 
-  // Write buffer
-  seq.buf[0].data = buf;
-  seq.buf[0].len = 2;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             buf,
+                                             2)) {
     return SL_STATUS_TRANSMIT;
   }
 
   sl_sleeptimer_delay_millisecond(CMD_DELAY);
 
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
-
-  // Read buffer
-  seq.buf[0].data = buf;
-  seq.buf[0].len = 4;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                            buf,
+                                            4)) {
     return SL_STATUS_TRANSMIT;
   }
 
@@ -2238,42 +2230,33 @@ static sl_status_t enable_write(uint8_t family_byte,
                                 uint8_t index_byte,
                                 uint8_t enable_byte)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t write_buf[3];
   uint8_t statusByte;
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_WRITE;
-
   write_buf[0] = family_byte;
   write_buf[1] = index_byte;
   write_buf[2] = enable_byte;
 
   // Write buffer
-  seq.buf[0].data = write_buf;
-  seq.buf[0].len = 3;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             write_buf,
+                                             3)) {
     return SL_STATUS_TRANSMIT;
   }
 
   sl_sleeptimer_delay_millisecond(ENABLE_CMD_DELAY);
 
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
-
   // Read buffer
-  seq.buf[0].data = &statusByte;
-  seq.buf[0].len = 1;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                            &statusByte,
+                                            1)) {
     return SL_STATUS_TRANSMIT;
   }
-  return statusByte == 0 ? SL_STATUS_OK:SL_STATUS_TRANSMIT;
+
+  return (statusByte == 0) ? SL_STATUS_OK : SL_STATUS_TRANSMIT;
 }
 
 /***************************************************************************//**
@@ -2288,42 +2271,34 @@ static sl_status_t write_byte(uint8_t family_byte,
                               uint8_t index_byte,
                               uint8_t write_byte)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t write_buf[3];
   uint8_t statusByte;
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_WRITE;
 
   write_buf[0] = family_byte;
   write_buf[1] = index_byte;
   write_buf[2] = write_byte;
 
   // Write buffer
-  seq.buf[0].data = write_buf;
-  seq.buf[0].len = 3;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             write_buf,
+                                             3)) {
     return SL_STATUS_TRANSMIT;
   }
 
   sl_sleeptimer_delay_millisecond(CMD_DELAY);
 
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
-
   // Read buffer
-  seq.buf[0].data = &statusByte;
-  seq.buf[0].len = 1;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                            &statusByte,
+                                            1)) {
     return SL_STATUS_TRANSMIT;
   }
-  return statusByte == 0 ? SL_STATUS_OK:SL_STATUS_TRANSMIT;
+
+  return (statusByte == 0) ? SL_STATUS_OK : SL_STATUS_TRANSMIT;
 }
 
 /***************************************************************************//**
@@ -2339,16 +2314,12 @@ static sl_status_t write_byte2(uint8_t family_byte,
                                uint8_t write_byte,
                                uint8_t write_val)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t write_buf[4];
   uint8_t statusByte;
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_WRITE;
 
   write_buf[0] = family_byte;
   write_buf[1] = index_byte;
@@ -2356,26 +2327,21 @@ static sl_status_t write_byte2(uint8_t family_byte,
   write_buf[3] = write_val;
 
   // Write buffer
-  seq.buf[0].data = write_buf;
-  seq.buf[0].len = 4;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             write_buf,
+                                             4)) {
     return SL_STATUS_TRANSMIT;
   }
 
   sl_sleeptimer_delay_millisecond(CMD_DELAY);
 
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
-
-  // Read buffer
-  seq.buf[0].data = &statusByte;
-  seq.buf[0].len = 1;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                            &statusByte,
+                                            1)) {
     return SL_STATUS_TRANSMIT;
   }
-  return statusByte == 0 ? SL_STATUS_OK:SL_STATUS_TRANSMIT;
+
+  return (statusByte == 0) ? SL_STATUS_OK : SL_STATUS_TRANSMIT;
 }
 
 /***************************************************************************//**
@@ -2391,16 +2357,12 @@ static sl_status_t write_long_bytes(uint8_t family_byte,
                                     const int32_t *write_val,
                                     const size_t size)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t write_buf[(size * 4) + 3];
   uint8_t statusByte;
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_WRITE;
 
   write_buf[0] = family_byte;
   write_buf[1] = index_byte;
@@ -2408,26 +2370,21 @@ static sl_status_t write_long_bytes(uint8_t family_byte,
   memcpy(&write_buf[3], write_val, size * 4);
 
   // Write buffer
-  seq.buf[0].data = write_buf;
-  seq.buf[0].len = (size * 4) + 3;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             write_buf,
+                                             (size * 4) + 3)) {
     return SL_STATUS_TRANSMIT;
   }
 
   sl_sleeptimer_delay_millisecond(CMD_DELAY);
 
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
-
-  // Read buffer
-  seq.buf[0].data = &statusByte;
-  seq.buf[0].len = 1;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                            &statusByte,
+                                            1)) {
     return SL_STATUS_TRANSMIT;
   }
-  return statusByte == 0 ? SL_STATUS_OK:SL_STATUS_TRANSMIT;
+
+  return (statusByte == 0) ? SL_STATUS_OK : SL_STATUS_TRANSMIT;
 }
 
 /***************************************************************************//**
@@ -2443,16 +2400,12 @@ static sl_status_t write_bytes(uint8_t family_byte,
                                const uint8_t *write_val,
                                size_t size)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t write_buf[size + 3];
   uint8_t statusByte;
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_WRITE;
 
   write_buf[0] = family_byte;
   write_buf[1] = index_byte;
@@ -2460,26 +2413,21 @@ static sl_status_t write_bytes(uint8_t family_byte,
   memcpy(&write_buf[3], write_val, size);
 
   // Write buffer
-  seq.buf[0].data = write_buf;
-  seq.buf[0].len = size + 3;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             write_buf,
+                                             size + 3)) {
     return SL_STATUS_TRANSMIT;
   }
 
   sl_sleeptimer_delay_millisecond(CMD_DELAY);
 
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
-
-  // Read buffer
-  seq.buf[0].data = &statusByte;
-  seq.buf[0].len = 1;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                            &statusByte,
+                                            1)) {
     return SL_STATUS_TRANSMIT;
   }
-  return statusByte == 0 ? SL_STATUS_OK:SL_STATUS_TRANSMIT;
+
+  return (statusByte == 0) ? SL_STATUS_OK : SL_STATUS_TRANSMIT;
 }
 
 /***************************************************************************//**
@@ -2495,43 +2443,35 @@ static sl_status_t read_byte(uint8_t family_byte,
                              uint8_t index_byte,
                              uint8_t *byte_read)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t write_buf[2];
   uint8_t read_buf[2];
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_WRITE;
 
   write_buf[0] = family_byte;
   write_buf[1] = index_byte;
 
   // Write buffer
-  seq.buf[0].data = write_buf;
-  seq.buf[0].len = 2;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             write_buf,
+                                             2)) {
     return SL_STATUS_TRANSMIT;
   }
 
   sl_sleeptimer_delay_millisecond(CMD_DELAY);
 
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
-
-  // Read buffer
-  seq.buf[0].data = read_buf;
-  seq.buf[0].len = 2;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                            read_buf,
+                                            2)) {
     return SL_STATUS_TRANSMIT;
   }
+
   if (read_buf[0]) {
     return SL_STATUS_IO;  // Return the error, see: read_status_byte_value_t
   }
+
   *byte_read = read_buf[1];
   return SL_STATUS_OK;
 }
@@ -2549,44 +2489,37 @@ static sl_status_t read_byte2(uint8_t family_byte,
                               uint8_t write_byte,
                               uint8_t *byte_read)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t write_buf[3];
   uint8_t read_buf[2];
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_WRITE;
 
   write_buf[0] = family_byte;
   write_buf[1] = index_byte;
   write_buf[2] = write_byte;
 
   // Write buffer
-  seq.buf[0].data = write_buf;
-  seq.buf[0].len = 3;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             write_buf,
+                                             3)) {
     return SL_STATUS_TRANSMIT;
   }
 
   sl_sleeptimer_delay_millisecond(CMD_DELAY);
 
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
-
   // Read buffer
-  seq.buf[0].data = read_buf;
-  seq.buf[0].len = 2;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                            read_buf,
+                                            2)) {
     return SL_STATUS_TRANSMIT;
   }
+
   if (read_buf[0]) {
     return SL_STATUS_IO; // Return the error, see: read_status_byte_value_t
   }
+
   *byte_read = read_buf[1];
   return SL_STATUS_OK;
 }
@@ -2596,37 +2529,27 @@ static sl_status_t read_fill_array(uint8_t family_byte,
                                    uint8_t num_of_reads,
                                    uint8_t *array)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t write_buf[2];
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_WRITE;
 
   write_buf[0] = family_byte;
   write_buf[1] = index_byte;
 
   // Write buffer
-  seq.buf[0].data = write_buf;
-  seq.buf[0].len = 2;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             write_buf,
+                                             2)) {
     return SL_STATUS_TRANSMIT;
   }
 
   sl_sleeptimer_delay_millisecond(CMD_DELAY);
 
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
-
-  // Read buffer
-  seq.buf[0].data = array;
-  seq.buf[0].len = num_of_reads;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                            array,
+                                            num_of_reads)) {
     return SL_STATUS_TRANSMIT;
   }
   return SL_STATUS_OK;
@@ -2649,25 +2572,20 @@ static sl_status_t read_multiple_bytes_int(uint8_t family_byte,
                                            const size_t num_of_reads,
                                            int32_t *user_array)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t write_buf[3];
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
 
   write_buf[0] = family_byte;
   write_buf[1] = index_byte;
   write_buf[2] = write_byte;
 
   // Write buffer
-  seq.buf[0].data = write_buf;
-  seq.buf[0].len = 3;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             write_buf,
+                                             3)) {
     return SL_STATUS_TRANSMIT;
   }
 
@@ -2676,16 +2594,12 @@ static sl_status_t read_multiple_bytes_int(uint8_t family_byte,
   if ((num_of_reads * 4) < 255) {
     uint8_t read_buf[(num_of_reads * 4) + 1];
 
-    seq.addr = i2c_address << 1;
-    seq.flags = I2C_FLAG_READ;
-
-    // Read buffer
-    seq.buf[0].data = read_buf;
-    seq.buf[0].len = (num_of_reads * 4) + 1;
-
-    if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+    if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                              read_buf,
+                                              (num_of_reads * 4) + 1)) {
       return SL_STATUS_TRANSMIT;
     }
+
     if (read_buf[0]) {
       return SL_STATUS_IO; // Return the error, see: read_status_byte_value_t
     }
@@ -2693,6 +2607,7 @@ static sl_status_t read_multiple_bytes_int(uint8_t family_byte,
   } else {
     return SL_STATUS_WOULD_OVERFLOW;
   }
+
   return SL_STATUS_OK;
 }
 
@@ -2713,25 +2628,20 @@ static sl_status_t read_multiple_bytes(uint8_t family_byte,
                                        const size_t num_of_reads,
                                        uint8_t *user_array)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t write_buf[3];
 
-  if (bio_hub_i2cspm_instance == NULL) {
+  if (bio_hub.handle == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-
-  seq.addr = i2c_address << 1;
-  seq.flags = I2C_FLAG_READ;
 
   write_buf[0] = family_byte;
   write_buf[1] = index_byte;
   write_buf[2] = write_byte;
 
   // Write buffer
-  seq.buf[0].data = write_buf;
-  seq.buf[0].len = 3;
-
-  if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&bio_hub,
+                                             write_buf,
+                                             3)) {
     return SL_STATUS_TRANSMIT;
   }
 
@@ -2740,22 +2650,20 @@ static sl_status_t read_multiple_bytes(uint8_t family_byte,
   if (num_of_reads < 255) {
     uint8_t read_buf[num_of_reads + 1];
 
-    seq.addr = i2c_address << 1;
-    seq.flags = I2C_FLAG_READ;
-
-    // Read buffer
-    seq.buf[0].data = read_buf;
-    seq.buf[0].len = num_of_reads + 1;
-
-    if (I2CSPM_Transfer(bio_hub_i2cspm_instance, &seq) != i2cTransferDone) {
+    if (I2C_MASTER_SUCCESS != i2c_master_read(&bio_hub,
+                                              read_buf,
+                                              num_of_reads + 1)) {
       return SL_STATUS_TRANSMIT;
     }
+
     if (read_buf[0]) {
       return SL_STATUS_IO; // Return the error, see: read_status_byte_value_t
     }
+
     memcpy(user_array, &read_buf[1], num_of_reads);
-    return SL_STATUS_OK;
   } else {
     return SL_STATUS_WOULD_OVERFLOW;
   }
+
+  return SL_STATUS_OK;
 }

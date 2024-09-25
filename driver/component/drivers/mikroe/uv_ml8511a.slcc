@@ -22,7 +22,13 @@ config_file:
   - path: public/mikroe/uv_ml8511a/config/brd4314a/mikroe_ml8511a_config.h
     file_id: mikroe_ml8511a_config
     condition: [brd4314a]
-    
+  - path: public/mikroe/uv_ml8511a/config/brd4338a/mikroe_ml8511a_config.h
+    file_id: mikroe_ml8511a_config
+    condition: [brd4338a]
+  - path: public/mikroe/uv_ml8511a/config/other/mikroe_ml8511a_config.h
+    file_id: mikroe_ml8511a_config
+    unless: [brd4338a, brd4314a, brd4108a, brd2703a]
+
 template_contribution:
   - name: component_catalog
     value: mikroe_uv

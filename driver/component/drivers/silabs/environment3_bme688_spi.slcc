@@ -10,12 +10,10 @@ category: Sensors
 root_path: driver
 
 requires:
-  - name: spidrv
-  - name: udelay
-recommends:
-  - id: spidrv
-    instance: [mikroe]
-
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_spi
 provides:
   - name: environment3_bme688_spi
     allow_multiple: false
@@ -23,6 +21,10 @@ provides:
 template_contribution:
   - name: component_catalog
     value: environment3_bme688_spi
+
+config_file:
+  - path: public/silabs/environment3_bme688/config/mikroe_bme688_spi_config.h
+    file_id: mikroe_bme688_spi_config_id
 
 include:
   - path: public/silabs/environment3_bme688/inc

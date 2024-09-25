@@ -2,7 +2,7 @@ project_name: mikroe_temphum15_sht40
 package: platform
 label: Third Party Hardware Drivers - SHT40 - Temp&Hump 15 Click (Mikroe)
 description: |
-  This example project shows an example for Mikroe Temp&amp;Hum 15 Click board integration..
+  This example project shows an example for Mikroe Temp&amp;Hum 15 Click board integration.
 category: Example|Platform
 quality: evaluation
 
@@ -47,14 +47,12 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
   
 other_file:
   - path: ../../documentation/example/mikroe_temphum15_sht40/image/create_example.png
     directory: "image"
   - path: ../../documentation/example/mikroe_temphum15_sht40/image/hardware_connection.png
-    directory: "image"
-  - path: ../../documentation/example/mikroe_temphum15_sht40/image/float.png
     directory: "image"
   - path: ../../documentation/example/mikroe_temphum15_sht40/image/log.png
     directory: "image"

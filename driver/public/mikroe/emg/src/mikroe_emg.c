@@ -41,21 +41,17 @@
 #include "emg.h"
 #include "mikroe_emg.h"
 #include "mikroe_emg_config.h"
-#include "third_party_hw_drivers_helpers.h"
 
 static emg_t emg;
 static emg_cfg_t emg_cfg;
 
-sl_status_t mikroe_emg_init(adc_t *adc)
+sl_status_t mikroe_emg_init(mikroe_adc_handle_t handle)
 {
-  if (NULL == adc) {
+  if (NULL == handle) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
-  emg.adc.handle = adc;
-
+  emg.adc.handle = handle;
   emg_cfg_setup(&emg_cfg);
 
 #if defined(EMG_ANALOG_OUTPUT_PORT) && defined(EMG_ANALOG_OUTPUT_PIN)
@@ -63,9 +59,11 @@ sl_status_t mikroe_emg_init(adc_t *adc)
                                  EMG_ANALOG_OUTPUT_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(emg_init(&emg, &emg_cfg));
+  if (emg_init(&emg, &emg_cfg) != EMG_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_emg_read_an_pin_value(uint16_t *data_out)

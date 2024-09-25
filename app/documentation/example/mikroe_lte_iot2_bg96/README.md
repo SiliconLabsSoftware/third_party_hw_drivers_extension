@@ -2,31 +2,36 @@
 
 ## Summary ##
 
-This project shows the implementation of an LTE IoT 2 Click driver using Quectel BG96 LTE module from Mikroe Integrated with EFR32xG24 Explorer Kit based on UART communication.
+This project shows the implementation of an LTE IoT 2 Click driver using Quectel BG96 LTE module from Mikroe Integrated with Silicon Labs platform based on UART communication.
+
 LTE IoT 2 Click is a Click board™ that allows connection to the LTE networks, featuring Quectel BG96 LTE module, which offers two LTE technologies aimed at Machine to Machine communication (M2M) and the Internet of Things (IoT). This module is an embedded IoT communication solution that supports the LTE Cat M1 and NB1 technologies, offering an alternative to similar Low Power Wide Area Network (LPWAN) solutions, such as the ones provided by Sigfox and LoRa. The LTE CAT1 and NB1 technologies are designed with specific requirements of the IoT network in mind. LTE IoT 2 click also offers various other features, allowing simple and reliable connection to these new 3GPP IoT technologies.
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit (BRD2703A xG24 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview).
+- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit (BRD2703A xG24 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
 
-- [**LTE IoT 2 Click** board based on Quectel BG96 LTE module from Mikroe Integrated](https://www.mikroe.com/lte-iot-2-click).
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2703A | [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)  |
-| BRD4108A | [EFR32BG22 Explorer Kit Board](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)  |
+- [**LTE IoT 2 Click** board based on Quectel BG96 LTE module from Mikroe Integrated](https://www.mikroe.com/lte-iot-2-click)
 
 ## Hardware Connection ##
 
-The LTE IoT 2 Click board can just be "clicked" into its place. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line. The GSM antenna needs to be connected to the LTE IOT 2 Click board to ensure that the mobile network signal can be received. And also a SIM card is properly attached to the module. If the user using the GPS function then the GPS antenna needs to be connected to the LTE IoT 2 Click board to ensure that the satellite signals can be received.
+- If the EFR32xG24 Explorer Kit is used:
 
-![board_1](image/hardware_connection_1.png "BRD2703A xG24 Explorer Kit Board and LTE IoT 2 Click Board")
-![board_2](image/hardware_connection_2.png "BRD2703A xG24 Explorer Kit Board and LTE IoT 2 Click Board")
-![board_3](image/hardware_connection_3.png "BRD2703A xG24 Explorer Kit Board and LTE IoT 2 Click Board")
+  The LTE IoT 2 Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of Click board matches the 45-degree white line of the Explorer Kit.
+
+  The hardware connection is shown in the images below:
+
+    ![board_1](image/hardware_connection_1.png "BRD2703A xG24 Explorer Kit Board and LTE IoT 2 Click Board")
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description       | BRD4338A GPIO            | BRD4002 Breakout Pad | LTE IOT 2 Click board |
+  | ----------------- | ------------------------ | -------------------- | ----------- |
+  | UART1_RX_PIN      | GPIO_6                   | P19                  | TX          |
+  | UART1_TX_PIN      | GPIO_7                   | P20                  | RX          |
+  | Module Power-Up   | GPIO_47                  | P26                  | PWK         |
+  | Module status     | GPIO_46                  | P24                  | STA         |
 
 ## Setup ##
 
@@ -34,18 +39,32 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter 'bg96'.
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **bg96**.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - BG96 - LTE IoT 2 CLick (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
 
-3. Build and flash this example to the board.
+    ![Create_example](image/create_example.png)
+
+3. From the project root folder, open file **app_iostream_cli.c** (if using EFR32xG24 Explorer Kit) or **app_iostream_cli_si91x.c** (if using SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit). Replace " *** " by the receiver's phone number.
+
+    ![config_sms_phone_number](image/config_sms_phone_number.png)
+
+    If you want to send pdu message replace the " *** " by the service center phone number and the receiver's phone number respectively.
+
+    ![config_pdu_phone_number](image/config_pdu_phone_number.png)
+
+4. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
-2. Copy the files `app/example/mikroe_lte_iot2_bg96/app.c`, `app/example/mikroe_lte_iot2_bg96/app_iostream_cli.c`, `app/example/mikroe_lte_iot2_bg96/app_iostream_cli.h` into the project root folder (overwriting the existing file).
+2. Copy the following files into the project root folder (overwriting the existing file):
+
+    - `app/example/mikroe_lte_iot2_bg96/app.c`
+    - `app/example/mikroe_lte_iot2_bg96/app_iostream_cli.h`
+    - `app/example/mikroe_lte_iot2_bg96/app_iostream_cli.c` if using EFR32xG24 Explorer Kit
+    - `app/example/mikroe_lte_iot2_bg96/app_iostream_cli_si91x.c` if using the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit
 
 3. Install the software components:
 
@@ -55,17 +74,36 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
+      **If the EFR32xG24 Explorer Kit is used:**
+
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
+        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: mikroe
         - [Application] → [Utility] → [Log]
         - [Third-Party Hardware Drivers] → [Sensors] → [BG96 - LTE IoT 2 Click (Mikroe)]
+        - [Platform] → [Utilities] → [Circular Queue] → set Max Queue Length to 256 as below:
 
-4. Build and flash this example to the board.
+            ![queue_config](image/config_queue_size.png)
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [Third-Party Hardware Drivers] → [Sensors] → [BG96 - LTE IoT 2 Click (Mikroe)]
+        - [WiSeConnect 3 SDK v3.3.3] → [Device] → [Si91x] → [MCU] → [Peripheral] → [UART] → turn off DMA configuration as below:
+
+            ![uart_config](image/config_uart_si91x.png)
+
+        - [Platform] → [Utilities] → [Circular Queue] → set Max Queue Length to 256 as below:
+
+            ![queue_config](image/config_queue_size.png)
+
+4. Configure receiver's phone number, refers to step 3 in [Create a project based on an example project](#create-a-project-based-on-an-example-project).
+
+5. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Hardware Drivers Extension must be enabled for the project to install "BG96- LTE IoT 2 Click (Mikroe)" component.
+- SDK Extension must be enabled for the project to install "BG96 - LTE IoT 2 Click (Mikroe)" component.
 
 ## How It Works ##
 
@@ -252,10 +290,10 @@ Creating a high-level function means a single AT command or a list of AT command
 
 ### Testing ###
 
-- You can launch Console that's integrated into Simplicity Studio or use a third-party terminal tool like Tera Term to receive the data from the USB. In this example, we build a simple command line interface application. There are commonly used commands predefined in the "app_iostream_cli.c" file. When the user wants to test a feature, just call the corresponding commands.
+- You can launch Console that's integrated into Simplicity Studio or use a third-party terminal tool like Tera Term to receive the data from the USB. In this example, we build a simple command line interface application. There are commonly used commands predefined in the `app_iostream_cli.h` file. When the user wants to test a feature, just call the corresponding commands.
 - First, after the chip has finished booting, the user needs to start the LTE IoT 2 module. Enter the command "wakeup" into Tera Term and end with an "Enter" key. A logline is printed confirming the command has been executed. The lower layer library will control the GPIO pin connected to the PWK pin to power the LTE IoT 2 module. After a few seconds the module boots up, and it will respond with a successful boot confirmation.
 - After the LTE IoT 2 module boots up successfully, users can check basic parameters such as getting imei code, and getting revision by "imei", "infor" commands. The user then calls the "service" command to configure the service domain type CS and PS. Next, the user calls the command "gsm" to select TE character set to GSM.
-- In this example, we send a text message from LTE IoT 2 Click module to a given phone number. There are two operating modes "textmode" and "pdumode" need to call these 2 commands first to put the module into operation mode respectively. The user can then invoke the "smstext" and "smspdu" commands to send the message. After confirming the successful message delivery, there will be a response, which contains the reference information of that sms. 
+- In this example, we send a text message from LTE IoT 2 Click module to a given phone number. There are two operating modes "textmode" and "pdumode" need to call these 2 commands first to put the module into operation mode respectively. The user can then invoke the "smstext" and "smspdu" commands to send the message. After confirming the successful message delivery, there will be a response, which contains the reference information of that sms.
 - In addition, we also provide an example using the GPS function. First, users need to turn on the GPS module with the "gpsstart" command. After the LTE IoT 2 Click module captures the satellite signal, the user can get the location coordinates with the "location" command. After getting the results, users can use the longitude and latitude values ​​entered into Google Maps to check the actual location. In addition, the command also returns information such as UTC, altitude, date, etc. After use, the user can turn off the GPS function with the command "gpsstop", this is to save energy for the system.
 - A screenshot of the console output is shown in the figure below:
 

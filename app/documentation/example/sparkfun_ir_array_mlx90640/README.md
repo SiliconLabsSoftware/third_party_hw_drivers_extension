@@ -2,23 +2,35 @@
 
 ## Summary ##
 
-This project aims to implement the hardware driver interacting with the [SparkFun IR Array Breakout - 55 Degree FOV, MLX90640 (Qwiic)](https://www.sparkfun.com/products/14844) via APIs of GSDK.
+This project aims to implement the hardware driver interacting with the [SparkFun IR Array Breakout - 55 Degree FOV, MLX90640 (Qwiic)](https://www.sparkfun.com/products/14844) via APIs of Silicon Labs Platform.
 
 The MLX90640 is equipped with a 32x24 array of thermopile sensors creating, in essence, a low resolution thermal imaging camera. With this breakout, users can detect surface temperatures from many feet away with an accuracy of ±1.5°C (best case). To make it even easier to get the infrared image, all communication is enacted exclusively via I2C, utilizing our handy Qwiic system.
 
 It can be used for high precision non-contact temperature
 measurements, thermal leaks in homes, industrial temperature control of moving parts, movement detection, human presence, and other similar applications.
 
-## Hardware Required ##
+## Required Hardware ##
 
-- [BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)
+- [A BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
 - [SparkFun IR Array Breakout - 55 Degree FOV, MLX90640 (Qwiic)](https://www.sparkfun.com/products/14844)
 
-## Connections Required ##
+## Hardware Connection ##
 
-The MLX90640 module can be easily connected up with two I2C wires (SDA and SCL) along with 3v3 and GND. For the designated boards, SparkFun Qwiic compatible STEMMA QT connectors can be used.
+- If the BGM220P Explorer Kit is used:
 
-![connection](image/connection.png)
+   The MLX90640 module can be easily connected up with two I2C wires (SDA and SCL) along with 3v3 and GND. For the designated boards, SparkFun Qwiic compatible STEMMA QT connectors can be used.
+
+   ![connection](image/connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | SparkFun IR Array Breakout   |
+  | -------------| ------------- | ------------------ | ---------------------------- |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                          |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                          |
 
 ## Setup ##
 
@@ -26,16 +38,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter "MLX90640".
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *mlx90640*.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - MLX90640 - IR Array Breakout (Sparkfun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for the your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/sparkfun_ir_array_mlx90640/app.c` into the project root folder (overwriting the existing file).
 
@@ -47,10 +60,20 @@ You can either create a project based on an example project or start with an emp
 
    - Install the following components:
 
+      **If the BGM220P Explorer Kit is used:**
+
+      - [Application] → [Utility] → [Assert]
       - [Services] → [Timers] → [Sleep Timer]
       - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
       - [Application] → [Utility] → [Log]
+      - [Platform] → [Driver] → [I2C] → [I2CSPM] → default instance name: qwiic
       - [Third Party Hardware Drivers] → [Sensors] → [MLX90640 - IR Array Breakout (Sparkfun)]
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+      - [Application] → [Utility] → [Assert]
+      - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+      - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
 
 4. Install printf float
 
@@ -64,11 +87,11 @@ You can either create a project based on an example project or start with an emp
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "MLX90640 - IR Array Breakout (Sparkfun)" component.
 
-- The driver stores the contents of the EEPROM, so the HEAP and STACK sizes need to be increased. Edit the config/sl_memory_config.h file and increase SL_STACK_SIZE to 10240 and SL_HEAP_SIZE to 6144
+- The driver stores the contents of the EEPROM, so the HEAP and STACK sizes need to be increased. Edit the config/sl_memory_config.h file and increase SL_STACK_SIZE to 10240 and SL_HEAP_SIZE to 6411
 
 ![memory_config](image/memory_config.png)
 
@@ -115,7 +138,7 @@ There is a Python script `image/image_generator.py` that parses the array of tem
 
 - numpy
 - seaborn
-- matplotlib.pylab
+- matplotlib
 - pyserial
 
 Simply replace the "COM19" in the script with the actual COM port your device is connected to.

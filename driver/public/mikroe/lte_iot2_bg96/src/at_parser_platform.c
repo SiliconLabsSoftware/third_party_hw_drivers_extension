@@ -35,12 +35,8 @@
 
 #include <string.h>
 #include <sl_string.h>
-#include "em_eusart.h"
-#include "at_parser_platform.h"
-#include "sl_iostream_handles.h"
 #include "sl_sleeptimer.h"
-#include "app_queue.h"
-#include "mikroe_lte_iot2_bg96_config.h"
+#include "at_parser_platform.h"
 
 at_platform_status_t status = NOT_INITIALIZED;
 ln_cb_t global_cb = 0;
@@ -48,53 +44,51 @@ sl_sleeptimer_timer_handle_t my_timer;
 static uint8_t line_counter = 0;
 static uint8_t input_buffer[IN_BUFFER_SIZE];
 static uint16_t input_buffer_index = 0;
-static sl_iostream_t *bg96_iostream_handle = NULL;
+
+static uart_t bg96_uart;
+static uint8_t bg96_uart_tx_buffer[256];
+static uint8_t bg96_uart_rx_buffer[256];
 
 static void timer_cb(sl_sleeptimer_timer_handle_t *handle, void *data);
 
 /**************************************************************************//**
  * @brief
- *    CMU initialization.
- *****************************************************************************/
-void initCMU(void)
-{
-  // Enable clock to GPIO and EUSART1
-  CMU_ClockEnable(cmuClock_GPIO, true);
-}
-
-/**************************************************************************//**
- * @brief
- *    GPIO initialization.
- *****************************************************************************/
-void initGPIO(void)
-{
-  CMU_ClockEnable(cmuClock_GPIO, true);
-  GPIO_PinModeSet(BG96_PWK_PORT,
-                  BG96_PWK_PIN,
-                  gpioModePushPull,
-                  0);
-
-  GPIO_PinModeSet(BG96_STA_PORT,
-                  BG96_STA_PIN,
-                  gpioModeInputPull,
-                  0);
-}
-
-/**************************************************************************//**
- * @brief
  *   Initialization of platform driver.
  *
+ * @param[in] handle
+ *   Mikroe UART handle instance.
  * @param[in] line_callback
  *   Callback function for new line (and ">" character for special commands).
  *
  *****************************************************************************/
-void at_platform_init(sl_iostream_t *iostream_handle, ln_cb_t line_callback)
+sl_status_t at_platform_init(mikroe_uart_handle_t handle, ln_cb_t line_callback)
 {
-  bg96_iostream_handle = iostream_handle;
+  uart_config_t cfg;
+
+  if (NULL == handle) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
+  bg96_uart.handle = handle;
+  bg96_uart.tx_ring_buffer = bg96_uart_tx_buffer;
+  bg96_uart.rx_ring_buffer = bg96_uart_rx_buffer;
+  bg96_uart.is_blocking = false;
+
+  uart_configure_default(&cfg);
+
+  cfg.tx_ring_size = sizeof(bg96_uart_tx_buffer);
+  cfg.rx_ring_size = sizeof(bg96_uart_rx_buffer);
+
+  if (uart_open(&bg96_uart, &cfg) != UART_SUCCESS) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  uart_set_blocking(&bg96_uart, false);
+
   global_cb = line_callback;
-  initCMU();
-  initGPIO();
   status = READY;
+
+  return SL_STATUS_OK;
 }
 
 /**************************************************************************//**
@@ -138,8 +132,7 @@ sl_status_t at_platform_check_device_ready(void)
  *   SL_STATUS_OK if there are no errors.
  *   SL_STATUS_ALLOCATION_FAILED if cmd == NULL.
  *****************************************************************************/
-sl_status_t at_platform_send_cmd(volatile uint8_t *cmd,
-                                 volatile uint16_t timeout_ms)
+sl_status_t at_platform_send_cmd(uint8_t *cmd, uint16_t timeout_ms)
 {
   sl_status_t st;
 
@@ -147,8 +140,8 @@ sl_status_t at_platform_send_cmd(volatile uint8_t *cmd,
     size_t cmd_length = sl_strlen((char *) cmd);
     if (cmd_length < CMD_MAX_SIZE - 1) {
       sl_strcat_s((char *) cmd, CMD_MAX_SIZE, "\r");
-      sl_iostream_write(bg96_iostream_handle, (const void *)cmd,
-                        sl_strlen((char *) cmd));
+      uart_clear(&bg96_uart);
+      uart_write(&bg96_uart, cmd, sl_strlen((char *) cmd));
 
       line_counter = 0;
       status = TRANSMIT;
@@ -183,8 +176,7 @@ void at_platform_process(void)
 {
   static uint8_t tempdata;
 
-  if (SL_STATUS_OK == sl_iostream_getchar(bg96_iostream_handle,
-                                          ( char *)&tempdata)) {
+  if (1 == uart_read(&bg96_uart, &tempdata, 1)) {
     input_buffer[input_buffer_index] = tempdata;
 
     if (input_buffer_index == 0) {

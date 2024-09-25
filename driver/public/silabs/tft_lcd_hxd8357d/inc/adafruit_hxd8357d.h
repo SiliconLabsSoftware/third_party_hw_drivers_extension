@@ -46,6 +46,8 @@
 #include <stdbool.h>
 #include "sl_status.h"
 #include "sl_component_catalog.h"
+#include "mipi_dbi.h"
+#include "mipi_dbi_spi.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -133,16 +135,10 @@ typedef void (*adafruit_hxd8357d_dma_complete_callback_t)(sl_status_t status);
  *  SL_STATUS_OK if there are no errors.
  *  SL_STATUS_FAIL if the process is failed.
  ******************************************************************************/
-#if defined(SL_CATALOG_ADAFRUIT_TFT_LCD_HXD8357D_PRESENT)
-sl_status_t adafruit_hxd8357d_spi_usart_init(void);
+sl_status_t adafruit_hxd8357d_spi_init(const struct mipi_dbi_config *config);
 
-#define adafruit_hxd8357d_init adafruit_hxd8357d_spi_usart_init
-#elif defined(SL_CATALOG_ADAFRUIT_TFT_LCD_HXD8357D_DMA_PRESENT)
-#include "spidrv.h"
-sl_status_t adafruit_hxd8357d_spi_dma_init(SPIDRV_Handle_t spidrv_handle);
-
-#define adafruit_hxd8357d_init adafruit_hxd8357d_spi_dma_init
-#endif
+#define adafruit_hxd8357d_init(config) \
+  adafruit_hxd8357d_spi_init((const struct mipi_dbi_config *)config)
 
 /***************************************************************************//**
  * @brief

@@ -9,23 +9,22 @@ ui_hints:
   visibility: basic
 root_path: driver
 requires:
-  - name: status
   - name: sleeptimer
-  - name: i2cspm
-recommends:
-  - id: i2cspm
-    instance: [qwiic]
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_i2c
 provides:
   - name: sparkfun_spectroscopy_as7265x
     allow_multiple: false
 template_contribution:
   - name: component_catalog
     value: sparkfun_spectroscopy_as7265x
+config_file:
+  - path: public/silabs/spectroscopy_as7265x/config/spectroscopy_as7265x_config.h
+    file_id: sparkfun_sgp40_config
 include:
   - path: public/silabs/spectroscopy_as7265x/inc
     file_list:
       - path: sparkfun_as7265x.h
-      - path: sparkfun_as7265x_platform.h
 source:
   - path: public/silabs/spectroscopy_as7265x/src/sparkfun_as7265x.c
-  - path: public/silabs/spectroscopy_as7265x/src/sparkfun_as7265x_platform.c

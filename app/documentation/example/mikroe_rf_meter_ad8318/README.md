@@ -10,26 +10,27 @@ This example can be used for testing equipment that includes RF transmitters or 
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview).
-
-- [**Mikroe RF Meter Click** board based on AD8318](https://www.mikroe.com/rf-meter-click-click).
-
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2703A | [xG24-EK2703A - EFR32xG24 Explorer Kit ](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220-EK4314A - BGM220 Bluetooth Module Explorer Kit](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)  |
-| BRD4108A | [BG22-EK4108A - EFR32BG22 Explorer Kit Board](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)  |
+- [EFR32xG24-EK2703A EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- [Mikroe RF Meter Click board based on AD8318](https://www.mikroe.com/rf-meter-click-click)
 
 ## Hardware Connection ##
 
-The RF Meter Click board supports MikroBus, so it can connect easily to EFR32xG24 Explorer Kit's MikroBus header. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+- **If EFR32xG24 Explorer Kit is used:**
 
-The hardware connection is shown in the image below:
+  The RF Meter Click board supports MikroBus; therefore, it can easily connect to the MikroBus socket of the EFR32xG24 Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit. The hardware connection is shown in the image below:
 
-![hardware_connection](image/hardware_connection.png)
+  ![hardware_connection](image/hardware_connection.png)
+
+- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+
+  The hardware connection is shown in the table below:
+
+  | Description  | BRD4338A GPIO | BRD4002 Breakout Pad | The RF Meter Click board   |
+  | -------------| ------------- | -------------------- | ---------------------------|
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                 |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27                  | SDO                 |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28       | P31                  | CS                  |
 
 ## Setup ##
 
@@ -37,14 +38,15 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter **"ad8318"**.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by "ad8318".
 
 2. Click **Create** button on the **Third Party Hardware Drivers - AD8318 - RF Meter Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![create_project](image/create_example.png)
+
+    ![create_project](image/create_example.png)
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_rf_meter_ad8318/app.c` into the project root folder (overwriting existing file).
 
@@ -56,23 +58,28 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
+        **If EFR32xG24 Explorer Kit is used:**
+
         - [Services] → [Timers] → [Sleep Timer]
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: **vcom**
         - [Application] → [Utility] → [Log]
         - [Third Party Hardware Drivers] → [Sensors] → [AD8318 - RF Meter Click (Mikroe)]
 
+        **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [Third Party Hardware Drivers] → [Sensors] → [AD8318 - RF Meter Click (Mikroe)]
+
 4. Install printf float
 
     - Open Properties of the Project.
-
     - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General. Check Printf float.
-    ![install_float](image/install_float.png)
 
 5. Build and flash this example to the board.
 
 **Note :**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension has already be installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install the " AD8318 - RF Meter Click (Mikroe)" component.
 
@@ -86,7 +93,7 @@ You can either create a project based on an example project or start with an emp
 
 This example uses for measuring radio frequency power, and convert it to decibels per milliwatt value (dBm). This value is used to define signal strength in wires and cables at radio frequencies.
 
-You can launch Console that's integrated into Simplicity Studio or use a third-party terminal tool like TeraTerm to receive the data from the USB. A screenshot of the console output is shown in the figure below.
+You can launch Console that's integrated into Simplicity Studio or use a third-party terminal tool like TeraTerm to receive the data from the USB. Note that your board uses the default baud rate of 115200. A screenshot of the console output is shown in the figure below.
 
 ![console_log](image/console_log.png)
 

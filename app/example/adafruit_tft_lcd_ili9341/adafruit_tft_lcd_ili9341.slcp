@@ -18,11 +18,13 @@ readme:
 - path: ../../documentation/example/adafruit_tft_lcd_ili9341/README.md
 
 source:
-- path: app.c
+- path: gecko/app.c
+- path: app_main_screen.c
+- path: app_calib_screen.c
 - path: main.c
 
 include:
-- path: ''
+- path: 'gecko'
   file_list:
   - path: app.h
 
@@ -34,11 +36,14 @@ component:
 - id: app_assert
 - id: sleeptimer
 - id: app_log
+- id: udelay
 - id: adafruit_tft_lcd_ili9341
   from: third_party_hw_drivers
 - id: services_oled_glib
   from: third_party_hw_drivers
 - id: touch_screen_analog
+  from: third_party_hw_drivers
+- id: touch_screen_analog_gecko
   from: third_party_hw_drivers
 
 define:
@@ -46,16 +51,20 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/adafruit_tft_lcd_ili9341/image/create_example.png
     directory: image
   - path: ../../documentation/example/adafruit_tft_lcd_ili9341/image/result.GIF
     directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_ili9341/image/enable_calib_printf.png
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341/image/calib.jpg
     directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_ili9341/image/calib_point.png
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341/image/touch_settings.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341/image/gspi.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341/image/gspi_dma.png
     directory: image
 
 ui_hints:

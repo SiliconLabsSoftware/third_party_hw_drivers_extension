@@ -2,7 +2,7 @@
 
 ## Summary ##
 
-This project shows the implementation of Bio-sensor driver using Maxm86161 from Maxim Integrated with BGM220 Explorer Kit based on I2C communication.
+This project shows the implementation of Bio-sensor driver using Maxm86161 from Maxim Integrated with the Silicon Labs platform based on I2C communication.
 
 Heart Rate 2 Click board™ is an add-on board based on MAXM86161 integrated optical module from Analog Devices (AD). It is a complete, integrated, optical data acquisition system, ideal for optical pulse-oximetry (SpO2) and heart-rate (HR) detection applications. It can be implemented in various wearable health-related devices, like optimized for in-ear applications, or miniature package for mobile applications.
 
@@ -10,13 +10,28 @@ Heart Rate 2 Click board™ is an add-on board based on MAXM86161 integrated opt
 
 - [**BGM220-EK4314A** BGM220 Bluetooth Module Explorer Kit (BRD4314A BGM220 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
 
-- [**Heart Rate 2 Click** board based on MAXM86161 from Maxim Integrated](https://www.mikroe.com/heart-rate-2-click).
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
+- [**Heart Rate 2 Click** board based on MAXM86161 from Maxim Integrated](https://www.mikroe.com/heart-rate-2-click)
 
 ## Hardware Connection ##
 
-The Heart Rate 2 Click board can just be "clicked" into its place. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line. The board also has the I2C-bus pull-ups. Just be sure that the click board is configured into I2C-mode (the default) by the resistors and not into SPI-mode.
+- If the BGM220P Explorer Kit is used:
 
-![board](image/hardware_connection.png "BGM220 Explorer Kit Board and Heart Rate 2 Click Board")
+  The Heart Rate 2 Click board supports MikroBus, so it can connect easily to BGM220P Explorer Kit via MikroBus header. Assure that the 45-degree corner of Click board matches the 45-degree white line of the Explorer Kit.
+  The board also has the I2C-bus pull-ups. Just be sure that the click board is configured into I2C-mode (the default) by the resistors and not into SPI-mode.
+
+  ![board](image/hardware_connection.png "BGM220 Explorer Kit Board and Heart Rate 2 Click Board")
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description     | BRD4338A GPIO | BRD4002 Breakout/ EXP Header | Heartrate 2 Click  |
+  | ----------------| ------------- | ---------------------------- | ------------------ |
+  | I2C_SDA         | ULP_GPIO_6    | EXP_16                       | SDA                |
+  | I2C_SCL         | ULP_GPIO_7    | EXP_15                       | SCL                |
+  | General Purpose | GPIO_46       | P24                          | GP                 |
+  | Enable Input    | GPIO_47       | P26                          | EN                 |
+  | Interrupt       | GPIO_48       | P28                          | INT                |
 
 ## Setup ##
 
@@ -24,16 +39,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter maxm86161.
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *maxm86161*.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - MAXM86161 - Heartrate 2 Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_heartrate2_maxm86161/app.c` into the project root folder (overwriting existing file).
 
@@ -45,16 +61,24 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
+      **If the BGM220P Explorer Kit is used:**
+
         - [Services] → [Timers] → [Sleep Timer]
         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
+        - [Third Party Hardware Drivers] → [Sensors] → [MAXM86161 - Heart Rate 2 Click (Mikroe)] -> use default configuration
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
         - [Third Party Hardware Drivers] → [Sensors] → [MAXM86161 - Heart Rate 2 Click (Mikroe)] -> use default configuration
 
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "MAXM86161 - Heart Rate 2 Click (Mikroe)" component.
 

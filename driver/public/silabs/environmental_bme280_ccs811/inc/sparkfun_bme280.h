@@ -41,26 +41,13 @@
 // -----------------------------------------------------------------------------
 
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "sl_sleeptimer.h"
+#include "drv_i2c_master.h"
+#include "sparkfun_bme280_config.h"
 
 // -----------------------------------------------------------------------------
 //                           Macros and Typedefs
 // -----------------------------------------------------------------------------
-
-#define BME_280_DEFAULT_I2C_ADDR 0x77
-
-// Structure to configure the BME280 sensor.
-typedef struct {
-  sl_i2cspm_t *i2c_sensor;
-  uint8_t              i2c_address;     // I2C address of the sensor
-} sparkfun_bme280_i2c_t;
-
-// Default initialization structure for BME280 I2C driver.
-#define BME280_I2C_DEFAULT    \
-  {                           \
-    sl_i2cspm_qwiic,          \
-    BME_280_DEFAULT_I2C_ADDR, \
-  }
 
 #ifdef __cplusplus
 extern "C" {
@@ -145,10 +132,10 @@ sl_status_t sparkfun_bme280_ctrl_measure_set_to_sleep(void);
  * @return
  *   Return value is STATUS_FAILED or STATUS_OK.
  ******************************************************************************/
-sl_status_t sparkfun_bme280_i2c(sparkfun_bme280_i2c_t *init);
+sl_status_t sparkfun_bme280_i2c(mikroe_i2c_handle_t i2cspm, uint8_t addr);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* SPARKFUN_BME280_H_ */
+#endif // SPARKFUN_BME280_H_

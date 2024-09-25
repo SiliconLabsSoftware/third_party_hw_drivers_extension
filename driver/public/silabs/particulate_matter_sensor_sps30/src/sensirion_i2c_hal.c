@@ -32,10 +32,10 @@
 #include "sensirion_i2c_hal.h"
 #include "sensirion_common.h"
 #include "sl_status.h"
-#include "sl_udelay.h"
+#include "particulate_matter_sensor_sps30_i2c_config.h"
 
 // Variable to store the i2cspm instance
-static sl_i2cspm_t *s_i2c_handle = NULL;
+static i2c_master_t s_i2c_handle;
 
 /*
  * INSTRUCTIONS
@@ -68,14 +68,29 @@ sl_status_t sensirion_i2c_hal_select_bus(uint8_t bus_idx)
  * Initialize all hard- and software components that are needed for the I2C
  * communication.
  */
-sl_status_t sensirion_i2c_hal_init(sl_i2cspm_t *i2c_handle)
+sl_status_t sensirion_i2c_hal_init(mikroe_i2c_handle_t i2c_handle)
 {
   uint32_t stt = SL_STATUS_INVALID_PARAMETER;
 
   if (NULL != i2c_handle) {
-    s_i2c_handle = i2c_handle;
+    s_i2c_handle.handle = i2c_handle;
+
+    i2c_master_config_t i2c_cfg;
+    i2c_master_configure_default(&i2c_cfg);
+    i2c_cfg.speed = I2C_MASTER_SPEED_STANDARD;
+    i2c_cfg.scl = HAL_PIN_NC;
+    i2c_cfg.sda = HAL_PIN_NC;
+
+#if (PM_SENSOR_SPS30_I2C_UC == 1)
+    i2c_cfg.speed = PM_SENSOR_SPS30_I2C_SPEED_MODE;
+#endif
+
+    if (i2c_master_open(&s_i2c_handle, &i2c_cfg) == I2C_MASTER_ERROR) {
+      return SL_STATUS_INITIALIZATION;
+    }
     stt = SL_STATUS_OK;
   }
+
   return stt;
 }
 
@@ -101,20 +116,14 @@ sl_status_t sensirion_i2c_hal_read(uint8_t address, uint8_t *data,
                                    uint8_t count)
 {
   if ((NULL != data) && (0 != count)) {
-    I2C_TransferSeq_TypeDef seq;
-    I2C_TransferReturn_TypeDef ret;
+    i2c_master_set_slave_address(&s_i2c_handle, address);
 
-    seq.addr = address << 1;
-    seq.flags = I2C_FLAG_READ;
-    seq.buf[0].data = (uint8_t *)data;
-    seq.buf[0].len = count;
-
-    ret = I2CSPM_Transfer(s_i2c_handle, &seq);
-
-    if (ret == i2cTransferDone) {
-      return SL_STATUS_OK;
+    if (I2C_MASTER_SUCCESS != i2c_master_read(&s_i2c_handle,
+                                              data,
+                                              count)) {
+      return SL_STATUS_FAIL;
     }
-    return SL_STATUS_FAIL;
+    return SL_STATUS_OK;
   }
   return SL_STATUS_INVALID_PARAMETER;
 }
@@ -134,19 +143,14 @@ sl_status_t sensirion_i2c_hal_write(uint8_t address, const uint8_t *data,
                                     uint8_t count)
 {
   if (NULL != data) {
-    I2C_TransferSeq_TypeDef seq;
-    I2C_TransferReturn_TypeDef ret;
+    i2c_master_set_slave_address(&s_i2c_handle, address);
 
-    seq.addr = address << 1;
-    seq.flags = I2C_FLAG_WRITE;
-    seq.buf[0].data = (uint8_t *)data;
-    seq.buf[0].len = count;
-
-    ret = I2CSPM_Transfer(s_i2c_handle, &seq);
-    if (ret == i2cTransferDone) {
-      return SL_STATUS_OK;
+    if (I2C_MASTER_SUCCESS != i2c_master_write(&s_i2c_handle,
+                                               data,
+                                               count)) {
+      return SL_STATUS_FAIL;
     }
-    return SL_STATUS_FAIL;
+    return SL_STATUS_OK;
   }
   return SL_STATUS_INVALID_PARAMETER;
 }
@@ -161,5 +165,11 @@ sl_status_t sensirion_i2c_hal_write(uint8_t address, const uint8_t *data,
  */
 void sensirion_i2c_hal_sleep_usec(uint32_t useconds)
 {
-  sl_udelay_wait(useconds);
+  uint32_t delay_ms = 1;
+
+  if (useconds > 1000) {
+    delay_ms = (useconds / 1000) + 1;
+  }
+
+  sl_sleeptimer_delay_millisecond(delay_ms);
 }

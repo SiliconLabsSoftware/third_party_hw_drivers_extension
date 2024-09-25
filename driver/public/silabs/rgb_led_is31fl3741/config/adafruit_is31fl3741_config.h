@@ -45,6 +45,24 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
+//<h>ADAFRUIT IS31FL3741 I2C Configuration
+
+//  <e>ADAFRUIT IS31FL3741 I2C UC Configuration
+//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+//  <i> Default: 0
+#define ADAFRUIT_IS31FL3741_I2C_UC                  0
+
+// <o ADAFRUIT_IS31FL3741_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define ADAFRUIT_IS31FL3741_I2C_SPEED_MODE          0
+
+// </e>
+// </h>
+
 // <h> Display Configuration
 // <o IS31FL3741_DISPLAY_LAYOUT> Display Layout
 // <0=> 1x1

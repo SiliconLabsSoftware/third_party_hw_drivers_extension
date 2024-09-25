@@ -38,30 +38,19 @@
  ******************************************************************************/
 
 #include "stddef.h"
-#include "sl_i2cspm_instances.h"
-#include "third_party_hw_drivers_helpers.h"
 #include "mikroe_pca9685.h"
 #include "servo.h"
 
 static servo_t servo_ctx;
 static servo_cfg_t servo_cfg;
 
-/**
- * @brief Config Object Initialization function.
- *
- * @description This function initializes click configuration structure to init
- *   state.
- * @note All used pins will be set to unconnected state.
- */
-static void mikroe_pca9685_cfg_setup(void);
-
-sl_status_t mikroe_pca9685_set_i2cspm_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_pca9685_set_i2c_instance(mikroe_i2c_handle_t i2c_instance)
 {
-  if (NULL == i2cspm_instance) {
+  if (NULL == i2c_instance) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  servo_ctx.i2c.handle = i2cspm_instance;
+  servo_ctx.i2c.handle = i2c_instance;
 
   return SL_STATUS_OK;
 }
@@ -71,28 +60,32 @@ void mikroe_pca9685_default_cfg(void)
   servo_default_cfg(&servo_ctx);
 }
 
-sl_status_t mikroe_pca9685_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_pca9685_init(mikroe_i2c_handle_t i2c_instance)
 {
-  if (NULL == i2cspm_instance) {
+  if (NULL == i2c_instance) {
     return SL_STATUS_INVALID_PARAMETER;
   }
+  servo_cfg_setup(&servo_cfg);
+  servo_cfg.i2c_address_of_ltc2497 = LTC2497_ADDRESS;
+  servo_cfg.i2c_address_of_pca9685 = PCA9685_ADDRESS;
 
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
-  servo_ctx.i2c.handle = i2cspm_instance;
-  servo_cfg.i2c_address_of_pca9685 = SERVO_PCA9685_ADDRESS;
-  servo_cfg.i2c_address_of_ltc2497 = SERVO_LTC2497_ADDRESS;
-
-  mikroe_pca9685_cfg_setup();
+  servo_ctx.i2c.handle = i2c_instance;
 
 #if defined(SERVO_OUTPUT_ENABLE_PORT) && defined(SERVO_OUTPUT_ENABLE_PIN)
   servo_cfg.oe = hal_gpio_pin_name(SERVO_OUTPUT_ENABLE_PORT,
                                    SERVO_OUTPUT_ENABLE_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(servo_init(&servo_ctx, &servo_cfg));
+#if (MIKROE_SERVO_CLICK_I2C_UC == 1)
+  servo_cfg.i2c_speed = MIKROE_SERVO_CLICK_I2C_SPEED_MODE;
+#endif
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  if (SERVO_OK != servo_init(&servo_ctx, &servo_cfg)) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  servo_default_cfg(&servo_ctx);
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_pca9685_generic_write_of_pca9685(uint8_t reg,
@@ -239,9 +232,4 @@ sl_status_t mikroe_pca9685_get_current(uint8_t channel, uint16_t *current_ma)
   *current_ma = servo_get_current(&servo_ctx, channel);
 
   return SL_STATUS_OK;
-}
-
-static void mikroe_pca9685_cfg_setup(void)
-{
-  servo_cfg_setup(&servo_cfg);
 }

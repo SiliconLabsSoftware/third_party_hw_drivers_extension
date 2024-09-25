@@ -40,10 +40,9 @@
 #ifndef MIKROE_DS3231M_H_
 #define MIKROE_DS3231M_H_
 
-#include "rtc10.h"
-#include "third_party_hw_drivers_helpers.h"
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
+#include "rtc10.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,7 +60,20 @@ extern "C" {
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_ds3231m_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_ds3231m_init(mikroe_i2c_handle_t i2cspm_instance);
+
+/***************************************************************************//**
+ * @brief
+ *    Set I2C instance function.
+ *
+ * @param[in] i2c_instance
+ *    I2C instance
+ *
+ * @return
+ *    SL_STATUS_OK Successful.
+ *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null
+ ******************************************************************************/
+sl_status_t mikroe_ds3231m_set_i2c_instance(mikroe_i2c_handle_t i2c_instance);
 
 /***************************************************************************//**
  * @brief
@@ -732,4 +744,4 @@ extern "C"
 }
 #endif
 
-#endif /* MIKROE_DS3231M_H_ */
+#endif // MIKROE_DS3231M_H_

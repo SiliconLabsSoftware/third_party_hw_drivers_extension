@@ -1,0 +1,26 @@
+id: about_me
+package: third_party_hw_drivers
+label: About Me
+description: >
+  #NOTE: This is a help component. Do not install.
+
+
+  To show all components in this extension, make sure that
+  Evaluation quality software components are enabled
+  in the Software Component view.
+
+
+  The online Third Party Hardware Drivers documentation is available at the link below.
+
+  https://docs.silabs.com/application-examples/latest
+
+
+  The application examples are hosted on Github and available at the link below.
+
+  https://github.com/SiliconLabs/third_party_hw_drivers_extension
+
+category: About
+quality: production
+ui_hints:
+  visibility: basic
+root_path: driver

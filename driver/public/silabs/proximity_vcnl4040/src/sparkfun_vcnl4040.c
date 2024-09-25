@@ -46,12 +46,18 @@
 //                       Local Variables
 // -----------------------------------------------------------------------------
 
+typedef struct
+{
+  i2c_master_t i2c;
+  uint8_t slave_address;
+} sparkfun_proximity_t;
+
 static sparkfun_vcnl4040_core_version_t core_version = {
   .major = 0,
   .minor = 1,
   .build = 0,
   .revision = 100,
-}; /* Structure to hold the software version of the core driver */
+}; // Structure to hold the software version of the core driver
 
 static SPARKFUN_VCNL4040_Sensor_Config_TypeDef vcnl4040_cfg = {
   .PSDuty = 0x0,
@@ -76,12 +82,11 @@ static SPARKFUN_VCNL4040_Sensor_Config_TypeDef vcnl4040_cfg = {
   .ALSIntEnabled = false,
 
   .WhiteEnabled = false
-}; /* Structure to hold VCNL4040 driver config */
+}; // Structure to hold VCNL4040 driver config
 
-static sl_i2cspm_t *vcnl4040_i2cspm_instance = NULL;
-static bool vcnl4040_is_initialized = false;
-static sparkfun_vcnl4040_norm_interrupt_callback_t vcnl4040_interrupt_callback =
-  NULL;
+static sparkfun_proximity_t sparkfun_proximity;
+static sparkfun_vcnl4040_norm_interrupt_callback_t
+  vcnl4040_interrupt_callback = NULL;
 // -----------------------------------------------------------------------------
 //                       Public Function
 // -----------------------------------------------------------------------------
@@ -89,20 +94,35 @@ static sparkfun_vcnl4040_norm_interrupt_callback_t vcnl4040_interrupt_callback =
 /**************************************************************************//**
  *  Initialize the VCNL4040 sensor.
  *****************************************************************************/
-sl_status_t sparkfun_vcnl4040_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t sparkfun_vcnl4040_init(mikroe_i2c_handle_t i2cspm_instance)
 {
+  i2c_master_config_t i2c_cfg;
   sl_status_t sc = SL_STATUS_OK;
   uint16_t id;
 
   if (i2cspm_instance == NULL) {
     return SL_STATUS_NULL_POINTER;
   }
-  if (vcnl4040_is_initialized == true) {
-    return SL_STATUS_ALREADY_INITIALIZED;
+
+  sparkfun_proximity.i2c.handle = i2cspm_instance;
+
+  i2c_master_configure_default(&i2c_cfg);
+  i2c_cfg.addr = SPARKFUN_VCNL4040_I2C_BUS_ADDRESS;
+
+  sparkfun_proximity.slave_address = i2c_cfg.addr;
+
+#if (SPARKFUN_VCNL4040_I2C_UC == 1)
+  i2c_cfg.speed = SPARKFUN_VCNL4040_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&sparkfun_proximity.i2c, &i2c_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
   }
 
-  vcnl4040_i2cspm_instance = i2cspm_instance;
-  vcnl4040_is_initialized = true;
+  i2c_master_set_slave_address(&sparkfun_proximity.i2c,
+                               sparkfun_proximity.slave_address);
+  i2c_master_set_speed(&sparkfun_proximity.i2c, i2c_cfg.speed);
+  i2c_master_set_timeout(&sparkfun_proximity.i2c, 0);
 
   if (sparkfun_vcnl4040_get_id(&id) != SL_STATUS_OK) {
     return SL_STATUS_FAIL;
@@ -124,7 +144,6 @@ sl_status_t sparkfun_vcnl4040_init(sl_i2cspm_t *i2cspm_instance)
   if (sc != SL_STATUS_OK) {
     return SL_STATUS_FAIL;
   } else {
-    vcnl4040_is_initialized = true;
     return SL_STATUS_OK;
   }
 }
@@ -134,8 +153,7 @@ sl_status_t sparkfun_vcnl4040_init(sl_i2cspm_t *i2cspm_instance)
  *****************************************************************************/
 sl_status_t sparkfun_vcnl4040_deinit(void)
 {
-  vcnl4040_i2cspm_instance = NULL;
-  vcnl4040_is_initialized = false;
+  sparkfun_proximity.i2c.handle = NULL;
 
   return SL_STATUS_OK;
 }
@@ -149,8 +167,7 @@ sl_status_t sparkfun_vcnl4040_get_id(uint16_t *id)
     return SL_STATUS_NULL_POINTER;
   }
   return sparkfun_vcnl4040_i2c_read_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_ID,
     id);
 }
@@ -181,8 +198,7 @@ sl_status_t sparkfun_vcnl4040_set_ir_duty_cycle(uint8_t duty_value)
   vcnl4040_cfg.PSDuty = duty_value;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_CONF1,
     LOWER,
     (uint8_t)SPARKFUN_VCNL4040_PS_DUTY_MASK,
@@ -240,8 +256,7 @@ sl_status_t sparkfun_vcnl4040_set_ir_led_sink_current(uint8_t current_value)
   vcnl4040_cfg.IRLEDCurrent = current_value;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_MS,
     UPPER,
     SPARKFUN_VCNL4040_LED_I_MASK,
@@ -288,8 +303,7 @@ sl_status_t sparkfun_vcnl4040_set_proximity_interrupt_persistence(
   vcnl4040_cfg.PSPersistence = pers_value;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_CONF1,
     LOWER,
     SPARKFUN_VCNL4040_PS_PERS_MASK,
@@ -348,8 +362,7 @@ sl_status_t sparkfun_vcnl4040_set_proximity_integration_time(uint8_t time_value)
   vcnl4040_cfg.PSIntegrationTime = time_value;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_ALS_CONF,
     LOWER,
     SPARKFUN_VCNL4040_PS_IT_MASK,
@@ -385,8 +398,7 @@ sl_status_t sparkfun_vcnl4040_power_on_proximity(bool enable)
   vcnl4040_cfg.PSEnabled = enable;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_CONF1,
     LOWER,
     SPARKFUN_VCNL4040_PS_SD_MASK,
@@ -421,8 +433,7 @@ sl_status_t sparkfun_vcnl4040_set_proximity_resolution(uint8_t resolution_value)
   vcnl4040_cfg.PSResolution = resolution_value;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_CONF2,
     UPPER,
     SPARKFUN_VCNL4040_PS_HD_MASK,
@@ -469,8 +480,7 @@ sl_status_t sparkfun_vcnl4040_set_proximity_int_type(uint8_t interrupt_value)
   vcnl4040_cfg.PSInterruptType = interrupt_value;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_CONF2,
     UPPER,
     SPARKFUN_VCNL4040_PS_INT_MASK,
@@ -505,8 +515,7 @@ sl_status_t sparkfun_vcnl4040_enable_smart_persistence(bool enable)
   vcnl4040_cfg.PSSmartPersEnabled = enable;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_CONF3,
     LOWER,
     SPARKFUN_VCNL4040_PS_SMART_PERS_MASK,
@@ -540,8 +549,7 @@ sl_status_t sparkfun_vcnl4040_enable_active_force_mode(bool enable)
   vcnl4040_cfg.PSActiveForceEnabled = enable;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_CONF3,
     LOWER,
     SPARKFUN_VCNL4040_PS_AF_MASK,
@@ -567,8 +575,7 @@ sl_status_t sparkfun_vcnl4040_get_active_force_mode_enabled(bool *enabled)
 sl_status_t sparkfun_vcnl4040_trigger_proximity_measurement(void)
 {
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_CONF3,
     LOWER,
     SPARKFUN_VCNL4040_PS_TRIG_MASK,
@@ -589,8 +596,7 @@ sl_status_t sparkfun_vcnl4040_enable_proximity_logic_mode(bool enable)
   vcnl4040_cfg.PSLogicEnabled = enable;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_MS,
     UPPER,
     SPARKFUN_VCNL4040_PS_MS_MASK,
@@ -618,8 +624,7 @@ sl_status_t sparkfun_vcnl4040_set_proximity_cancelation(uint16_t cancel_value)
   vcnl4040_cfg.PSCancelThresh = cancel_value;
 
   return sparkfun_vcnl4040_i2c_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_CANC,
     cancel_value);
 }
@@ -646,8 +651,7 @@ sl_status_t sparkfun_vcnl4040_set_proximity_low_threshold(
   vcnl4040_cfg.PSLowThreshold = threshold_value;
 
   return sparkfun_vcnl4040_i2c_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_THDL,
     threshold_value);
 }
@@ -675,8 +679,7 @@ sl_status_t sparkfun_vcnl4040_set_proximity_high_threshold(
   vcnl4040_cfg.PSHighThreshold = threshold_value;
 
   return sparkfun_vcnl4040_i2c_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_THDH,
     threshold_value);
 }
@@ -704,8 +707,7 @@ sl_status_t sparkfun_vcnl4040_get_proximity(uint16_t *proximity_data)
     return SL_STATUS_NULL_POINTER;
   }
   return sparkfun_vcnl4040_i2c_read_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_DATA,
     proximity_data);
 }
@@ -722,8 +724,7 @@ sl_status_t sparkfun_vcnl4040_is_close(bool *is_close)
     return SL_STATUS_NULL_POINTER;
   }
   ret = sparkfun_vcnl4040_i2c_read_command_upper(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_INT_FLAG,
     &data);
   *is_close = (bool)(data & SPARKFUN_VCNL4040_INT_FLAG_CLOSE);
@@ -743,8 +744,7 @@ sl_status_t sparkfun_vcnl4040_is_away(bool *is_away)
     return SL_STATUS_NULL_POINTER;
   }
   ret = sparkfun_vcnl4040_i2c_read_command_upper(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_INT_FLAG,
     &data);
   *is_away = (bool)(data & SPARKFUN_VCNL4040_INT_FLAG_AWAY);
@@ -779,8 +779,7 @@ sl_status_t sparkfun_vcnl4040_set_ambient_interrupt_persistence(
   vcnl4040_cfg.ALSPersistence = pers_value;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_ALS_CONF,
     LOWER,
     SPARKFUN_VCNL4040_ALS_PERS_MASK,
@@ -816,8 +815,7 @@ sl_status_t sparkfun_vcnl4040_enable_ambient_interrupts(bool enable)
   vcnl4040_cfg.ALSIntEnabled = enable;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_ALS_CONF,
     LOWER,
     SPARKFUN_VCNL4040_ALS_INT_EN_MASK,
@@ -852,8 +850,7 @@ sl_status_t sparkfun_vcnl4040_power_on_ambient(bool enable)
   vcnl4040_cfg.ALSEnabled = enable;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_ALS_CONF,
     LOWER,
     SPARKFUN_VCNL4040_ALS_SD_MASK,
@@ -899,8 +896,7 @@ sl_status_t sparkfun_vcnl4040_set_ambient_integration_time(uint8_t time_value)
   vcnl4040_cfg.ALSIntegrationTime = time_value;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_ALS_CONF,
     LOWER,
     (uint8_t)SPARKFUN_VCNL4040_ALS_IT_MASK,
@@ -929,8 +925,7 @@ sl_status_t sparkfun_vcnl4040_set_ambient_low_threshold(
   vcnl4040_cfg.ALSLowThreshold = threshold_value;
 
   return sparkfun_vcnl4040_i2c_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_ALS_THDL,
     threshold_value);
 }
@@ -958,8 +953,7 @@ sl_status_t sparkfun_vcnl4040_set_ambient_high_threshold(
   vcnl4040_cfg.ALSHighThreshold = threshold_value;
 
   return sparkfun_vcnl4040_i2c_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_ALS_THDH,
     threshold_value);
 }
@@ -987,8 +981,7 @@ sl_status_t sparkfun_vcnl4040_get_ambient(uint16_t *ambient_data)
     return SL_STATUS_NULL_POINTER;
   }
   return sparkfun_vcnl4040_i2c_read_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_ALS_DATA,
     ambient_data);
 }
@@ -1008,8 +1001,7 @@ sl_status_t sparkfun_vcnl4040_enable_white_channel(bool enable)
   vcnl4040_cfg.WhiteEnabled = enable;
 
   return sparkfun_vcnl4040_i2c_masked_write_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_PS_MS,
     UPPER,
     (uint8_t)SPARKFUN_VCNL4040_WHITE_EN_MASK,
@@ -1038,8 +1030,7 @@ sl_status_t sparkfun_vcnl4040_get_white(uint16_t *white_data)
     return SL_STATUS_NULL_POINTER;
   }
   return sparkfun_vcnl4040_i2c_read_command(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_WHITE_DATA,
     white_data);
 }
@@ -1056,8 +1047,7 @@ sl_status_t sparkfun_vcnl4040_is_light(bool *is_light)
     return SL_STATUS_NULL_POINTER;
   }
   ret = sparkfun_vcnl4040_i2c_read_command_upper(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_INT_FLAG,
     &data);
   *is_light = data & SPARKFUN_VCNL4040_INT_FLAG_ALS_HIGH;
@@ -1077,8 +1067,7 @@ sl_status_t sparkfun_vcnl4040_is_dark(bool *is_dark)
     return SL_STATUS_NULL_POINTER;
   }
   ret = sparkfun_vcnl4040_i2c_read_command_upper(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_INT_FLAG,
     &data);
   *is_dark = data & SPARKFUN_VCNL4040_INT_FLAG_ALS_LOW;
@@ -1113,8 +1102,7 @@ sl_status_t sparkfun_vcnl4040_is_interrupt(bool *is_light,
   uint8_t data;
 
   ret = sparkfun_vcnl4040_i2c_read_command_upper(
-    vcnl4040_i2cspm_instance,
-    SPARKFUN_VCNL4040_I2C_BUS_ADDRESS,
+    &sparkfun_proximity.i2c,
     SPARKFUN_VCNL4040_INT_FLAG,
     &data);
   if (data & SPARKFUN_VCNL4040_INT_AWAY_MASK) {

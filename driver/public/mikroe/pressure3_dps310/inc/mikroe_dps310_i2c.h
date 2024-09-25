@@ -41,10 +41,11 @@
 #define MIKROE_PRESSURE3_H
 
 #include "sl_status.h"
-#include "sl_i2cspm.h"
-#include "drv_digital_out.h"
-#include "drv_digital_in.h"
 #include "drv_i2c_master.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // -------------------------------------------------------------- PUBLIC MACROS
 
@@ -257,10 +258,6 @@ typedef struct
  * \{
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /**
  * @brief Initialization function.
  *
@@ -269,7 +266,7 @@ extern "C" {
  * @description This function initializes all necessary pins and peripherals
  *   used for this click.
  */
-sl_status_t mikroe_pressure3_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_pressure3_init(mikroe_i2c_handle_t i2c_instance);
 
 /**
  * @brief Generic write function.

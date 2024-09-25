@@ -12,32 +12,22 @@ The SparkFun BMI270 6DoF IMU Breakout is a Qwiic-enabled breakout board based on
 - Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 - [SparkFun 6DoF IMU Breakout - BMI270 (Qwiic)](https://www.sparkfun.com/products/22397)
 
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2703A | [xG24-EK2703A - EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220-EK4314A - BGM220P Bluetooth Module Explorer Kit](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)  |
-| BRD4108A | [BG22-EK4108A - EFR32BG22 Explorer Kit Board](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)  |
-| BRD4338A | [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit)  |
-
 ## Hardware Connection ##
 
 - **If the "EFR32xG24 Explorer Kit" is used**:
   
-    The SparkFun 6DoF IMU Breakout - BMI270 supports Qwiic, so it can connect easily to the Qwiic header of the EFR32xG24 Explorer Kit. The hardware connection is shown in the image below:
+  The SparkFun 6DoF IMU Breakout - BMI270 supports Qwiic, so it can connect easily to the Qwiic header of the EFR32xG24 Explorer Kit. The hardware connection is shown in the image below:
 
-    ![board](image/hardware_connection.png)
+  ![board](image/hardware_connection.png)
 
 - **If the "SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit" is used**:
   
-    The hardware connection is shown in the table below:
+  The hardware connection is shown in the table below:
 
   | Description  | BRD4338A GPIO | BRD4002 EXP Header | BMI270 - 6DoF IMU Breakout|
-  | -------------| ------------- | ------------------ | ------------------ |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
+  | -------------| ------------- | ------------------ | ------------------------- |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                       |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                       |
 
 ## Setup ##
 
@@ -47,22 +37,17 @@ You can either create a project based on an example project or start with an emp
 
 1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by "bmi270".
 
-2. Click on the **Create** button on the project:
+2. Click **Create** button on the **Third Party Hardware Drivers - BMI270 - 6DOF IMU (SparkFun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 
-    - **Third Party Hardware Drivers - BMI270 - 6DOF IMU (SparkFun)** example if the "EFR32xG24 Explorer Kit" is used
-    ![create_example](image/create_example.png)
+   ![Create_example](image/create_example.png)
 
-    - **Third Party Hardware Drivers - BMI270 - 6DOF IMU (SparkFun) - Si91x** example if the "SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit" is used
-    ![create_example_si91x](image/create_example_si91x.png)
-
-    - Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
 1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
-2. Copy all of the files in the "app/example/silabs_6dof_imu_bmi270/app.c" folder into the project root folder (overwriting the existing file).
+2. Copy all of the files in the `app/example/silabs_6dof_imu_bmi270/app.c` folder into the project root folder (overwriting the existing file).
 
 3. Install the software components:
 
@@ -94,7 +79,7 @@ You can either create a project based on an example project or start with an emp
 
 **Note:**
 
-- Make sure that the SDK extension has already been installed. If not, please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install the "BMI270 - 6DOF IMU Breakout (Sparkfun)" component.
 

@@ -9,6 +9,8 @@ root_path: driver
 requires:
 - name: fatfs_storage_device
 - name: sleeptimer
+- name: sleeptimer_si91x
+  condition: [device_si91x]
 - name: component_catalog
 provides:
 - name: services_fatfs

@@ -1,40 +1,30 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "gpiointerrupt.h"
 
+#include "drv_i2c_master.h"
 #include "adafruit_tsc2007_config.h"
 #include "adafruit_tsc2007.h"
-
-static sl_i2cspm_t *tsc2007_i2cspm_instance = NULL;
-static uint16_t t_x, t_y, t_z1, t_z2;
-static void (*touch_detect_callback)(void) = NULL;
 
 static sl_status_t tsc2007_command(adafruit_tsc2007_function_t func,
                                    adafruit_tsc2007_power_t pwr,
                                    adafruit_tsc2007_resolution_t res,
                                    uint16_t *out);
-static void tsc2007_touch_detect_callback(uint8_t pin);
 
-sl_status_t adafruit_tsc2007_init(sl_i2cspm_t *i2cspm_instance)
+static i2c_master_t mikroe_i2c = {
+  .handle = NULL
+};
+static i2c_master_config_t mikroe_i2c_config;
+static uint16_t t_x, t_y, t_z1, t_z2;
+
+sl_status_t adafruit_tsc2007_init(const struct adafruit_tsc2007_config *config)
 {
-  tsc2007_i2cspm_instance = i2cspm_instance;
+  mikroe_i2c.handle = config->mikroe_drv_i2c_handle;
+  i2c_master_configure_default(&mikroe_i2c_config);
+  mikroe_i2c_config.addr = ADAFRUIT_TSC2007_I2CADDR;
+//  mikroe_i2c_config.addr = I2C_MASTER_SPEED_FAST;
 
-#if defined(ADAFRUIT_TSC2007_INT_PORT) && defined(ADAFRUIT_TSC2007_INT_PIN)
-  GPIOINT_Init();
-  GPIO_PinModeSet(ADAFRUIT_TSC2007_INT_PORT,
-                  ADAFRUIT_TSC2007_INT_PIN,
-                  gpioModeInputPullFilter,
-                  1);
-  GPIO_ExtIntConfig(ADAFRUIT_TSC2007_INT_PORT,
-                    ADAFRUIT_TSC2007_INT_PIN,
-                    ADAFRUIT_TSC2007_INT_PIN,
-                    true,
-                    false,
-                    true);
-  GPIOINT_CallbackRegister(ADAFRUIT_TSC2007_INT_PIN,
-                           tsc2007_touch_detect_callback);
-#endif
+  i2c_master_open(&mikroe_i2c, &mikroe_i2c_config);
 
   return tsc2007_command(TSC2007_MEASURE_TEMP0,
                          TSC2007_POWERDOWN_IRQON,
@@ -171,41 +161,25 @@ sl_status_t adafruit_tsc2007_get_touch_point(int32_t *pt_x,
   return SL_STATUS_OK;
 }
 
-void adafruit_tsc2007_register_touch_detect_isr_callback(
-  void (*callback)(void))
-{
-  touch_detect_callback = callback;
-}
-
 static sl_status_t tsc2007_command(adafruit_tsc2007_function_t func,
                                    adafruit_tsc2007_power_t pwr,
                                    adafruit_tsc2007_resolution_t res,
                                    uint16_t *out)
 {
-  I2C_TransferSeq_TypeDef seq;
   uint8_t cmd;
   uint8_t reply[2];
 
-  if (tsc2007_i2cspm_instance == NULL) {
+  if (!mikroe_i2c.handle) {
     return SL_STATUS_NOT_INITIALIZED;
   }
-
-  seq.addr = ADAFRUIT_TSC2007_I2CADDR << 1;
-  seq.flags = I2C_FLAG_WRITE_READ;
 
   cmd = (uint8_t)func << 4;
   cmd |= (uint8_t)pwr << 2;
   cmd |= (uint8_t)res << 1;
 
-  // Write buffer
-  seq.buf[0].data = &cmd;
-  seq.buf[0].len = 1;
-
-  // Read buffer
-  seq.buf[1].data = reply;
-  seq.buf[1].len = 2;
-
-  if (I2CSPM_Transfer(tsc2007_i2cspm_instance, &seq) != i2cTransferDone) {
+  if (i2c_master_write_then_read(&mikroe_i2c,
+                                 &cmd, 1,
+                                 reply, 2) != I2C_MASTER_SUCCESS) {
     return SL_STATUS_TRANSMIT;
   }
 
@@ -213,13 +187,4 @@ static sl_status_t tsc2007_command(adafruit_tsc2007_function_t func,
     *out = ((uint16_t)reply[0] << 4) | (reply[1] >> 4); // 12 bits
   }
   return SL_STATUS_OK;
-}
-
-static void tsc2007_touch_detect_callback(uint8_t pin)
-{
-  (void)pin;
-
-  if (touch_detect_callback) {
-    touch_detect_callback();
-  }
 }

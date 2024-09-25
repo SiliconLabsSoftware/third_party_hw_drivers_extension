@@ -38,15 +38,31 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "em_gpio.h"
+#include "sl_status.h"
+#include "sl_sleeptimer.h"
+
+#include "drv_digital_in.h"
+#include "drv_digital_out.h"
+#include "drv_i2c_master.h"
+
+#include "maxim_max17048_config.h"
+
+#if (defined(SLI_SI917))
+#include "sl_driver_gpio.h"
+#include "sl_si91x_bjt_temperature_sensor.h"
+#define GPIO_M4_INTR              7 // M4 Pin interrupt number
+#define AVL_INTR_NO               0 // available interrupt number
+#else
 #include "gpiointerrupt.h"
 #include "tempdrv.h"
+#endif
 
-#include "sl_status.h"
-#include "sl_i2cspm.h"
-#include "sl_sleeptimer.h"
-#if (defined(SL_CATALOG_POWER_MANAGER_PRESENT))
+#if (MAX17048_ENABLE_POWER_MANAGER == 1)
+#if (defined(SLI_SI917))
+#include "sl_si91x_power_manager.h"
+#else
 #include "sl_power_manager.h"
+#endif
 #endif
 
 #ifdef __cplusplus
@@ -186,22 +202,6 @@ typedef enum {
 
 /***************************************************************************//**
  * @brief
- *   MAX17048 temperature external temperature measurement callback function.
- *
- * @details
- *   This callback function is executed from interrupt context when the user
- *   opts to provide the battery pack temperature through a mechanism other
- *   than the integrated EMU temperature sensor (e.g. an external temperature
- *   sensor or other means). The driver needs the battery pack temperature
- *   to periodically update the MAX17048 compensation factor (RCOMP).
- *
- * @return
- *   Temperature, as a signed integer in degrees C.
- ******************************************************************************/
-typedef int32_t (*max17048_temp_callback_t)(void);
-
-/***************************************************************************//**
- * @brief
  *   Initialize the MAX17048 driver with the values provided in the
  *   max17048_config.h file.
  *
@@ -227,7 +227,7 @@ typedef int32_t (*max17048_temp_callback_t)(void);
  *   @li @ref SL_STATUS_ALREADY_INITIALIZED the function has previously
  *     been called.
  ******************************************************************************/
-sl_status_t max17048_init(sl_i2cspm_t *i2cspm);
+sl_status_t max17048_init(mikroe_i2c_handle_t i2cspm);
 
 /***************************************************************************//**
  * @brief
@@ -261,6 +261,14 @@ sl_status_t max17048_init(sl_i2cspm_t *i2cspm);
 sl_status_t max17048_deinit(void);
 
 /***************************************************************************//**
+ * @brief This function reads internal temperature of the device and recaculate
+ * rcom value and set this value to MAX17048
+ *
+ * @return SL_STATUS_OK if successful. Error code otherwise.
+ ******************************************************************************/
+sl_status_t max17048_update_rcom(void);
+
+/***************************************************************************//**
  * @brief This function returns the cell voltage in millivolts.
  *
  * @param[out] vcell The cell voltage expressed in millivolts as
@@ -292,88 +300,6 @@ sl_status_t max17048_get_soc(uint32_t *soc);
  * @return SL_STATUS_OK if successful. Error code otherwise.
  ******************************************************************************/
 sl_status_t max17048_get_crate(float *crate);
-
-/***************************************************************************//**
- * @brief
- *   Register the temperature update callback for the MAX17048 driver
- *
- * @details
- *   This function is used to register a callback that periodically updates
- *   the temperature of the battery monitored by the MAX17048. By default, the
- *   driver uses the EMU temperature sensor on Series 2 EFM32/EFR32 devices.
- *
- *   However, in order for this sensor to accurately reflect the battery
- *   temperature, the MCU must be underneath (e.g. on the side of the PCB
- *   opposite) or immediately adjacent to the battery.
- *
- *   In cases where this is not possible, the battery temperature can be
- *   provided to the driver from another source, such as an external
- *   temperature sensor that is integrated with the battery or mounted in
- *   close proximity to it. The driver imposes no particular requirements
- *   on the source of the temperature other than that it is provided as a
- *   signed integer in degrees Celsius.
- *
- * @note
- *   The driver permits only one temperature update callback function to be
- *   registered. Attempting to register another callback returns an error.
- *
- *   Firmware can unregister the current callback function, in which case
- *   the driver will revert to using the EMU temperature sensor. This
- *   can be useful to further reduce overall current draw in cases where the
- *   system enters a low-power, quiescent state such that the temperature
- *   reported by the EMU sensor is effectively the same as the battery
- *   temperature.
- *
- * @details
- *   There is no attempt to synchronize expiration of the software timer
- *   that updates the MAX17048's compensation factor (RCOMP) with
- *   registration of the user-provided callback function. If the software
- *   timer expires and no callback has been registered, the EMU sensor's
- *   output is used.
- *
- *   This can be a concern if the user callback function does not actually
- *   read the temperature from whatever alternate source is used but instead
- *   simply returns a value that is updated in some asynchronous fashion.
- *   If firmware does not seed the callback function with an accurate
- *   battery temperature, the MAX17408 could report an erroneous SOC.
- *
- * @param[in] temp_cb
- *   User-defined function to return the battery temperature to the driver.
- *
- * @return
- *   @li @ref SL_STATUS_OK on success.
- *
- *   @li @ref SL_STATUS_NULL_POINTER if the callback is NULL.
- *
- *   @li @ref SL_STATUS_ALREADY_INITIALIZED if a callback has already been
- *     initialized.
- ******************************************************************************/
-sl_status_t max17048_register_temperature_callback(
-  max17048_temp_callback_t temp_cb);
-
-/***************************************************************************//**
- * @brief
- *   Unregister the temperature update callback for the MAX17048 driver
- *
- * @details
- *   This is the opposite of max17048_register_temperature_callback(). It
- *   unregisters the previously-registered temperature update callback
- *   function and causes the driver to revert to the output of the EMU
- *   temperature sensor when next updating the MAX17048's RCOMP value.
- *
- * @details
- *   There is no attempt to unregister the user-provided callback function
- *   before expiration of the software timer that updates RCOMP. If the
- *   timer expires and the callback is still registered, it must provide
- *   a valid temperature to the driver.
- *
- * @return
- *   @li @ref SL_STATUS_OK on success.
- *
- *   @li @ref SL_STATUS_NOT_INITIALIZED if a callback has not previously
- *     been registered.
- ******************************************************************************/
-sl_status_t max17048_unregister_temperature_callback(void);
 
 /***************************************************************************//**
  * @brief
@@ -418,8 +344,8 @@ uint32_t max17048_get_update_interval(void);
  *   This callback function is executed from interrupt context when the user
  *   has enabled one of the MAX17048 interrupt sources.
  ******************************************************************************/
-typedef void (*max17048_interrupt_callback_t)(sl_max17048_irq_source_t irq,
-                                              void *data);
+typedef void (*interrupt_callback_t)(sl_max17048_irq_source_t irq,
+                                     void *data);
 
 /***************************************************************************//**
  * @brief
@@ -467,7 +393,7 @@ void max17048_unmask_interrupts(void);
  *   @li @ref SL_STATUS_ALREADY_INITIALIZED if a callback has already been
  *     initialized.
  ******************************************************************************/
-sl_status_t max17048_enable_soc_interrupt(max17048_interrupt_callback_t irq_cb,
+sl_status_t max17048_enable_soc_interrupt(interrupt_callback_t irq_cb,
                                           void *cb_data);
 
 /***************************************************************************//**
@@ -521,7 +447,7 @@ sl_status_t max17048_disable_soc_interrupt(void);
  *     initialized.
  ******************************************************************************/
 sl_status_t max17048_enable_empty_interrupt(uint8_t athd,
-                                            max17048_interrupt_callback_t irq_cb,
+                                            interrupt_callback_t irq_cb,
                                             void *cb_data);
 
 /***************************************************************************//**
@@ -633,7 +559,7 @@ uint8_t max17048_get_empty_threshold(void);
  *     initialized.
  ******************************************************************************/
 sl_status_t max17048_enable_vhigh_interrupt(uint32_t valrt_max_mv,
-                                            max17048_interrupt_callback_t irq_cb,
+                                            interrupt_callback_t irq_cb,
                                             void *cb_data);
 
 /***************************************************************************//**
@@ -734,7 +660,7 @@ uint32_t max17048_get_vhigh_threshold(void);
  *     initialized.
  ******************************************************************************/
 sl_status_t max17048_enable_vlow_interrupt(uint32_t valrt_min_mv,
-                                           max17048_interrupt_callback_t irq_cb,
+                                           interrupt_callback_t irq_cb,
                                            void *cb_data);
 
 /***************************************************************************//**
@@ -837,7 +763,7 @@ uint32_t max17048_get_vlow_threshold(void);
  *   @li @ref SL_STATUS_INVALID_PARAMETER if vreset_mv > 5080.
  ******************************************************************************/
 sl_status_t max17048_enable_reset_interrupt(uint32_t vreset_mv,
-                                            max17048_interrupt_callback_t irq_cb,
+                                            interrupt_callback_t irq_cb,
                                             void *cb_data);
 
 /***************************************************************************//**

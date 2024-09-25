@@ -19,7 +19,7 @@ readme:
 
 source:
 - path: main.c
-- path: app.c
+- path: gecko/app.c
 - path: app_ui/ui.c
 - path: app_ui/ui_events.c
 - path: app_ui/ui_helpers.c
@@ -30,9 +30,11 @@ source:
 - path: app_ui/screens/ui_screenmain.c
 
 include:
-- path: ''
+- path: 'gecko'
   file_list:
   - path: app.h
+- path: ''
+  file_list:
   - path: app_ui/ui.h
   - path: app_ui/ui_helpers.h
   - path: app_ui/ui_events.h
@@ -59,23 +61,27 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/create_example.png
-    directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/demo.gif
-    directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/hw.png
-    directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/intro.png
-    directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/log.png
-    directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/lvgl_config.png
-    directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/st7789_display.png
-    directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/create_example.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/demo.gif
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/hw.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/intro.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/log.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/lvgl_config.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/st7789_display.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/gspi.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/gspi_dma.png
+  directory: image
 
 ui_hints:
   highlight:

@@ -42,7 +42,7 @@
 
 #include <stdio.h>
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 #include "adafruit_is31fl3741_params.h"
 
 // -----------------------------------------------------------------------------
@@ -71,7 +71,7 @@
  *  I2CSPM Instance for communication.
  *
  ******************************************************************************/
-void adafruit_is31fl3741_i2c_set_instance(sl_i2cspm_t *i2cspm);
+void adafruit_is31fl3741_i2c_set_instance(i2c_master_t *i2cspm);
 
 /***************************************************************************//**
  * @brief

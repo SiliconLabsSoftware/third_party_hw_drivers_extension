@@ -1,10 +1,48 @@
+/***************************************************************************//**
+ * @file adafruit_seesaw.h
+ * @brief adafruit_seesaw header file for Adafruit NeoTrellis 4x4 keypad.
+ * @version 1.0.0
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ * # Evaluation Quality
+ * This code has been minimally tested to ensure that it builds and is suitable
+ * as a demonstration for evaluation purposes only. This code will be maintained
+ * at the sole discretion of Silicon Labs.
+ ******************************************************************************/
 #ifndef _ADAFRUIT_SEESAW_H_
 #define _ADAFRUIT_SEESAW_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include "sl_status.h"
-#include "em_i2c.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
 
 /***************************************************************************//**
  *    //                       Macro
@@ -82,21 +120,8 @@ typedef union keyState {
 }keyState;
 
 typedef struct seesaw_t {
-  uint8_t i2c_addr;
-  sl_i2cspm_t *i2c_instance;
+  i2c_master_t  i2c_instance;
 }seesaw_t;
-
-/**************************************************************************/
-
-/*!
- *     @brief  Seesaw chip Initialization.
- *     @param  seesaw_dev seesaw instance
- *     @return SL_STATUS_OK if success, Error code if not.
- */
-
-/**************************************************************************/
-
-sl_status_t adafruit_seesaw_i2c_init(seesaw_t seesaw_dev);
 
 /**************************************************************************/
 
@@ -107,18 +132,18 @@ sl_status_t adafruit_seesaw_i2c_init(seesaw_t seesaw_dev);
  *     @param  reg_low    Module function address
  *     @param  pdata      Buffer to store data
  *     @param  len        Length of data to be read
- *     @param  delay      Time to delay
+ *     @param  delay      Time to delay ms
  *     @return SL_STATUS_OK if success, Error code if not.
  */
 
 /**************************************************************************/
 
-sl_status_t adafruit_seesaw_i2c_register_read(seesaw_t seesaw_dev,
+sl_status_t adafruit_seesaw_i2c_register_read(seesaw_t *seesaw_dev,
                                               uint8_t reg_high,
                                               uint8_t reg_low,
                                               uint8_t *pdata,
                                               uint8_t len,
-                                              uint16_t delay);
+                                              uint16_t delay_ms);
 
 /**************************************************************************/
 
@@ -134,7 +159,7 @@ sl_status_t adafruit_seesaw_i2c_register_read(seesaw_t seesaw_dev,
 
 /**************************************************************************/
 
-sl_status_t adafruit_seesaw_i2c_register_write(seesaw_t seesaw_dev,
+sl_status_t adafruit_seesaw_i2c_register_write(seesaw_t *seesaw_dev,
                                                uint8_t reg_high,
                                                uint8_t reg_low,
                                                uint8_t *pdata,
@@ -150,7 +175,7 @@ sl_status_t adafruit_seesaw_i2c_register_write(seesaw_t seesaw_dev,
 
 /**************************************************************************/
 
-int8_t adafruit_seesaw_get_keypad_count(seesaw_t seesaw_dev);
+int8_t adafruit_seesaw_get_keypad_count(seesaw_t *seesaw_dev);
 
 /**************************************************************************/
 
@@ -164,8 +189,12 @@ int8_t adafruit_seesaw_get_keypad_count(seesaw_t seesaw_dev);
 
 /**************************************************************************/
 
-sl_status_t adafruit_seesaw_read_keypad(seesaw_t seesaw_dev,
+sl_status_t adafruit_seesaw_read_keypad(seesaw_t *seesaw_dev,
                                         keyEventRaw *buf,
                                         uint8_t count);
 
-#endif /* _ADAFRUIT_SEESAW_H_ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif // _ADAFRUIT_SEESAW_H_

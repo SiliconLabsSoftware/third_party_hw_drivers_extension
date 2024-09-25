@@ -63,7 +63,7 @@ typedef struct {
  * @brief
  *    AT parser core initialization
  *****************************************************************************/
-void at_parser_init(sl_iostream_t *iostream_handle);
+void at_parser_init(mikroe_uart_handle_t handle);
 
 /**************************************************************************//**
  * @brief

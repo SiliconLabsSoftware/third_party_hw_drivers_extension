@@ -2,7 +2,7 @@
 
 ## Summary ##
 
-This project shows the implementation of the OLED driver using a **Mikroe OLED W Click** with **BGM220 Explorer Kit** based on I2C communication.
+This project shows the driver implementation of the OLED driver, using Graphics Library (GLIB) with Silicon Labs Platform.
 
 MikroE OLED W Click is based on the MI9639BO-W OLED module which has a size of 19.3x7.8 mm and resolution of 96x39 pixels. This white light monochrome, passive matrix OLED display is from Multi-Inno Technology. The MI9639BO-W display features an SSD1306 device that is a 128x64 pixel, dot-matrix OLED/PLED segment/common driver with a controller. It can be used for applications where bright and crisp white text or icons are needed.
 
@@ -14,17 +14,29 @@ For more information about the SSD1306 controller, see the [specification page](
 
 - [**BGM220-EK4314A** BGM220 Bluetooth Module Explorer Kit (BRD4314A BGM220 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
 
-- [**Mikroe OLED W Click** board based on SSD1306 IC](https://www.mikroe.com/oled-w-click).
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
+- [**Mikroe OLED W Click** board based on SSD1306 IC](https://www.mikroe.com/oled-w-click)
 
 ## Hardware Connection ##
 
-You simply connect a *Mikroe OLED W Click board* to a *BGM220 Explorer Kit* board using a Qwiic cable.
+- If the BGM220P Explorer Kit is used:
 
-**Note:** There are several jumpers on *Mikroe OLED W Click board* that can be changed to facilitate several different functions. The first of which is the ADDR jumper. The ADDR jumper can be used to change the I2C address of the board. The default jumper is open by default, pulling the address pin high and giving us an I2C address of 0X3D. Closing this jumper will ground the address pin, giving us an I2C address of 0X3C.
+  The OLEDW Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of Click board matches the 45-degree white line of the Explorer Kit.
 
-The second of which is the I2C pull-up jumper. If multiple boards are connected to the I2C bus, the equivalent resistance goes down, increasing your pull up strength. If multiple boards are connected on the same bus, make sure only one board has the pull-up resistors connected.
+  The hardware connection is shown in the image below:
 
-![hardware_connection](image/hardware_connection.png)
+  ![board](image/hardware_connection.png "Hardware connection")
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description              | BRD4338A GPIO | BRD4002 Breakout Pad | OLED W click       |
+  | -------------------------| ------------- | -------------------- | ------------------ |
+  | DATA/COMMAND             | GPIO_47       | P26                  | D/C                |
+  | RESET                    | GPIO_46       | P24                  | RST                |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                |
+  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27       | P29                  | SDI                |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28       | P31                  | CS                 |
 
 ## Setup ##
 
@@ -32,36 +44,47 @@ To test this application, you should connect the BMG220 Explorer Kit Board to th
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter "mikroe", "oledw".
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *oledw*.
 
-2. Click **Create** button on the **Third Party Hardware Drivers - SSD1306 - Mikroe OLEDW Click (Mikroe) with GLIB** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![create_example](image/create_example.png)
+2. Click **Create** button on the **Third Party Hardware Drivers - SSD1306 - Mikroe OLEDW Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create a "Platform - Empty C Example" project for the "BGM220 Explorer Kit Board" using Simplicity Studio 5. Use the default project settings. Be sure to connect and select the BGM220 Explorer Kit Board from the "Debug Adapters" on the left before creating a project.
+1. Create an "Empty C Project" for the your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_oledw_ssd1306_glib/app.c` into the project root folder (overwriting existing file).
 
 3. Install the software components:
+
     - Open the .slcp file in the project.
 
     - Select the SOFTWARE COMPONENTS tab.
 
     - Install the following components:
 
+      **If the BGM220P Explorer Kit is used:**
+
         - [Services] → [Timers] → [Sleep Timer]
-        - [Platform] → [Driver]→ [Button] → [Simple Button] → default instance name: **btn0**.
-        - [Third Party Hardware Drivers] → [Display & LED] → [SSD1306 - OLED W Click (Mikroe) - SPI]  → use default config
+        - [Platform] → [Driver]→ [Button] → [Simple Button] → default instance name: **btn0**
+        - [Third Party Hardware Drivers] → [Display & LED] → [SSD1306 - OLED W Click (Mikroe) - SPI] → use default configuration
         - [Third Party Hardware Drivers] → [Services] → [GLIB - OLED Graphics Library]
 
-4. Build and flash the project to your device.
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Hardware] → [Button] → [btn0]
+        - [Third Party Hardware Drivers] → [Display & LED] → [SSD1306 - OLED W Click (Mikroe) - SPI] → use default configuration
+        - [Third Party Hardware Drivers] → [Services] → [GLIB - OLED Graphics Library]
+
+4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "SSD1306 - OLED W Click (Mikroe) - SPI" component.
 

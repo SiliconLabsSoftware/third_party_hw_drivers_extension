@@ -11,18 +11,27 @@ This sensor is often used to diagnose the health of the muscles, and the neurons
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview).
-- [**Mikroe EMG Click**](https://www.mikroe.com/emg-click).
+- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview) or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit?tab=overview) (BRD4002 + BRD4338A)
+- [**Mikroe EMG Click**](https://www.mikroe.com/emg-click)
 - [ECG/EMG cable](https://www.mikroe.com/ecg-cable)
 - [Disposable adhesive pads](https://www.mikroe.com/ecg-30pcs)
 
 ## Hardware Connection ##
 
-The EMG Click board supports MikroBus, so it can connect easily to EFR32xG24 Explorer Kit's MikroBus header. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+- If the EFR32xG24 Explorer Kit is used:
 
-The hardware connection is shown in the image below:
+  The EMG Click board supports MikroBus, so it can connect easily to EFR32xG24 Explorer Kit via MikroBus header. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
 
-![hardware_connection](image/hardware_connection.png)
+  The hardware connection is shown in the image below:
+
+  ![hardware_connection](image/hardware_connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description           | BRD4338A GPIO  | BRD4002 Breakout Pad | EMG Click         |
+  | ----------------------| ---------------| ---------------------| -------------------- |
+  | Positive analog input | ULP_GPIO_1     | P16                  | OUT                  |
+  | Negative analog input | ULP_GPIO_7     | EXP_HEADER-15 to GND | --                   |
 
 The electrodes are connected to the board with a cable that plugs into the onboard 3.5mm phone jack.
 
@@ -30,14 +39,17 @@ The electrodes are connected to the board with a cable that plugs into the onboa
 
 You can either create a project based on an example project or start with an empty example project.
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter **"emg"**.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **"emg"**.
 
-2. Click **Create** button on the **Third Party Hardware Drivers - EMG Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![create_project](image/create_example.png)
+2. Click **Create** button on **Third Party Hardware Drivers - EMG Click (Mikroe)**. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+
+   ![create_project](image/create_example.png)
+
+3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_emg/app.c` into the project root folder (overwriting the existing file).
 
@@ -47,18 +59,25 @@ You can either create a project based on an example project or start with an emp
 
     - Select the SOFTWARE COMPONENTS tab.
 
-    - Install the following components:
+    - Install the following components:  
+      **If the EFR32xG24 Explorer Kit is used:**
 
         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: **vcom**
         - [Application] → [Utility] → [Log]
         - [Services] → [Timers] → [Sleep Timer]
         - [Third Party Hardware Drivers] → [Sensors] → [EMG Click (Mikroe)] → use the default configuration.
 
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [ADC] → [channel_1] → use default configuration
+        - [Third Party Hardware Drivers] → [Sensors] → [EMG Click (Mikroe)]
+
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install the "EMG Click (Mikroe)" component. Selecting this component will also include the "IADC" component.
 

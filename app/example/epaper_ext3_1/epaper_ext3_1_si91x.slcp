@@ -1,0 +1,71 @@
+project_name: epaper_ext3_1_si91x
+package: platform
+label: Third Party Hardware Drivers - E-paper EXT3-1
+description: |
+  This example project shows an example using EXT3-1 Kit to control an E-Paper Display (EPD).
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/epaper_ext3_1/README.md  
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+  - path: silabs_logo.h
+
+component:
+- id: sl_system
+- id: sleeptimer_si91x
+  from: wiseconnect3_sdk
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- id: epaper_ext3_1
+  from: third_party_hw_drivers
+- id: services_oled_glib
+  from: third_party_hw_drivers
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+configuration:
+- name: RTE_GSPI_MASTER_CS0_PORT_ID
+  value: 2
+- name: RTE_GSPI_MASTER_CLK_PORT_ID
+  value: 2
+- name: RTE_GSPI_MASTER_MOSI_PORT_ID
+  value: 2
+- name: RTE_GSPI_MASTER_MISO_PORT_ID
+  value: 2
+
+other_file:
+  - path: ../../documentation/example/epaper_ext3_1/image/create_example.png
+    directory: image
+  - path: ../../documentation/example/epaper_ext3_1/image/result.png
+    directory: image
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

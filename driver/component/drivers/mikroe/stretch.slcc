@@ -22,9 +22,12 @@ config_file:
   - path: public/mikroe/stretch/config/brd4314a/mikroe_stretch_config.h
     file_id: driver_config_stretch
     condition: [brd4314a]
+  - path: public/mikroe/stretch/config/brd4338a/mikroe_stretch_config.h
+    file_id: driver_config_stretch
+    condition: [device_si91x]
   - path: public/mikroe/stretch/config/other/mikroe_stretch_config.h
     file_id: driver_config_stretch
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, device_si91x]
 provides:
   - name: mikroe_stretch
     allow_multiple: false

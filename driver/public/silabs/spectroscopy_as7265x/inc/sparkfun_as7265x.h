@@ -41,13 +41,26 @@
 #define SPARKFUN_AS7265X_H_
 
 #include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "sl_sleeptimer.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /** @defgroup as7265x AS7265X Driver API*/
+
+#define SPARKFUN_AS7265X_ADDR                0x49 // Device I2C address
+
+// Gets current tick count.
+#define sparkfun_as7265x_get_tick_count() sl_sleeptimer_get_tick_count64()
+
+// Gets current millisecond count.
+#define sparkfun_as7265x_get_ms() \
+  sl_sleeptimer_tick_to_ms(sl_sleeptimer_get_tick_count64())
+
+// Delay 'ms' milliseconds
+#define sparkfun_as7265x_delay_ms(ms)     sl_sleeptimer_delay_millisecond(ms)
 
 /***************************************************************************//**
  * @addtogroup as7265x
@@ -511,7 +524,7 @@ sl_status_t sparkfun_as7265x_get_device_type(uint8_t *dev_type);
  * @return
  *    sl_status_t SL_STATUS_OK on success or SL_STATUS_FAIL on failure.
  ******************************************************************************/
-sl_status_t sparkfun_as7265x_init(sl_i2cspm_t *i2cspm);
+sl_status_t sparkfun_as7265x_init(mikroe_i2c_handle_t i2cspm);
 
 /** @} (end addtogroup as7265x) */
 
@@ -519,4 +532,4 @@ sl_status_t sparkfun_as7265x_init(sl_i2cspm_t *i2cspm);
 }
 #endif
 
-#endif /* SPARKFUN_AS7265X_H_ */
+#endif // SPARKFUN_AS7265X_H_

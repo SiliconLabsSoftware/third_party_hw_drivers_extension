@@ -40,13 +40,22 @@
 #ifndef MIKROE_MQ7_H_
 #define MIKROE_MQ7_H_
 
-sl_status_t mikroe_mq7_init(IADC_TypeDef *adc_instance);
+#include "drv_analog_in.h"
 
-sl_status_t mikroe_mq7_set_adc_instance(
-  IADC_TypeDef *adc_instance);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+sl_status_t mikroe_mq7_init(mikroe_adc_handle_t handle);
+
+sl_status_t mikroe_mq7_set_adc_instance(mikroe_adc_handle_t handle);
 
 sl_status_t mikroe_mq7_read_an_pin_value(uint16_t *data_out);
 
 sl_status_t mikroe_mq7_read_an_pin_voltage(float *data_out);
 
-#endif /* MIKROE_MQ7_H_ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif // MIKROE_MQ7_H_

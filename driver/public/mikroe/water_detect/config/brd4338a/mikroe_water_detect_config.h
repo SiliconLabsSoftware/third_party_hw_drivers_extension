@@ -48,7 +48,7 @@ extern "C" {
 
 // <gpio optional=true> WATER_DETECT_INT
 // $[GPIO_WATER_DETECT_INT]
-#define WATER_DETECT_INT_PORT                        0
+#define WATER_DETECT_INT_PORT                        HP
 #define WATER_DETECT_INT_PIN                         46
 // [GPIO_WATER_DETECT_INT]$
 

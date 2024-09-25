@@ -42,7 +42,6 @@
 // -----------------------------------------------------------------------------
 
 #include "mikroe_ml8511a.h"
-#include "third_party_hw_drivers_helpers.h"
 #include "mikroe_ml8511a_config.h"
 
 // -----------------------------------------------------------------------------
@@ -60,11 +59,14 @@ static bool initialized = false;
 /**************************************************************************//**
 *  ML8511A initialization.
 ******************************************************************************/
-sl_status_t mikroe_ml8511a_init(SPIDRV_Handle_t spi_instance)
+sl_status_t mikroe_ml8511a_init(mikroe_spi_handle_t spi_instance,
+                                mikroe_adc_handle_t adc_instance)
 {
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
   if (spi_instance == NULL) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
+  if (adc_instance == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
@@ -73,15 +75,34 @@ sl_status_t mikroe_ml8511a_init(SPIDRV_Handle_t spi_instance)
   }
 
   uv_ctx.spi.handle = spi_instance;
+  uv_ctx.an.handle = adc_instance;
   uv_cfg_setup(&uv_cfg);
 
+#if defined(ML8511A_AN_PORT) && defined(ML8511A_AN_PIN)
   uv_cfg.an = hal_gpio_pin_name(ML8511A_AN_PORT, ML8511A_AN_PIN);
+#endif
+
+#if MIKROE_ML8511A_OPERATION_MODE == ADC_MODE
+#if defined(ML8511A_CS_PORT) && defined(ML8511A_CS_PIN)
+  uv_cfg.cs = hal_gpio_pin_name(ML8511A_CS_PORT, ML8511A_CS_PIN);
+  // CS pin need to init here since the mikroe_sdk_v2 missed this step
+  digital_out_t struct_cs;
+  digital_out_init(&struct_cs, uv_cfg.cs);
+#endif
+
+#if (MIKROE_ML8511A_SPI_UC == 1)
+  uv_cfg.spi_speed = MIKROE_ML8511A_SPI_BITRATE;
+#endif
+#endif
+
   uv_cfg.en = hal_gpio_pin_name(ML8511A_EN_PORT, ML8511A_EN_PIN);
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(uv_init(&uv_ctx, &uv_cfg));
+  if (uv_init(&uv_ctx, &uv_cfg) != SPI_MASTER_SUCCESS) {
+    return SL_STATUS_INITIALIZATION;
+  }
   initialized = true;
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
 }
 
 /**************************************************************************//**

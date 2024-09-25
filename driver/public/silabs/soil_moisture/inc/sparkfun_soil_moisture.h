@@ -35,10 +35,8 @@
 #ifndef SPARKFUN_SOIL_MOISTURE_H_
 #define SPARKFUN_SOIL_MOISTURE_H_
 
-#include <stdio.h>
-
-#include "sl_i2cspm.h"
 #include "sl_status.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -124,7 +122,8 @@ typedef struct {
  * @retval SL_STATUS_OK Success
  * @retval SL_STATUS_ALREADY_INITIALIZED Initialization is done before.
  ******************************************************************************/
-sl_status_t sparkfun_soil_moisture_init(sl_i2cspm_t *i2cspm, uint16_t address);
+sl_status_t sparkfun_soil_moisture_init(mikroe_i2c_handle_t i2cspm,
+                                        uint16_t address);
 
 /***************************************************************************//**
  * @brief

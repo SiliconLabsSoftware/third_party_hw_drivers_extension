@@ -1,5 +1,45 @@
+/***************************************************************************//**
+ * @file adafruit_neopixel.h
+ * @brief adafruit_neopixel header file for Adafruit NeoTrellis 4x4 keypad.
+ * @version 1.0.0
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ * # Evaluation Quality
+ * This code has been minimally tested to ensure that it builds and is suitable
+ * as a demonstration for evaluation purposes only. This code will be maintained
+ * at the sole discretion of Silicon Labs.
+ ******************************************************************************/
+
 #ifndef _ADAFRUIT_NEOPIXEL_H_
 #define _ADAFRUIT_NEOPIXEL_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include "sl_status.h"
@@ -93,7 +133,7 @@ sl_status_t adafruit_neopixel_init(neopixel_t *pixel,
                                    uint8_t pixel_pin,
                                    neoPixelType pixel_type,
                                    uint8_t i2c_addr,
-                                   sl_i2cspm_t *i2c_inst);
+                                   mikroe_i2c_handle_t i2c_inst);
 
 /**************************************************************************/
 
@@ -274,4 +314,8 @@ uint32_t adafruit_neopixel_getPixelColor(neopixel_t *pixel, uint16_t n);
 
 void adafruit_neopixel_set_brightness(neopixel_t *pixel, uint8_t b);
 
-#endif /* _ADAFRUIT_NEOPIXEL_H_ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif // _ADAFRUIT_NEOPIXEL_H_

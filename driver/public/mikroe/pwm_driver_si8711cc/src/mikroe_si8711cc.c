@@ -4,7 +4,7 @@
  * @version 1.0.0
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2024 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -36,22 +36,19 @@
  * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
-
 #include <stddef.h>
+#include "stdbool.h"
 #include "mikroe_si8711cc.h"
-#include "third_party_hw_drivers_helpers.h"
 #include "pwmdriver.h"
 
 static pwmdriver_t pwm_driver;
 static pwmdriver_cfg_t pwm_driver_cfg;
 
-sl_status_t mikroe_si8711cc_init(sl_pwm_instance_t *pwm_instance)
+sl_status_t mikroe_si8711cc_init(mikroe_pwm_handle_t pwm_instance)
 {
   if (NULL == pwm_instance) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
   // Configure default i2csmp instance
   pwm_driver.pwm.handle = pwm_instance;
@@ -59,13 +56,15 @@ sl_status_t mikroe_si8711cc_init(sl_pwm_instance_t *pwm_instance)
   // Call basic setup functions
   pwmdriver_cfg_setup(&pwm_driver_cfg);
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(pwmdriver_init(&pwm_driver,
-                                                 &pwm_driver_cfg));
+  if (pwmdriver_init(&pwm_driver, &pwm_driver_cfg) != PWMDRIVER_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_si8711cc_set_pwm_instance(sl_pwm_instance_t *pwm_instance)
+sl_status_t mikroe_si8711cc_set_pwm_instance(
+  mikroe_pwm_handle_t pwm_instance)
 {
   if (NULL == pwm_instance) {
     return SL_STATUS_INVALID_PARAMETER;

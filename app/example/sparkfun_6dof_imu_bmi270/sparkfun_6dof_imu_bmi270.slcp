@@ -42,7 +42,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 toolchain_settings:
   - option: gcc_linker_option
@@ -50,8 +50,6 @@ toolchain_settings:
     
 other_file:
   - path: ../../documentation/example/sparkfun_6dof_imu_bmi270/image/create_example.png
-    directory: "image"
-  - path: ../../documentation/example/sparkfun_6dof_imu_bmi270/image/create_example_si91x.png
     directory: "image"
   - path: ../../documentation/example/sparkfun_6dof_imu_bmi270/image/hardware_connection.png
     directory: "image"

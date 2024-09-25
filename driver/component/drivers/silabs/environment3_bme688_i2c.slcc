@@ -9,12 +9,11 @@ ui_hints:
 category: Sensors
 root_path: driver
 requires:
-  - name: i2cspm
-  - name: udelay
-recommends:
-  - id: i2cspm
-    instance: [mikroe]
-
+  - name: status
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_i2c
 provides:
   - name: environment3_bme688_i2c
     allow_multiple: false
@@ -23,6 +22,10 @@ template_contribution:
   - name: component_catalog
     value: environment3_bme688_i2c
 
+config_file:
+  - path: public/silabs/environment3_bme688/config/mikroe_bme688_i2c_config.h
+    file_id: mikroe_bme688_i2c_config_id
+    
 include:
   - path: public/silabs/environment3_bme688/inc
     file_list:

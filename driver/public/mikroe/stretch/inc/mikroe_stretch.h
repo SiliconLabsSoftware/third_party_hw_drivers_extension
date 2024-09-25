@@ -39,33 +39,12 @@
 #ifndef MIKROE_STRETCH_H_
 #define MIKROE_STRETCH_H_
 
-#include "em_cmu.h"
 #include "sl_status.h"
-
-#if defined(_SILICON_LABS_32B_SERIES_1)
-#include "em_adc.h"
-#elif defined(_SILICON_LABS_32B_SERIES_2)
-#include "em_iadc.h"
-#endif
+#include "drv_analog_in.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#if defined(_SILICON_LABS_32B_SERIES_1)
-typedef ADC_TypeDef adc_t;
-#elif defined(_SILICON_LABS_32B_SERIES_2)
-typedef IADC_TypeDef adc_t;
-#endif
-
-/**
- * @brief Stretch configuration object setup function.
- * @details This function initializes click configuration structure to initial
- * values.
- * @return Nothing.
- * @note The all used pins will be set to unconnected state.
- */
-void mikroe_stretch_setup(void);
 
 /**
  * @brief Stretch initialization function.
@@ -77,7 +56,7 @@ void mikroe_stretch_setup(void);
  * See #err_t definition for detailed explanation.
  * @note None.
  */
-sl_status_t mikroe_stretch_init(adc_t *handle);
+sl_status_t mikroe_stretch_init(mikroe_adc_handle_t handle);
 
 /**
  * @brief Stretch read AN pin value function.
@@ -103,4 +82,7 @@ void mikroe_stretch_turn_on_led(void);
  */
 void mikroe_stretch_turn_off_led(void);
 
-#endif /* MIKROE_STRETCH_H_ */
+#ifdef __cplusplus
+}
+#endif
+#endif // MIKROE_STRETCH_H_

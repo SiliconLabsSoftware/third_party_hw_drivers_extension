@@ -1,0 +1,69 @@
+project_name: mikroe_irthermo3_mlx90632
+label: Third Party Hardware Drivers - MLX90632 - IrThermo 3 Click (Mikroe)
+package: platform
+description: |
+  This example project shows an example for Mikroe IrThermo 3 click board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_irthermo3_mlx90632/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: mikroe_irthermo3
+  from: third_party_hw_drivers
+- id: sleeptimer_si91x
+  from: wiseconnect3_sdk
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- instance: [i2c2]
+  from: wiseconnect3_sdk
+  id: i2c_instance
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+toolchain_settings:
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+
+other_file:
+  - path: ../../documentation/example/mikroe_irthermo3_mlx90632/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_irthermo3_mlx90632/image/float.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_irthermo3_mlx90632/image/log.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_irthermo3_mlx90632/image/hardware_connection.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

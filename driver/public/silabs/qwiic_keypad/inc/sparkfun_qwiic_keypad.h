@@ -36,13 +36,16 @@
 #ifndef SPARKFUN_QWIIC_KEYPAD_H_
 #define SPARKFUN_QWIIC_KEYPAD_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stddef.h>
-#include "stdbool.h"
-#include "sl_status.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
+#include "drv_digital_in.h"
 #include "sl_sleeptimer.h"
 
-// #define SAPRKFUN_KEYPAD_INT_PIN_EN
+typedef void (*buttonEvent_callback)(const uint8_t);
 
 enum sparkfun_keypad_registers {
   SPARKFUN_KEYPAD_ID = 0x00,       // Reg: 0x00 - Default I2C Address
@@ -78,11 +81,16 @@ typedef struct frw_rev {
  * @param[in] address
  *  The I2C address to probe.
  *
+ * @param[in] address
+ *  The I2C address to probe.
+ *
  * @return
  *  @retval SL_STATUS_OK An keypad device is present on the I2C bus
  *  @retval SL_STATUS_INITIALIZATION No keypad device present
  ******************************************************************************/
-sl_status_t sparkfun_keypad_init(sl_i2cspm_t *i2c_handle, uint8_t address);
+sl_status_t sparkfun_keypad_init(mikroe_i2c_handle_t i2c_handle,
+                                 uint8_t address,
+                                 buttonEvent_callback user_callback);
 
 /***************************************************************************//**
  * @brief
@@ -233,4 +241,4 @@ sl_status_t sparkfun_keypad_write_register(uint8_t reg_addr, uint8_t data);
 }
 #endif
 
-#endif /* SPARKFUN_QWIIC_KEYPAD_H_ */
+#endif // SPARKFUN_QWIIC_KEYPAD_H_

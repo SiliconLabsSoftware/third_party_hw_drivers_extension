@@ -36,7 +36,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sl_string.h>
-#include "app_queue.h"
+#include "circular_queue.h"
 #include "at_parser_core.h"
 #include "at_parser_platform.h"
 
@@ -46,7 +46,7 @@
 #define has_substring(container, substr) \
   (NULL != strstr((const char *) new_line, (const char *)substr))
 
-APP_QUEUE(cmd_q, at_cmd_desc_t, CMD_Q_SIZE);
+static Queue_t cmd_q;
 static at_cmd_scheduler_state_t sch_state = SCH_READY;
 static at_scheduler_status_t *global_status;
 
@@ -60,10 +60,10 @@ static void at_parser_get_ip(uint8_t *response, uint8_t *ip_output);
  * @brief
  *    AT parser core initialization
  *****************************************************************************/
-void at_parser_init(sl_iostream_t *iostream_handle)
+void at_parser_init(mikroe_uart_handle_t handle)
 {
-  APP_QUEUE_INIT(&cmd_q, at_cmd_desc_t, CMD_Q_SIZE);
-  at_platform_init(iostream_handle, general_platform_cb);
+  queueInit(&cmd_q, CMD_Q_SIZE);
+  at_platform_init(handle, general_platform_cb);
 }
 
 /**************************************************************************//**
@@ -141,14 +141,14 @@ sl_status_t at_parser_start_scheduler(at_scheduler_status_t *output_object)
     if (SCH_READY != sch_state) {
       return SL_STATUS_BUSY;
     }
-    if (app_queue_is_empty(&cmd_q)) {
+    if (queueIsEmpty(&cmd_q)) {
       return SL_STATUS_OK;
     }
 
     sch_state = SCH_SENDING;
     global_status = output_object;
     at_parser_init_output_object(global_status);
-    app_queue_peek(&cmd_q, (uint8_t *)&at_cmd_descriptor);
+    at_cmd_descriptor = *((at_cmd_desc_t *)queuePeek(&cmd_q));
     return at_platform_send_cmd(at_cmd_descriptor.cms_string,
                                 at_cmd_descriptor.timeout_ms);
   }
@@ -185,7 +185,7 @@ at_cmd_scheduler_state_t at_parser_get_scheduler_state()
  *****************************************************************************/
 sl_status_t at_parser_add_cmd_to_q(const at_cmd_desc_t *at_cmd_descriptor)
 {
-  if (app_queue_is_full(&cmd_q)) {
+  if (queueIsFull(&cmd_q)) {
     return SL_STATUS_ALLOCATION_FAILED;
   }
 
@@ -193,7 +193,11 @@ sl_status_t at_parser_add_cmd_to_q(const at_cmd_desc_t *at_cmd_descriptor)
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  return app_queue_add(&cmd_q, (uint8_t *)at_cmd_descriptor);
+  if (queueAdd(&cmd_q, (at_cmd_desc_t *)at_cmd_descriptor) == true) {
+    return SL_STATUS_OK;
+  } else {
+    return SL_STATUS_ALLOCATION_FAILED;
+  }
 }
 
 /**************************************************************************//**
@@ -228,10 +232,10 @@ void at_parser_process(void)
   switch (sch_state) {
     case SCH_PROCESSED:
       // remove previous command
-      app_queue_remove(&cmd_q, (uint8_t *)&at_cmd_descriptor);
+      at_cmd_descriptor = *((at_cmd_desc_t *)queueRemove(&cmd_q));
       at_platform_finish_cmd();
-      if (!app_queue_is_empty(&cmd_q)) {
-        app_queue_peek(&cmd_q, (uint8_t *)&at_cmd_descriptor);
+      if (!queueIsEmpty(&cmd_q)) {
+        at_cmd_descriptor = *((at_cmd_desc_t *)queuePeek(&cmd_q));
         at_platform_send_cmd(at_cmd_descriptor.cms_string,
                              at_cmd_descriptor.timeout_ms);
         sch_state = SCH_SENDING;
@@ -242,8 +246,8 @@ void at_parser_process(void)
       break;
     case SCH_ERROR:
       at_platform_finish_cmd();
-      while (!app_queue_is_empty(&cmd_q)) {
-        app_queue_remove(&cmd_q, (uint8_t *)&at_cmd_descriptor);
+      while (!queueIsEmpty(&cmd_q)) {
+        at_cmd_descriptor = *((at_cmd_desc_t *)queueRemove(&cmd_q));
       }
       global_status->status = SL_STATUS_OK;
       sch_state = SCH_READY;
@@ -271,8 +275,8 @@ void at_parser_process(void)
 static void general_platform_cb(uint8_t *data, uint8_t call_number)
 {
   static at_cmd_desc_t at_cmd_descriptor;
-  if (!app_queue_is_empty(&cmd_q)) {
-    app_queue_peek(&cmd_q, (uint8_t *)&at_cmd_descriptor);
+  if (!queueIsEmpty(&cmd_q)) {
+    at_cmd_descriptor = *((at_cmd_desc_t *)queuePeek(&cmd_q));
 
     // call number == 0 means timeout occurred
     if (call_number == 0) {

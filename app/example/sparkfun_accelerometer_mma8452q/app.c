@@ -33,25 +33,49 @@
  * maintained and there may be no bug maintenance planned for these resources.
  * Silicon Labs may update projects from time to time.
  ******************************************************************************/
-
-#include "sl_i2cspm_instances.h"
-#include "app_assert.h"
-#include "app_log.h"
 #include "mma8452q.h"
 
+#if (defined(SLI_SI917))
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+#else
+#include "sl_i2cspm_instances.h"
+#include "app_log.h"
+#endif
+
+#if (defined(SLI_SI917))
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
+#if (defined(SLI_SI917))
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
+
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
+
 #define TEST_BASIC_READING
-#define TEST_RAW_DATA_READING
-#define TEST_ORIENTATION
-#define TEST_READ_TAPS
-#define TEST_FF_MT
+// #define TEST_RAW_DATA_READING
+// #define TEST_ORIENTATION
+// #define TEST_READ_TAPS
+// #define TEST_FF_MT
 
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
 void app_init(void)
 {
-  mma8452q_init(sl_i2cspm_qwiic);
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_qwiic;
+#endif
+
+  mma8452q_init(app_i2c_instance);
   mma8452q_set_address(SL_MMA8452Q_I2C_BUS_ADDRESS2);
+
 #ifdef TEST_ORIENTATION
   mma8452q_orientation_config_t orient_cfg = {
     .db_cnt_mode = true,
@@ -60,6 +84,7 @@ void app_init(void)
   };
   mma8452q_config_orientation(orient_cfg);
 #endif
+
 #ifdef TEST_READ_TAPS
   mma8452q_pulse_config_t pulse_cfg = {
     .double_abort = false,
@@ -78,6 +103,7 @@ void app_init(void)
   };
   mma8452q_config_pulse(&pulse_cfg);
 #endif
+
 #ifdef TEST_FF_MT
   mma8452q_ff_mt_config_t ff_mt_cfg = {
     .en_event_latch = true,
@@ -116,28 +142,29 @@ void app_init(void)
   mma8452q_config_interrupt(&int_cfg);
   mma8452q_config_ff_mt(&ff_mt_cfg);
 #endif
+
   mma8452q_enable_fast_read(false);
   mma8452q_active(true);
-  app_log(" Initialize MMA8452Q Successfully!!\r\n");
+  app_printf(" Initialize MMA8452Q Successfully!!\r\n");
 #ifdef TEST_BASIC_READING
-  app_log(" Basic Reading Test\r\n");
-  app_log("---------------------------------------\r\n");
+  app_printf(" Basic Reading Test\r\n");
+  app_printf("---------------------------------------\r\n");
 #endif
 #ifdef TEST_RAW_DATA_READING
-  app_log(" Raw Data Reading Test\r\n");
-  app_log("---------------------------------------\r\n");
+  app_printf(" Raw Data Reading Test\r\n");
+  app_printf("---------------------------------------\r\n");
 #endif
 #ifdef TEST_ORIENTATION
-  app_log(" Orientation Reading Test\r\n");
-  app_log("---------------------------------------\r\n");
+  app_printf(" Orientation Reading Test\r\n");
+  app_printf("---------------------------------------\r\n");
 #endif
 #ifdef TEST_READ_TAPS
-  app_log(" Tap Detection Test\r\n");
-  app_log("---------------------------------------\r\n");
+  app_printf(" Tap Detection Test\r\n");
+  app_printf("---------------------------------------\r\n");
 #endif
 #ifdef TEST_FF_MT
-  app_log(" Free Fall/ Motion Test\r\n");
-  app_log("---------------------------------------\r\n");
+  app_printf(" Free Fall/ Motion Test\r\n");
+  app_printf("---------------------------------------\r\n");
 #endif
 }
 
@@ -153,8 +180,8 @@ void app_process_action(void)
   mma8452q_check_for_data_ready(&is_ready);
   if (is_ready) {
     sl_mma8452q_get_calculated_acceleration(value);
-    app_log(
-      "acceleration x direction: %f, acceleration y direction: %f, acceleration z direction: %f\r\n",
+    app_printf(
+      "acceleration x direction: %.4f, acceleration y direction: %.4f, acceleration z direction: %.4f\r\n",
       value[0],
       value[1],
       value[2]);
@@ -167,7 +194,7 @@ void app_process_action(void)
   mma8452q_check_for_data_ready(&is_ready_raw);
   if (is_ready_raw) {
     sl_mma8452q_get_acceleration(value_raw);
-    app_log(
+    app_printf(
       "raw acceleration x direction: %d, raw acceleration y direction: %d, raw acceleration z direction: %d\r\n",
       value_raw[0],
       value_raw[1],
@@ -182,19 +209,19 @@ void app_process_action(void)
   if (is_ready_orien) {
     mma8452q_get_pl_status(&pl_status);
     if (pl_status == MMA8452Q_PORTRAIT_U) {
-      app_log("Orientation status: up\r\n");
+      app_printf("Orientation status: up\r\n");
     }
     if (pl_status == MMA8452Q_PORTRAIT_D) {
-      app_log("Orientation status: down\r\n");
+      app_printf("Orientation status: down\r\n");
     }
     if (pl_status == MMA8452Q_LANDSCAPE_R) {
-      app_log("Orientation status: right\r\n");
+      app_printf("Orientation status: right\r\n");
     }
     if (pl_status == MMA8452Q_LANDSCAPE_L) {
-      app_log("Orientation status: left\r\n");
+      app_printf("Orientation status: left\r\n");
     }
     if (pl_status == MMA8452Q_LOCKOUT) {
-      app_log("Orientation status: flat\r\n");
+      app_printf("Orientation status: flat\r\n");
     }
   }
 #endif
@@ -210,7 +237,7 @@ void app_process_action(void)
       tap = pulse_source & 0x7F;
     }
     if (tap > 0) {
-      app_log("TAP Detected\r\n");
+      app_printf("TAP Detected\r\n");
     }
   }
 #endif
@@ -226,25 +253,25 @@ void app_process_action(void)
                                               // x-motion detected
         if ((temp_ff_mt & 0x01) == 0x01) {    // If XHP is 1, x event was
                                               //   negative
-          app_log(" x- \r\n");
+          app_printf(" x- \r\n");
         } else {
-          app_log(" x+ \r\n");
+          app_printf(" x+ \r\n");
         }
       }
       if ((temp_ff_mt & 0x08) == 0x08) {    // If YHE bit is set, y-motion
                                             //   detected
         if ((temp_ff_mt & 0x04) == 0x04) {  // If YHP is set, y event was
                                             //   negative
-          app_log(" y- \r\n");
+          app_printf(" y- \r\n");
         } else {
-          app_log(" y+ \r\n");
+          app_printf(" y+ \r\n");
         }
       }
       if ((temp_ff_mt & 0x20) == 0x20) { // If ZHE bit is set, z-motion detected
         if ((temp_ff_mt & 0x10) == 0x10) {
-          app_log(" z-(mg) \r\n");
+          app_printf(" z-(mg) \r\n");
         } else {
-          app_log(" z+(mg) \r\n");
+          app_printf(" z+(mg) \r\n");
         }
       }
     }

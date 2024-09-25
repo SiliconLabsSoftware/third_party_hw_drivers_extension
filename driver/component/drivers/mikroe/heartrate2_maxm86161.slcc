@@ -9,9 +9,16 @@ ui_hints:
   visibility: basic
 root_path: driver
 requires:
+  - name: status
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
   - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_i2c
 config_file:
+  - path: public/mikroe/heartrate2_maxm86161/config/brd4338a/mikroe_maxm86161_config.h
+    file_id: driver_config_heartrate2
+    condition: [device_si91x]
   - path: public/mikroe/heartrate2_maxm86161/config/brd2703a/mikroe_maxm86161_config.h
     file_id: driver_config_heartrate2
     condition: [brd2703a]
@@ -23,7 +30,7 @@ config_file:
     condition: [brd4314a]
   - path: public/mikroe/heartrate2_maxm86161/config/other/mikroe_maxm86161_config.h
     file_id: driver_config_heartrate2
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, device_si91x]
 provides:
   - name: mikroe_heartrate2
     allow_multiple: false

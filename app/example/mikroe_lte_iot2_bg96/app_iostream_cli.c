@@ -33,18 +33,27 @@
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include "em_chip.h"
-#include "sl_iostream.h"
-#include "sl_iostream_init_instances.h"
-#include "sl_iostream_handles.h"
-#include "at_parser_core.h"
-#include "app_iostream_cli.h"
-#include "at_parser_events.h"
-#include "app_log.h"
-#include "mikroe_bg96.h"
 #include "sl_string.h"
-#include "stdlib.h"
+
+#include "at_parser_core.h"
+#include "at_parser_events.h"
+#include "mikroe_bg96.h"
+#include "app_iostream_cli.h"
+
+#if (defined(SLI_SI917))
+#include "rsi_debug.h"
+#else
+#include "app_log.h"
+#include "sl_iostream.h"
+#endif
+
+#if (defined(SLI_SI917))
+#define app_printf(...)                DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...)                app_log(__VA_ARGS__)
+#endif
 
 /*******************************************************************************
  *******************************   MACROS   ************************************
@@ -179,12 +188,18 @@ void app_iostream_cli_process_action(void)
   static uint8_t index = 0;
   static bool start_cli = false;
 
+#if (defined(SLI_SI917))
+  c = DEBUGIN();
+#else
+
   /* Retrieve characters, print local echo and full line back */
   sl_iostream_getchar(sl_iostream_vcom_handle, &c);
+#endif
+
   if (c > 0) {
     if ((c == '\r') || (c == '\n')) {
-      sl_iostream_putchar(sl_iostream_vcom_handle, '\r');
-      sl_iostream_putchar(sl_iostream_vcom_handle, '\n');
+      app_printf("%c", '\r');
+      app_printf("%c", '\n');
       buffer[index] = '\0';
       app_parser(buffer);
       index = 0;
@@ -197,11 +212,11 @@ void app_iostream_cli_process_action(void)
 
       if (start_cli == false) {
         start_cli = true;
-        app_log("[>>>] ");
+        app_printf("[>>>] ");
       }
 
       /* Local echo */
-      sl_iostream_putchar(sl_iostream_vcom_handle, c);
+      app_printf("%c", c);
     }
   }
 }
@@ -225,7 +240,7 @@ static void app_parser(uint8_t *buf)
       return;
     }
   }
-  app_log("Can't recognize command!\r\n");
+  app_printf("Can't recognize command!\r\n");
 }
 
 /**************************************************************************//**
@@ -244,7 +259,7 @@ static void wakeup(void)
   bg96_wake_up(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
                   wakeup_handler, (void *) &output_object);
-  app_log("Waking up device!\r\n");
+  app_printf("Waking up device!\r\n");
 }
 
 /***************************************************************************//**
@@ -260,9 +275,9 @@ static void wakeup_handler(void *handler_data)
 {
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
   if (l_output->error_code) {
-    app_log("Error while waking up: %d\r\n", l_output->error_code);
+    app_printf("Error while waking up: %d\r\n", l_output->error_code);
   } else {
-    app_log("Device is up!\r\n");
+    app_printf("Device is up!\r\n");
   }
 }
 
@@ -280,7 +295,7 @@ static void sleep(void)
                   SL_STATUS_OK,
                   sleep_handler,
                   (void *) &output_object);
-  app_log("Put the device to sleep!\r\n");
+  app_printf("Put the device to sleep!\r\n");
 }
 
 /***************************************************************************//**
@@ -296,9 +311,9 @@ static void sleep_handler(void *handler_data)
 {
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
   if (l_output->error_code) {
-    app_log("Error while putting to sleep: %d\r\n", l_output->error_code);
+    app_printf("Error while putting to sleep: %d\r\n", l_output->error_code);
   } else {
-    app_log("Device went to sleep!\r\n");
+    app_printf("Device went to sleep!\r\n");
   }
 }
 
@@ -314,7 +329,7 @@ static void imei(void)
   bg96_read_imei(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK, imei_handler,
                   (void *) &output_object);
-  app_log("Read IMEI command sent!\r\n");
+  app_printf("Read IMEI command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -331,9 +346,9 @@ static void imei_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while reading IMEI: %d\r\n", l_output->error_code);
+    app_printf("Error while reading IMEI: %d\r\n", l_output->error_code);
   } else {
-    app_log("IMEI: %s\r\n", l_output->response_data);
+    app_printf("IMEI: %s\r\n", l_output->response_data);
   }
 }
 
@@ -351,7 +366,7 @@ static void infor(void)
                   SL_STATUS_OK,
                   infor_handler,
                   (void *) &output_object);
-  app_log("Get Quectel BG96 module infor command sent!\r\n");
+  app_printf("Get Quectel BG96 module infor command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -368,9 +383,9 @@ static void infor_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while reading BG96 Infor: %d\r\n", l_output->error_code);
+    app_printf("Error while reading BG96 Infor: %d\r\n", l_output->error_code);
   } else {
-    app_log("%s\r\n", l_output->response_data);
+    app_printf("%s\r\n", l_output->response_data);
   }
 }
 
@@ -388,7 +403,7 @@ static void set_gsm(void)
                   SL_STATUS_OK,
                   set_gsm_handler,
                   (void *) &output_object);
-  app_log("Select TE Character Set to GSM command sent!\r\n");
+  app_printf("Select TE Character Set to GSM command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -405,10 +420,10 @@ static void set_gsm_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while set te character set GSM: %d\r\n",
-            l_output->error_code);
+    app_printf("Error while set te character set GSM: %d\r\n",
+               l_output->error_code);
   } else {
-    app_log("Set GSM OK\r\n");
+    app_printf("Set GSM OK\r\n");
   }
 }
 
@@ -425,7 +440,7 @@ static void set_service_domain(void)
   at_listen_event((uint8_t *) &output_object.status,
                   SL_STATUS_OK, set_service_domain_handler,
                   (void *) &output_object);
-  app_log("Set the service domain CS_and_PS command sent!\r\n");
+  app_printf("Set the service domain CS_and_PS command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -442,10 +457,10 @@ static void set_service_domain_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while configure the service domain of UE: %d\r\n",
-            l_output->error_code);
+    app_printf("Error while configure the service domain of UE: %d\r\n",
+               l_output->error_code);
   } else {
-    app_log("Configure the service domain OK\r\n");
+    app_printf("Configure the service domain OK\r\n");
   }
 }
 
@@ -464,7 +479,7 @@ static void textmode(void)
                   SL_STATUS_OK,
                   settextmode_handler,
                   (void *) &output_object);
-  app_log("Set BG96 to text mode command sent!\r\n");
+  app_printf("Set BG96 to text mode command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -481,9 +496,9 @@ static void settextmode_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while set SMS text mode %d\r\n", l_output->error_code);
+    app_printf("Error while set SMS text mode %d\r\n", l_output->error_code);
   } else {
-    app_log("Set SMS text mode OK\r\n");
+    app_printf("Set SMS text mode OK\r\n");
   }
 }
 
@@ -501,7 +516,7 @@ static void pdumode(void)
                   SL_STATUS_OK,
                   setpdumode_handler,
                   (void *) &output_object);
-  app_log("Set BG96 to pdu mode command sent!\r\n");
+  app_printf("Set BG96 to pdu mode command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -518,9 +533,9 @@ static void setpdumode_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while set SMS pdu mode %d\r\n", l_output->error_code);
+    app_printf("Error while set SMS pdu mode %d\r\n", l_output->error_code);
   } else {
-    app_log("Set SMS pdu mode OK\r\n");
+    app_printf("Set SMS pdu mode OK\r\n");
   }
 }
 
@@ -540,7 +555,7 @@ static void sms_text(void)
 
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
                   sms_text_handler, (void *) &output_object);
-  app_log("SMS text command sent!\r\n");
+  app_printf("SMS text command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -557,11 +572,11 @@ static void sms_text_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while send sms text: %d\r\n",
-            l_output->error_code);
+    app_printf("Error while send sms text: %d\r\n",
+               l_output->error_code);
   } else {
-    app_log("Send sms text mode ok, response data: %s\r\n",
-            l_output->response_data);
+    app_printf("Send sms text mode ok, response data: %s\r\n",
+               l_output->response_data);
   }
 }
 
@@ -584,7 +599,7 @@ static void sms_pdu(void)
 
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
                   sms_pdu_handler, (void *) &output_object);
-  app_log("SMS pdu command sent!\r\n");
+  app_printf("SMS pdu command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -601,11 +616,11 @@ static void sms_pdu_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while send sms pdu: %d\r\n",
-            l_output->error_code);
+    app_printf("Error while send sms pdu: %d\r\n",
+               l_output->error_code);
   } else {
-    app_log("Send sms text mode ok, response data: %s\r\n",
-            l_output->response_data);
+    app_printf("Send sms text mode ok, response data: %s\r\n",
+               l_output->response_data);
   }
 }
 
@@ -624,7 +639,7 @@ static void sim_apn(void)
 
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
                   sim_apn_handler, (void *) &output_object);
-  app_log("Set SIM APN command sent!\r\n");
+  app_printf("Set SIM APN command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -641,9 +656,9 @@ static void sim_apn_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while set sim apn: %d\r\n", l_output->error_code);
+    app_printf("Error while set sim apn: %d\r\n", l_output->error_code);
   } else {
-    app_log("Set SIM APN ok\r\n");
+    app_printf("Set SIM APN ok\r\n");
   }
 }
 
@@ -659,7 +674,7 @@ static void ip(void)
   bg96_read_ip(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK, ip_handler,
                   (void *) &output_object);
-  app_log("Read IP command sent!\r\n");
+  app_printf("Read IP command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -675,10 +690,10 @@ static void ip_handler(void *handler_data)
 {
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
   if (l_output->error_code) {
-    app_log("Error while reading IP: %d\r\n%s\r\n", l_output->error_code,
-            l_output->response_data);
+    app_printf("Error while reading IP: %d\r\n%s\r\n", l_output->error_code,
+               l_output->response_data);
   } else {
-    app_log("IP address: %s\r\n", l_output->response_data);
+    app_printf("IP address: %s\r\n", l_output->response_data);
   }
 }
 
@@ -694,7 +709,7 @@ static void net_reg(void)
   bg96_network_registration(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
                   net_reg_handler, (void *) &output_object);
-  app_log("Network registration started!\r\n");
+  app_printf("Network registration started!\r\n");
 }
 
 /***************************************************************************//**
@@ -710,10 +725,10 @@ static void net_reg_handler(void *handler_data)
 {
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
   if (l_output->error_code) {
-    app_log("Network registration error: %d\r\n%s\r\n", l_output->error_code,
-            l_output->response_data);
+    app_printf("Network registration error: %d\r\n%s\r\n", l_output->error_code,
+               l_output->response_data);
   } else {
-    app_log("Network registration done!\r\n");
+    app_printf("Network registration done!\r\n");
   }
 }
 
@@ -736,7 +751,7 @@ static void open(void)
   bg96_nb_open_connection(&connection, &output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK, open_handler,
                   (void *) &output_object);
-  app_log("Open command sent!\r\n");
+  app_printf("Open command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -753,9 +768,9 @@ static void open_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Network open error: %d\r\n", (int) l_output->error_code);
+    app_printf("Network open error: %d\r\n", (int) l_output->error_code);
   } else {
-    app_log("Network opened.\r\n");
+    app_printf("Network opened.\r\n");
   }
 }
 
@@ -776,7 +791,7 @@ static void open_server(void)
 
   at_parser_init_output_object(&output_object);
   bg96_nb_open_connection(&connection, &output_object);
-  app_log("Open server command sent!\r\n");
+  app_printf("Open server command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -795,7 +810,7 @@ static void close_server(void)
 
   at_parser_init_output_object(&output_object);
   bg96_nb_close_connection(&connection, &output_object);
-  app_log("Open server command sent!\r\n");
+  app_printf("Open server command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -819,7 +834,7 @@ static void send(void)
   bg96_nb_send_data(&connection, data_to_send, &output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK, send_handler,
                   (void *) &output_object);
-  app_log("Data has been sent!\r\n");
+  app_printf("Data has been sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -834,9 +849,9 @@ static void send(void)
 static void send_handler(void *handler_data)
 {
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
-  app_log("Send response received! Error: %d Data: %s\r\n",
-          l_output->error_code,
-          l_output->response_data);
+  app_printf("Send response received! Error: %d Data: %s\r\n",
+             l_output->error_code,
+             l_output->response_data);
 }
 
 /***************************************************************************//**
@@ -860,7 +875,7 @@ static void close(void)
                   SL_STATUS_OK,
                   close_handler,
                   (void *) &output_object);
-  app_log("Close command sent!\r\n");
+  app_printf("Close command sent!\r\n");
 }
 
 /***************************************************************************//**
@@ -877,10 +892,10 @@ static void close_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Network close error: %d\r\n %s\r\n", l_output->error_code,
-            l_output->response_data);
+    app_printf("Network close error: %d\r\n %s\r\n", l_output->error_code,
+               l_output->response_data);
   } else {
-    app_log("Network closed\r\n");
+    app_printf("Network closed\r\n");
   }
 }
 
@@ -896,7 +911,7 @@ static void cops(void)
   bg96_get_operator(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK, cops_handler,
                   (void *) &output_object);
-  app_log("Getting operator!\r\n");
+  app_printf("Getting operator!\r\n");
 }
 
 /***************************************************************************//**
@@ -913,10 +928,11 @@ static void cops_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while getting operator: %d\r\n %s\r\n", l_output->error_code,
-            l_output->response_data);
+    app_printf("Error while getting operator: %d\r\n %s\r\n",
+               l_output->error_code,
+               l_output->response_data);
   } else {
-    app_log("Actual operator: %s\r\n", l_output->response_data);
+    app_printf("Actual operator: %s\r\n", l_output->response_data);
   }
 }
 
@@ -932,7 +948,7 @@ static void receive(void)
   bg96_nb_receive_data(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK, recv_handler,
                   (void *) &output_object);
-  app_log("Receiving data!\r\n");
+  app_printf("Receiving data!\r\n");
 }
 
 /***************************************************************************//**
@@ -948,10 +964,11 @@ static void recv_handler(void *handler_data)
 {
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
   if (l_output->error_code) {
-    app_log("Error while receiving data: %d\r\n %s\r\n", l_output->error_code,
-            l_output->response_data);
+    app_printf("Error while receiving data: %d\r\n %s\r\n",
+               l_output->error_code,
+               l_output->response_data);
   } else {
-    app_log("Received data: %s\r\n", l_output->response_data);
+    app_printf("Received data: %s\r\n", l_output->response_data);
   }
 }
 
@@ -967,7 +984,7 @@ static void gps_start(void)
   bg96_gnss_start(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
                   start_gnss_handler, (void *) &output_object);
-  app_log("GNSS start command sent.\r\n");
+  app_printf("GNSS start command sent.\r\n");
 }
 
 /***************************************************************************//**
@@ -984,9 +1001,9 @@ static void start_gnss_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while starting GNSS: %d\r\n", l_output->error_code);
+    app_printf("Error while starting GNSS: %d\r\n", l_output->error_code);
   } else {
-    app_log("GNSS started.\r\n");
+    app_printf("GNSS started.\r\n");
   }
 }
 
@@ -1002,7 +1019,7 @@ static void gps_location(void)
   bg96_gnss_get_position(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
                   get_position_handler, (void *) &output_object);
-  app_log("GNSS position command sent.\r\n");
+  app_printf("GNSS position command sent.\r\n");
 }
 
 /***************************************************************************//**
@@ -1020,10 +1037,12 @@ static void get_position_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while getting position: %d\r\n %s\r\n", l_output->error_code,
-            l_output->response_data);
+    app_printf("Error while getting position: %d\r\n %s\r\n",
+               l_output->error_code,
+               l_output->response_data);
   } else {
-    app_log("GPS location raw response data: %s\r\n", l_output->response_data);
+    app_printf("GPS location raw response data: %s\r\n",
+               l_output->response_data);
 
     uint8_t element_buf[200] = { 0 };
     sl_status_t stt = bg96_gpsloc_generic_parser(l_output->response_data,
@@ -1061,7 +1080,7 @@ static void get_position_handler(void *handler_data)
              strlen((const char *)element_buf) - 3);
       double latitude = (atof((const char *)latitude_int)
                          + (atof((const char *)(latitude_decimal)) / 60.0));
-      app_log("Latitude:  %.6f\r\n", latitude);
+      app_printf("Latitude:  %.6f\r\n", latitude);
       memset(element_buf, 0, sizeof(element_buf));
 
       bg96_gpsloc_generic_parser(l_output->response_data,
@@ -1076,13 +1095,13 @@ static void get_position_handler(void *handler_data)
       double longtitude = (atof((const char *)longitude_int)
                            + (atof((const char *)(longitude_decimal))
                               / 60.0));
-      app_log("Longitude:  %.6f\r\n", longtitude);
+      app_printf("Longitude:  %.6f\r\n", longtitude);
       memset(element_buf, 0, sizeof(element_buf));
 
       bg96_gpsloc_generic_parser(l_output->response_data,
                                  element_buf,
                                  gpsloc_element_altitude_e);
-      app_log("Altitude: %sM\r\n", element_buf);
+      app_printf("Altitude: %sM\r\n", element_buf);
 
       bg96_gpsloc_generic_parser(l_output->response_data,
                                  element_buf,
@@ -1094,7 +1113,7 @@ static void get_position_handler(void *handler_data)
       memcpy((void *)minuste, (const void *)element_buf + 2, 2);
       memcpy((void *)seconds, (const void *)element_buf + 4, 2);
 
-      app_log("Time UTC: %sh:%sm:%ss\r\n", hour, minuste, seconds);
+      app_printf("Time UTC: %sh:%sm:%ss\r\n", hour, minuste, seconds);
 
       bg96_gpsloc_generic_parser(l_output->response_data,
                                  element_buf,
@@ -1106,7 +1125,7 @@ static void get_position_handler(void *handler_data)
       memcpy((void *)month, (const void *)element_buf + 2, 2);
       memcpy((void *)year, (const void *)element_buf + 4, 2);
 
-      app_log("Date: %s/%s/20%s\r\n", day, month, year);
+      app_printf("Date: %s/%s/20%s\r\n", day, month, year);
     }
   }
 }
@@ -1168,7 +1187,7 @@ static void gps_stop(void)
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
                   stop_gnss_handler, (void *) &output_object);
   bg96_gnss_stop(&output_object);
-  app_log("GNSS stop command sent.\r\n");
+  app_printf("GNSS stop command sent.\r\n");
 }
 
 /***************************************************************************//**
@@ -1185,8 +1204,8 @@ static void stop_gnss_handler(void *handler_data)
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_log("Error while stopping GNSS: %d\r\n", l_output->error_code);
+    app_printf("Error while stopping GNSS: %d\r\n", l_output->error_code);
   } else {
-    app_log("GNSS stopped.\r\n");
+    app_printf("GNSS stopped.\r\n");
   }
 }

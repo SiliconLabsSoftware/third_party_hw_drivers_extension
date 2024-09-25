@@ -38,7 +38,6 @@ component:
 - id: device_init
 - id: sl_system
 - id: component_catalog
-- id: app_assert
 - id: app_log
 - instance: [vcom]
   id: iostream_eusart
@@ -54,7 +53,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../linker_files/brd2703a/linkerfile.ld

@@ -44,7 +44,40 @@
 extern "C" {
 #endif
 
+#include "em_gpio.h"
+
 // <<< Use Configuration Wizard in Context Menu >>>
+
+// <h> MIKROE DCMOTOR26 SPI Configuration
+// <e> MIKROE DCMOTOR26 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_DCMOTOR26_SPI_UC                  0
+
+// <o MIKROE_DCMOTOR26_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
+// <i> Default: 10000000
+#define MIKROE_DCMOTOR26_SPI_BITRATE             10000000
+
+// </e>
+// </h>
+
+// <h> MIKROE DCMOTOR26 I2C Configuration
+// <e> MIKROE DCMOTOR26 I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_DCMOTOR26_I2C_UC                  0
+
+// <o MIKROE_DCMOTOR26_I2C_SPEED_MODE> Speed mode
+// <0=> Standard mode (100kbit/s)
+// <1=> Fast mode (400kbit/s)
+// <2=> Fast mode plus (1Mbit/s)
+// <i> Default: 0
+#define MIKROE_DCMOTOR26_I2C_SPEED_MODE          0
+
+// </e>
+// </h>
 
 // <h> I2C address
 // <o DCMOTOR26_PCA9538A_ADDRESS> DCMOTOR26 PCA9538A ADDRESS
@@ -54,13 +87,19 @@ extern "C" {
 // <0x72=> 0x72
 // <0x73=> 0x73
 // <i> Default: 0x70
-#define DCMOTOR26_PCA9538A_ADDRESS           0x70
+#define DCMOTOR26_PCA9538A_ADDRESS                       0x70
 
 // </h>
 
 // <<< end of configuration section >>>
 
 // <<< sl:start pin_tool >>>
+
+// <gpio optional=true> DCMOTOR26_CS
+// $[GPIO_DCMOTOR26_CS]
+// #define DCMOTOR26_CS_PORT                             0
+// #define DCMOTOR26_CS_PIN                              0
+// [GPIO_DCMOTOR26_CS]$
 
 // <gpio optional=true> DCMOTOR26_CHANNEL_MONITOR
 // $[GPIO_DCMOTOR26_CHANNEL_MONITOR]
@@ -92,4 +131,4 @@ extern "C" {
 }
 
 #endif
-#endif /* MIKROE_DCMOTOR26_CONFIG_H_ */
+#endif // MIKROE_DCMOTOR26_CONFIG_H_

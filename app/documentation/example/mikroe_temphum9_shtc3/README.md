@@ -12,13 +12,13 @@ Temp-Hum 9 click is a smart temperature and humidity sensing click board™, pac
 
 - Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 
-- [**Temp&Hum 9 Click** board based on SHTC3 sensor](https://www.mikroe.com/temphum-9-click).
+- [**Temp&Hum 9 Click** board based on SHTC3 sensor](https://www.mikroe.com/temphum-9-click)
 
 ## Hardware Connection ##
 
 - If the BGM220P Explorer Kit is used:
 
-  The Temp&Hum 9 Click board supports MikroBus, so it can connect easily to BGM220P Explorer Kit's MikroBus header. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+  The Temp&Hum 9 Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of Click board matches the 45-degree white line of the Explorer Kit.
 
   The hardware connection is shown in the image below:
 
@@ -39,15 +39,9 @@ You can either create a project based on an example project or start with an emp
 
 1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *shtc3*.
 
-2. Click **Create** button on the project:
+2. Click **Create** button on the **Third Party Hardware Drivers - SHTC3 - Temp&Hump 9 Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 
-   - **Third Party Hardware Drivers - SHTC3 - Temp&Hump 9 Click (Mikroe)** example if the BGM220P Explorer Kit is used.
-   ![Create_example](image/create_example_1.png)
-
-   - **Third Party Hardware Drivers - SHTC3 - Temp&Hump 9 Click (Mikroe) - Si91x** example if the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used.
-   ![Create_example](image/create_example_2.png)
-
-   Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
@@ -90,7 +84,7 @@ You can either create a project based on an example project or start with an emp
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - SDK Extension must be enabled for the project to install "SHTC3 - Temp&Hump 9 Click (Mikroe)" component.
 

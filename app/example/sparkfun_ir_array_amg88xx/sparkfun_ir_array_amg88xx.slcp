@@ -5,6 +5,7 @@ description: |
   This example project shows an example for Sparkfun Grid-EYE Infrared Array Breakout board driver integration.
 category: Example|Platform
 quality: evaluation
+
 filter:
 - name: Device Type
   value: [SoC]
@@ -12,20 +13,25 @@ filter:
   value: [32-bit MCU]
 - name: Project Difficulty
   value: [Beginner]
+
 readme:
 - path: ../../documentation/example/sparkfun_ir_array_amg88xx/README.md
+
 source:
 - path: app_cli_command_table.c
 - path: app_ir_array_cli_cmds.c
 - path: app.c
 - path: main.c
+
 include:
 - path: ''
   file_list:
   - path: app.h
+
 component:
 - id: sl_system
 - id: device_init
+- id: iostream_retarget_stdio
 - id: iostream_usart
   instance: [vcom]
 - id: i2cspm
@@ -34,26 +40,25 @@ component:
   instance: [vcom]
 - id: sparkfun_ir_array_amg88xx
   from: third_party_hw_drivers
+- id: printf
+
 config_file:
-  - override:
-      component: i2cspm
-      file_id: i2cspm_config
-      instance: qwiic
-    path: brd2601b/sl_i2cspm_qwiic_config.h
-    condition: [brd2601b]
   - override:
       component: cli
       file_id: sl_cli_config
       instance: vcom
     path: sl_cli_config_vcom.h
+
 configuration:
   - name: SL_STACK_SIZE
     value: "10240"
   - name: SL_HEAP_SIZE
     value: "6144"
+
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
+
 other_file:
   - path: ../../documentation/example/sparkfun_ir_array_amg88xx/image/create_example.png
     directory: image
@@ -64,6 +69,7 @@ other_file:
   - path: ../../documentation/example/sparkfun_ir_array_amg88xx/image/thermal_image.png
     directory: image
   - path: ../../documentation/example/sparkfun_ir_array_amg88xx/temperatue_array_visualiser.py
+  
 ui_hints:
   highlight:
     - path: README.md

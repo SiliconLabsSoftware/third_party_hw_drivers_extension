@@ -39,19 +39,22 @@
 #include <stdio.h>
 #include <math.h>
 #include "sl_sleeptimer.h"
+
 #include "sparkfun_type5_config.h"
-#include "gpiointerrupt.h"
 #include "sparkfun_type5.h"
+#include "drv_digital_in.h"
+
+#if (defined(SLI_SI917))
+#include "sl_driver_gpio.h"
+#define GPIO_M4_INTR              0 // M4 Pin interrupt number
+#define AVL_INTR_NO               0 // available interrupt number
+#else
+#include "gpiointerrupt.h"
+#endif
 
 // -----------------------------------------------------------------------------
 //                               Macros
 // -----------------------------------------------------------------------------
-
-// Enable/Disable Interrupt
-#define IntEnable()       (GPIO_IntEnable(SPARKFUN_TYPE5_SIG_PIN \
-                                          | SPARKFUN_TYPE5_NS_PIN))
-#define IntDisable()      (GPIO_IntDisable(SPARKFUN_TYPE5_SIG_PIN \
-                                           | SPARKFUN_TYPE5_NS_PIN))
 
 // Convert tick to millisecond
 #define TICK_TO_MS(x)     (sl_sleeptimer_tick_to_ms(x))
@@ -112,6 +115,34 @@ static void sparkfun_type5_on_noise_handler(uint8_t ns_pin)
   noise_count++;
 }
 
+// Enable/Disable Interrupt
+static void IntEnable(void)
+{
+#if (defined(SLI_SI917))
+  sl_gpio_driver_clear_interrupts(PIN_INTR_0);
+  sl_gpio_driver_clear_interrupts(PIN_INTR_1);
+  sl_gpio_driver_enable_interrupts(
+    (PIN_INTR_0 << 16) | SL_GPIO_INTERRUPT_FALL_EDGE);
+  sl_gpio_driver_enable_interrupts(
+    (PIN_INTR_1 << 16) | SL_GPIO_INTERRUPT_FALL_EDGE);
+#else
+  GPIO_IntClear((1 << SPARKFUN_TYPE5_SIG_PIN) | (1 << SPARKFUN_TYPE5_NS_PIN));
+  GPIO_IntEnable((1 << SPARKFUN_TYPE5_SIG_PIN) | (1 << SPARKFUN_TYPE5_NS_PIN));
+#endif
+}
+
+static void IntDisable(void)
+{
+#if (defined(SLI_SI917))
+  sl_gpio_driver_disable_interrupts(
+    (PIN_INTR_0 << 16) | SL_GPIO_INTERRUPT_FALL_EDGE);
+  sl_gpio_driver_disable_interrupts(
+    (PIN_INTR_1 << 16) | SL_GPIO_INTERRUPT_FALL_EDGE);
+#else
+  GPIO_IntDisable((1 << SPARKFUN_TYPE5_SIG_PIN) | (1 << SPARKFUN_TYPE5_NS_PIN));
+#endif
+}
+
 // -----------------------------------------------------------------------------
 //                       Public Function
 // -----------------------------------------------------------------------------
@@ -125,17 +156,34 @@ void sparkfun_type5_init(void)
     return;
   }
 
-  initialized = true;
-  GPIO_PinModeSet(SPARKFUN_TYPE5_SIG_PORT,
-                  SPARKFUN_TYPE5_SIG_PIN,
-                  gpioModeInputPull,
-                  1);
+  digital_in_t sig;
+  digital_in_t ns;
 
-  GPIO_PinModeSet(SPARKFUN_TYPE5_NS_PORT,
-                  SPARKFUN_TYPE5_NS_PIN,
-                  gpioModeInputPull,
-                  1);
+  pin_name_t sig_pin = hal_gpio_pin_name(SPARKFUN_TYPE5_SIG_PORT,
+                                         SPARKFUN_TYPE5_SIG_PIN);
+  pin_name_t ns_pin = hal_gpio_pin_name(SPARKFUN_TYPE5_NS_PORT,
+                                        SPARKFUN_TYPE5_NS_PIN);
 
+  digital_in_init(&sig, sig_pin);
+  digital_in_init(&ns, ns_pin);
+
+#if (defined(SLI_SI917))
+  sl_gpio_t sig_port_pin = { SPARKFUN_TYPE5_SIG_PIN / 16,
+                             SPARKFUN_TYPE5_SIG_PIN % 16 };
+  sl_gpio_t ns_port_pin = { SPARKFUN_TYPE5_SIG_PIN / 16,
+                            SPARKFUN_TYPE5_NS_PIN % 16 };
+
+  sl_gpio_driver_configure_interrupt(&sig_port_pin,
+                                     PIN_INTR_0,
+                                     SL_GPIO_INTERRUPT_FALLING_EDGE,
+                                     (void *)&sparkfun_type5_on_radiation_handler,
+                                     AVL_INTR_NO);
+  sl_gpio_driver_configure_interrupt(&ns_port_pin,
+                                     PIN_INTR_1,
+                                     SL_GPIO_INTERRUPT_FALLING_EDGE,
+                                     (void *)&sparkfun_type5_on_noise_handler,
+                                     AVL_INTR_NO);
+#else // None Si91x device
   GPIO_ExtIntConfig(SPARKFUN_TYPE5_SIG_PORT,
                     SPARKFUN_TYPE5_SIG_PIN,
                     SPARKFUN_TYPE5_SIG_PIN,
@@ -155,6 +203,9 @@ void sparkfun_type5_init(void)
 
   GPIOINT_CallbackRegister(SPARKFUN_TYPE5_NS_PIN,
                            sparkfun_type5_on_noise_handler);
+#endif
+
+  initialized = true;
 }
 
 /**************************************************************************//**

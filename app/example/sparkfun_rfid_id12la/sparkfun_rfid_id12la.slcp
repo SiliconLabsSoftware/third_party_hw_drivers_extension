@@ -34,7 +34,7 @@ component:
 - id: iostream_usart
   instance: [vcom]
 - id: i2cspm
-  instance: [rfid]
+  instance: [qwiic]
 - id: app_log
 - id: app_assert
 
@@ -43,7 +43,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/sparkfun_rfid_id12la/image/api_overview.png

@@ -1,0 +1,30 @@
+id: mipi_dbi_spi_dma_gecko
+package: third_party_hw_drivers
+label: MIPI Display Bus Interface for gecko devices (SPI - 4Wire)
+description: >
+  Support for MIPI DBI compliant display controllers.
+category: Services
+quality: evaluation
+ui_hints:
+  visibility: never
+root_path: driver
+requires:
+  - name: spidrv_core
+provides:
+  - name: mipi_dbi_spi_dma_gecko
+    allow_multiple: false
+template_contribution:
+  - name: component_catalog
+    value: mipi_dbi_spi_dma_gecko
+include:
+  - path: public/silabs/services_mipi_dbi/inc
+    file_list:
+      - path: mipi_dbi.h
+  - path: public/silabs/services_mipi_dbi/inc/gecko
+    file_list:
+      - path: mipi_dbi_spi.h
+source:
+  - path: public/silabs/services_mipi_dbi/src/mipi_dbi_spi_dma_gecko.c
+
+define:
+  - name: MIPI_DBI_SPIDRV

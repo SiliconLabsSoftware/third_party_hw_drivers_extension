@@ -1,10 +1,10 @@
 /***************************************************************************//**
  * @file app.c
- * @brief Barcode Decoder Example Application
+ * @brief Top level application functions
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
- ********************************************************************************
+ * <b>Copyright 2024 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
  *
@@ -27,46 +27,71 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Evaluation Quality
+ * # Experimental Quality
  * This code has been minimally tested to ensure that it builds and is suitable
  * as a demonstration for evaluation purposes only. This code will be maintained
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
-
+#include "mikroe_em3080w.h"
+#include "sl_sleeptimer.h"
+#include "app_assert.h"
 #include <string.h>
+
+#if (defined(SLI_SI917))
+#include "rsi_debug.h"
+#include "sl_si91x_usart.h"
+
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#define USART_INSTANCE_USED            UART_1
+static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
+
+#else /* None Si91x device */
+#include "app_log.h"
 #include "sl_iostream_init_usart_instances.h"
 #include "sl_iostream_init_eusart_instances.h"
-#include "sl_sleeptimer.h"
-#include "app_log.h"
-
-#include "mikroe_em3080w.h"
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
 
 #define PROCESS_COUNTER            500
 #define PROCESS_RX_BUFFER_SIZE     600
 #define PROCESS_PARSER_BUFFER_SIZE 600
 
-enum SCAN_MODE {
+typedef enum {
   SCAN_ENABLE,
   SCAN_DISABLE,
   SCAN_WAIT
-};
-
-static uint32_t last_tick = 0;
-static enum SCAN_MODE scan_mode = SCAN_ENABLE;
+}SCAN_MODE;
 
 mikroe_barcode2_t barcode2;
+static uint32_t last_tick = 0;
+static SCAN_MODE scan_mode = SCAN_ENABLE;
 static char current_parser_buf[PROCESS_PARSER_BUFFER_SIZE];
+static mikroe_uart_handle_t app_uart_instance = NULL;
 
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
 void app_init(void)
 {
+#if (defined(SLI_SI917))
+  app_uart_instance = &uart_instance;
+#else
+  app_uart_instance = sl_iostream_uart_mikroe_handle;
+  sl_iostream_set_default(sl_iostream_vcom_handle);
   app_log_iostream_set(sl_iostream_vcom_handle);
-  mikroe_barcode2_init(&barcode2, sl_iostream_uart_mikroe_handle, 0);
-  mikroe_barcode2_enable_reset(&barcode2, MIKROE_BARCODE2_ENABLE);
+#endif
+
+  app_printf("Hello world - Mikroe Barcode2 Example...\r\n");
+  sl_status_t sc = mikroe_barcode2_init(&barcode2, app_uart_instance, 0);
+  app_assert_status(sc);
+
+  sc = mikroe_barcode2_enable_reset(&barcode2, MIKROE_BARCODE2_ENABLE);
+  app_assert_status(sc);
+
   sl_sleeptimer_delay_millisecond(100);
-  mikroe_barcode2_enable_reset(&barcode2, MIKROE_BARCODE2_DISABLE);
+  sc = mikroe_barcode2_enable_reset(&barcode2, MIKROE_BARCODE2_DISABLE);
+  app_assert_status(sc);
+  app_printf("mikroe barcode2 init successful\r\n");
 }
 
 static void barcode2_process(void)
@@ -113,12 +138,12 @@ static void barcode2_process(void)
   }
   if (rsp_cnt > 0) {
     if (rsp_cnt > 80) {
-      app_log_info(" QR Code:\r\n%s\r\n", current_parser_buf);
+      app_printf("QR Code:\r\n%s\r\n", current_parser_buf);
     } else {
-      app_log_info(" Barcode: \r\n%s\r\n", current_parser_buf);
+      app_printf("Barcode: \r\n%s\r\n", current_parser_buf);
     }
 
-    app_log_info("------------------------\r\n");
+    app_printf("------------------------\r\n");
   }
 }
 
@@ -129,17 +154,17 @@ void app_process_action(void)
 {
   switch (scan_mode) {
     case SCAN_ENABLE:
-      app_log_info("   Scanning enabled   \r\n");
-      app_log_info("------------------------\r\n");
+      app_printf("Scanning enabled\r\n");
+      app_printf("------------------------\r\n");
       mikroe_barcode2_enable_scaning(&barcode2, MIKROE_BARCODE2_ENABLE);
-      barcode2_process(  );
+      barcode2_process();
       scan_mode = SCAN_DISABLE;
       break;
 
     case SCAN_DISABLE:
       mikroe_barcode2_enable_scaning(&barcode2, MIKROE_BARCODE2_DISABLE);
-      app_log_info("   Scanning disabled   \r\n");
-      app_log_info("------------------------\r\n");
+      app_printf("Scanning disabled\r\n");
+      app_printf("------------------------\r\n");
       scan_mode = SCAN_WAIT;
       last_tick = sl_sleeptimer_get_tick_count();
       break;

@@ -10,12 +10,12 @@ ui_hints:
 root_path: driver
 
 requires:
-  - name: spidrv
-  - name: udelay
-recommends:
-  - id: spidrv
-    instance: [mikroe]
-
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_spi
+  - name: mikroe_peripheral_driver_digital_io
+  
 provides:
   - name: mikroe_accel5_bma400_spi
     allow_multiple: false
@@ -34,9 +34,12 @@ config_file:
   - path: public/silabs/accel5_bma400/config/brd4314a/mikroe_bma400_spi_config.h
     file_id: driver_config_bma400_spi
     condition: [brd4314a]
+  - path: public/silabs/accel5_bma400/config/brd4338a/mikroe_bma400_spi_config.h
+    file_id: driver_config_bma400_spi
+    condition: [brd4338a]
   - path: public/silabs/accel5_bma400/config/other/mikroe_bma400_spi_config.h
     file_id: driver_config_bma400_spi
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
 
 include:
   - path: public/silabs/accel5_bma400/inc

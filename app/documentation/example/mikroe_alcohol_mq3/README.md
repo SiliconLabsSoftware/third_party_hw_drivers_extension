@@ -10,17 +10,17 @@ The MQ-3 provides an analog representation of its concentration in the air sent 
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit (BRD2703A xG24 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview).
+- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit (BRD2703A xG24 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A).
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 
-- [**Mikroe Alcohol Click** board based on MQ-3 sensor](https://www.mikroe.com/alcohol-click).
+- [**Mikroe Alcohol Click** board based on MQ-3 sensor](https://www.mikroe.com/alcohol-click)
 
 ## Hardware Connection ##
 
 - If the EFR32xG24 Explorer Kit is used:
 
-  The Alcohol Click supports MikroBus, so it can connect easily to EFR32xG24 Explorer Kit's MikroBus header. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+  The Alcohol Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of Click board matches the 45-degree white line of the Explorer Kit.
 
   The hardware connection is shown in the image below:
 
@@ -31,7 +31,6 @@ The MQ-3 provides an analog representation of its concentration in the air sent 
   | Description           | BRD4338A GPIO  | BRD4002 Breakout Pad | Acohol Click         |
   | ----------------------| ---------------| ---------------------| -------------------- |
   | Positive analog input | ULP_GPIO_1     | P16                  | OUT                  |
-  | Negative analog input | ULP_GPIO_7     | EXP_HEADER-15 to GND | --                   |
 
 ## Setup ##
 
@@ -41,14 +40,9 @@ You can either create a project based on an example project or start with an emp
 
 1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **mq3**.
 
-2. Click **Create** button on the project:
+2. Click **Create** button on the **Third Party Hardware Drivers - MQ3 - Alcohol Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 
-   - **Third Party Hardware Drivers - MQ3 - Alcohol Click (Mikroe)** example if the EFR32xG24 Explorer Kit is used.
-   ![Create_example](image/create_example_1.png)
-   - **Third Party Hardware Drivers - MQ3 - Alcohol Click (Mikroe) - Si91x** example if the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used.
-   ![Create_example](image/create_example_2.png)
-
-   Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+   ![Create_example](image/create_example.png)
 
 ### Start with an empty example project ###
 
@@ -74,7 +68,7 @@ You can either create a project based on an example project or start with an emp
       **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
-        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [ADC] → [channel_0] → use default configuration
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [ADC] → [channel_1] → use default configuration
         - [Third Party Hardware Drivers] → [Sensors] → [MQ3 - Alcohol Click (Mikroe)]
 
 4. Install printf float
@@ -88,9 +82,9 @@ You can either create a project based on an example project or start with an emp
 
 **Note :**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "MQ3 - Alcohol Click (Mikroe)" component. Selecting this component will also include the "IADC" component.
+- SDK Extension must be enabled for the project to install "MQ3 - Alcohol Click (Mikroe)" component.
 
 ## How It Works ##
 
@@ -100,7 +94,7 @@ You can either create a project based on an example project or start with an emp
 
 ### Testing ###
 
-The example detects the presence and concentration of alcohol in the air and shows a message on the log screen, which is raw data and the output voltage of IADC.
+The example detects the presence and concentration of alcohol in the air and shows a message on the log screen, which is raw data and the output voltage of ADC.
 
 You can launch Console that's integrated into Simplicity Studio or use a third-party terminal tool like TeraTerm to receive the data from the USB. A screenshot of the console output is shown in the figure below.
 

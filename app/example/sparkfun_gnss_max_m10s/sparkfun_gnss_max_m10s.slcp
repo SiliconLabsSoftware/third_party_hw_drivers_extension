@@ -47,14 +47,12 @@ toolchain_settings:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/sparkfun_gnss_max_m10s/image/hw_connection.png
     directory: "image"
-  - path: ../../documentation/example/sparkfun_gnss_max_m10s/image/create_example_1.png
-    directory: "image"
-  - path: ../../documentation/example/sparkfun_gnss_max_m10s/image/create_example_2.png
+  - path: ../../documentation/example/sparkfun_gnss_max_m10s/image/create_example.png
     directory: "image"
   - path: ../../documentation/example/sparkfun_gnss_max_m10s/image/log.png
     directory: "image"

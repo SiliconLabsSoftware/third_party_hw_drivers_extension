@@ -10,15 +10,29 @@ Thunder Click is a compact add-on board that detects the presence and proximity 
 
 - [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit)
 
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
 - [Thunder Click](https://www.mikroe.com/thunder-click)
 
 ## Hardware Connection ##
 
-The Thunder Click board supports MikroBus, so it can connect easily to EFR32xG24 Explorer Kit. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+- If the EFR32xG24 Explorer Kit is used:
 
-The hardware connection is shown in the image below:
+  The Thunder Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the 45-degree corner of Click board matches the 45-degree white line of the Explorer Kit.
 
-![board](image/hardware_connection.png)
+  The hardware connection is shown in the image below:
+
+  ![board](image/hardware_connection.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description              | BRD4338A GPIO | BRD4002 EXP Header | Thunder Click     |
+  | ------------------------ | ------------- | ------------------ | ----------------- |
+  | IRQ                      | GPIO_46       | P24                | IRQ               |
+  | CS                       | GPIO_47       | P26                | CS                |
+  | RTE_SSI_MASTER_SCK_PIN   | GPIO_25       | P25                | SCK               |
+  | RTE_SSI_MASTER_MOSI_PIN  | GPIO_26       | P27                | SDI               |
+  | RTE_SSI_MASTER_MISO_PIN  | GPIO_27       | P29                | SDO               |
 
 ## Setup ##
 
@@ -26,16 +40,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter thunder.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *thunder*.
 
-2. Click **Create** button on the **Third Party Hardware Drivers - Thunder Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+2. Click **Create** button on the **Third Party Hardware Drivers - AS3935 - Thunder Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_thunder_as3935/app.c` into the project root folder (overwriting the existing file).
 
@@ -47,25 +62,31 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
+      **If the EFR32xG24 Explorer Kit is used:**
+
         - [Services] → [Timers] → [Sleep Timer]
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
-        - [Third Party Hardware Drivers] → [Sensors] → [AS3935 - Thunder Click (Mikroe)]
+        - [Platform] → [Driver] → [SPI] → [SPIDRV] → [mikroe] → change the configuration for [SPI master chip select (CS) control scheme] to "CS controlled by the application", select the CS pin to None as below:
+          ![spi config](image/spi_config.png)
+        - [Third Party Hardware Drivers] → [Sensors] → [AS3935 - Thunder Click (Mikroe)] → use default configuration
 
-4. Modify the SPIDRV configuration of Mikroe instance as below.
-    ![mikroe spi config](image/mikroe_spi_config.png)
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
 
-5. Build and flash this example to the board.
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [Third Party Hardware Drivers] → [Sensors] → [AS3935 - Thunder Click (Mikroe)] → use default config
+
+4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - Third-party Drivers Extension must be enabled for the project to install "Thunder Click (Mikroe)" component.
 
 ## How It Works ##
 
-After you flashed the code to the Explorer Kit and powered the connected boards, the application starts running automatically. Use Putty/Tera Term (or another program) to read the values of the serial output. Note that the EFR32xG24 Explorer Kit board uses the default baud rate of 115200.
+After you flashed the code to the Explorer Kit and powered the connected boards, the application starts running automatically. Use Putty/Tera Term (or another program) to read the values of the serial output.
 
 In the below image, you can see an example of how the output is displayed. The application returns the energy and the distance of the storm if lighting is detected. Otherwise, it will display "noise" or "disturber" if one of them is detected.
 

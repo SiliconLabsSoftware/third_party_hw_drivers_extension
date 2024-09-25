@@ -1,0 +1,62 @@
+project_name: mikroe_relay2_si91x
+package: platform
+label: Third Party Hardware Drivers - LCA717 - Relay 2 Click (Mikroe)
+description: |
+  This example project shows an example for Mikroe Relay 2 Click board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_relay2_lca717/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: mikroe_relay2
+  from: third_party_hw_drivers
+- id: sleeptimer_si91x
+  from: wiseconnect3_sdk
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.0.0
+- id: wiseconnect3_sdk
+  version: 3.3.4
+
+other_file:
+  - path: ../../documentation/example/mikroe_relay2_lca717/image/hardware_connection.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_relay2_lca717/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_relay2_lca717/image/configuration.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_relay2_lca717/image/configuration_si91x.png
+    directory: "image"
+    
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

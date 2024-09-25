@@ -1,0 +1,70 @@
+project_name: mikroe_emg
+package: platform
+label: Third Party Hardware Drivers - EMG Click (Mikroe)
+description: |
+  This example project shows an example for Mikroe EMG Click board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/mikroe_emg/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: sleeptimer_si91x
+  from: wiseconnect3_sdk
+- id: emg
+  from: third_party_hw_drivers
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- instance: [channel_1]
+  from: wiseconnect3_sdk
+  id: adc_instance
+
+define:
+  - name: DEBUG_EFM
+
+sdk_extension:
+- id: wiseconnect3_sdk
+  version: 3.3.4
+- id: third_party_hw_drivers
+  version: 4.0.0
+
+other_file:
+  - path: ../../documentation/example/mikroe_emg/image/create_example.png
+    directory: image
+  - path: ../../documentation/example/mikroe_emg/image/emg_plot.png
+    directory: image
+  - path: ../../documentation/example/mikroe_emg/image/emg_setup.png
+    directory: image
+  - path: ../../documentation/example/mikroe_emg/image/hardware_connection.png
+    directory: image
+  - path: ../../documentation/example/mikroe_emg/image/software_layer.png
+    directory: image
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

@@ -40,26 +40,17 @@
 #include <stddef.h>
 #include "mikroe_stretch.h"
 #include "mikroe_stretch_config.h"
-#include "third_party_hw_drivers_helpers.h"
 #include "stretch.h"
 
 static stretch_t stretch;
 static stretch_cfg_t stretch_cfg;
 
-void mikroe_stretch_setup(void)
-{
-  stretch_cfg_setup(&stretch_cfg);
-}
-
-sl_status_t mikroe_stretch_init(adc_t *handle)
+sl_status_t mikroe_stretch_init(mikroe_adc_handle_t handle)
 {
   if (NULL == handle) {
     return SL_STATUS_INVALID_HANDLE;
   }
   stretch.adc.handle = handle;
-
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
   stretch_cfg_setup(&stretch_cfg);
 
 #if defined(STRETCH_ANALOG_OUTPUT_PORT) && defined(STRETCH_ANALOG_OUTPUT_PIN)
@@ -72,9 +63,10 @@ sl_status_t mikroe_stretch_init(adc_t *handle)
                                       STRETCH_LED_PIN);
 #endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(stretch_init(&stretch, &stretch_cfg));
-
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  if (stretch_init(&stretch, &stretch_cfg) != STRETCH_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_stretch_generic_read(uint16_t *data_out)

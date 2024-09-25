@@ -326,7 +326,7 @@ typedef void (*sparkfun_vcnl4040_norm_interrupt_callback_t)(
  * @retval SL_STATUS_OK Success
  * @retval SL_STATUS_INITIALIZATION Initialization Failure
  ******************************************************************************/
-sl_status_t sparkfun_vcnl4040_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t sparkfun_vcnl4040_init(mikroe_i2c_handle_t i2cspm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -1105,4 +1105,4 @@ sl_status_t sparkfun_vcnl4040_get_core_version(
 }
 #endif
 
-#endif /* SPARKFUN_VCNL4040_H_ */
+#endif // SPARKFUN_VCNL4040_H_

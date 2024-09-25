@@ -8,11 +8,7 @@ quality: evaluation
 root_path: driver
 requires:
 - name: status
-- name: i2cspm
-- name: gpiointerrupt 
-recommends:
-- id: i2cspm
-  instance: [qwiic]
+- name: mikroe_peripheral_driver_i2c
 config_file:
 - path: public/silabs/touchscreen_tsc2007/config/adafruit_tsc2007_config.h
   file_id: adafruit_tsc2007_config

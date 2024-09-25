@@ -36,9 +36,8 @@
 #define MIKROE_BMA400_I2C_H
 
 #include "sl_status.h"
-#include "sl_i2cspm.h"
-#include "sl_udelay.h"
-
+#include "drv_i2c_master.h"
+#include "drv_digital_in.h"
 #include "bma400.h"
 
 #ifdef __cplusplus
@@ -125,7 +124,7 @@ extern "C" {
  *  @ref BMA400_OK on success.
  *  @ref On failure, BMA400_E_NULL_PTR is returned.
  ******************************************************************************/
-int8_t bma400_i2c_init(sl_i2cspm_t *i2cspm,
+int8_t bma400_i2c_init(mikroe_i2c_handle_t i2cspm,
                        uint8_t bma400_i2c_addr,
                        struct bma400_dev *bma400);
 

@@ -1,8 +1,8 @@
 project_name: mikroe_temphum9_shtc3_si91x
 package: platform
-label: Third Party Hardware Drivers - SHTC3 - Temp&amp;Hum 9 Click (Mikroe) - Si91x
+label: Third Party Hardware Drivers - SHTC3 - Temp&amp;Hum 9 Click (Mikroe)
 description: |
-  This example project shows an example for Mikroe Temp&Hum 9 Click board driver integration on Si91x.
+  This example project shows an example for Mikroe Temp&Hum 9 Click board driver integration.
 category: Example|Platform
 quality: evaluation
 
@@ -42,14 +42,12 @@ component:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 - id: wiseconnect3_sdk
-  version: 3.2.0
+  version: 3.3.4
 
 other_file:
-  - path: ../../documentation/example/mikroe_temphum9_shtc3/image/create_example_1.png
-    directory: "image"
-  - path: ../../documentation/example/mikroe_temphum9_shtc3/image/create_example_2.png
+  - path: ../../documentation/example/mikroe_temphum9_shtc3/image/create_example.png
     directory: "image"
   - path: ../../documentation/example/mikroe_temphum9_shtc3/image/hardware_connection.png
     directory: "image"

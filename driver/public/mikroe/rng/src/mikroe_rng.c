@@ -37,29 +37,33 @@
  *
  ******************************************************************************/
 #include "mikroe_rng.h"
+#include "mikroe_rng_config.h"
 #include "rng.h"
 
 static rng_t rng;
 static rng_cfg_t rng_cfg;
 
-sl_status_t mikroe_rng_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_rng_init(mikroe_i2c_handle_t i2cspm_instance)
 {
-  sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
-
-  if (NULL != i2cspm_instance) {
-    rng.i2c.handle = i2cspm_instance;
-    rng_cfg_setup(&rng_cfg);
-
-    if (I2C_MASTER_SUCCESS == rng_init(&rng, &rng_cfg)) {
-      stt = SL_STATUS_OK;
-    } else {
-      stt = SL_STATUS_FAIL;
-    }
+  if (NULL == i2cspm_instance) {
+    return SL_STATUS_INVALID_PARAMETER;
   }
-  return stt;
+
+  rng.i2c.handle = i2cspm_instance;
+  rng_cfg_setup(&rng_cfg);
+  rng_cfg.i2c_address = RNG_DEVICE_SLAVE_ADDRESS;
+
+#if (MIKROE_I2C_RNG_UC == 1)
+  rng_cfg.i2c_speed = MIKROE_I2C_RNG_SPEED_MODE;
+#endif
+
+  if (RNG_OK != rng_init(&rng, &rng_cfg)) {
+    return SL_STATUS_INITIALIZATION;
+  }
+  return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_rng_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_rng_set_i2csmp_instance(mikroe_i2c_handle_t i2cspm_instance)
 {
   sl_status_t stt = SL_STATUS_INVALID_PARAMETER;
 

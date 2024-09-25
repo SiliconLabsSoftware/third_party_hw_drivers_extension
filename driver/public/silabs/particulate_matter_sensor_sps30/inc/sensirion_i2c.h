@@ -31,9 +31,8 @@
 
 #ifndef SENSIRION_I2C_H
 #define SENSIRION_I2C_H
-
-#include "sl_i2cspm.h"
 #include "sl_status.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,7 +60,7 @@ sl_status_t sensirion_i2c_check_crc(const uint8_t *data,
                                     uint16_t count,
                                     uint8_t checksum);
 
-sl_status_t sensirion_i2c_init(sl_i2cspm_t *i2c_handle);
+sl_status_t sensirion_i2c_init(mikroe_i2c_handle_t i2c_handle);
 
 /**
  * sensirion_i2c_general_call_reset() - Send a general call reset.

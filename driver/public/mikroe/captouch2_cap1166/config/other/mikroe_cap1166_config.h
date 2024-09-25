@@ -40,11 +40,39 @@
 #ifndef SCL_CAP1166_CONFIG_H_
 #define SCL_CAP1166_CONFIG_H_
 
+#ifndef SLI_SI917
+#include "em_gpio.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+// <<< Use Configuration Wizard in Context Menu >>>
+
+// <h> MIKROE CAP1166 SPI Configuration
+
+// <e> MIKROE CAP1166 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
+#define MIKROE_CAP1166_SPI_UC                  0
+
+// <o MIKROE_CAP1166_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
+// <i> Default: 10000000
+#define MIKROE_CAP1166_SPI_BITRATE             1000000
+
+// </e>
+// </h>
+// <<< end of configuration section >>>
+
 // <<< sl:start pin_tool >>>
+
+// <gpio optional=true> CAP1166_CS
+// $[GPIO_CAP1166_CS]
+// #define CAP1166_CS_PORT                        0
+// #define CAP1166_CS_PIN                         0
+// [GPIO_CAP1166_CS]$
 
 // <gpio optional=true> CAP1166_RESET
 // $[GPIO_CAP1166_RESET]
@@ -66,4 +94,4 @@ extern "C" {
 }
 #endif
 
-#endif /* SCL_CAP1166_CONFIG_H_ */
+#endif // SCL_CAP1166_CONFIG_H_

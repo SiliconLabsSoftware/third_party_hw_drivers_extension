@@ -18,7 +18,7 @@ readme:
 - path: ../../documentation/example/adafruit_tft_lcd_st7789/README.md
 
 source:
-- path: app.c
+- path: gecko/app.c
 - path: main.c
 - path: bird_image.c
 - path: cactus_plants_image.c
@@ -27,7 +27,7 @@ source:
 - path: nature_image.c
 
 include:
-- path: ''
+- path: 'gecko'
   file_list:
   - path: app.h
 
@@ -49,19 +49,23 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/create_example.png
-    directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/demo.gif
-    directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/intro.png
-    directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/st7789_display.png
-    directory: image
-  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/log.png
-    directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/create_example.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/demo.gif
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/intro.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/st7789_display.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/log.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/gspi.png
+  directory: image
+- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/gspi_dma.png
+  directory: image
 
 ui_hints:
   highlight:

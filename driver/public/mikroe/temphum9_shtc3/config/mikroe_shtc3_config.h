@@ -45,20 +45,20 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>MIKROE I2C SHTC3 Configuration
+// <h> MIKROE SHTC3 I2C Configuration
 
-//  <e>MIKROE I2C SHTC3 UC Configuration
+//  <e>MIKROE SHTC3 I2C UC Configuration
 //  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
 //  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
 //  <i> Default: 0
-#define MIKROE_I2C_SHTC3_UC                  0
+#define MIKROE_SHTC3_I2C_UC                  0
 
-// <o MIKROE_I2C_SHTC3_SPEED_MODE> Speed mode
+// <o MIKROE_SHTC3_I2C_SPEED_MODE> Speed mode
 // <0=> Standard mode (100kbit/s)
 // <1=> Fast mode (400kbit/s)
 // <2=> Fast mode plus (1Mbit/s)
 // <i> Default: 0
-#define MIKROE_I2C_SHTC3_SPEED_MODE          0
+#define MIKROE_SHTC3_I2C_SPEED_MODE          0
 
 // </e>
 // </h>

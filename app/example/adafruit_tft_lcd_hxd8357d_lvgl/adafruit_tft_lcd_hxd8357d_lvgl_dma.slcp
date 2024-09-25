@@ -18,9 +18,9 @@ readme:
 - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d_lvgl/README.md
 
 source:
-- path: app.c
+- path: gecko/app.c
 - path: main.c
-- path: app_ui/ui_events.c
+- path: app_ui/ui_events_gecko.c
 - path: app_ui/ui_helpers.c
 - path: app_ui/ui.c
 - path: app_ui/components/ui_comp_hook.c
@@ -34,7 +34,7 @@ source:
 
 
 include:
-- path: ''
+- path: 'gecko'
   file_list:
   - path: app.h
 - path: app_ui
@@ -52,6 +52,7 @@ component:
 - id: app_assert
 - id: sleeptimer
 - id: app_log
+- id: udelay
 - id: simple_led
   instance: [led0, led1]
 - id: simple_button
@@ -59,6 +60,8 @@ component:
 - id: adafruit_tft_lcd_hxd8357d_dma
   from: third_party_hw_drivers
 - id: touch_screen_analog
+  from: third_party_hw_drivers
+- id: touch_screen_analog_gecko
   from: third_party_hw_drivers
 - id: services_lvgl
   from: third_party_hw_drivers
@@ -68,7 +71,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d_lvgl/image/create_example.png
@@ -87,19 +90,23 @@ other_file:
     directory: image
   - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d_lvgl/image/single_buffered_lvgl_settings.png
     directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d_lvgl/image/gspi.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d_lvgl/image/gspi_dma.png
+    directory: image
 
 configuration:
-- name: CALIB_X_MIN
+- name: TOUCHSCREEN_X_MIN
   value: '428'
-- name: CALIB_X_MAX
+- name: TOUCHSCREEN_X_MAX
   value: '3628'
-- name: CALIB_Y_MIN
+- name: TOUCHSCREEN_Y_MIN
   value: '260'
-- name: CALIB_Y_MAX
+- name: TOUCHSCREEN_Y_MAX
   value: '3776'
-- name: TOUCHSCREEN_WIDTH
+- name: TOUCHSCREEN_HOR_RES
   value: '320'
-- name: TOUCHSCREEN_HEIGHT
+- name: TOUCHSCREEN_VER_RES
   value: '480'
 - name: LV_BUFFER_MODE
   value: "1"

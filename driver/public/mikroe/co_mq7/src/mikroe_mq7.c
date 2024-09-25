@@ -38,55 +38,51 @@
  ******************************************************************************/
 
 #include <stddef.h>
-#include "em_device.h"
 #include "sl_status.h"
-#include "third_party_hw_drivers_helpers.h"
 #include "co.h"
 #include "mikroe_mq7_config.h"
-
-#if defined(_SILICON_LABS_32B_SERIES_1)
-#include "em_adc.h"
-#elif defined(_SILICON_LABS_32B_SERIES_2)
-#include "em_iadc.h"
-#endif
 
 static co_t co;
 static co_cfg_t co_cfg;
 
-sl_status_t mikroe_mq7_init(IADC_TypeDef *adc_instance)
+sl_status_t mikroe_mq7_init(mikroe_adc_handle_t handle)
 {
-  if (NULL == adc_instance) {
+  if (NULL == handle) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
   // Configure default i2csmp instance
-  co.adc.handle = adc_instance;
-
+  co.adc.handle = handle;
   // Call basic setup functions
   co_cfg_setup(&co_cfg);
+
+#if defined(MQ7_AN_PORT) && defined(MQ7_AN_PIN)
   co_cfg.an = hal_gpio_pin_name(MQ7_AN_PORT, MQ7_AN_PIN);
+#endif
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(co_init(&co, &co_cfg));
-
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  if (co_init(&co, &co_cfg) != CO_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
+  return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_mq7_set_adc_instance(
-  IADC_TypeDef *adc_instance)
+sl_status_t mikroe_mq7_set_adc_instance(mikroe_adc_handle_t handle)
 {
-  if (NULL == adc_instance) {
+  if (NULL == handle) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  co.adc.handle = adc_instance;
+  co.adc.handle = handle;
 
   return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_mq7_read_an_pin_value(uint16_t *data_out)
 {
+  if (NULL == data_out) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
   if (co_read_an_pin_value(&co, data_out) != ADC_SUCCESS) {
     return SL_STATUS_FAIL;
   }
@@ -96,6 +92,10 @@ sl_status_t mikroe_mq7_read_an_pin_value(uint16_t *data_out)
 
 sl_status_t mikroe_mq7_read_an_pin_voltage(float *data_out)
 {
+  if (NULL == data_out) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
   if (co_read_an_pin_voltage(&co, data_out) != ADC_SUCCESS) {
     return SL_STATUS_FAIL;
   }

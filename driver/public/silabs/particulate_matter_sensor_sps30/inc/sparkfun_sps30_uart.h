@@ -33,8 +33,8 @@
 #define SPS30_H
 
 #include "sensirion_common.h"
-#include "sl_iostream.h"
-
+#include "drv_uart.h"
+#include "sl_status.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -70,7 +70,7 @@ typedef struct _sps30_version_information {
  * Initialize sps30 with sl_iostream_t
  *
  */
-sl_status_t sps30_init(sl_iostream_t *uart_handle);
+uint32_t sps30_init(mikroe_uart_handle_t uart_handle);
 
 /**
  * sps_get_driver_version() - Return the driver version

@@ -10,8 +10,16 @@ ui_hints:
 root_path: driver
 requires:
   - name: status
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
   - name: mikroe_peripheral_driver_spi
+    condition: [device_series_1]
+  - name: mikroe_peripheral_driver_spi
+    condition: [device_series_2]
+  - name: mikroe_peripheral_driver_ssi
+    condition: [device_si91x]
   - name: mikroe_peripheral_driver_adc
 config_file:
   - path: public/mikroe/dcmotor26_tb9053ftg/config/brd2703a/mikroe_dcmotor26_config.h
@@ -23,9 +31,12 @@ config_file:
   - path: public/mikroe/dcmotor26_tb9053ftg/config/brd4314a/mikroe_dcmotor26_config.h
     file_id: driver_config_dcmotor26
     condition: [brd4314a]
+  - path: public/mikroe/dcmotor26_tb9053ftg/config/brd4338a/mikroe_dcmotor26_config.h
+    file_id: driver_config_dcmotor26
+    condition: [brd4338a]
   - path: public/mikroe/dcmotor26_tb9053ftg/config/other/mikroe_dcmotor26_config.h
     file_id: driver_config_dcmotor26
-    unless: [brd4314a, brd4108a, brd2703a]
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
 template_contribution:
   - name: component_catalog
     value: dcmotor26_tb9053ftg

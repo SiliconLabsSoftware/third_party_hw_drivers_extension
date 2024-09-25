@@ -2,7 +2,7 @@
 
 ## Summary ##
 
-This project aims to show the hardware driver that is used to interface with the heart rate sensor via APIs of GSDK.
+This project aims to show the hardware driver that is used to interface with the heart rate sensor with the Silicon Labs Platform.
 
 Heart rate 4 click carries the MAX30101 high-sensitivity pulse oximeter and heart-rate sensor from Analog Devices. The MAX30101 is a pulse oximeter and heart rate sensor that uses a combination of red and infrared LEDs and a photodetector to measure the oxygen saturation of blood and the heart rate of a person. The sensor is non-invasive, and it can be placed on the fingertip, earlobe, or other parts of the body to measure the heart rate and oxygen saturation. The sensor provides a high level of accuracy, and it can be used in a wide range of applications such as medical monitoring, sports and fitness tracking, and sleep analysis. The MAX30101 sensor communicates with other devices using I2C interface and it is also low power consumption making it suitable for portable devices and wearables.
 
@@ -10,15 +10,27 @@ Heart rate 4 click carries the MAX30101 high-sensitivity pulse oximeter and hear
 
 - [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview).
 
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
 - [Heart Rate 4 Click](https://www.mikroe.com/heart-rate-4-click).
 
 ## Hardware Connection ##
 
-The Heart Rate 4 Click board support MikroBus, so it can connect easily to EFR32xG24 Explorer Kit's MikroBus header. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+- If the Explorer Kit is used:
 
-The hardware connection is shown in the image below:
+  The Heart Rate 4 Click board supports MikroBus, so it can connect easily to the header of the Explorer Kit. During the assembly process, make sure that the 45-degree corner of the Click board matches the 45-degree white line of the Silicon Labs Explorer Kit.
 
-![board](image/hardware_connection.png "Hardware connection")
+  The hardware connection is shown in the image below:
+
+  ![board](image/hardware_connection.png "Hardware connection")
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description | BRD4338A GPIO  | BRD4002 EXP Header | Heart Rate 4 Click |
+  | ----------- | -------------  | ------------------ | ------------------ |
+  | INT         | GPIO_46        | P24                | INT                |
+  | SDA         | ULP_GPIO_6     | EXP_16             | SDA                |
+  | SCL         | ULP_GPIO_7     | EXP_15             | SCL                |
 
 ## Setup ##
 
@@ -26,16 +38,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter max30101
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *max30101*
 
 2. Click **Create** button on the **Third Party Hardware Drivers - MAX30101 - Heart Rate 4 Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_heartrate4_max30101/app.c` into the project root folder (overwriting the existing file).
 
@@ -47,20 +60,27 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
-        - **[Platform] → [Driver] → [GPIOINT]**
-        - **[Services] → [IO Stream] → [IO Stream: USART]** → default instance name: vcom
-        - **[Services] → [Timers] → [Sleep Timer]**
-        - **[Application] → [Utility] → [Log]**
-        - **[Third Party Hardware Drivers] → [Sensors] → [MAX30101 - Heart Rate 4 Click (Mikroe)]** -> use default configuration.
+      **If the Explorer Kit is used:**
+
+        - [Platform] → [Driver] → [GPIOINT]
+        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
+        - [Services] → [Timers] → [Sleep Timer]
+        - [Application] → [Utility] → [Log]
+        - [Third Party Hardware Drivers] → [Sensors] → [MAX30101 - Heart Rate 4 Click (Mikroe)] -> use default configuration.
         ![config](image/default_config.png)
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+        - [Third Party Hardware Drivers] → [Sensors] → [MAX30101 - Heart Rate 4 Click (Mikroe)] -> use default configuration.
 
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "MAX30101 - Heart Rate 4 Click (Mikroe)" component.
+- Third-party Drivers Extension extension must be enabled for the project to install "MAX30101 - Heart Rate 4 Click (Mikroe)" component.
 
 ## How It Works ##
 

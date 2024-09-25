@@ -1,31 +1,33 @@
-# AMG8833 Grid-EYE Infrared Array Breakout (Sparkfun) #
+# AMG8833 - Grid-EYE Infrared Array Breakout (Sparkfun) #
 
 ## Summary ##
 
 This project shows the implementation of the [Panasonic amg88xx infrared array](https://industry.panasonic.eu/components/sensors/industrial-sensors/grid-eye/amg88xx-high-performance-type/amg8833-amg8833) driver using the [EFR32xG24 Dev Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-dev-kit?tab=overview) and the [SparkFun Grid-EYE AMG8833 infrared array](https://www.sparkfun.com/products/14607). The driver includes every known functionality of the amg88xx device, such as sensor readings, power settings, interrupt setup, and more.
 
 The Grid-EYE from Panasonic is an 8x8 thermopile array. This means you have a square array of 64 pixels each capable of independent temperature detection. It’s like having thermal camera (or Predator’s vision), just in really low resolution. It's part of SparkFun's Qwiic system, so it is easier to connect to get your low-resolution infrared image.
+
 ## Required Hardware ##
 
 - [EFR32xG24 Dev Kit (BRD2601B)](https://www.silabs.com/development-tools/wireless/efr32xg24-dev-kit?tab=overview)
+
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+
 - [SparkFun Grid-EYE Infrared Array Breakout - AMG8833 (Qwiic)](https://www.sparkfun.com/products/14607)
-
-**NOTE:**
-Tested boards for working with this example:
-
-| Board ID | Description  |
-| ---------------------- | ------ |
-| BRD2704A | [SparkFun Thing Plus Matter - MGM240P - BRD2704A](https://www.sparkfun.com/products/20270) |
-| BRD2601B | [EFR32xG24 Dev Kit - xG24-DK2601B](https://www.silabs.com/development-tools/wireless/efr32xg24-dev-kit?tab=overview)   |
-| BRD2703A | [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)    |
-| BRD4108A | [BG22 Bluetooth SoC Explorer Kit - BG22-EK4108A](https://www.silabs.com/development-tools/wireless/bluetooth/bg22-explorer-kit?tab=overview)    |
-| BRD4314A | [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)    |
 
 ## Connections Required ##
 
-The breakout board is connected to the dev kit with a Qwiic connector
+- If the EFR32xG24 Dev Kit is used:
 
-![Dev kit connection diagram](image/dev_kit.jpg)
+    The breakout board is connected to the dev kit with a Qwiic connector
+
+    ![Dev kit connection diagram](image/dev_kit.jpg)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | Grid-EYE Infrared Array Breakout |
+  | -------------| ------------- | ------------------ | ---------------------------- |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                          |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                          |
 
 ## Setup ##
 
@@ -33,30 +35,61 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2601B to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter "amg88xx".
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *amg88xx*.
 
-2. Click **Create** button on the **Third Party Hardware Drivers - AMG88XX - Grid-EYE Infrared Array Breakout (Sparkfun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+2. Click Create button on the project **Third Party Hardware Drivers - AMG88XX - Grid-EYE Infrared Array Breakout (Sparkfun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
+
+    ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" project for the EFR32xG24 Dev Kit using SimplicityStudio 5. Use the default project settings. Be sure to connect and select the EFR32xG24 Dev Kit from the "Debug Adapters" on the left before creating a project.
+1. Create an "Empty C Project" for the your board using Simplicity Studio v5. Use the default project settings.
 
-2. Copy the files `app/example/sparkfun_ir_array_amg88xx/app.c`, `app/example/sparkfun_ir_array_amg88xx/app_cli_command_table.c`, `app/example/sparkfun_ir_array_amg88xx/app_ir_array_cli_cmds.c` into the project root folder (overwriting the existing file).
+2. Copy the following files into the project root folder (overwriting the existing file):
+
+    - `app/example/sparkfun_ir_array_amg88xx/app.c`
+    - `app/example/sparkfun_ir_array_amg88xx/app_cli_command_table.c`
+    - `app/example/sparkfun_ir_array_amg88xx/app_ir_array_cli_cmds.c`
 
 3. Install software components in the .slcp
 
-    - **[Services] → [IO Stream] → [IO Stream: USART]** → default instance name: vcom
-    - **[Services] → [Command Line interface] → [CLI Instance(s)]** → new instance name: vcom
-    - **[Third Party Hardware Drivers] → [Sensors] → [AMG88XX - Grid-EYE Infrared Array Breakout (Sparkfun)]** → use default configuration
+   - Open the .slcp file in the project.
 
-4. Save the files, build and ready to flash or debug.
+   - Select the SOFTWARE COMPONENTS tab.
+
+   - Install the following components:
+
+      **If the EFR32xG24 Dev Kit is used:**
+
+        - **[Services] → [IO Stream] → [Driver] → [IO Stream: USART]** → default instance name: vcom
+        - **[Services] → [IO Stream] → [IO Stream: Retarget STDIO]**
+        - **[Services] → [Command Line interface] → [CLI Instance(s)]** → new instance name: vcom
+        - **[Platform] → [Driver] → [I2C] → [I2CSPM]** → new instance name: qwiic
+        - **[Third Party Hardware Drivers] → [Sensors] → [AMG88XX - Grid-EYE Infrared Array Breakout (Sparkfun)]** → use default configuration
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+        - **[Platform] → [Utilities] → [Atomic Operations Library]**
+        - **[Services] → [IO Stream] → [Driver] → [IO Stream: Si91x UART]** → default instance name: vcom
+        - **[Services] → [IO Stream] → [IO Stream: Retarget STDIO]**
+        - **[Services] → [Command Line interface] → [CLI Instance(s)]** → new instance name: vcom
+        - **[WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C]** → new instance name: i2c2
+        - **[WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [IO Stream Si91x]**
+        - **[Third Party Hardware Drivers] → [Sensors] → [AMG88XX - Grid-EYE Infrared Array Breakout (Sparkfun)]** → use default configuration
+
+4. Build and flash the project to your device.
 
 5. Launch a terminal or console, open the communication to your device.
 
 6. The device communicates over CLI. If you type help, you will see a description how to control the device.
+
+**Note:**
+
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+
+- Third-party Drivers Extension must be enabled for the project to install **AMG88XX - Grid-EYE Infrared Array Breakout (Sparkfun)** component.
 
 ## How It Works ##
 

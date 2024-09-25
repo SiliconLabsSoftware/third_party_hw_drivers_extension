@@ -1,0 +1,66 @@
+id: mikroe_eink_display
+package: third_party_hw_drivers
+label: E-Paper Display - eINK Click (Mikroe)
+description: >
+  Driver for the Mikroe eINK Click with the E-Paper display.
+category: Display & LED
+quality: evaluation
+ui_hints:
+  visibility: basic
+root_path: driver
+requires:
+  - name: status
+  - name: udelay
+    condition: [device_series_1]
+  - name: udelay
+    condition: [device_series_2]
+  - name: mikroe_peripheral_driver_spi
+  - name: mikroe_peripheral_driver_digital_io
+provides:
+  - name: oled_display
+config_file:
+  - path: public/mikroe/eink_display/config/brd2703a/mikroe_eink_display_config.h
+    file_id: mikroe_eink_display_config
+    condition: [brd2703a]
+  - path: public/mikroe/eink_display/config/brd4108a/mikroe_eink_display_config.h
+    file_id: mikroe_eink_display_config
+    condition: [brd4108a]
+  - path: public/mikroe/eink_display/config/brd4182a/mikroe_eink_display_config.h
+    file_id: mikroe_eink_display_config
+    condition: [brd4182a]
+  - path: public/mikroe/eink_display/config/brd4314a/mikroe_eink_display_config.h
+    file_id: mikroe_eink_display_config
+    condition: [brd4314a]
+  - path: public/mikroe/eink_display/config/brd4338a/mikroe_eink_display_config.h
+    file_id: mikroe_eink_display_config
+    condition: [brd4338a]
+  - path: public/mikroe/eink_display/config/other/mikroe_eink_display_config.h
+    file_id: mikroe_eink_display_config
+    unless: [brd4314a, brd4108a, brd2703a, brd4182a, brd4338a]
+
+template_contribution:
+  - name: component_catalog
+    value: mikroe_epaper_display_154_inch
+include:
+  - path: inc
+    file_list:
+      - path: third_party_hw_drivers_helpers.h
+  - path: thirdparty/mikrosdk_click_v2/clicks/eink154inch/lib_eink154inch/include
+    file_list:
+      - path: eink154inch.h
+  - path: thirdparty/mikrosdk_click_v2/clicks/eink213inch/lib_eink213inch/include
+    file_list:
+      - path: eink213inch.h
+  - path: thirdparty/mikrosdk_click_v2/clicks/eink290inch/lib_eink290inch/include
+    file_list:
+      - path: eink290inch.h
+  - path: public/mikroe/eink_display/inc
+    file_list:
+      - path: mikroe_eink_display.h
+      - path: oled_display.h
+source:
+  - path: thirdparty/mikrosdk_click_v2/clicks/eink154inch/lib_eink154inch/src/eink154inch.c
+  - path: thirdparty/mikrosdk_click_v2/clicks/eink213inch/lib_eink213inch/src/eink213inch.c
+  - path: thirdparty/mikrosdk_click_v2/clicks/eink290inch/lib_eink290inch/src/eink290inch.c
+  - path: public/mikroe/eink_display/src/mikroe_eink_display.c
+  - path: public/mikroe/eink_display/src/oled_display.c

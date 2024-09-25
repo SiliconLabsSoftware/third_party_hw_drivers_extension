@@ -55,6 +55,8 @@
 //                       Local Variables
 // -----------------------------------------------------------------------------
 
+static i2c_master_t rgb_led;
+
 static uint8_t device_list[] = {
 #if DISPLAY_1_I2C_ADDRESS != 0
   DISPLAY_1_I2C_ADDRESS,
@@ -236,8 +238,9 @@ static sl_status_t adafruit_is31fl3741_write_data(uint8_t *offset)
 /**************************************************************************//**
  *  Initialize the RGB LED IS31FL3741.
  *****************************************************************************/
-sl_status_t adafruit_is31fl3741_init(sl_i2cspm_t *i2cspm)
+sl_status_t adafruit_is31fl3741_init(mikroe_i2c_handle_t i2cspm)
 {
+  i2c_master_config_t rgb_led_config;
   sl_status_t ret = SL_STATUS_OK;
 
   if (i2cspm == NULL) {
@@ -247,18 +250,34 @@ sl_status_t adafruit_is31fl3741_init(sl_i2cspm_t *i2cspm)
     return SL_STATUS_INITIALIZATION;
   }
 
-  adafruit_is31fl3741_i2c_set_instance(i2cspm);
+  // Configure default i2csmp instance
+  rgb_led.handle = i2cspm;
 
-  IS3741_order order = IS3741_BGR;
-  red_offset = (order >> 4) & 3;
-  green_offset = (order >> 2) & 3;
-  blue_offset = order & 3;
+  i2c_master_configure_default(&rgb_led_config);
+  rgb_led_config.addr = IS31FL3741_DEFAULT_I2C_ADDR;
 
+#if (ADAFRUIT_IS31FL3741_I2C_UC == 1)
+  rgb_led_config.speed = ADAFRUIT_IS31FL3741_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&rgb_led, &rgb_led_config) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
+  }
+
+  i2c_master_set_speed(&rgb_led, rgb_led_config.speed);
+  i2c_master_set_timeout(&rgb_led, 0);
+
+  adafruit_is31fl3741_i2c_set_instance(&rgb_led);
   ret |= adafruit_is31fl3741_reset();
   ret |= adafruit_is31fl3741_set_global_current(0x05);
   ret |= adafruit_is31fl3741_set_global_led_scaling(0x10);
 
   initialized = true;
+
+  IS3741_order order = IS3741_BGR;
+  red_offset = (order >> 4) & 3;
+  green_offset = (order >> 2) & 3;
+  blue_offset = order & 3;
 
   if (ret != SL_STATUS_OK) {
     return SL_STATUS_FAIL;

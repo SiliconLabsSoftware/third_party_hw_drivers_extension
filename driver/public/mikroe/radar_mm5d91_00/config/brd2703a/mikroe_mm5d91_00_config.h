@@ -26,10 +26,20 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  *
+ *******************************************************************************
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #ifndef MM5D91_00_CONFIG_H
 #define MM5D91_00_CONFIG_H
+
+#include "em_gpio.h"
 
 #ifdef __cplusplus
 extern "C"

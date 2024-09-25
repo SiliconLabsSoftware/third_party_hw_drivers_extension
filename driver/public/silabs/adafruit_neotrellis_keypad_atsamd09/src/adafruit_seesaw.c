@@ -1,119 +1,114 @@
-#include "sl_udelay.h"
+/***************************************************************************//**
+ * @file adafruit_seesaw.c
+ * @brief adafruit_seesaw source file for Adafruit NeoTrellis 4x4 keypad.
+ * @version 1.0.0
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ * # Evaluation Quality
+ * This code has been minimally tested to ensure that it builds and is suitable
+ * as a demonstration for evaluation purposes only. This code will be maintained
+ * at the sole discretion of Silicon Labs.
+ ******************************************************************************/
+#include "sl_sleeptimer.h"
 #include "adafruit_seesaw.h"
+#include "stdlib.h"
 
-sl_status_t adafruit_seesaw_i2c_init(seesaw_t seesaw_dev)
-{
-  /// Variables and structures for transfer
-  uint8_t data = 0;
-  I2C_TransferSeq_TypeDef i2cTransfer;
-  /// if the parameter is over 7 bit return error code
-  if (seesaw_dev.i2c_addr > 0x4D) {
-    return SL_STATUS_FAIL;
-  }
-
-  /// Initializing I2C transfer It supports 7-bit I2C follower address,
-  /// the value of the "address" here should be left shifted by one.
-  /// Use flag master write
-
-  i2cTransfer.addr = seesaw_dev.i2c_addr << 1;
-  i2cTransfer.flags = I2C_FLAG_WRITE_READ;
-
-  /// Transmit buffer, no data to send
-  i2cTransfer.buf[0].data = 0;
-  i2cTransfer.buf[0].len = 0;
-
-  /// Receive buffer, two bytes to receive
-  i2cTransfer.buf[1].data = &data;
-  i2cTransfer.buf[1].len = 1;
-
-  return I2CSPM_Transfer(seesaw_dev.i2c_instance, &i2cTransfer);
-}
-
-sl_status_t adafruit_seesaw_i2c_register_read(seesaw_t seesaw_dev,
+sl_status_t adafruit_seesaw_i2c_register_read(seesaw_t *seesaw_dev,
                                               uint8_t reg_high,
                                               uint8_t reg_low,
                                               uint8_t *pdata,
                                               uint8_t len,
-                                              uint16_t delay)
+                                              uint16_t delay_ms)
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef result;
   uint8_t pos = 0;
   uint8_t i2c_write_data[2];
+  uint8_t read_now;
 
   while (pos < len) {
-    uint8_t read_now;
-
     if ((pos + 32) < len) {
       read_now = 32;
     } else {
       read_now = len;
     }
 
-    seq.addr = seesaw_dev.i2c_addr << 1;
-    seq.flags = I2C_FLAG_WRITE;
-
     i2c_write_data[0] = reg_high;
     i2c_write_data[1] = reg_low;
 
-    seq.buf[0].data = i2c_write_data;
-    seq.buf[0].len = 2;
-
-    result = I2CSPM_Transfer(seesaw_dev.i2c_instance, &seq);
-    if (result != i2cTransferDone) {
+    if (I2C_MASTER_SUCCESS != i2c_master_write(&seesaw_dev->i2c_instance,
+                                               i2c_write_data,
+                                               2)) {
       return SL_STATUS_TRANSMIT;
     }
 
-    sl_udelay_wait(delay);
+    sl_sleeptimer_delay_millisecond(delay_ms);
 
-    seq.flags = I2C_FLAG_READ;
+    if (I2C_MASTER_SUCCESS != i2c_master_read(&seesaw_dev->i2c_instance,
+                                              pdata,
+                                              read_now)) {
+      return SL_STATUS_TRANSMIT;
+    }
 
-    seq.buf[0].data = pdata;
-    seq.buf[0].len = read_now;
-
-    result = I2CSPM_Transfer(seesaw_dev.i2c_instance, &seq);
     pos += read_now;
     pdata += pos;
-
-    if (result != i2cTransferDone) {
-      return SL_STATUS_TRANSMIT;
-    }
   }
 
   return SL_STATUS_OK;
 }
 
-sl_status_t adafruit_seesaw_i2c_register_write(seesaw_t seesaw_dev,
+sl_status_t adafruit_seesaw_i2c_register_write(seesaw_t *seesaw_dev,
                                                uint8_t reg_high,
                                                uint8_t reg_low,
                                                uint8_t *pdata,
                                                uint16_t len)
 {
-  I2C_TransferSeq_TypeDef seq;
-  I2C_TransferReturn_TypeDef result;
-  uint8_t i2_reg_addr[2];
+  uint8_t data_buffer[len + 2];
+  data_buffer[0] = reg_high;
+  data_buffer[1] = reg_low;
 
-  seq.addr = seesaw_dev.i2c_addr << 1;
-  seq.flags = I2C_FLAG_WRITE_WRITE;
+  if ((NULL != pdata) && (len > 0)) {
+    for (uint8_t i = 0; i < len; i++)
+    {
+      data_buffer[i + 2] = pdata[i];
+    }
+  }
 
-  i2_reg_addr[0] = reg_high;
-  i2_reg_addr[1] = reg_low;
+  err_t stt = i2c_master_write(&seesaw_dev->i2c_instance,
+                               data_buffer,
+                               len + 2
+                               );
 
-  seq.buf[0].data = i2_reg_addr;
-  seq.buf[0].len = 2;
-
-  seq.buf[1].data = pdata;
-  seq.buf[1].len = len;
-
-  result = I2CSPM_Transfer(seesaw_dev.i2c_instance, &seq);
-  if (result != i2cTransferDone) {
+  if (I2C_MASTER_SUCCESS != stt) {
     return SL_STATUS_TRANSMIT;
   }
 
   return SL_STATUS_OK;
 }
 
-int8_t adafruit_seesaw_get_keypad_count(seesaw_t seesaw_dev)
+int8_t adafruit_seesaw_get_keypad_count(seesaw_t *seesaw_dev)
 {
   sl_status_t sc;
   int8_t count = 0;
@@ -122,7 +117,7 @@ int8_t adafruit_seesaw_get_keypad_count(seesaw_t seesaw_dev)
                                          SEESAW_KEYPAD_BASE,
                                          SEESAW_KEYPAD_COUNT,
                                          (uint8_t *)&count,
-                                         1, 500);
+                                         1, 1);
 
   if (sc != SL_STATUS_OK) {
     return -1;
@@ -139,7 +134,7 @@ int8_t adafruit_seesaw_get_keypad_count(seesaw_t seesaw_dev)
  *  @param		count the number of events to read
  *  @returns    True on I2C read success
  *****************************************************************************/
-sl_status_t adafruit_seesaw_read_keypad(seesaw_t seesaw_dev,
+sl_status_t adafruit_seesaw_read_keypad(seesaw_t *seesaw_dev,
                                         keyEventRaw *buf,
                                         uint8_t count)
 {
@@ -148,5 +143,5 @@ sl_status_t adafruit_seesaw_read_keypad(seesaw_t seesaw_dev,
                                            SEESAW_KEYPAD_FIFO,
                                            (uint8_t *)buf,
                                            count,
-                                           1000);
+                                           1);
 }

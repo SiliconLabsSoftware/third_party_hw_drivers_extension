@@ -1,0 +1,21 @@
+id: mipi_dbi_spi
+package: third_party_hw_drivers
+label: MIPI Display Bus Interface (SPI - 4Wire)
+description: >
+  Support for MIPI DBI compliant display controllers.
+category: Services
+quality: evaluation
+root_path: driver
+requires:
+  - name: mipi_dbi_spi_gecko
+    condition: 
+      - device # Enable for gecko device
+  - name: mipi_dbi_spi_si91x
+    condition: 
+      - device_si91x
+provides:
+  - name: mipi_dbi_spi
+    allow_multiple: false
+template_contribution:
+  - name: component_catalog
+    value: mipi_dbi_spi

@@ -40,17 +40,9 @@
 #ifndef MIKROE_MIC2_H_
 #define MIKROE_MIC2_H_
 
-#include "em_cmu.h"
-#include "sl_i2cspm.h"
+#include "drv_i2c_master.h"
+#include "drv_analog_in.h"
 #include "sl_status.h"
-
-#if defined(_SILICON_LABS_32B_SERIES_1)
-#include "em_adc.h"
-typedef ADC_TypeDef adc_t;
-#elif defined(_SILICON_LABS_32B_SERIES_2)
-#include "em_iadc.h"
-typedef IADC_TypeDef adc_t;
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,37 +54,28 @@ extern "C" {
 typedef uint16_t mikroe_mic2_data_t;
 
 /**
- * @brief Config Object Initialization function.
- *
- * @description This function initializes click configuration structure to init
- *   state.
- * @note All used pins will be set to unconnected state.
- */
-void mikroe_mic2_cfg_setup(void);
-
-/**
  * @brief Set I2c instance function.
  *
- * @param i2cspm_instance I2C handle instance.
+ * @param i2c_instance I2C handle instance.
  *
  * @return status of function.
  * @description This function initializes all necessary pins and peripherals
  *   used for this click.
  */
-sl_status_t mikroe_mic2_set_i2cspm_instance(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_mic2_set_i2cspm_instance(mikroe_i2c_handle_t i2c_instance);
 
 /**
  * @brief Initialization function.
  *
- * @param i2cspm_instance I2C handle instance
+ * @param i2c_instance I2C handle instance
  * @param adc ADC or IADC handle
  * @return status of function.
  *
  * @description This function initializes all necessary pins and peripherals
  *   used for this click.
  */
-sl_status_t mikroe_mic2_init(sl_i2cspm_t *i2cspm_instance,
-                             adc_t *adc);
+sl_status_t mikroe_mic2_init(mikroe_i2c_handle_t i2c_instance,
+                             mikroe_adc_handle_t adc);
 
 /**
  * @brief Set potenciometer value.
@@ -117,4 +100,4 @@ sl_status_t mikroe_mic2_generic_read(mikroe_mic2_data_t *data);
 }
 #endif
 
-#endif /* MIKROE_MIC2_H_ */
+#endif // MIKROE_MIC2_H_

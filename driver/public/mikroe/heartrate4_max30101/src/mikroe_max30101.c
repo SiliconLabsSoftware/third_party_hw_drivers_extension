@@ -40,37 +40,38 @@
 #include "heartrate4.h"
 #include "mikroe_max30101.h"
 #include "mikroe_max30101_config.h"
-#include "third_party_hw_drivers_helpers.h"
 
 static heartrate4_t heartrate4;
 static heartrate4_cfg_t heartrate4_cfg;
 
-sl_status_t mikroe_max30101_init(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_max30101_init(mikroe_i2c_handle_t i2c_instance)
 {
-  if (i2cspm_instance == NULL) {
+  if (i2c_instance == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
 
   // Configure default i2csmp instance
-  heartrate4.i2c.handle = i2cspm_instance;
+  heartrate4.i2c.handle = i2c_instance;
+
+  // Call basic setup functions
+  heartrate4_cfg_setup(&heartrate4_cfg);
 
 #if defined(MAX30101_INT_PORT) && defined(MAX30101_INT_PIN)
   heartrate4_cfg.int1 = hal_gpio_pin_name(MAX30101_INT_PORT,
                                           MAX30101_INT_PIN);
 #endif
 
-  // Call basic setup functions
-  heartrate4_cfg_setup(&heartrate4_cfg);
-
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(heartrate4_init(&heartrate4,
-                                                  &heartrate4_cfg));
+  if (heartrate4_init(&heartrate4, &heartrate4_cfg) != HEARTRATE4_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
   mikroe_max30101_default_cfg();
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(mikroe_max30101_present());
+  if (mikroe_max30101_present() != HEARTRATE4_OK) {
+    return SL_STATUS_NOT_AVAILABLE;
+  }
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
@@ -88,13 +89,13 @@ sl_status_t mikroe_max30101_present(void)
   return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_max30101_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance)
+sl_status_t mikroe_max30101_set_i2c_instance(mikroe_i2c_handle_t i2c_instance)
 {
-  if (NULL == i2cspm_instance) {
+  if (NULL == i2c_instance) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  heartrate4.i2c.handle = i2cspm_instance;
+  heartrate4.i2c.handle = i2c_instance;
 
   return SL_STATUS_OK;
 }

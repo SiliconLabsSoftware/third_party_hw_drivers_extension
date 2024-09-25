@@ -1,5 +1,44 @@
+/***************************************************************************//**
+ * @file adafruit_neotrellis.h
+ * @brief adafruit_neotrellis header file for Adafruit NeoTrellis 4x4 keypad.
+ * @version 1.0.0
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ *******************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ * # Evaluation Quality
+ * This code has been minimally tested to ensure that it builds and is suitable
+ * as a demonstration for evaluation purposes only. This code will be maintained
+ * at the sole discretion of Silicon Labs.
+ ******************************************************************************/
 #ifndef _ADAFRUIT_NEOTRELLIS_H_
 #define _ADAFRUIT_NEOTRELLIS_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include "adafruit_seesaw.h"
@@ -51,7 +90,7 @@ typedef struct neotrellis_t {
  */
 
 /**************************************************************************/
-sl_status_t adafruit_neotrellis_init(sl_i2cspm_t *i2cspm,
+sl_status_t adafruit_neotrellis_init(mikroe_i2c_handle_t i2cspm,
                                      uint8_t *trellis_addr,
                                      uint8_t addr_list_len);
 
@@ -222,4 +261,8 @@ void adafruit_neotrellis_show();
 
 void adafruit_neotrellis_read();
 
-#endif /* _ADAFRUIT_NEOTRELLIS_H_ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif // _ADAFRUIT_NEOTRELLIS_H_

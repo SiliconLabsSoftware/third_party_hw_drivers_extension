@@ -4,7 +4,7 @@
  * @version 1.0.0
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2024 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -28,21 +28,18 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- *
- * EVALUATION QUALITY
- * This code has been minimally tested to ensure that it builds with the
- * specified dependency versions and is suitable as a demonstration for
- * evaluation purposes only.
- * This code will be maintained at the sole discretion of Silicon Labs.
- *
+ * # Experimental Quality
+ * This code has been minimally tested to ensure that it builds and is suitable
+ * as a demonstration for evaluation purposes only. This code will be maintained
+ * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 
 #ifndef MIKROE_MAX6969_H_
 #define MIKROE_MAX6969_H_
 
 #include "sl_status.h"
-#include "spidrv.h"
-#include "sl_pwm.h"
+#include "drv_spi_master.h"
+#include "drv_pwm.h"
 #include "utm7segr.h"
 
 #ifdef __cplusplus
@@ -93,6 +90,8 @@ extern "C" {
 #define MIKROE_UTM7SEGR_DISPLAY_ON            0x01
 #define MIKROE_UTM7SEGR_DISPLAY_OFF           0x00
 
+#define MIKROE_UTM7SEGR_PWM_FREQUENCY         (10000)
+
 /** @} (end addtogroup mikroe_buzz2_freq) */
 
 /***************************************************************************//**
@@ -109,8 +108,8 @@ extern "C" {
  *    SL_STATUS_OK Successful initialization.
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_max6969_init(SPIDRV_Handle_t spi_instance,
-                                sl_pwm_instance_t *pwm_instance);
+sl_status_t mikroe_max6969_init(mikroe_spi_handle_t spi_instance,
+                                mikroe_pwm_handle_t pwm_instance);
 
 /***************************************************************************//**
  * @brief
@@ -137,7 +136,7 @@ void mikroe_max6969_set_contrast(uint8_t percent);
  *    SL_STATUS_OK if there are no errors
  *    SL_STATUS_INVALID_PARAMETER if spi_instance is null
  ******************************************************************************/
-sl_status_t mikroe_max6969_set_spi_instance(SPIDRV_Handle_t spi_instance);
+sl_status_t mikroe_max6969_set_spi_instance(mikroe_spi_handle_t spi_instance);
 
 /***************************************************************************//**
  * @brief
@@ -150,7 +149,7 @@ sl_status_t mikroe_max6969_set_spi_instance(SPIDRV_Handle_t spi_instance);
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if pwm_instance is null.
  ******************************************************************************/
-sl_status_t mikroe_max6969_set_pwm_instance(sl_pwm_instance_t *pwm_instance);
+sl_status_t mikroe_max6969_set_pwm_instance(mikroe_pwm_handle_t pwm_instance);
 
 /***************************************************************************//**
  * @brief

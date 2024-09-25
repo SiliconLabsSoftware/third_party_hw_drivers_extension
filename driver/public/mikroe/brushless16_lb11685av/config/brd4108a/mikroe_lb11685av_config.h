@@ -39,29 +39,31 @@
 #ifndef MIKROE_LB11685AV_CONFIG_H_
 #define MIKROE_LB11685AV_CONFIG_H_
 
+#include "em_gpio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> BRUSHLESS_16_RD
-// $[GPIO_BRUSHLESS_16_RD]
-#define BRUSHLESS_16_RD_PORT                   gpioPortB
-#define BRUSHLESS_16_RD_PIN                    3
-// [GPIO_BRUSHLESS_16_RD]$
+// <gpio optional=true> BRUSHLESS16_RD
+// $[GPIO_BRUSHLESS16_RD]
+#define BRUSHLESS16_RD_PORT                   gpioPortB
+#define BRUSHLESS16_RD_PIN                    3
+// [GPIO_BRUSHLESS16_RD]$
 
-// <gpio optional=true> BRUSHLESS_16_FG
-// $[GPIO_BRUSHLESS_16_FG]
-#define BRUSHLESS_16_FG_PORT                   gpioPortB
-#define BRUSHLESS_16_FG_PIN                    4
-// [GPIO_BRUSHLESS_16_FG]$
+// <gpio optional=true> BRUSHLESS16_FG
+// $[GPIO_BRUSHLESS16_FG]
+#define BRUSHLESS16_FG_PORT                   gpioPortB
+#define BRUSHLESS16_FG_PIN                    4
+// [GPIO_BRUSHLESS16_FG]$
 
-// <gpio optional=true> BRUSHLESS_16_EN
-// $[GPIO_BRUSHLESS_16_EN]
-#define BRUSHLESS_16_EN_PORT                   gpioPortC
-#define BRUSHLESS_16_EN_PIN                    3
-// [GPIO_BRUSHLESS_16_EN]$
+// <gpio optional=true> BRUSHLESS16_EN
+// $[GPIO_BRUSHLESS16_EN]
+#define BRUSHLESS16_EN_PORT                   gpioPortC
+#define BRUSHLESS16_EN_PIN                    3
+// [GPIO_BRUSHLESS16_EN]$
 
 // <<< sl:end pin_tool >>>
 
@@ -69,4 +71,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_LB11685AV_CONFIG_H_ */
+#endif // MIKROE_LB11685AV_CONFIG_H_

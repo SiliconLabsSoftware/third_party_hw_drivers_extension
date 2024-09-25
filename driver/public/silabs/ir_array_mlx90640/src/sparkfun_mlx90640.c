@@ -42,14 +42,15 @@
 #include "app_assert.h"
 
 #include "sparkfun_mlx90640.h"
-#include "sparkfun_mlx90640_i2c.h"
 #include "sparkfun_mlx90640_config.h"
 
-#if MLX90640_CONFIG_ENABLE_LOG
-#include "app_log.h"
+#if SPARKFUN_MLX90640_CONFIG_ENABLE_LOG
+#define app_printf(...) printf(__VA_ARGS__)
 #endif
 
 static paramsMLX90640 mlx90640;
+static i2c_master_t mlx90640_i2c;
+
 // -----------------------------------------------------------------------------
 //                    Static Local function declarations
 // -----------------------------------------------------------------------------
@@ -77,6 +78,12 @@ static float get_median(float *values, int n);
 static int is_pixel_bad(uint16_t pixel, paramsMLX90640 *params);
 static int validate_frame_data(uint16_t *frame_data);
 static int validate_aux_data(uint16_t *aux_data);
+static sl_status_t sparkfun_mlx90640_i2c_read(uint16_t startAddress,
+                                              uint16_t nMemAddressRead,
+                                              uint16_t *data);
+static sl_status_t sparkfun_mlx90640_i2c_write(uint16_t writeAddress,
+                                               uint16_t data);
+static sl_status_t sparkfun_mlx90640_i2c_general_reset(void);
 
 // -----------------------------------------------------------------------------
 //                           Function definitions
@@ -85,27 +92,35 @@ static int validate_aux_data(uint16_t *aux_data);
 /***************************************************************************//**
  * Initializes the MLX90640 driver
  ******************************************************************************/
-sl_status_t sparkfun_mlx90640_init(sl_i2cspm_t *i2cspm_instance,
+sl_status_t sparkfun_mlx90640_init(mikroe_i2c_handle_t i2c_instance,
                                    uint8_t i2c_addr)
 {
+  i2c_master_config_t mlx90640_cfg;
   int status;
   uint8_t bad_pixel_count = 0;
   uint16_t eeMLX90640[832];
 
-  if (i2c_addr != SPARKFUN_MLX90640_DEFAULT_I2C_ADDR) {
-    status = sparkfun_mlx90640_set_slave_addr(i2cspm_instance, i2c_addr);
-    if (status == SL_STATUS_NOT_INITIALIZED) {
-      return SL_STATUS_NOT_INITIALIZED;
-    }
+  // Configure default i2csmp instance
+  mlx90640_i2c.handle = i2c_instance;
+
+  i2c_master_configure_default(&mlx90640_cfg);
+  mlx90640_cfg.addr = i2c_addr;
+
+#if (SPARKFUN_MLX90640_I2C_UC == 1)
+  mlx90640_cfg.speed = SPARKFUN_MLX90640_I2C_SPEED_MODE;
+#endif
+
+  if (i2c_master_open(&mlx90640_i2c, &mlx90640_cfg) == I2C_MASTER_ERROR) {
+    return SL_STATUS_INITIALIZATION;
   }
-  status = sparkfun_mlx90640_i2c_init(i2cspm_instance, i2c_addr);
-  app_assert_status(status);
+  i2c_master_set_speed(&mlx90640_i2c, mlx90640_cfg.speed);
+  i2c_master_set_timeout(&mlx90640_i2c, 0);
 
   status = sparkfun_mlx90640_dump_ee(eeMLX90640);
 
-  if (status != 0) {
-#if MLX90640_CONFIG_ENABLE_LOG
-    app_log("\nFailed to load system parameters of MLX90640\n");
+  if (status != SL_STATUS_OK) {
+#if SPARKFUN_MLX90640_CONFIG_ENABLE_LOG
+    app_printf("\nFailed to load system parameters of MLX90640\n");
 #endif
     return SL_STATUS_NOT_INITIALIZED;
   }
@@ -113,8 +128,8 @@ sl_status_t sparkfun_mlx90640_init(sl_i2cspm_t *i2cspm_instance,
   bad_pixel_count = sparkfun_mlx90640_extract_parameters(eeMLX90640, &mlx90640);
 
   if (bad_pixel_count != 0) {
-#if MLX90640_CONFIG_ENABLE_LOG
-    app_log("\nNumber of pixel errors: %d\n", bad_pixel_count);
+#if SPARKFUN_MLX90640_CONFIG_ENABLE_LOG
+    app_printf("\nNumber of pixel errors: %d\n", bad_pixel_count);
 #endif
   }
 
@@ -134,11 +149,11 @@ sl_status_t sparkfun_mlx90640_get_image_array(float *pixel_array)
   float Ta;
   // Read both sub-pages
   for (uint8_t x = 0 ; x < 2 ; x++) {
-    uint16_t mlx90640Frame[834];
+    uint16_t mlx90640Frame[834] = { 0 };
     int status = sparkfun_mlx90640_get_frame_data(mlx90640Frame);
     if (status < 0) {
-#if MLX90640_CONFIG_ENABLE_LOG
-      app_log("GetFrame Error: %d", status);
+#if SPARKFUN_MLX90640_CONFIG_ENABLE_LOG
+      app_printf("GetFrame Error: %d", status);
 #endif
       return SL_STATUS_FAIL;
     }
@@ -160,50 +175,49 @@ sl_status_t sparkfun_mlx90640_get_image_array(float *pixel_array)
 /***************************************************************************//**
  * Changes which I2C bus and slave address does the driver use
  ******************************************************************************/
-sl_status_t sparkfun_mlx90640_change_devices(sl_i2cspm_t *i2cspm_instance,
+sl_status_t sparkfun_mlx90640_change_devices(mikroe_i2c_handle_t i2c_instance,
                                              uint8_t new_addr)
 {
-  sl_status_t status;
-  status = sparkfun_mlx90640_i2c_change_bus_and_address(i2cspm_instance,
-                                                        new_addr);
-  return status;
+  if ((i2c_instance == NULL) || (new_addr == 0x00)) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+
+  mlx90640_i2c.handle = i2c_instance;
+  mlx90640_i2c.config.addr = new_addr;
+
+  return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
  * Change slave address to the value of "new_addr"
  ******************************************************************************/
-sl_status_t sparkfun_mlx90640_set_slave_addr(sl_i2cspm_t *i2cspm_instance,
+sl_status_t sparkfun_mlx90640_set_slave_addr(mikroe_i2c_handle_t i2c_instance,
                                              uint8_t new_addr)
 {
-  if ((i2cspm_instance == NULL) || (new_addr == 0x00)) {
+  if ((i2c_instance == NULL) || (new_addr == 0x00)) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
   sl_status_t status = SL_STATUS_FAIL;
-  uint8_t current_address = 0x00;
   uint16_t temp_address = 0x0000;
-  sparkfun_mlx90640_i2c_init(i2cspm_instance,
-                             SPARKFUN_MLX90640_DEFAULT_I2C_ADDR);
-  sparkfun_mlx90640_i2c_get_current_own_addr(&current_address);
 
   // If currently used i2c address is the same as the new one, then there's no
   // need to change anything
-  if (current_address == new_addr) {
+  if (mlx90640_i2c.config.addr == new_addr) {
     status = SL_STATUS_OK;
   } else {
     status = sparkfun_mlx90640_i2c_read(0x240F, 1, &temp_address);
-    if (status == SL_STATUS_TIMEOUT) {
-      status = sparkfun_mlx90640_i2c_set_own_address(new_addr);
-      app_assert_status(status);
+    if (status == SL_STATUS_TRANSMIT) {
+      mlx90640_i2c.config.addr = new_addr;
       status = sparkfun_mlx90640_i2c_read(0x240F, 1, &temp_address);
       if (status == SL_STATUS_OK) {
-#if MLX90640_CONFIG_ENABLE_LOG
-        app_log("\nCurrent address is 0x%x\n", temp_address & 0xFF);
+#if SPARKFUN_MLX90640_CONFIG_ENABLE_LOG
+        app_printf("\nCurrent address is 0x%x\n", temp_address & 0xFF);
 #endif
         return status;
       } else {
-#if MLX90640_CONFIG_ENABLE_LOG
-        app_log(
+#if SPARKFUN_MLX90640_CONFIG_ENABLE_LOG
+        app_printf(
           "\nUnknown I2C address!\nPlease find out the current address of the device, then change the SPARKFUN_MLX90640_DEFAULT_I2C_ADDR macro to that address!\n");
 #endif
         status = SL_STATUS_FAIL;
@@ -231,16 +245,15 @@ sl_status_t sparkfun_mlx90640_set_slave_addr(sl_i2cspm_t *i2cspm_instance,
         app_assert_status(status);
 
         if ((temp_address & 0xFF) == new_addr) {
-#if MLX90640_CONFIG_ENABLE_LOG
-          app_log("\nAddress change succesful\nPower-reset the device!\n");
+#if SPARKFUN_MLX90640_CONFIG_ENABLE_LOG
+          app_printf("\nAddress change succesful\nPower-reset the device!\n");
 #endif
-          status = SL_STATUS_NOT_INITIALIZED;
         } else {
-#if MLX90640_CONFIG_ENABLE_LOG
-          app_log("\nAddress change failed\n");
+#if SPARKFUN_MLX90640_CONFIG_ENABLE_LOG
+          app_printf("\nAddress change failed\n");
 #endif
-          status = SL_STATUS_NOT_INITIALIZED;
         }
+        status = SL_STATUS_NOT_INITIALIZED;
       }
     }
   }
@@ -921,7 +934,7 @@ sl_status_t sparkfun_mlx90640_get_vdd(uint16_t *frameData,
                                       const paramsMLX90640 *params,
                                       float *vdd)
 {
-  float temp_vdd;
+  float temp_vdd = 0;
   float resolutionCorrection;
   int resolutionRAM;
 
@@ -1756,4 +1769,78 @@ static int is_pixel_bad(uint16_t pixel, paramsMLX90640 *params)
     }
   }
   return 0;
+}
+
+/***************************************************************************//**
+ * Initiates an I2C read of the device
+ ******************************************************************************/
+static sl_status_t sparkfun_mlx90640_i2c_read(uint16_t startAddress,
+                                              uint16_t nMemAddressRead,
+                                              uint16_t *data)
+{
+  uint8_t i2cData[2 * nMemAddressRead];
+  uint16_t counter = 0;
+  uint16_t i = 0;
+  uint16_t *p = data;
+
+  uint8_t cmd[2] = { 0, 0 };
+  cmd[0] = startAddress >> 8;
+  cmd[1] = startAddress & 0x00FF;
+
+  if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&mlx90640_i2c,
+                                                       cmd,
+                                                       2,
+                                                       (uint8_t *)i2cData,
+                                                       2 * nMemAddressRead)) {
+    return SL_STATUS_TRANSMIT;
+  }
+
+  for (counter = 0; counter < nMemAddressRead; counter++) {
+    i = counter << 1;
+    *p++ = (uint16_t)i2cData[i] * 256 + (uint16_t)i2cData[i + 1];
+  }
+
+  return SL_STATUS_OK;
+}
+
+/***************************************************************************//**
+ * Initiates an I2C write to the device
+ ******************************************************************************/
+static sl_status_t sparkfun_mlx90640_i2c_write(uint16_t writeAddress,
+                                               uint16_t data)
+{
+  uint8_t cmd[4] = { 0, 0, 0, 0 };
+  static uint16_t dataCheck;
+
+  cmd[0] = writeAddress >> 8;
+  cmd[1] = writeAddress & 0x00FF;
+  cmd[2] = data >> 8;
+  cmd[3] = data & 0x00FF;
+
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&mlx90640_i2c, cmd, 4)) {
+    return SL_STATUS_TRANSMIT;
+  }
+
+  if (SL_STATUS_OK != sparkfun_mlx90640_i2c_read(writeAddress, 1, &dataCheck)) {
+    return SL_STATUS_FAIL;
+  }
+
+  if (dataCheck != data) {
+    return SL_STATUS_FAIL;
+  }
+
+  return SL_STATUS_OK;
+}
+
+/***************************************************************************//**
+ * Issues an I2C general reset
+ ******************************************************************************/
+static sl_status_t sparkfun_mlx90640_i2c_general_reset(void)
+{
+  uint8_t cmd[2] = { 0x00, 0x06 };
+
+  if (I2C_MASTER_SUCCESS != i2c_master_write(&mlx90640_i2c, cmd, 2)) {
+    return SL_STATUS_TRANSMIT;
+  }
+  return SL_STATUS_OK;
 }

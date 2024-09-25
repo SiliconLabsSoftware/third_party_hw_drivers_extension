@@ -40,6 +40,8 @@
 #ifndef MIKROE_MAX30101_CONFIG_H_
 #define MIKROE_MAX30101_CONFIG_H_
 
+#include "em_gpio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

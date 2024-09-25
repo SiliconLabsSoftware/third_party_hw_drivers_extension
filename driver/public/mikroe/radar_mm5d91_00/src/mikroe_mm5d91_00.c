@@ -40,20 +40,23 @@
 #include "mikroe_mm5d91_00.h"
 #include "mikroe_mm5d91_00_config.h"
 
-sl_status_t mikroe_radar_usart_init(mikroe_radar_t *ctx,
-                                    sl_iostream_uart_t *stream,
-                                    uint32_t baud_rate)
-{
-  radar_cfg_t cfg;
-  err_t retval;
+static mikroe_radar_t mikroe_radar;
+static radar_cfg_t cfg;
+static bool initialized = false;
 
-  if (!ctx || !stream) {
-    return SL_STATUS_INVALID_PARAMETER;
+sl_status_t mikroe_radar_init(mikroe_uart_handle_t handle)
+{
+  if (handle == NULL) {
+    return SL_STATUS_NULL_POINTER;
   }
 
+  mikroe_radar.uart.handle = handle;
+
   radar_cfg_setup(&cfg);
+#if defined(CONFIG_MM5D91_00_RST_PORT) && defined(CONFIG_MM5D91_00_RST_PIN)
   cfg.rst = hal_gpio_pin_name(CONFIG_MM5D91_00_RST_PORT,
                               CONFIG_MM5D91_00_RST_PIN);
+#endif
 #if defined(CONFIG_MM5D91_00_GPIO0_PORT) && defined(CONFIG_MM5D91_00_GPIO0_PIN)
   cfg.gp0 = hal_gpio_pin_name(CONFIG_MM5D91_00_GPIO0_PORT,
                               CONFIG_MM5D91_00_GPIO0_PIN);
@@ -66,161 +69,134 @@ sl_status_t mikroe_radar_usart_init(mikroe_radar_t *ctx,
   cfg.gp2 = hal_gpio_pin_name(CONFIG_MM5D91_00_GPIO2_PORT,
                               CONFIG_MM5D91_00_GPIO2_PIN);
 #endif
-  if (baud_rate > 0) {
-    cfg.baud_rate = baud_rate;
+
+  if (radar_init(&mikroe_radar, &cfg) != RADAR_OK) {
+    return SL_STATUS_INITIALIZATION;
   }
 
-  ctx->uart.handle = stream;
-  retval = radar_init(ctx, &cfg);
-  if (UART_SUCCESS == retval) {
-    retval = radar_default_cfg(ctx);
+  if (radar_default_cfg(&mikroe_radar) != RADAR_OK) {
+    return SL_STATUS_INITIALIZATION;
   }
-  return RADAR_OK == retval ? SL_STATUS_OK : SL_STATUS_FAIL;
+
+  initialized = true;
+  return SL_STATUS_OK;
 }
 
-int32_t mikroe_radar_generic_write(mikroe_radar_t *ctx,
-                                   uint8_t *data_buf,
+sl_status_t mikroe_radar_set_uart_instance(mikroe_uart_handle_t handle)
+{
+  if (!initialized) {
+    return SL_STATUS_NOT_INITIALIZED;
+  }
+
+  if (NULL == handle) {
+    return SL_STATUS_NULL_POINTER;
+  }
+
+  mikroe_radar.uart.handle = handle;
+
+  return SL_STATUS_OK;
+}
+
+int32_t mikroe_radar_generic_write(uint8_t *data_buf,
                                    uint16_t len)
 {
-  if (!ctx || !data_buf || (len == 0)) {
+  if ((data_buf == NULL) || (len == 0)) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  return (int32_t)radar_generic_write(ctx, data_buf, len);
+  return (int32_t)radar_generic_write(&mikroe_radar, data_buf, len);
 }
 
-int32_t mikroe_radar_generic_read(mikroe_radar_t *ctx,
-                                  uint8_t *data_buf,
+int32_t mikroe_radar_generic_read(uint8_t *data_buf,
                                   uint16_t max_len)
 {
-  if (!ctx || !data_buf || (max_len == 0)) {
+  if ((data_buf == NULL) || (max_len == 0)) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  return (int32_t)radar_generic_read(ctx, data_buf, max_len);
+  return (int32_t)radar_generic_read(&mikroe_radar, data_buf, max_len);
 }
 
-sl_status_t mikroe_radar_enable_device(mikroe_radar_t *ctx)
+void mikroe_radar_enable_device(void)
 {
-  if (!ctx) {
-    return SL_STATUS_INVALID_PARAMETER;
+  radar_enable_device(&mikroe_radar);
+}
+
+void mikroe_radar_disable_device(void)
+{
+  radar_disable_device(&mikroe_radar);
+}
+
+sl_status_t mikroe_radar_get_gpio2_pin(uint8_t *gpio_val)
+{
+  if (gpio_val == NULL) {
+    return SL_STATUS_NULL_POINTER;
   }
 
-  radar_enable_device(ctx);
+  *gpio_val = radar_get_gpio2_pin(&mikroe_radar);
   return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_radar_disable_device(mikroe_radar_t *ctx)
+sl_status_t mikroe_radar_get_gpio1_pin(uint8_t *gpio_val)
 {
-  if (!ctx) {
-    return SL_STATUS_INVALID_PARAMETER;
+  if (gpio_val == NULL) {
+    return SL_STATUS_NULL_POINTER;
   }
 
-  radar_disable_device(ctx);
+  *gpio_val = radar_get_gpio1_pin(&mikroe_radar);
   return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_radar_get_gpio2_pin(mikroe_radar_t *ctx, uint8_t *gpio_val)
+sl_status_t mikroe_radar_get_gpio0_pin(uint8_t *gpio_val)
 {
-  if (!ctx || !gpio_val) {
-    return SL_STATUS_INVALID_PARAMETER;
+  if (gpio_val == NULL) {
+    return SL_STATUS_NULL_POINTER;
   }
 
-  *gpio_val = radar_get_gpio2_pin(ctx);
+  *gpio_val = radar_get_gpio0_pin(&mikroe_radar);
   return SL_STATUS_OK;
 }
 
-sl_status_t mikroe_radar_get_gpio1_pin(mikroe_radar_t *ctx, uint8_t *gpio_val)
-{
-  if (!ctx || !gpio_val) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
-
-  *gpio_val = radar_get_gpio1_pin(ctx);
-  return SL_STATUS_OK;
-}
-
-sl_status_t mikroe_radar_get_gpio0_pin(mikroe_radar_t *ctx, uint8_t *gpio_val)
-{
-  if (!ctx || !gpio_val) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
-
-  *gpio_val = radar_get_gpio0_pin(ctx);
-  return SL_STATUS_OK;
-}
-
-sl_status_t mikroe_radar_set_command(mikroe_radar_t *ctx,
-                                     uint8_t cmd_id,
+sl_status_t mikroe_radar_set_command(uint8_t cmd_id,
                                      uint8_t *payload,
                                      uint8_t payload_size)
 {
-  if (!ctx) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
-
-  return (RADAR_OK == radar_set_command(ctx, cmd_id, payload, payload_size))
-         ? SL_STATUS_OK : SL_STATUS_FAIL;
+  return (radar_set_command(&mikroe_radar, cmd_id, payload, payload_size)
+          == RADAR_OK) ? SL_STATUS_OK : SL_STATUS_FAIL;
 }
 
-sl_status_t mikroe_radar_get_command(mikroe_radar_t *ctx,
-                                     uint8_t cmd_id,
+sl_status_t mikroe_radar_get_command(uint8_t cmd_id,
                                      uint8_t *payload,
                                      uint8_t *payload_size)
 {
-  if (!ctx) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
-
-  return RADAR_OK
-         == radar_get_command(ctx, cmd_id, payload,
-                              payload_size) ? SL_STATUS_OK : SL_STATUS_FAIL;
+  return (radar_get_command(&mikroe_radar, cmd_id, payload, payload_size)
+          == RADAR_OK) ? SL_STATUS_OK : SL_STATUS_FAIL;
 }
 
-sl_status_t mikroe_radar_get_event(mikroe_radar_t *ctx,
-                                   uint8_t *evt_id,
+sl_status_t mikroe_radar_get_event(uint8_t *evt_id,
                                    uint8_t *payload,
                                    uint8_t *payload_size)
 {
-  if (!ctx) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
-
-  return RADAR_OK
-         == radar_get_event(ctx, evt_id, payload,
-                            payload_size) ? SL_STATUS_OK : SL_STATUS_FAIL;
+  return (radar_get_event(&mikroe_radar, evt_id, payload, payload_size)
+          == RADAR_OK) ? SL_STATUS_OK : SL_STATUS_FAIL;
 }
 
-sl_status_t mikroe_radar_get_temperature(mikroe_radar_t *ctx,
-                                         float *temperature)
+sl_status_t mikroe_radar_get_temperature(float *temperature)
 {
-  if (!ctx || !temperature) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
-
-  return (RADAR_OK == radar_get_temperature(ctx, temperature))
+  return (RADAR_OK == radar_get_temperature(&mikroe_radar, temperature))
          ? SL_STATUS_OK : SL_STATUS_FAIL;
 }
 
-sl_status_t mikroe_radar_set_detection_range(mikroe_radar_t *ctx,
-                                             float min,
+sl_status_t mikroe_radar_set_detection_range(float min,
                                              float max)
 {
-  if (!ctx) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
-
-  return (RADAR_OK == radar_set_detection_range(ctx, min, max))
+  return (RADAR_OK == radar_set_detection_range(&mikroe_radar, min, max))
          ? SL_STATUS_OK : SL_STATUS_FAIL;
 }
 
-sl_status_t mikroe_radar_reset_config(mikroe_radar_t *ctx)
+sl_status_t mikroe_radar_reset_config(void)
 {
-  if (!ctx) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
-
-  return (RADAR_OK == radar_reset_config(ctx))
+  return (RADAR_OK == radar_reset_config(&mikroe_radar))
          ? SL_STATUS_OK : SL_STATUS_FAIL;
 }
 

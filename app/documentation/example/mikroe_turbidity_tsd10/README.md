@@ -2,7 +2,7 @@
 
 ## Summary ##
 
-This project shows the implementation of a Turbidity driver using Turbidity Click and TSD10 sensor with an EFR32xG24 explorer kit.
+This project shows the implementation of a Turbidity driver using Turbidity Click and TSD10 sensor with the Silicon Labs Platform.
 
 Turbidity Click Bundle: This bundle gives you everything you need to take high-accuracy turbidity measurements. It allows users to combine Turbidity Sensor with Turbidity Click via an additional 3-wire Male to Male Cable - 15 cm to measure the relative clarity of any liquid. Turbidity Click allows users to upgrade their projects with a sensor that senses the cloudiness or haziness of a fluid caused by large numbers of individual particles invisible to the naked eye.
 
@@ -10,23 +10,35 @@ The sensor can be used in various domains. For example, with the washing machine
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit (BRD2703A xG24 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview).
+- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit (BRD2703A xG24 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
 
-- [**Turbidity Click** board carries MCP3221 Low-Power 12-Bit A/D Converter](https://www.mikroe.com/turbidity-click).
+- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
 
-- [**Turbidity Sensor - TSD10**](https://www.mikroe.com/tsd-10-turbidity-sensor).
+- [**Turbidity Click** board carries MCP3221 Low-Power 12-Bit A/D Converter](https://www.mikroe.com/turbidity-click)
 
-- [**3-wire Male to Male Cable - 15 cm**](https://www.mikroe.com/3-wire-male-to-male-cable-15-cm).
+- [**Turbidity Sensor - TSD10**](https://www.mikroe.com/tsd-10-turbidity-sensor)
+
+- [**3-wire Male to Male Cable - 15 cm**](https://www.mikroe.com/3-wire-male-to-male-cable-15-cm)
 
 ## Hardware Connection ##
 
-The Turbidity Click board supports MikroBus, so it can connect easily to EFR32xG24 Explorer Kit's MikroBus header. Be sure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line. The Turbidity Click features one 1x3 2.5mm connector suitable for connecting a Turbidity sensor via an additional 3-wire Male to Male Cable - 15 cm.
+- If the EFR32xG24 Explorer Kit is used:
 
-![hardware_connection](image/hardware_connection.png "BRD2703A xG24 Explorer Kit Board and Turbidity Click Board")
+  The Turbidity Click board supports MikroBus, so it can connect easily to EFR32xG24 Explorer Kit via MikroBus header. Assure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line.
+  The Turbidity Click features one 1x3 2.5mm connector suitable for connecting a Turbidity sensor via an additional 3-wire Male to Male Cable - 15 cm.
 
-The hardware connection will look like the figure below:
+  ![hardware_connection](image/hardware_connection.png "BRD2703A xG24 Explorer Kit Board and Turbidity Click Board")
 
-![real_hardware_connection](image/hardware_connection1.png)
+  The hardware connection will look like the figure below:
+
+  ![real_hardware_connection](image/hardware_connection1.png)
+
+- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+
+  | Description  | BRD4338A GPIO | BRD4002 EXP Header | Turbidity Click  |
+  | -------------| ------------- | ------------------ | ---------------- |
+  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA              |
+  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL              |
 
 ## Setup ##
 
@@ -34,16 +46,17 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A  to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter 'turbidity'.
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter 'turbidity'.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - TSD-10 - Turbidity Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
-![Create_example](image/create_example.png)
+
+   ![Create_example](image/create_example.png)
 
 3. Build and flash this example to the board.
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_turbidity_tsd10/app.c` into the project root folder (overwriting the existing file).
 
@@ -55,10 +68,16 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
+      **If the EFR32xG24 Explorer Kit is used:**
         - [Services] → [Timers] → [Sleep Timer]
         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
         - [Third-Party Hardware Drivers] → [Sensor] → [TSD-10 - Turbidity Click (Mikroe)]
+
+      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+        - [Third Party Hardware Drivers] → [Sensors] → [TSD-10 - Turbidity Click (Mikroe)]
 
 4. Install printf float
 
@@ -71,7 +90,7 @@ You can either create a project based on an example project or start with an emp
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
 - Third-party Hardware Drivers Extension must be enabled for the project to install the "TSD-10 - Turbidity Click (Mikroe)" component.
 
@@ -85,7 +104,7 @@ You can either create a project based on an example project or start with an emp
 
 The application monitors and displays Nephelometric Turbidity Units (NTU). Results are being sent to the USART Terminal.
 
-- The Turbidity sensor measures the amount of transmitted light to determine the turbidity of water. XG24 Explorer kit will read the NTU value. With NTU value in a range of 0 to 4000 corresponds with the turbidity level of water (for example, 0 NTU means water is clean, and NTU is 3000 which means water is cloudy).
+- The Turbidity sensor measures the amount of transmitted light to determine the turbidity of water. Program will read the NTU value. NTU value in a range of 0 to 4000 corresponds with the turbidity level of water (for example, 0 NTU means water is clean, and NTU is 3000 which means water is cloudy).
 
 - You can launch Console that's integrated into Simplicity Studio or use a third-party terminal tool like Tera Term to receive the data from the USB. A screenshot of the console output is shown in the figure below:
 

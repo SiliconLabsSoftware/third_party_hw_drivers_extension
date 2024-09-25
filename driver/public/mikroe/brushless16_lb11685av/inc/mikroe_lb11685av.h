@@ -41,6 +41,10 @@
 
 #include "sl_status.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /***************************************************************************//**
  * @addtogroup mikroe_lb11685 LB11685AV - BRUSHLESS 16 Click
  * @brief
@@ -107,4 +111,8 @@ uint8_t mikroe_lb11685av_get_fg(void);
 
 /** @} (end addtogroup mikroe_lb11685) */
 
-#endif /* MIKROE_LB11685AV_H_ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif // MIKROE_LB11685AV_H_

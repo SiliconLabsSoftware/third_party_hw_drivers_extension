@@ -38,9 +38,10 @@
  ******************************************************************************/
 #ifndef MIKROE_HVAC_SCD41_INC_H_
 #define MIKROE_HVAC_SCD41_INC_H_
+
 #include "sl_status.h"
-#include "sl_i2cspm.h"
 #include "hvac.h"
+#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -95,7 +96,7 @@ typedef mass_and_num_cnt_data_t mikroe_scd41_mass_and_num_cnt_data_t;
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_scd41_init(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_scd41_init(mikroe_i2c_handle_t i2c_instance);
 
 /***************************************************************************//**
  * @brief
@@ -108,7 +109,7 @@ sl_status_t mikroe_scd41_init(sl_i2cspm_t *i2cspm_instance);
  *    SL_STATUS_OK if there are no errors.
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null.
  ******************************************************************************/
-sl_status_t mikroe_scd41_set_i2csmp_instance(sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_scd41_set_i2csmp_instance(mikroe_i2c_handle_t i2c_instance);
 
 /***************************************************************************//**
  * @brief

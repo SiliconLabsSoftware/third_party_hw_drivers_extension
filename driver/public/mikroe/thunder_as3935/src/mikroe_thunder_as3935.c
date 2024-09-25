@@ -41,7 +41,7 @@
 //                               Includes
 // -----------------------------------------------------------------------------
 #include "mikroe_thunder_as3935.h"
-#include "third_party_hw_drivers_helpers.h"
+#include "mikroe_thunder_as3935_config.h"
 
 // -----------------------------------------------------------------------------
 //                       Local Variables
@@ -57,10 +57,8 @@ static bool initialized = false;
 /**************************************************************************//**
 *  Thunder click initialization.
 ******************************************************************************/
-sl_status_t mikroe_thunder_as3935_init(SPIDRV_Handle_t spi_instance)
+sl_status_t mikroe_thunder_as3935_init(mikroe_spi_handle_t spi_instance)
 {
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
   if (spi_instance == NULL) {
     return SL_STATUS_INVALID_PARAMETER;
   }
@@ -72,17 +70,46 @@ sl_status_t mikroe_thunder_as3935_init(SPIDRV_Handle_t spi_instance)
   thunder_ctx.spi.handle = spi_instance;
   thunder_cfg_setup(&thunder_cfg);
 
-  thunder_cfg.irq = hal_gpio_pin_name(THUNDER_IRQ_PORT, THUNDER_IRQ_PIN);
-  thunder_cfg.cs = hal_gpio_pin_name(spi_instance->portCs, spi_instance->pinCs);
-  GPIO_PinModeSet(spi_instance->portCs,
-                  spi_instance->pinCs,
-                  gpioModePushPull,
-                  1);
+  thunder_cfg.spi_speed = 1000000;
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(thunder_init(&thunder_ctx, &thunder_cfg));
+#if defined(AS3935_IRQ_PORT) && defined(AS3935_IRQ_PIN)
+  thunder_cfg.irq = hal_gpio_pin_name(AS3935_IRQ_PORT, AS3935_IRQ_PIN);
+#endif
+
+#if defined(AS3935_CS_PORT) && defined(AS3935_CS_PIN)
+  thunder_cfg.cs = hal_gpio_pin_name(AS3935_CS_PORT, AS3935_CS_PIN);
+  // CS pin need to init here since the mikroe_sdk_v2 missed this step
+  digital_out_t struct_cs;
+  digital_out_init(&struct_cs, thunder_cfg.cs);
+#endif
+
+#if (MIKROE_AS3935_SPI_UC == 1)
+  thunder_cfg.spi_speed = MIKROE_AS3935_SPI_BITRATE;
+#endif
+
+  if (thunder_init(&thunder_ctx, &thunder_cfg) != THUNDER_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
   initialized = true;
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
+}
+
+/**************************************************************************//**
+*  Thunder click set instance.
+******************************************************************************/
+sl_status_t mikroe_thunder_as3935_set_spi_instance(
+  mikroe_spi_handle_t spi_instance)
+{
+  if (!initialized) {
+    return SL_STATUS_NOT_INITIALIZED;
+  }
+  if (NULL == spi_instance) {
+    return SL_STATUS_INVALID_PARAMETER;
+  }
+  thunder_ctx.spi.handle = spi_instance;
+
+  return SL_STATUS_OK;
 }
 
 /**************************************************************************//**

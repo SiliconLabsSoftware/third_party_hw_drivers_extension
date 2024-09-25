@@ -8,10 +8,7 @@ quality: evaluation
 root_path: driver
 requires:
   - name: status
-  - name: i2cspm
-recommends:
-  - id: i2cspm
-    instance: [qwiic]
+  - name: mikroe_peripheral_driver_i2c
 provides:
   - name: oled_display
 config_file:
@@ -22,8 +19,8 @@ template_contribution:
 include:
   - path: public/silabs/rgb_led_is31fl3741/inc
     file_list:
-      - path: adafruit_is31fl3741_i2c.h  
-      - path: adafruit_is31fl3741_params.h	  
+      - path: adafruit_is31fl3741_i2c.h
+      - path: adafruit_is31fl3741_params.h
       - path: adafruit_is31fl3741.h
       - path: oled_display.h
 source:

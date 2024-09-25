@@ -26,41 +26,70 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  *
+ *******************************************************************************
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #include "sl_sleeptimer.h"
-#include "sl_i2cspm_instances.h"
-#include "app_log.h"
-
 #include "sparkfun_vl53l1x.h"
 #include "sparkfun_vl53l1x_config.h"
 
+#if (defined(SLI_SI917))
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+#else
+#include "sl_i2cspm_instances.h"
+#include "app_log.h"
+#endif
+
+#if (defined(SLI_SI917))
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#else
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
+#if (defined(SLI_SI917))
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#endif
+
 // This define enables the periodic distance printing via UART
 #define VL53_TEST_APP_PERIODIC_DISTANCE
+#define READING_INTERVAL_MSEC        1000
 
-// VL53 Timer callback function
-void vl53_read_distance_periodic(sl_sleeptimer_timer_handle_t *handle,
-                                 void *data);
+static volatile bool trigger_process = false;
+static sl_sleeptimer_timer_handle_t app_timer_handle;
+static mikroe_i2c_handle_t app_i2c_instance = NULL;
+
+static void vl53_read_distance(void);
+static void app_timer_callback(sl_sleeptimer_timer_handle_t *handle,
+                               void *data);
 
 /**************************************************************************//**
  * Application Init.
  *****************************************************************************/
 void app_init(void)
 {
-  static sl_sleeptimer_timer_handle_t handle_vl53;
   uint8_t sensor_state = 0;
   sl_status_t vl53_status = SL_STATUS_OK;
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Put your additional application init code here!                         //
-  // This is called once during start-up.                                    //
-  /////////////////////////////////////////////////////////////////////////////
+#if (defined(SLI_SI917))
+  app_i2c_instance = &i2c_instance;
+#else
+  app_i2c_instance = sl_i2cspm_qwiic;
+#endif
 
-  app_log("==== VL53L1X Test application ====\n");
-  app_log("app_init function called...\n");
+  app_printf("==== VL53L1X Test application ====\n");
+  app_printf("app_init function called...\n");
 
   // Initialize the sensor with the default settings
-  vl53_status = vl53l1x_init(VL53L1X_ADDR, sl_i2cspm_qwiic);
+  vl53_status = vl53l1x_init(VL53L1X_ADDR, app_i2c_instance);
 
   // Waiting for device to boot up...
   while (0 == sensor_state) {
@@ -76,15 +105,15 @@ void app_init(void)
   }
 
   if (SL_STATUS_OK == vl53_status) {
-    app_log("Platform I2C communication is OK.\n");
+    app_printf("Platform I2C communication is OK.\n");
   } else {
-    app_log("Platform I2C communication test has been failed.\n"
-            "Please check the I2C bus connection and "
-            "the I2C (I2CSPM) configuration.\n");
+    app_printf("Platform I2C communication test has been failed.\n"
+               "Please check the I2C bus connection and "
+               "the I2C (I2CSPM) configuration.\n");
     return;
   }
 
-  app_log("VL53L1X booted\n");
+  app_printf("VL53L1X booted\n");
 
   // Optional sensor configuration example function calls, see API documentation
   //   for options
@@ -103,9 +132,9 @@ void app_init(void)
 
   // Check return codes of the optional configuration function calls
   if (SL_STATUS_OK == vl53_status) {
-    app_log("Sensor initialization and configuration are done.\n");
+    app_printf("Sensor initialization and configuration are done.\n");
   } else {
-    app_log("Sensor initialization and configuration has been failed.\n");
+    app_printf("Sensor initialization and configuration has been failed.\n");
     return;
   }
 
@@ -114,38 +143,49 @@ void app_init(void)
 
   // Check ranging status
   if (SL_STATUS_OK == vl53_status) {
-    app_log("VL53L1X ranging has been started ...\n");
+    app_printf("VL53L1X ranging has been started ...\n");
 
     // Get measurement result
-    vl53_read_distance_periodic(NULL, NULL);
+    vl53_read_distance();
   } else {
-    app_log("Start ranging has been failed.\n");
+    app_printf("Start ranging has been failed.\n");
     return;
   }
 
 #if defined(VL53_TEST_APP_PERIODIC_DISTANCE)
   // Setup a periodic sleep timer with 1000 ms time period
-  sl_sleeptimer_start_periodic_timer_ms(&handle_vl53, 1000,
-                                        vl53_read_distance_periodic, NULL, 0,
+  sl_sleeptimer_start_periodic_timer_ms(&app_timer_handle,
+                                        READING_INTERVAL_MSEC,
+                                        app_timer_callback,
+                                        NULL,
+                                        0,
                                         0);
-  app_log("Periodic timer is configured to send periodic distance data.\n");
+  app_printf("Periodic timer is configured to send periodic distance data.\n");
 #endif
 
-  app_log("==================================\n");
+  app_printf("==================================\n");
 
 #if defined(VL53_TEST_APP_PERIODIC_DISTANCE)
-  app_log("> Periodic measurement:\n");
+  app_printf("> Periodic measurement:\n");
 #endif
 }
 
-void vl53_read_distance_periodic(sl_sleeptimer_timer_handle_t *handle,
-                                 void *data)
+/**************************************************************************//**
+ * Application Process Action.
+ *****************************************************************************/
+void app_process_action(void)
+{
+  if (trigger_process) {
+    trigger_process = false;
+    vl53_read_distance();
+  }
+}
+
+static void vl53_read_distance(void)
 {
   sl_status_t vl53_status = SL_STATUS_OK;
   uint8_t is_data_ready = 0;
   vl53l1x_result_t result;
-  (void) handle;
-  (void) data;
 
   // Check measurement data status
   vl53_status = vl53l1x_check_for_data_ready(VL53L1X_ADDR, &is_data_ready);
@@ -155,24 +195,25 @@ void vl53_read_distance_periodic(sl_sleeptimer_timer_handle_t *handle,
     vl53_status = vl53l1x_get_result(VL53L1X_ADDR, &result);
 
     // Print result
-    app_log(" > Distance: %4u mm, Range status: %1u, "
-            "Signal rate: %5u, Ambient rate: %5u, "
-            "Number of SPADS: %4u\n", result.distance, result.status,
-            result.signal_per_spad, result.ambient, result.signal_per_spad);
+    app_printf(" > Distance: %4u mm, Range status: %1u, "
+               "Signal rate: %5u, Ambient rate: %5u, "
+               "Number of SPADS: %4u\n", result.distance, result.status,
+               result.signal_per_spad, result.ambient, result.signal_per_spad);
 
     // Clear sensor's interrupt status
     vl53_status = vl53l1x_clear_interrupt(VL53L1X_ADDR);
   }
 
   if (SL_STATUS_OK != vl53_status) {
-    app_log("VL53L1X sensor operation has been failed "
-            "during the periodic distancing.\n");
+    app_printf("VL53L1X sensor operation has been failed "
+               "during the periodic distancing.\n");
   }
 }
 
-/**************************************************************************//**
- * Application Process Action.
- *****************************************************************************/
-void app_process_action(void)
+static void app_timer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
 {
+  (void) data;
+  (void) handle;
+
+  trigger_process = true;
 }

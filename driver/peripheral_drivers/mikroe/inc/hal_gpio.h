@@ -49,8 +49,12 @@ extern "C" {
 
 #define PORT_SIZE                            (16)
 
-#ifndef SL_SI91X_ULP_GPIO_PORT
-#define SL_SI91X_ULP_GPIO_PORT               4 ///< ULP GPIO port number
+#ifndef HP
+#define HP                                   0
+#endif
+
+#ifndef ULP
+#define ULP                                  4
 #endif
 
 #define hal_gpio_pin_index(pin_name) \
@@ -62,15 +66,9 @@ extern "C" {
 #define hal_gpio_pin_mask(pin_name) \
   (0x01 << gpio_pin_index(pin_name))
 
-#if (defined(SLI_SI917))
-#define hal_gpio_pin_name(port_index, pin_index)         \
-  ((port_index) == SL_SI91X_ULP_GPIO_PORT)               \
-  ? ((pin_name_t)(port_index) * PORT_SIZE + (pin_index)) \
-  : ((pin_name_t)(pin_index))
-#else
 #define hal_gpio_pin_name(port_index, pin_index) \
   ((pin_name_t)(port_index) * PORT_SIZE + (pin_index))
-#endif
+
 #define hal_gpio_port_name(port_index) \
   ((port_name_t)(port_index) * PORT_SIZE)
 

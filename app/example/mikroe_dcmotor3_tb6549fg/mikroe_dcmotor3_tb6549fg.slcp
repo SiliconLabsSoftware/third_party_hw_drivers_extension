@@ -1,4 +1,3 @@
-# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
 project_name: mikroe_dcmotor3_tb6549fg
 package: platform
 label: Third Party Hardware Drivers - TB6549FG - DC Motor 3 Click (Mikroe)
@@ -44,7 +43,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.0
+  version: 4.0.0
 
 other_file:
   - path: ../../documentation/example/mikroe_dcmotor3_tb6549fg/image/create_example.png
@@ -58,5 +57,3 @@ ui_hints:
   highlight:
     - path: README.md
       focus: true
-
-

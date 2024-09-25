@@ -37,15 +37,10 @@
  *
  ******************************************************************************/
 #include <sl_string.h>
-
-#include "em_gpio.h"
 #include "sl_sleeptimer.h"
-
 #include "at_parser_core.h"
 #include "at_parser_utility.h"
-
 #include "mikroe_bg96.h"
-#include "mikroe_lte_iot2_bg96_config.h"
 
 #define BITMASK_7BITS                       0x7F
 #define BITMASK_8BITS                       0xFF
@@ -68,6 +63,9 @@ static enum {
 
 static bool required_state = false;
 static at_scheduler_status_t *global_output;
+
+static digital_out_t pwk_pin;
+static digital_in_t sta_pin;
 
 static sl_sleeptimer_timer_handle_t bg96_timer_gpio_handle;
 static sl_sleeptimer_timer_handle_t bg96_timer_process_handler;
@@ -99,9 +97,14 @@ static void uint8_to_str(uint8_t input, uint8_t *output);
  *   BG96 module initialize function.
  *
  *****************************************************************************/
-void bg96_init(sl_iostream_t *iostream_handle)
+void bg96_init(mikroe_uart_handle_t handle)
 {
-  at_parser_init(iostream_handle);
+  at_parser_init(handle);
+  digital_out_init(&pwk_pin,
+                   hal_gpio_pin_name(BG96_PWK_PORT, BG96_PWK_PIN));
+  digital_in_pulldown_init(&sta_pin,
+                           hal_gpio_pin_name(BG96_STA_PORT, BG96_STA_PIN));
+
   sl_sleeptimer_start_periodic_timer_ms(&bg96_timer_process_handler,
                                         200,
                                         bg96_timer_process_callback,
@@ -117,7 +120,7 @@ void bg96_init(sl_iostream_t *iostream_handle)
  *****************************************************************************/
 bool bg96_is_alive(void)
 {
-  return (bool) GPIO_PinInGet(BG96_STA_PORT, BG96_STA_PIN);
+  return (bool) digital_in_read(&sta_pin);
 }
 
 /**************************************************************************//**
@@ -142,7 +145,7 @@ sl_status_t bg96_sleep(at_scheduler_status_t *output_object)
         }
 
         global_output = output_object;
-        GPIO_PinOutSet(BG96_PWK_PORT, BG96_PWK_PIN);
+        digital_out_high(&pwk_pin);
         timer_status = sl_sleeptimer_restart_timer_ms(&bg96_timer_gpio_handle,
                                                       BG96_GPIO_H_TIME,
                                                       bg96_timer_gpio_callback,
@@ -188,7 +191,7 @@ sl_status_t bg96_wake_up(at_scheduler_status_t *output_object)
     if (bg96_ready == bg96_state) {
       if (!bg96_is_alive()) {
         global_output = output_object;
-        GPIO_PinOutSet(BG96_PWK_PORT, BG96_PWK_PIN);
+        digital_out_high(&pwk_pin);
         sl_status_t timer_status = sl_sleeptimer_restart_timer_ms(
           &bg96_timer_gpio_handle,
           BG96_GPIO_H_TIME,
@@ -307,9 +310,9 @@ sl_status_t bg96_gnss_stop(at_scheduler_status_t *output_object)
  *    BG96 NB IoT initialization.
  *
  *****************************************************************************/
-void bg96_nb_init(sl_iostream_t *iostream_handle)
+void bg96_nb_init(mikroe_uart_handle_t handle)
 {
-  bg96_init(iostream_handle);
+  bg96_init(handle);
 }
 
 /**************************************************************************//**
@@ -1190,7 +1193,7 @@ static void bg96_timer_gpio_callback(sl_sleeptimer_timer_handle_t *handle,
   if (handle == &bg96_timer_gpio_handle) {
     switch (bg96_state) {
       case bg96_wait_for_gpio:
-        GPIO_PinOutClear(BG96_PWK_PORT, BG96_PWK_PIN);
+        digital_out_low(&pwk_pin);
         bg96_state = bg96_wait_for_device;
 
         sl_sleeptimer_restart_timer_ms(&bg96_timer_gpio_handle,

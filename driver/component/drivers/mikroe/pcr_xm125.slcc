@@ -1,0 +1,54 @@
+id: mikroe_pcr_xm125
+package: third_party_hw_drivers
+label: XM125 - PCR Click (Mikroe) - I2C
+description: Driver for the Mikroe XM125 PCR Click using I2C interface.
+category: Sensors
+quality: evaluation
+ui_hints:
+  visibility: basic
+root_path: driver
+
+requires:
+  - name: status
+  - name: sleeptimer
+  - name: sleeptimer_si91x
+    condition: [device_si91x]
+  - name: mikroe_peripheral_driver_digital_io
+  - name: mikroe_peripheral_driver_i2c
+
+provides:
+  - name: mikroe_pcr_xm125
+
+template_contribution:
+  - name: component_catalog
+    value: mikroe_pcr_xm125
+
+config_file:
+  - path: public/mikroe/pcr_xm125/config/brd2703a/mikroe_xm125_config.h
+    file_id: mikroe_xm125_config
+    condition: [brd2703a]
+  - path: public/mikroe/pcr_xm125/config/brd4108a/mikroe_xm125_config.h
+    file_id: mikroe_xm125_config
+    condition: [brd4108a]
+  - path: public/mikroe/pcr_xm125/config/brd4314a/mikroe_xm125_config.h
+    file_id: mikroe_xm125_config
+    condition: [brd4314a]
+  - path: public/mikroe/pcr_xm125/config/brd4338a/mikroe_xm125_config.h
+    file_id: mikroe_xm125_config
+    condition: [brd4338a]
+  - path: public/mikroe/pcr_xm125/config/other/mikroe_xm125_config.h
+    file_id: mikroe_xm125_config
+    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
+include:
+  - path: inc
+    file_list:
+      - path: third_party_hw_drivers_helpers.h
+  - path: thirdparty/mikrosdk_click_v2/clicks/pcr/lib_pcr/include
+    file_list:
+      - path: pcr.h
+  - path: public/mikroe/pcr_xm125/inc
+    file_list:
+      - path: mikroe_xm125.h
+source:
+  - path: thirdparty/mikrosdk_click_v2/clicks/pcr/lib_pcr/src/pcr.c
+  - path: public/mikroe/pcr_xm125/src/mikroe_xm125.c

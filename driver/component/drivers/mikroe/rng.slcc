@@ -12,6 +12,8 @@ requires:
   - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_i2c
 config_file:
+  - path: public/mikroe/rng/config/mikroe_rng_config.h
+    file_id: driver_config_rng
 provides:
   - name: rng
     allow_multiple: false

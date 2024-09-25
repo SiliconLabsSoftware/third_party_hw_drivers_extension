@@ -41,10 +41,11 @@
 #define MIKROE_TURBIDITY_H
 
 #include "sl_status.h"
-#include "sl_i2cspm.h"
-#include "drv_digital_out.h"
-#include "drv_digital_in.h"
 #include "drv_i2c_master.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*!
  * @addtogroup turbidity Turbidity Click Driver
@@ -65,7 +66,7 @@
  *    SL_STATUS_INVALID_PARAMETER if i2cspm_instance is null
  *    SL_STATUS_FAIL Initialization failed.
  ******************************************************************************/
-sl_status_t mikroe_turbidity_init (sl_i2cspm_t *i2cspm_instance);
+sl_status_t mikroe_turbidity_init (mikroe_i2c_handle_t i2cspm_instance);
 
 /*******************************************************************************
  * @brief
@@ -125,5 +126,9 @@ sl_status_t mikroe_turbidity_get_adc_voltage (float *voltage);
  *    SL_STATUS_FAIL - Failed.
  ******************************************************************************/
 sl_status_t mikroe_turbidity_get_ntu (float *ntu);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // MIKROE_TURBIDITY_H
