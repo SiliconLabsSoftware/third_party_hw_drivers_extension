@@ -47,7 +47,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 2.0.2
+  version: 2.1.0
 
 other_file:
   - path: ../../documentation/example/mikroe_rtc10_ds3231m/image/create_project.png

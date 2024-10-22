@@ -39,7 +39,7 @@ define:
 - name: DEBUG_EFM
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 2.0.2
+  version: 2.1.0
 other_file:
   - path: ../../documentation/example/mikroe_oledc_ssd1351/image/hardware_connection.png
     directory: "image"

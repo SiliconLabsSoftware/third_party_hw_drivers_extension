@@ -42,7 +42,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 2.0.2
+  version: 2.1.0
 
 other_file:
   - path: ../../documentation/example/mikroe_stepper2_a4988/image/create_example.png

@@ -34,7 +34,7 @@ component:
   from: third_party_hw_drivers
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 2.0.2
+  version: 2.1.0
 other_file:
   - path: ../../documentation/example/mikroe_pwm_driver_si8711cc/image/create_example.png
     directory: "image"

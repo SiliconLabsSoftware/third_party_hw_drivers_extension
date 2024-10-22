@@ -49,7 +49,7 @@ config_file:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 2.0.2
+  version: 2.1.0
 
 define:
 - name: DEBUG_EFM

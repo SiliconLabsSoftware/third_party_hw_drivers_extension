@@ -45,7 +45,7 @@ toolchain_settings:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 2.0.2
+  version: 2.1.0
 
 other_file:
   - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/create_example.png

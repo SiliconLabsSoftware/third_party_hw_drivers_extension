@@ -31,11 +31,11 @@ config_file:
 
 provides:
   - name: emg
-  - allow_multiple: false
+    allow_multiple: false
 
 template_contribution:
   - name: component_catalog
-  - value: emg
+    value: emg
 
 include:
   - path: inc

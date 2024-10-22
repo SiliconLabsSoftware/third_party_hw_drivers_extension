@@ -1114,7 +1114,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="app/example/silabs_lin_bus/slave/silabs_lin_slave1.slcp"/>
-    <properties key="readmeFiles" value="app/documentation/example/silabs_lin_slave/README.md"/>
+    <properties key="readmeFiles" value="app/documentation/example/silabs_lin_bus/README.md"/>
     <properties key="boardCompatibility" value="brd4182a com.silabs.board.none"/>
     <properties key="partCompatibility" value=".*efr32mg24.* .*bgm22.* .*efr32bg22.* .*efr32mg22.*"/>
     <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>

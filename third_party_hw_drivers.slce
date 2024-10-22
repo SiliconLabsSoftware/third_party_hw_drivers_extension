@@ -2,10 +2,10 @@ id: third_party_hw_drivers
 label: Third Party Hardware Drivers
 description: >
   Third Party Hardware Driver extension for the Gecko SDK Suite
-version: 2.0.2
+version: 2.1.0
 sdk:
   id: gecko_sdk
-  version: 4.4.0
+  version: 4.4.4
 component_path:
   - path: "driver/component/drivers/mikroe"
   - path: "driver/component/drivers/silabs"

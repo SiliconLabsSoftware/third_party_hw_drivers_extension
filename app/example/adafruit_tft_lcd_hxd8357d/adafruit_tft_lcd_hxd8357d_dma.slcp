@@ -46,7 +46,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 2.0.2
+  version: 2.1.0
 
 other_file:
   - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/create_example_with_dma_mode.png
