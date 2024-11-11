@@ -1204,7 +1204,7 @@
     <properties key="namespace" value="template.uc"/>
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="app/example/silabs_lin_bus/slave/silabs_lin_slave1.slcp"/>
-    <properties key="readmeFiles" value="app/documentation/example/silabs_lin_slave/README.md"/>
+    <properties key="readmeFiles" value="app/documentation/example/silabs_lin_bus/README.md"/>
     <properties key="boardCompatibility" value="brd4182a com.silabs.board.none"/>
     <properties key="partCompatibility" value=".*efr32mg24.* .*bgm22.* .*efr32bg22.* .*efr32mg22.*"/>
     <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
@@ -1565,7 +1565,7 @@
     <properties key="keywords" value="universal\ configurator"/>
     <properties key="projectFilePaths" value="app/example/adafruit_neotrellis_keypad_atsamd09/adafruit_neotrellis_keypad_atsamd09.slcp"/>
     <properties key="readmeFiles" value="app/documentation/example/adafruit_neotrellis_keypad_atsamd09/README.md"/>
-    <properties key="boardCompatibility" value="brd2601b brd4314a brd2704a brd2703a brd4108a brd2602a com.silabs.board.none"/>
+    <properties key="boardCompatibility" value="brd2601b brd4314a brd2704a brd2703a brd4108a com.silabs.board.none"/>
     <properties key="partCompatibility" value=".*bgm22.* .*efr32bg22.* .*mgm24.* .*efr32[bm]g24.* .*efr32[x]g24.*"/>
     <properties key="ideCompatibility" value="iar-embedded-workbench makefile-ide segger-embedded-studio simplicity-ide"/>
     <properties key="toolchainCompatibility" value="gcc iar segger"/>

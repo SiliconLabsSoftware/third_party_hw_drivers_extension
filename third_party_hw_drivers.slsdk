@@ -1,10 +1,10 @@
 ﻿# Properties file for Simplicity Studio metadata
 id=uc.extension.third_party_hw_drivers
 
-version=3.0.1
+version=3.1.0
 
 label=Third Party Hardware Drivers
 description=Third Party Hardware Drivers
 
 prop.file.templatesFile=templates.xml
-prop.subLabel=Third\\ Party\\ Hardware\\ Drivers\\ 3.0.1
+prop.subLabel=Third\\ Party\\ Hardware\\ Drivers\\ 3.1.0

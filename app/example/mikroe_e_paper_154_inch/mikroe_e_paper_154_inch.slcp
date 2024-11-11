@@ -34,7 +34,14 @@ define:
 - name: DEBUG_EFM
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.1
+  version: 3.1.0
+config_file:
+  - override:
+      component: spidrv
+      file_id: spidrv_config
+      instance: mikroe
+    path: brd4182a/sl_spidrv_mikroe_config.h
+    condition: [brd4182a]
 other_file:
   - path: ../../documentation/example/mikroe_e_paper_154_inch/image/hardware_connection.png
     directory: image

@@ -38,6 +38,7 @@
 #include "drv_digital_out.h"
 #include "drv_digital_in.h"
 #include "drv_spi_master.h"
+#include "sl_status.h"
 
 // -------------------------------------------------------------- PUBLIC MACROS 
 /**

@@ -43,7 +43,7 @@ configuration:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.1
+  version: 3.1.0
 
 other_file:
   - path: ../../documentation/example/mikroe_ozone2_mq131/images/create_example.png

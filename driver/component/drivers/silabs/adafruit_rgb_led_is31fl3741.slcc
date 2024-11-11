@@ -22,8 +22,8 @@ template_contribution:
 include:
   - path: public/silabs/rgb_led_is31fl3741/inc
     file_list:
-      - path: adafruit_is31fl3741_i2c.h  
-      - path: adafruit_is31fl3741_params.h	  
+      - path: adafruit_is31fl3741_i2c.h
+      - path: adafruit_is31fl3741_params.h
       - path: adafruit_is31fl3741.h
       - path: oled_display.h
 source:

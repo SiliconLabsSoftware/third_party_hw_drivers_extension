@@ -66,7 +66,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.1
+  version: 3.1.0
 
 other_file:
   - path: ../../documentation/example/bthome_v2_server/image/connection.png

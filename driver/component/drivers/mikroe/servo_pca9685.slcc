@@ -31,11 +31,11 @@ config_file:
 
 provides:
   - name: servo_pca9685
-  - allow_multiple: false
+    allow_multiple: false
 
 template_contribution:
   - name: component_catalog
-  - value: servo_pca9685
+    value: servo_pca9685
 
 include:
   - path: inc

@@ -12,7 +12,6 @@ requires:
   - name: status
   - name: hvac_scd41
   - name: pm_sps30_i2c
-config_file:
 provides:
   - name: hvac_bundle_scd41_sps30
     allow_multiple: false

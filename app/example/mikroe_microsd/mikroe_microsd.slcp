@@ -38,7 +38,7 @@ define:
 - name: DEBUG_EFM
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.1
+  version: 3.1.0
 other_file:
   - path: ../../documentation/example/mikroe_microsd/image/create_example.png
     directory: image

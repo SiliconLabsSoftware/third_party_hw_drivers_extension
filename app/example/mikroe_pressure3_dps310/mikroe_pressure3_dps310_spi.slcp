@@ -41,7 +41,7 @@ define:
 - name: DEBUG_EFM
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.1
+  version: 3.1.0
 configuration:
   - name: SL_SPIDRV_MIKROE_CS_CONTROL
     value: "spidrvCsControlApplication"

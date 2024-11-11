@@ -32,11 +32,11 @@ config_file:
 
 provides:
   - name: mic2
-  - allow_multiple: false
+    allow_multiple: false
 
 template_contribution:
   - name: component_catalog
-  - value: mic2
+    value: mic2
 
 include:
   - path: inc

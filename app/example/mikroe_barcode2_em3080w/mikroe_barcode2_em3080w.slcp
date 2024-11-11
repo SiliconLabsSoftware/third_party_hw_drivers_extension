@@ -53,7 +53,7 @@ define:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 3.0.1
+  version: 3.1.0
 
 other_file:
   - path: ../../documentation/example/mikroe_barcode2_em3080w/image/hardware_connection.png

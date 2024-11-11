@@ -92,4 +92,10 @@ extern "C"
 #endif
 // [GPIO_E_PAPER_BSY]$
 
+// <<< sl:end pin_tool >>>
+
+#ifdef __cplusplus
+}
 #endif
+
+#endif /* MIKROE_E_PAPER_154_INCH_CONFIG_H_ */
