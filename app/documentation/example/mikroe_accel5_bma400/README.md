@@ -2,7 +2,7 @@
 
 ## Summary ##
 
-This project aims to show the hardware driver that is used to interface with the BMA400 Sensor via APIs of GSDK. This driver is based on [BMA400 Sensor API](https://github.com/BoschSensortec/BMA400-API) from Bosch Sensortec.
+This project aims to show the hardware driver that is used to interface with the BMA400 Sensor using Silicon Labs platform. This driver is based on [BMA400 Sensor API](https://github.com/BoschSensortec/BMA400-API) from Bosch Sensortec.
 
 The BMA400 is the first real ultra-low power acceleration sensor that minimizes power consumption without compromising performance.
 
@@ -10,41 +10,41 @@ With its ultra-low power consumption, onboard data processing, output data lowpa
 
 ## Required Hardware ##
 
-- [A BGM220P Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [A MikroE Accel 5 Click board](https://www.mikroe.com/accel-5-click)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [Accel 5 Click board](https://www.mikroe.com/accel-5-click)
 
 ## Hardware Connection ##
 
 - **If the BGM220 Bluetooth Module Explorer Kit is used**:
-  
+
   The Accel 5 Click board supports MikroBus; therefore, it can connect easily to the MikroBus header of the BGM220P Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit. The hardware connection is shown in the image below:
 
   ![board](image/hardware_connection.png)
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
-  
+- **If the Wi-Fi Development Kit is used**:
+
   The hardware connection is shown in the table below:
 
   **If I2C interface is used:**
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | Accel 5 Click Board |
+  | Description  | BRD4338A + BRD4002A | BRD2605A    | Accel 5 Click Board |
   | -------------| ------------- | ------------------ | ------------------- |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                 |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                 |
-  | BMA400_INT1  | GPIO_46       | P24                | IT2                 |
-  | BMA400_INT2  | GPIO_47       | P26                | IT1                 |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | ULP_GPIO_6   | SDA            |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | ULP_GPIO_7   | SCL            |
+  | BMA400_INT1              | GPIO_46 [P24]  | GPIO_10    | IT2               |
+  | BMA400_INT2              | GPIO_47 [P26]  | GPIO_11    | IT1               |
 
     **If SPI interface is used:**
 
-  | Description              | BRD4338A GPIO | BRD4002 Breakout Pad | Accel 5 Click Board |
-  | -------------------------| ------------- | -------------------- | ------------------- |
-  | BMA400_INT1              | GPIO_46       | P24                  | IT2                 |
-  | BMA400_INT2              | GPIO_47       | P26                  | IT1                 |
-  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                 |
-  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27                  | SDO                 |
-  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27       | P29                  | SDI                 |
-  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28       | P31                  | CS                  |
+  | Description  | BRD4338A + BRD4002A | BRD2605A    | Accel 5 Click Board |
+  | -------------| ------------- | ----------------- | ------------------- |
+  | BMA400_INT1              | GPIO_46 [P24]  | GPIO_10    | IT2               |
+  | BMA400_INT2              | GPIO_47 [P26]  | GPIO_11    | IT1               |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25]  | GPIO_25    | SCK               |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26 [P27]  | GPIO_26    | SDO               |
+  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27 [P29]  | GPIO_27    | SDI               |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28 [P31]  | GPIO_28    | CS                |
 
 ## Setup ##
 
@@ -56,7 +56,7 @@ You can either create a project based on an example project or start with an emp
 
 2. Click **Create** button on the project:
 
-   - **Third Party Hardware Drivers - BMA400 - Accelerometer Sensor (Mikroe) - I2C** if using the I2C interface.  
+   - **Third Party Hardware Drivers - BMA400 - Accelerometer Sensor (Mikroe) - I2C** if using the I2C interface.
 
    - **Third Party Hardware Drivers - BMA400 - Accelerometer Sensor (Mikroe) - SPI** if using the SPI interface.
 
@@ -80,23 +80,25 @@ You can either create a project based on an example project or start with an emp
 
         **If the BGM220P Explorer Kit is used:**
 
-        - [Platform] → [Driver] → [GPIOINT]
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
-        - If using the I2C interface: [Third Party Hardware Drivers] → [Sensors] → [BMA400 - Accel 5 Click (Mikroe) - I2C] → use default configuration
-        - If using the SPI interface: [Third Party Hardware Drivers] → [Sensors] → [BMA400 - Accel 5 Click (Mikroe) - SPI] → use the default configuration
+        - If using the I2C interface:
+          - [Third Party Hardware Drivers] → [Sensors] → [BMA400 - Accel 5 Click (Mikroe) - I2C] → use default configuration
+        - If using the SPI interface:
+          - [Third Party Hardware Drivers] → [Sensors] → [BMA400 - Accel 5 Click (Mikroe) - SPI] → use default configuration
 
-        **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+        **If the Wi-Fi Development Kit is used:**
 
-        - If using the I2C interface: [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
-        - If using the I2C interface: [Third Party Hardware Drivers] → [Sensors] → [BMA400 - Accel 5 Click (Mikroe) - I2C] → use default configuration
-        - If using the SPI interface: [Third Party Hardware Drivers] → [Sensors] → [BMA400 - Accel 5 Click (Mikroe) - SPI] → use the default configuration
+        - If using the I2C interface:
+          - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
+          - [Third Party Hardware Drivers] → [Sensors] → [BMA400 - Accel 5 Click (Mikroe) - I2C] → use default configuration
+        - If using the SPI interface:
+          - [Third Party Hardware Drivers] → [Sensors] → [BMA400 - Accel 5 Click (Mikroe) - SPI] → use default configuration
 
-4. Install "Printf float"
+4. Enable **Printf float**
 
-    - Open Properties of the project.
-
-    - Select C/C++ Build > Settings > Tool Settings > GNU ARM C Linker > General > Check "Printf float".
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
 5. Build and flash this example to the board.
 

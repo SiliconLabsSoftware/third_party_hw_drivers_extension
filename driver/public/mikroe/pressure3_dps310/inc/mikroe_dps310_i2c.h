@@ -41,7 +41,7 @@
 #define MIKROE_PRESSURE3_H
 
 #include "sl_status.h"
-#include "drv_i2c_master.h"
+#include "pressure3.h"
 
 #ifdef __cplusplus
 extern "C" {

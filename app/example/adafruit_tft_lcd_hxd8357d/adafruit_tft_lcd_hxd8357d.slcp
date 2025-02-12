@@ -7,51 +7,51 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: gecko/app.c
-- path: app_main_screen.c
-- path: app_calib_screen.c
-- path: main.c
+  - path: gecko/app.c
+  - path: app_main_screen.c
+  - path: app_calib_screen.c
+  - path: main.c
 
 include:
-- path: 'gecko'
-  file_list:
-  - path: app.h
+  - path: 'gecko'
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: iostream_eusart
-  instance: [vcom]
-- id: app_assert
-- id: sleeptimer
-- id: app_log
-- id: udelay
-- id: adafruit_tft_lcd_hxd8357d
-  from: third_party_hw_drivers
-- id: services_oled_glib
-  from: third_party_hw_drivers
-- id: touch_screen_analog
-  from: third_party_hw_drivers
-- id: touch_screen_analog_gecko
-  from: third_party_hw_drivers
+  - id: sl_system
+  - id: device_init
+  - id: iostream_eusart
+    instance: [vcom]
+  - id: app_assert
+  - id: sleeptimer
+  - id: app_log
+  - id: udelay
+  - id: adafruit_tft_lcd_hxd8357d
+    from: third_party_hw_drivers
+  - id: services_oled_glib
+    from: third_party_hw_drivers
+  - id: touch_screen_analog
+    from: third_party_hw_drivers
+  - id: touch_screen_analog_gecko
+    from: third_party_hw_drivers
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/README.md
 
 other_file:
   - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d/image/create_example_with_dma_mode.png
@@ -74,18 +74,18 @@ other_file:
     directory: image
 
 configuration:
-- name: TOUCHSCREEN_X_MIN
-  value: '428'
-- name: TOUCHSCREEN_X_MAX
-  value: '3628'
-- name: TOUCHSCREEN_Y_MIN
-  value: '260'
-- name: TOUCHSCREEN_Y_MAX
-  value: '3776'
-- name: TOUCHSCREEN_HOR_RES
-  value: '320'
-- name: TOUCHSCREEN_VER_RES
-  value: '480'
+  - name: TOUCHSCREEN_X_MIN
+    value: '428'
+  - name: TOUCHSCREEN_X_MAX
+    value: '3628'
+  - name: TOUCHSCREEN_Y_MIN
+    value: '260'
+  - name: TOUCHSCREEN_Y_MAX
+    value: '3776'
+  - name: TOUCHSCREEN_HOR_RES
+    value: '320'
+  - name: TOUCHSCREEN_VER_RES
+    value: '480'
 
 ui_hints:
   highlight:

@@ -45,12 +45,12 @@
 #define SL_I2CSPM_FUEL_GAUGE_PERIPHERAL_NO       0
 
 // I2C0 SCL on PD02
-#define SL_I2CSPM_FUEL_GAUGE_SCL_PORT            gpioPortD
-#define SL_I2CSPM_FUEL_GAUGE_SCL_PIN             2
+#define SL_I2CSPM_FUEL_GAUGE_SCL_PORT            SL_GPIO_PORT_B
+#define SL_I2CSPM_FUEL_GAUGE_SCL_PIN             0
 
 // I2C0 SDA on PD03
-#define SL_I2CSPM_FUEL_GAUGE_SDA_PORT            gpioPortD
-#define SL_I2CSPM_FUEL_GAUGE_SDA_PIN             3
+#define SL_I2CSPM_FUEL_GAUGE_SDA_PORT            SL_GPIO_PORT_B
+#define SL_I2CSPM_FUEL_GAUGE_SDA_PIN             1
 // [I2C_SL_I2CSPM_FUEL_GAUGE]$
 // <<< sl:end pin_tool >>>
 

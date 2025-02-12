@@ -10,15 +10,15 @@ The sensor can be used in various domains. For example, with the washing machine
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit (BRD2703A xG24 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [**Turbidity Click** board carries MCP3221 Low-Power 12-Bit A/D Converter](https://www.mikroe.com/turbidity-click)
+- 1x [Turbidity Click board](https://www.mikroe.com/turbidity-click) carries MCP3221 Low-Power 12-Bit A/D Converter
 
-- [**Turbidity Sensor - TSD10**](https://www.mikroe.com/tsd-10-turbidity-sensor)
+- 1x [Turbidity Sensor - TSD10](https://www.mikroe.com/tsd-10-turbidity-sensor)
 
-- [**3-wire Male to Male Cable - 15 cm**](https://www.mikroe.com/3-wire-male-to-male-cable-15-cm)
+- 1x [3-wire Male to Male Cable - 15 cm](https://www.mikroe.com/3-wire-male-to-male-cable-15-cm)
 
 ## Hardware Connection ##
 
@@ -33,12 +33,12 @@ The sensor can be used in various domains. For example, with the washing machine
 
   ![real_hardware_connection](image/hardware_connection1.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | Turbidity Click  |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | Turbidity Click  |
   | -------------| ------------- | ------------------ | ---------------- |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA              |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL              |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16]  | ULP_GPIO_6  | SDA              |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15]  | ULP_GPIO_7  | SCL              |
 
 ## Setup ##
 
@@ -74,15 +74,15 @@ You can either create a project based on an example project or start with an emp
         - [Application] → [Utility] → [Log]
         - [Third-Party Hardware Drivers] → [Sensor] → [TSD-10 - Turbidity Click (Mikroe)]
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
         - [Third Party Hardware Drivers] → [Sensors] → [TSD-10 - Turbidity Click (Mikroe)]
 
-4. Install printf float
+4. Enable **Printf float**
 
-    - Open Properties of the project.
-    - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General. Check Printf float.
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
       ![float](image/float.png)
 
@@ -92,7 +92,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Hardware Drivers Extension must be enabled for the project to install the "TSD-10 - Turbidity Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install the "TSD-10 - Turbidity Click (Mikroe)" component.
 
 ## How It Works ##
 

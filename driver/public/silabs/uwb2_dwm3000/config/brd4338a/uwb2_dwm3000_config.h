@@ -40,8 +40,7 @@
 #define DWM3000_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu
@@ -62,50 +61,50 @@ extern "C"
 
 // <gpio optional=true> DWM3000_RESET
 // $[GPIO_DWM3000_RESET]
-#ifndef DWM3000_RESET_PORT                      
+#ifndef DWM3000_RESET_PORT
 #define DWM3000_RESET_PORT                       HP
 #endif
-#ifndef DWM3000_RESET_PIN                       
+#ifndef DWM3000_RESET_PIN
 #define DWM3000_RESET_PIN                        47
 #endif
 // [GPIO_DWM3000_RESET]$
 
 // <gpio optional=true> DWM3000_INT
 // $[GPIO_DWM3000_INT]
-#ifndef DWM3000_INT_PORT                        
+#ifndef DWM3000_INT_PORT
 #define DWM3000_INT_PORT                         HP
 #endif
-#ifndef DWM3000_INT_PIN                         
+#ifndef DWM3000_INT_PIN
 #define DWM3000_INT_PIN                          46
 #endif
 // [GPIO_DWM3000_INT]$
 
 // <gpio optional=true> DWM3000_WAKE
 // $[GPIO_DWM3000_WAKE]
-// #ifndef DWM3000_WAKE_PORT                       
+// #ifndef DWM3000_WAKE_PORT
 // #define DWM3000_WAKE_PORT                        0
 // #endif
-// #ifndef DWM3000_WAKE_PIN                        
+// #ifndef DWM3000_WAKE_PIN
 // #define DWM3000_WAKE_PIN                         0
 // #endif
 // [GPIO_DWM3000_WAKE]$
 
 // <gpio optional=true> DWM3000_ON
 // $[GPIO_DWM3000_ON]
-// #ifndef DWM3000_ON_PORT                         
+// #ifndef DWM3000_ON_PORT
 // #define DWM3000_ON_PORT                          0
 // #endif
-// #ifndef DWM3000_ON_PIN                          
+// #ifndef DWM3000_ON_PIN
 // #define DWM3000_ON_PIN                           0
 // #endif
 // [GPIO_DWM3000_ON]$
 
 // <gpio optional=true> DWM3000_CS
 // $[GPIO_DWM3000_CS]
-// #ifndef DWM3000_CS_PORT                         
+// #ifndef DWM3000_CS_PORT
 // #define DWM3000_CS_PORT                          0
 // #endif
-// #ifndef DWM3000_CS_PIN                          
+// #ifndef DWM3000_CS_PIN
 // #define DWM3000_CS_PIN                           0
 // #endif
 // [GPIO_DWM3000_CS]$
@@ -116,4 +115,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-#endif /* DWM3000_CONFIG_H_ */
+
+#endif // DWM3000_CONFIG_H_

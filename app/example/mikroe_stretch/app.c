@@ -43,17 +43,18 @@
 #if (defined(SLI_SI917))
 #include "sl_adc_instances.h"
 #include "rsi_debug.h"
+
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
+
+static uint8_t channel = SL_ADC_CHANNEL_1;
 #else
 #include "em_iadc.h"
 #include "app_log.h"
+
+#define app_printf(...)              app_log(__VA_ARGS__)
 #endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-static uint8_t channel = SL_ADC_CHANNEL_1;
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
+#define READING_INTERVAL_MSEC        500
 
 static volatile bool stretch_timer_expire = false;
 static sl_sleeptimer_timer_handle_t stretch_timer;
@@ -94,7 +95,7 @@ void app_init(void)
   }
   app_printf("Stretch Click is initialized.\n");
   sl_sleeptimer_start_periodic_timer_ms(&stretch_timer,
-                                        500,
+                                        READING_INTERVAL_MSEC,
                                         stretch_sleeptimer_callback,
                                         NULL,
                                         0,

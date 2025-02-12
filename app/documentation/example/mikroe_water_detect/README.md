@@ -10,11 +10,11 @@ This device can be used as a household flood alarm sensor, or rain detector for 
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview).
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [Water Detect Click](https://www.mikroe.com/water-detect-click)
+- 1x [Water Detect Click](https://www.mikroe.com/water-detect-click)
 
 ## Hardware Connection ##
 
@@ -26,11 +26,11 @@ This device can be used as a household flood alarm sensor, or rain detector for 
 
   ![board](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description  | BRD4338A GPIO  | BRD4002 Breakout Pad | Water Detector Click |
-  | -------------| ---------------| ---------------------| -------------------- |
-  | GPIO         | GPIO_46        | P24                  | INT                  |
+  | Description  | BRD4338A + BRD4002A | BRD2605A  | Water Detector Click |
+  | -------------| --------------------| ----------| -------------------- |
+  | GPIO         | GPIO_46 [P24]       | GPIO_10   | INT                  |
 
 ## Setup ##
 
@@ -67,7 +67,7 @@ You can either create a project based on an example project or start with an emp
         - [Application] → [Utility] → [Log]
         - [Third Party Hardware Drivers] → [Sensors] → [Water Detect Click (Mikroe)] → use default configuration
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [Third Party Hardware Drivers] → [Sensors] → [Water Detect Click (Mikroe)] → use default configuration
@@ -78,7 +78,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "Water Detect Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "Water Detect Click (Mikroe)" component.
 
 ## How It Works ##
 

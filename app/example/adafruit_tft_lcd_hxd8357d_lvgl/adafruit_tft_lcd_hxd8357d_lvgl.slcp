@@ -7,69 +7,69 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/adafruit_tft_lcd_hxd8357d_lvgl/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: gecko/app.c
-- path: main.c
-- path: app_ui/ui_events_gecko.c
-- path: app_ui/ui_helpers.c
-- path: app_ui/ui.c
-- path: app_ui/components/ui_comp_hook.c
-- path: app_ui/screens/ui_loader.c
-- path: app_ui/screens/ui_main.c
-- path: app_ui/images/ui_img_buld_off_png.c
-- path: app_ui/images/ui_img_buld_on_png.c
-- path: app_ui/images/ui_img_button1_off_png.c
-- path: app_ui/images/ui_img_button1_on_png.c
-- path: app_ui/images/ui_img_842152610.c
+  - path: gecko/app.c
+  - path: main.c
+  - path: app_ui/ui_events_gecko.c
+  - path: app_ui/ui_helpers.c
+  - path: app_ui/ui.c
+  - path: app_ui/components/ui_comp_hook.c
+  - path: app_ui/screens/ui_loader.c
+  - path: app_ui/screens/ui_main.c
+  - path: app_ui/images/ui_img_buld_off_png.c
+  - path: app_ui/images/ui_img_buld_on_png.c
+  - path: app_ui/images/ui_img_button1_off_png.c
+  - path: app_ui/images/ui_img_button1_on_png.c
+  - path: app_ui/images/ui_img_842152610.c
 
 include:
-- path: 'gecko'
-  file_list:
-  - path: app.h
-- path: app_ui
-  file_list:
-  - path: ui_events.h
-  - path: ui_helpers.h
-  - path: ui.h
+  - path: 'gecko'
+    file_list:
+    - path: app.h
+  - path: app_ui
+    file_list:
+    - path: ui_events.h
+    - path: ui_helpers.h
+    - path: ui.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: iostream_eusart
-  instance: [vcom]
-- id: app_assert
-- id: sleeptimer
-- id: app_log
-- id: udelay
-- id: simple_led
-  instance: [led0, led1]
-- id: simple_button
-  instance: [btn0]
-- id: adafruit_tft_lcd_hxd8357d
-  from: third_party_hw_drivers
-- id: services_lvgl
-  from: third_party_hw_drivers
-- id: touch_screen_analog
-  from: third_party_hw_drivers
-- id: touch_screen_analog_gecko
-  from: third_party_hw_drivers
+  - id: sl_system
+  - id: device_init
+  - id: iostream_eusart
+    instance: [vcom]
+  - id: app_assert
+  - id: sleeptimer
+  - id: app_log
+  - id: udelay
+  - id: simple_led
+    instance: [led0, led1]
+  - id: simple_button
+    instance: [btn0]
+  - id: adafruit_tft_lcd_hxd8357d
+    from: third_party_hw_drivers
+  - id: services_lvgl
+    from: third_party_hw_drivers
+  - id: touch_screen_analog
+    from: third_party_hw_drivers
+  - id: touch_screen_analog_gecko
+    from: third_party_hw_drivers
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d_lvgl/README.md
 
 other_file:
   - path: ../../documentation/example/adafruit_tft_lcd_hxd8357d_lvgl/image/create_example.png
@@ -94,26 +94,26 @@ other_file:
     directory: image
 
 configuration:
-- name: TOUCHSCREEN_X_MIN
-  value: '428'
-- name: TOUCHSCREEN_X_MAX
-  value: '3628'
-- name: TOUCHSCREEN_Y_MIN
-  value: '260'
-- name: TOUCHSCREEN_Y_MAX
-  value: '3776'
-- name: TOUCHSCREEN_HOR_RES
-  value: '320'
-- name: TOUCHSCREEN_VER_RES
-  value: '480'
-- name: LV_BUFFER_MODE
-  value: "0"
-- name: LV_DISPLAY_ROTATION
-  value: "LV_DISP_ROT_90"
-- name: LV_ENABLE_SOFTWARE_ROTATION
-  value: "1"
-- name: LV_INPUT_TYPE
-  value: "LV_INPUT_TYPE_POINTER"
+  - name: TOUCHSCREEN_X_MIN
+    value: '428'
+  - name: TOUCHSCREEN_X_MAX
+    value: '3628'
+  - name: TOUCHSCREEN_Y_MIN
+    value: '260'
+  - name: TOUCHSCREEN_Y_MAX
+    value: '3776'
+  - name: TOUCHSCREEN_HOR_RES
+    value: '320'
+  - name: TOUCHSCREEN_VER_RES
+    value: '480'
+  - name: LV_BUFFER_MODE
+    value: "0"
+  - name: LV_DISPLAY_ROTATION
+    value: "LV_DISP_ROT_90"
+  - name: LV_ENABLE_SOFTWARE_ROTATION
+    value: "1"
+  - name: LV_INPUT_TYPE
+    value: "LV_INPUT_TYPE_POINTER"
 
 ui_hints:
   highlight:

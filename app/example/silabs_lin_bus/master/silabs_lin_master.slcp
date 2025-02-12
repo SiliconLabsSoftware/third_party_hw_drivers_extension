@@ -7,61 +7,56 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../../documentation/example/silabs_lin_bus/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
-- path: sl_lin_test_master.c
+  - path: app.c
+  - path: main.c
+  - path: sl_lin_test_master.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
-  - path: sl_lin_test_master.h
-  - path: system.h
+  - path: ''
+    file_list:
+    - path: app.h
+    - path: sl_lin_test_master.h
+    - path: system.h
 
 component:
-- id: sl_system
-- id: device_init_core
-- id: device_init_clocks
-- id: device_init_dcdc
-- id: device_init_emu
-- id: device_init_lfxo
-- id: device_init_hfxo
-- id: sleeptimer
-- id: component_catalog
-- id: device_init_nvic
-- id: emlib_ldma
-- id: emlib_letimer
-- id: emlib_usart
-- id: emlib_prs
-- id: hfxo_manager
-- id: power_manager
-- id: iostream_usart
-  instance: [cons]
-- id: iostream_retarget_stdio
-- id: printf
-- id: iostream_stdlib_config
+  - id: sl_system
+  - id: device_init_core
+  - id: device_init_clocks
+  - id: device_init_dcdc
+  - id: device_init_lfxo
+  - id: device_init_hfxo
+  - id: sleeptimer
+  - id: component_catalog
+  - id: device_init_nvic
+  - id: emlib_ldma
+  - id: emlib_letimer
+  - id: emlib_usart
+  - id: emlib_prs
+  - id: hfxo_manager
+  - id: power_manager
+  - id: iostream_usart
+    instance: [cons]
+  - id: iostream_retarget_stdio
+  - id: printf
+  - id: iostream_stdlib_config
 
 config_file:
-- path: "config/sl_iostream_usart_cons_config.h"
-  override:
-    component: iostream_usart
-    file_id: iostream_usart_config
-    instance: cons
+  - path: "config/sl_iostream_usart_cons_config.h"
+    override:
+      component: iostream_usart
+      file_id: iostream_usart_config
+      instance: cons
 
-sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+readme:
+  - path: ../../../documentation/example/silabs_lin_bus/README.md
 
 other_file:
   - path: ../../../documentation/example/silabs_lin_bus/images/hardware_connection.jpg

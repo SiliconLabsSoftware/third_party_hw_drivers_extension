@@ -8,11 +8,11 @@ UV Click is a compact add-on board that alerts users of excessive ultraviolet ra
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit?tab=overview) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [UV CLICK](https://www.mikroe.com/uv-click)
+- 2x [UV CLICK](https://www.mikroe.com/uv-click)
 
 ## Hardware Connection ##
 
@@ -22,15 +22,15 @@ UV Click is a compact add-on board that alerts users of excessive ultraviolet ra
 
   ![hardware_connection](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description   | BRD4338A GPIO  | BRD4002 Breakout Pad | UV Click Board |
-  | ------------- | -------------- | -------------------- | ------------------- |
-  | Analog Signal | ULP_GPIO_1     | P16                  | AN                  |
-  | Enable        | GPIO_46        | P24                  | EN                  |
-  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                 |
-  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27                  | SDO                 |
-  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28       | P31                  | CS                  |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | UV Click Board |
+  | -------------| ------------------- | -------------------- | ------------------- |
+  | Analog Signal | ULP_GPIO_1 [P16]    | ULP_GPIO_1          | AN                  |
+  | Enable        | GPIO_46 [P24]       | GPIO_10             | EN                  |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25] | GPIO_25        | SCK                 |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26 [P27] | GPIO_26        | SDO                 |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28 [P31] | GPIO_28        | CS                  |
 
 ## Setup ##
 
@@ -68,17 +68,18 @@ You can either create a project based on an example project or start with an emp
         - [Platform] → [Driver] → [SPI] → [SPIDRV] → default instance name: **mikroe**
         - [Third Party Hardware Drivers] → [Sensors] → [ML8511A - UV Click (Mikroe)]
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [Third Party Hardware Drivers] → [Sensors] → [ML8511A - UV Click (Mikroe)]
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [ADC] default instance name: channel_1
 
-4. Install printf float
+4. Enable **Printf float**
 
-    - Open Properties of the project.
-    - Select C/C++ Build > Settings > Tool Settings >GNU ARM C Linker > General. Check Printf float.
-        ![float](image/float.png)
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
+
+      ![float](image/float.png)
 
 5. Build and flash this example to the board.
 
@@ -86,7 +87,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "ML8511A - UV Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "ML8511A - UV Click (Mikroe)" component.
 
 ## How It Works ##
 

@@ -64,12 +64,6 @@ extern "C" {
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> CAP1166_CS
-// $[GPIO_CAP1166_CS]
-// #define CAP1166_CS_PORT                        0
-// #define CAP1166_CS_PIN                         0
-// [GPIO_CAP1166_CS]$
-
 // <gpio optional=true> CAP1166_RESET
 // $[GPIO_CAP1166_RESET]
 #define CAP1166_RESET_PORT                   HP

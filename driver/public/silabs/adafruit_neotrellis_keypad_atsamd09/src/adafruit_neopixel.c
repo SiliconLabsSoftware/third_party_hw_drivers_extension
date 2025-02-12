@@ -33,10 +33,11 @@
  * as a demonstration for evaluation purposes only. This code will be maintained
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
-#include "adafruit_neopixel.h"
-#include "sl_sleeptimer.h"
+
 #include <stdlib.h>
 #include <string.h>
+#include "sl_sleeptimer.h"
+#include "adafruit_neopixel.h"
 #include "adafruit_neotrellis_config.h"
 
 static inline bool adafruit_neopixel_can_show(neopixel_t *pixel)

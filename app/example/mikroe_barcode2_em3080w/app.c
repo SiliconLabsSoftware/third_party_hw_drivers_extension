@@ -27,29 +27,33 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has been minimally tested to ensure that it builds and is suitable
- * as a demonstration for evaluation purposes only. This code will be maintained
- * at the sole discretion of Silicon Labs.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
-#include "mikroe_em3080w.h"
+#include <string.h>
 #include "sl_sleeptimer.h"
 #include "app_assert.h"
-#include <string.h>
+#include "mikroe_em3080w.h"
 
 #if (defined(SLI_SI917))
 #include "rsi_debug.h"
 #include "sl_si91x_usart.h"
 
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#define USART_INSTANCE_USED            UART_1
-static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
+#define app_printf(...)            DEBUGOUT(__VA_ARGS__)
+#define USART_INSTANCE_USED        UART_1
 
+static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
 #else /* None Si91x device */
 #include "app_log.h"
 #include "sl_iostream_init_usart_instances.h"
 #include "sl_iostream_init_eusart_instances.h"
-#define app_printf(...) app_log(__VA_ARGS__)
+
+#define app_printf(...)            app_log(__VA_ARGS__)
 #endif
 
 #define PROCESS_COUNTER            500

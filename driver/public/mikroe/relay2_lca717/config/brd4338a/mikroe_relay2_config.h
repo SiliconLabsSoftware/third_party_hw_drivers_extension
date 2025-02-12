@@ -64,4 +64,4 @@ extern "C" {
 }
 #endif
 
-#endif /* SCL_RELAY2_CONFIG_H_ */
+#endif // SCL_RELAY2_CONFIG_H_

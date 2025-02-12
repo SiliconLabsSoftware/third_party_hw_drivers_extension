@@ -8,13 +8,13 @@ Stepper click is a complete solution for driving bipolar stepper motors with ful
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit - XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit?tab=overview) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [Stepper Click](https://www.mikroe.com/stepper-click)
+- 1x [Stepper Click](https://www.mikroe.com/stepper-click)
 
-- [Step Motor 5v](https://www.mikroe.com/step-motor-5v)
+- 1x [Step Motor 5v](https://www.mikroe.com/step-motor-5v)
 
 ## Hardware Connection ##
 
@@ -24,14 +24,14 @@ Stepper click is a complete solution for driving bipolar stepper motors with ful
 
   ![board](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description     | BRD4338A GPIO | BRD4002 Breakout Pad | Stepper Click                |
-  | ----------------| ------------- | -------------------- | ---------------------------- |
-  | Step size bit 1 | GPIO_48       | P28                  | MS1                          |
-  | Step size bit 2 | GPIO_49       | P30                  | MS2                          |
-  | Direction       | GPIO_47       | P26                  | DIR                          |
-  | Step trigger    | GPIO_46       | P24                  | STP                          |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | Stepper Click  |
+  | -------------| ------------- | -------------- | -------------- |
+  | Step size bit 1 | GPIO_48 [P28] | GPIO_12 [P25]     | MS1            |
+  | Step size bit 2 | GPIO_49 [P30] | GPIO_6 [P21]      | MS2            |
+  | Direction       | GPIO_47 [P26] | GPIO_11 [P22]     | DIR            |
+  | Step trigger    | GPIO_46 [P24] | GPIO_10 [P23]     | STP            |
 
 ## Setup ##
 
@@ -66,7 +66,7 @@ You can either create a project based on an example project or start with an emp
         - [Application] → [Utility] → [Log]
         - [Third-Party Hardware Drivers] → [Motor Control] → [A3967 - Stepper Click (Mikroe)]
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
         - [Third-Party Hardware Drivers] → [Motor Control] → [A3967 - Stepper Click (Mikroe)]
 
 4. Build and flash this example to the board.
@@ -75,7 +75,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install **"A3967 - Stepper Click (Mikroe)"** component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install **"A3967 - Stepper Click (Mikroe)"** component.
 
 ## How It Works ##
 

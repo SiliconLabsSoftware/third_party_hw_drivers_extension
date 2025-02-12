@@ -40,25 +40,21 @@
 #include "mikroe_pca9685.h"
 
 #if (defined(SLI_SI917))
-#include "rsi_debug.h"
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
-#include "app_log.h"
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
-
-#if (defined(SLI_SI917))
 #include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
+#define I2C_INSTANCE_USED            SL_I2C2
+
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #else
 #include "sl_i2cspm_instances.h"
+#include "app_log.h"
+
+#define app_printf(...)              app_log(__VA_ARGS__)
 #endif
 
 #define INTERVAL_MSEC                10
-
-#if (defined(SLI_SI917))
-#define I2C_INSTANCE_USED            SL_I2C2
-static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
-#endif
 
 static mikroe_i2c_handle_t app_i2c_instance = NULL;
 static mikroe_servo_pos_and_res_t pos_res_setting =

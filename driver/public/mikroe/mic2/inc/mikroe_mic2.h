@@ -40,9 +40,8 @@
 #ifndef MIKROE_MIC2_H_
 #define MIKROE_MIC2_H_
 
-#include "drv_i2c_master.h"
-#include "drv_analog_in.h"
 #include "sl_status.h"
+#include "mic2.h"
 
 #ifdef __cplusplus
 extern "C" {

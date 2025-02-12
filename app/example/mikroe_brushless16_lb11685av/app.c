@@ -41,13 +41,11 @@
 
 #if (defined(SLI_SI917))
 #include "rsi_debug.h"
-#else
-#include "app_log.h"
-#endif
 
-#if (defined(SLI_SI917))
 #define app_printf(...) DEBUGOUT(__VA_ARGS__)
 #else
+#include "app_log.h"
+
 #define app_printf(...) app_log(__VA_ARGS__)
 #endif
 

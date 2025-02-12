@@ -7,48 +7,48 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/mikroe_temphum15_sht40/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: mikroe_temphum15
-  from: third_party_hw_drivers
-- id: iostream_usart
-  instance: [vcom]
-- id: i2cspm
-  instance: [mikroe]
-- id: sleeptimer
-- id: app_log
+  - id: sl_system
+  - id: device_init
+  - id: iostream_usart
+    instance: [vcom]
+  - id: i2cspm
+    instance: [mikroe]
+  - id: sleeptimer
+  - id: app_log
+  - id: mikroe_temphum15
+    from: third_party_hw_drivers
 
 toolchain_settings:
   - option: gcc_linker_option
     value: "-u _printf_float"
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
-  
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/mikroe_temphum15_sht40/README.md
+
 other_file:
   - path: ../../documentation/example/mikroe_temphum15_sht40/image/create_example.png
     directory: "image"

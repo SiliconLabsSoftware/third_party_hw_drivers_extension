@@ -105,6 +105,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-
 #endif
-#endif /* MIKORE_SERVO_CONFIG_H_ */
+
+#endif // MIKORE_SERVO_CONFIG_H_

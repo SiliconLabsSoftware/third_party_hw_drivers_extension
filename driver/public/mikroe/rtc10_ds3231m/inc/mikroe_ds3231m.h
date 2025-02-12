@@ -41,7 +41,6 @@
 #define MIKROE_DS3231M_H_
 
 #include "sl_status.h"
-#include "drv_i2c_master.h"
 #include "rtc10.h"
 
 #ifdef __cplusplus

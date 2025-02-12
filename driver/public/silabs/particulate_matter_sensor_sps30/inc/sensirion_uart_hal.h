@@ -31,6 +31,7 @@
 
 #ifndef SENSIRION_UART_H
 #define SENSIRION_UART_H
+
 #include "sensirion_common.h"
 #include "sl_status.h"
 #include "drv_uart.h"

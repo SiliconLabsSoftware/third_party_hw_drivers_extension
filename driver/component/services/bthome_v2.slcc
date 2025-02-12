@@ -6,9 +6,6 @@ description: >
 category: Services
 quality: evaluation
 root_path: driver
-provides:
-  - name: services_bthome_v2
-    allow_multiple: false
 requires:
   - name: status
   - name: bluetooth_stack
@@ -19,6 +16,9 @@ requires:
 template_contribution:
   - name: component_catalog
     value: services_bthome_v2
+provides:
+  - name: services_bthome_v2
+    allow_multiple: false
 include:
   - path: public/silabs/bthome_v2/inc
     file_list:

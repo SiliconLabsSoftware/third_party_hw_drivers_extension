@@ -9,22 +9,15 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: gpiointerrupt
-    condition: [device_series_1]
-  - name: gpiointerrupt
-    condition: [device_series_2]
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
   - name: mikroe_peripheral_driver_digital_io
-
 provides:
   - name: sparkfun_qwiic_keypad
     allow_multiple: false
 template_contribution:
   - name: component_catalog
-    value: sparkfun_qwiic_keypad 
-config_file:    
+    value: sparkfun_qwiic_keypad
+config_file:
   - path: public/silabs/qwiic_keypad/config/brd2601b/sparkfun_keypad_config.h
     file_id: sparkfun_keypad_config
     condition: [brd2601b]
@@ -40,15 +33,18 @@ config_file:
   - path: public/silabs/qwiic_keypad/config/brd4314a/sparkfun_keypad_config.h
     file_id: sparkfun_keypad_config
     condition: [brd4314a]
+  - path: public/silabs/qwiic_keypad/config/brd2605a/sparkfun_keypad_config.h
+    file_id: sparkfun_keypad_config
+    condition: [brd2605a]
   - path: public/silabs/qwiic_keypad/config/brd4338a/sparkfun_keypad_config.h
     file_id: sparkfun_keypad_config
     condition: [brd4338a]
   - path: public/silabs/qwiic_keypad/config/other/sparkfun_keypad_config.h
     file_id: sparkfun_keypad_config
-    unless: [brd2601b, brd2703a, brd2704a, brd4108a, brd4314a, brd4338a]
+    unless: [brd2601b, brd2703a, brd2704a, brd4108a, brd4314a, brd2605a, brd4338a]
 include:
   - path: public/silabs/qwiic_keypad/inc
     file_list:
-      - path: sparkfun_qwiic_keypad.h   
+      - path: sparkfun_qwiic_keypad.h
 source:
   - path: public/silabs/qwiic_keypad/src/sparkfun_qwiic_keypad.c

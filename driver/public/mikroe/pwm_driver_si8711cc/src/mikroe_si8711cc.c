@@ -39,7 +39,6 @@
 #include <stddef.h>
 #include "stdbool.h"
 #include "mikroe_si8711cc.h"
-#include "pwmdriver.h"
 
 static pwmdriver_t pwm_driver;
 static pwmdriver_cfg_t pwm_driver_cfg;

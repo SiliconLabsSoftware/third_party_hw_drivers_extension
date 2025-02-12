@@ -9,23 +9,18 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
-
 provides:
   - name: sparkfun_qwiic_joystick
 template_contribution:
   - name: component_catalog
-    value: sparkfun_qwiic_joystick 
-
+    value: sparkfun_qwiic_joystick
 config_file:
   - path: public/silabs/qwiic_joystick/config/sparkfun_qwiic_joystick_config.h
     file_id: sparkfun_qwiic_joystick_config
-
 include:
   - path: public/silabs/qwiic_joystick/inc
     file_list:
-      - path: sparkfun_qwiic_joystick.h   
+      - path: sparkfun_qwiic_joystick.h
 source:
   - path: public/silabs/qwiic_joystick/src/sparkfun_qwiic_joystick.c

@@ -9,14 +9,14 @@ root_path: driver
 requires:
   - name: status
   - name: mikroe_peripheral_driver_i2c
-provides:
-  - name: oled_display
 config_file:
   - path: public/silabs/micro_oled_ssd1306/config/micro_oled_ssd1306_config.h
     file_id: sparkfun_micro_oled_ssd1306_config
 template_contribution:
   - name: component_catalog
     value: sparkfun_micro_oled_ssd1306
+provides:
+  - name: oled_display
 include:
   - path: public/silabs/micro_oled_ssd1306/inc
     file_list:

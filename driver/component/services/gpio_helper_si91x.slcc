@@ -9,7 +9,7 @@ root_path: driver
 requires:
   - name: sl_gpio
     from: wiseconnect3_sdk
-    condition: 
+    condition:
       - device_si91x
 provides:
   - name: gpio_helper_si91x
@@ -23,5 +23,5 @@ include:
       - path: gpio_helper_si91x.h
 source:
   - path: public/silabs/services_gpio_helper_si91x/src/gpio_helper_si91x.c
-    condition: 
+    condition:
       - device_si91x

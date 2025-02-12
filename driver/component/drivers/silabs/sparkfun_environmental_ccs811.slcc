@@ -9,8 +9,6 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
   - name: mikroe_peripheral_driver_digital_io
 provides:
@@ -38,9 +36,12 @@ config_file:
   - path: public/silabs/environmental_bme280_ccs811/config/brd4338a/sparkfun_ccs811_config.h
     file_id: sparkfun_ccs811_config
     condition: [brd4338a]
+  - path: public/silabs/environmental_bme280_ccs811/config/brd2605a/sparkfun_ccs811_config.h
+    file_id: sparkfun_ccs811_config
+    condition: [brd2605a]
   - path: public/silabs/environmental_bme280_ccs811/config/other/sparkfun_ccs811_config.h
     file_id: sparkfun_ccs811_config
-    unless: [brd2601b, brd2703a, brd2704a, brd4108a, brd4314a, brd4338a]
+    unless: [brd2601b, brd2703a, brd2704a, brd4108a, brd4314a, brd4338a, brd2605a]
 include:
   - path: public/silabs/environmental_bme280_ccs811/inc
     file_list:

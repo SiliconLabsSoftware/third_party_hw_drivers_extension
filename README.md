@@ -1,8 +1,8 @@
 # Third Party Hardware Drivers #
 
-[![Version Badge](https://img.shields.io/badge/v4.0.0-green)](https://github.com/SiliconLabs/third_party_hw_drivers_extension/releases)
-[![GSDK Badge](https://img.shields.io/badge/SiSDK-v2024.6.2-green)](https://github.com/SiliconLabs/gecko_sdk/releases)
-[![WSDK Badge](https://img.shields.io/badge/WSDK-v3.3.4-green)](https://github.com/SiliconLabs/wiseconnect/releases)
+[![Version Badge](https://img.shields.io/badge/v4.1.0-green)](https://github.com/SiliconLabs/third_party_hw_drivers_extension/releases)
+[![SiSDK Badge](https://img.shields.io/badge/SiSDK-v2024.12.0-green)](https://github.com/SiliconLabs/simplicity_sdk/releases)
+[![WSDK Badge](https://img.shields.io/badge/WSDK-v3.4.0-green)](https://github.com/SiliconLabs/wiseconnect/releases)
 ![License badge](https://img.shields.io/badge/License-Zlib-green)
 
 This repo contains example drivers developed by Silicon Labs engineers and are provided as [an SDK extension](https://docs.silabs.com/simplicity-studio-5-users-guide/latest/ss-5-users-guide-getting-started/install-sdk-extensions). These drivers interface with different types of external hardware and are tested against a specific device listed in the driver name. These drivers are intended to be fully compatible with Silicon Labs' wireless stacks. All drivers provide a minimal Simplicity Studio project for testing and to show an example usage of the driver. The driver source is provided for modification and extension as needed. All drivers in this repository are considered to be EVALUATION QUALITY which implies that the code provided in the repos is subjected to limited testing and is provided provided as-is. It is not suitable for production environments.
@@ -17,8 +17,7 @@ The following table shows extension support for Silicon Labs SoCs where ![Static
 |Series 2|![Static Badge](https://img.shields.io/badge/supported-green)|![Static Badge](https://img.shields.io/badge/supported-green)|![Static Badge](https://img.shields.io/badge/supported-green)|![Static Badge](https://img.shields.io/badge/supported-green)|
 |SiWx917|||![Static Badge](https://img.shields.io/badge/preview-orange)|![Static Badge](https://img.shields.io/badge/supported-green)|
 
-
-This extension supports Simplicity SDK from v4.0.0, prior versions support GSDK. 
+This extension supports Simplicity SDK from v4.0.0, prior versions support GSDK.
 
 For the SiW917 chip family, WiseConnect SDK is supported from  v3.0.0.
 
@@ -137,7 +136,8 @@ A full list of all examples and drivers in this repository is defined below:
 | 105 | Water Detect Click (Mikroe) | [Example](./app/example/mikroe_water_detect) | [Documentation](./app/documentation/example/mikroe_water_detect) |
 | 106 | Weather Station (Sparkfun) | [Example](./app/example/sparkfun_weatherstation) | [Documentation](./app/documentation/example/sparkfun_weatherstation) |
 | 107 | XM125 - PCR Click (Mikroe) | [Example](./app/example/mikroe_pcr_xm125) | [Documentation](./app/documentation/example/mikroe_pcr_xm125) |
-
+| 108 | RGB Driver Click (Mikroe) | [Example](./app/example/mikroe_rgb_driver) | [Documentation](./app/documentation/example/mikroe_rgb_driver) |
+| 109 | DRV8245P - DC Motor 29 Click (Mikroe) | [Example](./app/example/mikroe_dcmotor29_drv8245p) | [Documentation](./app/documentation/example/mikroe_dcmotor29_drv8245p) |
 
 ## Drivers ##
 
@@ -267,6 +267,12 @@ A full list of all examples and drivers in this repository is defined below:
                         </td>
                 </tr>
         <tr></tr>
+                    <td colspan="2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;RGB Driver Click (Mikore)</td>
+                    <td>
+                        <a href="./driver/public/mikroe/rgb">Driver</a>
+                        </td>
+                </tr>
+        <tr></tr>
         <tr>
                 <td colspan="3" align="left"><b>Human Machine Interface</b></td>
             </tr>
@@ -391,7 +397,7 @@ A full list of all examples and drivers in this repository is defined below:
         <tr>
                     <td colspan="2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;A4988 - Stepper 2 Click (Mikroe)</td>
                     <td>
-                        <a href="./driver/public/mikroe/stepper2_a4988">Driver</a>
+                        <a href="./driver/public/silabs/stepper2_a4988">Driver</a>
                         </td>
                 </tr>
         <tr></tr>
@@ -434,6 +440,13 @@ A full list of all examples and drivers in this repository is defined below:
                     <td colspan="2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;TB9053FTG - DC Motor 26 Click (Mikroe)</td>
                     <td>
                         <a href="./driver/public/mikroe/dcmotor26_tb9053ftg">Driver</a>
+                        </td>
+                </tr>
+        <tr></tr>
+        <tr>
+                    <td colspan="2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;TB9053FTG - DC Motor 29 Click (Mikroe)</td>
+                    <td>
+                        <a href="./driver/public/mikroe/dcmotor29_drv8245p">Driver</a>
                         </td>
                 </tr>
         <tr></tr>
@@ -1045,8 +1058,8 @@ A full list of all examples and drivers in this repository is defined below:
 - Desired Silicon Labs Starter Kit
 - Driver specific test hardware
 - Simplicity Studio v5.9.3.2 or newer
-- Simplicity SDK 2024.6.2
-- WiSeConnect SDK 3.3.4
+- Simplicity SDK 2024.12.0
+- WiSeConnect SDK 3.4.0
 
 ## How to add to Simplicity Studio IDE ##
 

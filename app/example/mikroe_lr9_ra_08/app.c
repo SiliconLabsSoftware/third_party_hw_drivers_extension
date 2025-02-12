@@ -39,28 +39,39 @@
 #include <string.h>
 #include "mikroe_ra_08.h"
 #include "sl_sleeptimer.h"
+
+#if (defined(SLI_SI917))
+#include "sl_si91x_usart.h"
+#include "rsi_debug.h"
+
+#define app_printf(...)                DEBUGOUT(__VA_ARGS__)
+#define USART_INSTANCE_USED            UART_1
+
+static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
+#else
 #include "sl_iostream_init_usart_instances.h"
 #include "sl_iostream_init_eusart_instances.h"
 #include "app_log.h"
 
 #define app_printf(...)                app_log(__VA_ARGS__)
+#endif
 
 // Comment the line below to switch application mode to receiver
 #define DEMO_APP_TRANSMITTER
 
 // Default RF configuration
-#define LR9_RF_CFG_DEFAULT_TX       "433000000,1,1,1,22,1"
-#define LR9_RF_CFG_DEFAULT_RX       "433000000,1,1,1,1"
-#define LR9_DEMO_STRING             "Silabs"
+#define LR9_RF_CFG_DEFAULT_TX          "433000000,1,1,1,22,1"
+#define LR9_RF_CFG_DEFAULT_RX          "433000000,1,1,1,1"
+#define LR9_DEMO_STRING                "Silabs"
 // Receiver string sequences
-#define PROCESS_START_RECEIVE       "Recv:"
-#define PROCESS_ATDTRX              "AT"
+#define PROCESS_START_RECEIVE          "Recv:"
+#define PROCESS_ATDTRX                 "AT"
 // Response timeout
-#define RESPONSE_TIMEOUT            100000
+#define RESPONSE_TIMEOUT               100000
 // Application buffer size
-#define APP_BUFFER_SIZE             500
-#define PROCESS_BUFFER_SIZE         100
-#define APP_TIMER_INTERVAL          2000
+#define APP_BUFFER_SIZE                500
+#define PROCESS_BUFFER_SIZE            100
+#define APP_TIMER_INTERVAL             2000
 
 static sl_sleeptimer_timer_handle_t app_timer;
 static volatile bool timer_trigger;
@@ -202,8 +213,12 @@ void app_init(void)
 {
   sl_status_t sc;
 
+#if (defined(SLI_SI917))
+  app_uart_instance = &uart_instance;
+#else
   app_uart_instance = sl_iostream_uart_mikroe_handle;
   app_log_iostream_set(sl_iostream_vcom_handle);
+#endif
 
   app_printf("Silicon Labs - LoRa 9 Click example.\n");
 

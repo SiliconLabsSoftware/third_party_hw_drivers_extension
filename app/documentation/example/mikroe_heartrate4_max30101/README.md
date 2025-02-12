@@ -8,11 +8,11 @@ Heart rate 4 click carries the MAX30101 high-sensitivity pulse oximeter and hear
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview).
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [Heart Rate 4 Click](https://www.mikroe.com/heart-rate-4-click).
+- 1x [Heart Rate 4 Click](https://www.mikroe.com/heart-rate-4-click)
 
 ## Hardware Connection ##
 
@@ -24,13 +24,13 @@ Heart rate 4 click carries the MAX30101 high-sensitivity pulse oximeter and hear
 
   ![board](image/hardware_connection.png "Hardware connection")
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description | BRD4338A GPIO  | BRD4002 EXP Header | Heart Rate 4 Click |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | Heart Rate 4 Click |
   | ----------- | -------------  | ------------------ | ------------------ |
-  | INT         | GPIO_46        | P24                | INT                |
-  | SDA         | ULP_GPIO_6     | EXP_16             | SDA                |
-  | SCL         | ULP_GPIO_7     | EXP_15             | SCL                |
+  | INT         | GPIO_46 [P24]       | GPIO_10       | INT                |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | ULP_GPIO_6   | SDA            |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | ULP_GPIO_7   | SCL            |
 
 ## Setup ##
 
@@ -62,14 +62,13 @@ You can either create a project based on an example project or start with an emp
 
       **If the Explorer Kit is used:**
 
-        - [Platform] → [Driver] → [GPIOINT]
         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
         - [Services] → [Timers] → [Sleep Timer]
         - [Application] → [Utility] → [Log]
         - [Third Party Hardware Drivers] → [Sensors] → [MAX30101 - Heart Rate 4 Click (Mikroe)] -> use default configuration.
         ![config](image/default_config.png)
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
         - [Third Party Hardware Drivers] → [Sensors] → [MAX30101 - Heart Rate 4 Click (Mikroe)] -> use default configuration.
@@ -80,7 +79,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension extension must be enabled for the project to install "MAX30101 - Heart Rate 4 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "MAX30101 - Heart Rate 4 Click (Mikroe)" component.
 
 ## How It Works ##
 

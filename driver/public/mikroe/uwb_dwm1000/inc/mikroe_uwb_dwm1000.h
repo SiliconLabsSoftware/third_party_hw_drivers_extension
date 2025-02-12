@@ -40,9 +40,9 @@
 #ifndef _MIKROE_MIKROE_DWM1000_DWM1000_H
 #define _MIKROE_MIKROE_DWM1000_DWM1000_H
 
+#include <stdint.h>
 #include "sl_status.h"
-#include "stdint.h"
-#include "drv_spi_master.h"
+#include "uwb.h"
 
 #ifdef __cplusplus
 extern "C" {

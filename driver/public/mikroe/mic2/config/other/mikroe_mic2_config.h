@@ -40,10 +40,6 @@
 #ifndef MIKORE_MIC2_CONFIG_H_
 #define MIKORE_MIC2_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -81,7 +77,7 @@ extern "C" {
 // <gpio optional=true> MIC2_ANALOG_OUTPUT
 // $[GPIO_MIC2_ANALOG_OUTPUT]
 #warning "AN pin for MIC 2 is not configured"
-// #define MIC2_ANALOG_OUTPUT_PORT                   gpioPortB
+// #define MIC2_ANALOG_OUTPUT_PORT                   0
 // #define MIC2_ANALOG_OUTPUT_PIN                    0
 // [GPIO_MIC2_ANALOG_OUTPUT]$
 
@@ -89,6 +85,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-
 #endif
+
 #endif // MIKORE_MIC2_CONFIG_H_

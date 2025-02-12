@@ -43,12 +43,10 @@
 
 #if (defined(SLI_SI917))
 #include "sl_si91x_gspi.h"
+
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #else
 #include "sl_spidrv_instances.h"
-#endif
-
-#if (defined(SLI_SI917))
-static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #endif
 
 mikroe_spi_handle_t app_spi_instance = NULL;

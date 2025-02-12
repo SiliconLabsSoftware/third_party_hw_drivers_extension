@@ -46,25 +46,21 @@
 #if (defined(SLI_SI917))
 #include "sl_si91x_usart.h"
 #include "rsi_debug.h"
+
+#define app_printf(...)                DEBUGOUT(__VA_ARGS__)
+#define USART_INSTANCE_USED            UART_1
+
+static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
 #else
 #include "sl_iostream_init_usart_instances.h"
 #include "sl_iostream_init_eusart_instances.h"
 #include "app_log.h"
+
+#define app_printf(...)                app_log(__VA_ARGS__)
 #endif
 
 #define PROCESS_BUFFER_SIZE            200
 #define READING_INTERVAL_MSEC          1000
-
-#if (defined(SLI_SI917))
-#define app_printf(...)                DEBUGOUT(__VA_ARGS__)
-#else
-#define app_printf(...)                app_log(__VA_ARGS__)
-#endif
-
-#if (defined(SLI_SI917))
-#define USART_INSTANCE_USED            UART_1
-static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
-#endif
 
 static int32_t app_buf_len = 0;
 static uint8_t app_buf[PROCESS_BUFFER_SIZE] = { 0 };

@@ -1,0 +1,70 @@
+project_name: mikroe_dcmotor29_drv8245p
+package: platform
+label: Third Party Hardware Drivers - DRV8245P - DC Motor 29 Click (Mikroe)
+description: |
+  This example project shows an example for Mikroe DC Motor 29 Click board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
+
+source:
+  - path: app.c
+  - path: main.c
+
+include:
+  - path: ''
+    file_list:
+    - path: app.h
+
+component:
+  - id: sl_system
+  - id: syscalls
+    from: wiseconnect3_sdk
+  - id: si917_memory_default_config
+    from: wiseconnect3_sdk
+  - id: sleeptimer
+  - id: app_assert
+  - id: i2c_instance
+    instance: [i2c2]
+    from: wiseconnect3_sdk
+  - id: sl_ssi_instance
+    instance: [primary]
+    from: wiseconnect3_sdk
+  - id: dcmotor29_drv8245p
+    from: third_party_hw_drivers
+
+toolchain_settings:
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+
+sdk_extension:
+  - id: third_party_hw_drivers
+    version: 4.1.0
+  - id: wiseconnect3_sdk
+    version: 3.4.0
+
+readme:
+  - path: ../../documentation/example/mikroe_dcmotor29_drv8245p/README.md
+
+other_file:
+  - path: ../../documentation/example/mikroe_dcmotor29_drv8245p/image/create_project.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_dcmotor29_drv8245p/image/console_log.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_dcmotor29_drv8245p/image/hardware_connection.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

@@ -41,7 +41,7 @@
 #define MIKROE_PCA9685_H_
 
 #include "sl_status.h"
-#include "drv_i2c_master.h"
+#include "servo.h"
 #include "mikroe_servo_config.h"
 
 typedef struct {

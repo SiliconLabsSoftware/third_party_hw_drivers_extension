@@ -1,4 +1,4 @@
-project_name: adafruit_tft_lcd_ili9341_lvgl_si91x
+project_name: adafruit_tft_lcd_ili9341_lvgl
 package: platform
 label: Third Party Hardware Drivers - ILI9341 - TFT LCD with Touchscreen (Adafruit) with LVGL
 description: |
@@ -7,97 +7,96 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: si91x/app.c
-- path: main.c
-- path: app_ui/brd4338a/single_buffer_without_dma/ui_events.c
-- path: app_ui/brd4338a/single_buffer_without_dma/ui_helpers.c
-- path: app_ui/brd4338a/single_buffer_without_dma/ui.c
-- path: app_ui/brd4338a/single_buffer_without_dma/components/ui_comp_hook.c
-- path: app_ui/brd4338a/single_buffer_without_dma/images/ui_img_1802009198.c
-- path: app_ui/brd4338a/single_buffer_without_dma/images/ui_img_2106501360.c
-- path: app_ui/brd4338a/single_buffer_without_dma/screens/ui_loader.c
-- path: app_ui/brd4338a/single_buffer_without_dma/screens/ui_main.c
+  - path: si91x/app.c
+  - path: main.c
+  - path: app_ui/single_buffer_without_dma/ui_events_brd2605a.c
+    condition: [brd2605a]
+  - path: app_ui/single_buffer_without_dma/ui_events_brd4338a.c
+    condition: [brd4338a]
+  - path: app_ui/single_buffer_without_dma/ui_helpers.c
+  - path: app_ui/single_buffer_without_dma/ui.c
+  - path: app_ui/single_buffer_without_dma/components/ui_comp_hook.c
+  - path: app_ui/single_buffer_without_dma/images/ui_img_1802009198.c
+  - path: app_ui/single_buffer_without_dma/images/ui_img_2106501360.c
+  - path: app_ui/single_buffer_without_dma/screens/ui_loader.c
+  - path: app_ui/single_buffer_without_dma/screens/ui_main.c
 
 include:
-- path: 'si91x'
-  file_list:
-  - path: app.h
-- path: app_ui/brd4338a/single_buffer_without_dma
-  file_list:
-  - path: ui_events.h
-  - path: ui_helpers.h
-  - path: ui.h
+  - path: 'si91x'
+    file_list:
+    - path: app.h
+  - path: app_ui/single_buffer_without_dma
+    file_list:
+    - path: ui_events.h
+    - path: ui_helpers.h
+    - path: ui.h
 
 component:
-- id: sl_system
-- id: syscalls
-  from: wiseconnect3_sdk
-- id: si917_memory_default_config
-  from: wiseconnect3_sdk
-- id: sleeptimer_si91x
-  from: wiseconnect3_sdk
-- id: sl_si91x_button_917
-  instance: [btn0, btn1]
-  from: wiseconnect3_sdk
-- id: sl_si91x_led_917
-  instance: [led0, led1]
-  from: wiseconnect3_sdk
-- id: adafruit_tft_lcd_ili9341
-  from: third_party_hw_drivers
-- id: services_lvgl
-  from: third_party_hw_drivers
-- id: touch_screen_analog
-  from: third_party_hw_drivers
-- id: touch_screen_analog_si91x
-  from: third_party_hw_drivers
-
-define:
-- name: DEBUG_EFM
+  - id: sl_system
+  - id: syscalls
+    from: wiseconnect3_sdk
+  - id: si917_memory_default_config
+    from: wiseconnect3_sdk
+  - id: sleeptimer
+  - id: sl_si91x_button_917
+    instance: [btn0, btn1]
+    from: wiseconnect3_sdk
+  - id: sl_si91x_led_917
+    instance: [led0]
+    from: wiseconnect3_sdk
+  - id: adafruit_tft_lcd_ili9341
+    from: third_party_hw_drivers
+  - id: services_lvgl
+    from: third_party_hw_drivers
+  - id: touch_screen_analog
+    from: third_party_hw_drivers
+  - id: touch_screen_analog_si91x
+    from: third_party_hw_drivers
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
-- id: wiseconnect3_sdk
-  version: 3.3.4
+  - id: third_party_hw_drivers
+    version: 4.1.0
+  - id: wiseconnect3_sdk
+    version: 3.4.0
 
 configuration:
-- name: LV_BUFFER_MODE
-  value: "0"
-- name: LV_DISPLAY_ROTATION
-  value: "LV_DISP_ROT_90"
-- name: LV_ENABLE_SOFTWARE_ROTATION
-  value: "1"
-- name: LV_INPUT_TYPE
-  value: "LV_INPUT_TYPE_POINTER"
-- name: "GSPI_UC"
-  value: "0"
+  - name: LV_BUFFER_MODE
+    value: "0"
+  - name: LV_DISPLAY_ROTATION
+    value: "LV_DISP_ROT_90"
+  - name: LV_ENABLE_SOFTWARE_ROTATION
+    value: "1"
+  - name: LV_INPUT_TYPE
+    value: "LV_INPUT_TYPE_POINTER"
+  - name: "GSPI_UC"
+    value: "0"
+
+readme:
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/README.md
 
 other_file:
-- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/create_example.png
-  directory: "image"
-- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/single_buffered_lvgl_settings.png
-  directory: "image"
-- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/double_buffered_lvgl_settings.png
-  directory: "image"
-- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/double_buffer_lvgl.gif
-  directory: "image"
-- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/single_buffer_lvgl.gif
-  directory: "image"
-- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/gspi.png
-  directory: "image"
-- path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/gspi_dma.png
-  directory: "image"
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/single_buffered_lvgl_settings.png
+    directory: "image"
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/double_buffered_lvgl_settings.png
+    directory: "image"
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/double_buffer_lvgl.gif
+    directory: "image"
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/single_buffer_lvgl.gif
+    directory: "image"
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/gspi.png
+    directory: "image"
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341_lvgl/image/gspi_dma.png
+    directory: "image"
 
 ui_hints:
   highlight:

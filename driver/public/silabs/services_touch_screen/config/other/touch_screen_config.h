@@ -37,8 +37,7 @@
 #define TOUCH_SCREEN_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>

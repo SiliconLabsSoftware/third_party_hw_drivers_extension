@@ -22,7 +22,7 @@ config_file:
   - path: public/mikroe/alcohol_mq3/config/brd4314a/mikroe_alcohol_mq3_config.h
     file_id: driver_config_alcohol
     condition: [brd4314a]
-  - path: public/mikroe/alcohol_mq3/config/brd4338a/mikroe_alcohol_mq3_config.h
+  - path: public/mikroe/alcohol_mq3/config/device_si91x/mikroe_alcohol_mq3_config.h
     file_id: driver_config_alcohol
     condition: [device_si91x]
   - path: public/mikroe/alcohol_mq3/config/other/mikroe_alcohol_mq3_config.h

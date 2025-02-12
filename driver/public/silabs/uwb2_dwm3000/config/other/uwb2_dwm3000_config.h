@@ -40,8 +40,7 @@
 #define DWM3000_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu
@@ -60,35 +59,39 @@ extern "C"
 
 // <<< sl:start pin_tool >>>
 
+// <usart signal=TX,RX,CLK,(CS)> DWM3000
+// $[USART_DWM3000]
+// [USART_DWM3000]$
+
 // <gpio optional=true> DWM3000_RESET
 // $[GPIO_DWM3000_RESET]
 #warning "DWM3000_RESET is not configured"
-// #ifndef DWM3000_RESET_PORT                      
-// #define DWM3000_RESET_PORT                       gpioPortC
+// #ifndef DWM3000_RESET_PORT
+// #define DWM3000_RESET_PORT                       0
 // #endif
-// #ifndef DWM3000_RESET_PIN                       
-// #define DWM3000_RESET_PIN                        8
+// #ifndef DWM3000_RESET_PIN
+// #define DWM3000_RESET_PIN                        0
 // #endif
 // [GPIO_DWM3000_RESET]$
 
 // <gpio optional=true> DWM3000_INT
 // $[GPIO_DWM3000_INT]
 #warning "DWM3000_INT is not configured"
-// #ifndef DWM3000_INT_PORT                        
-// #define DWM3000_INT_PORT                         gpioPortB
+// #ifndef DWM3000_INT_PORT
+// #define DWM3000_INT_PORT                         0
 // #endif
-// #ifndef DWM3000_INT_PIN                         
-// #define DWM3000_INT_PIN                          1
+// #ifndef DWM3000_INT_PIN
+// #define DWM3000_INT_PIN                          0
 // #endif
 // [GPIO_DWM3000_INT]$
 
 // <gpio optional=true> DWM3000_WAKE
 // $[GPIO_DWM3000_WAKE]
 //#warning "DWM3000_WAKE is not configured"
-// #ifndef DWM3000_WAKE_PORT                       
-// #define DWM3000_WAKE_PORT                        gpioPortB
+// #ifndef DWM3000_WAKE_PORT
+// #define DWM3000_WAKE_PORT                        0
 // #endif
-// #ifndef DWM3000_WAKE_PIN                        
+// #ifndef DWM3000_WAKE_PIN
 // #define DWM3000_WAKE_PIN                         0
 // #endif
 // [GPIO_DWM3000_WAKE]$
@@ -96,10 +99,10 @@ extern "C"
 // <gpio optional=true> DWM3000_ON
 // $[GPIO_DWM3000_ON]
 #warning "DWM3000_ON is not configured"
-// #ifndef DWM3000_ON_PORT                         
-// #define DWM3000_ON_PORT                          gpioPortA
+// #ifndef DWM3000_ON_PORT
+// #define DWM3000_ON_PORT                          0
 // #endif
-// #ifndef DWM3000_ON_PIN                          
+// #ifndef DWM3000_ON_PIN
 // #define DWM3000_ON_PIN                           0
 // #endif
 // [GPIO_DWM3000_ON]$
@@ -107,10 +110,10 @@ extern "C"
 // <gpio optional=true> DWM3000_CS
 // $[GPIO_DWM3000_CS]
 #warning "DWM3000_CS is not configured"
-// #ifndef DWM3000_CS_PORT                         
-// #define DWM3000_CS_PORT                          gpioPortC
+// #ifndef DWM3000_CS_PORT
+// #define DWM3000_CS_PORT                          0
 // #endif
-// #ifndef DWM3000_CS_PIN                          
+// #ifndef DWM3000_CS_PIN
 // #define DWM3000_CS_PIN                           0
 // #endif
 // [GPIO_DWM3000_CS]$
@@ -120,4 +123,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-#endif /* DWM3000_CONFIG_H_ */
+
+#endif // DWM3000_CONFIG_H_

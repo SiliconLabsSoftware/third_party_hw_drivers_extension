@@ -42,7 +42,6 @@
 #include "glib.h"
 
 #define CALIB_ENABLED                   0
-
 #define PRESSURE_THRESH                 500
 
 void main_screen_init(glib_context_t *g_context);

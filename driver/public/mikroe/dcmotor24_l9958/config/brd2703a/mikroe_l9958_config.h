@@ -40,8 +40,6 @@
 #ifndef MIKROE_L9958_CONFIG_H_
 #define MIKROE_L9958_CONFIG_H_
 
-#include "em_gpio.h"
-
 // <<< Use Configuration Wizard in Context Menu >>>
 
 // <h> MIKROE L9958 SPI Configuration
@@ -62,24 +60,18 @@
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> DCMOTOR24_CS
-// $[GPIO_DCMOTOR24_CS]
-// #define DCMOTOR24_CS_PORT                  0
-// #define DCMOTOR24_CS_PIN                   0
-// [GPIO_DCMOTOR24_CS]$
-
 // <gpio optional=true> DCMOTOR24_DIRECTION
 // $[GPIO_DCMOTOR24_DIRECTION]
-#define DCMOTOR24_DIRECTION_PORT        gpioPortB
+#define DCMOTOR24_DIRECTION_PORT        SL_GPIO_PORT_B
 #define DCMOTOR24_DIRECTION_PIN         0
 // [GPIO_DCMOTOR24_DIRECTION]$
 
 // <gpio optional=true> DCMOTOR24_ENABLE
 // $[GPIO_DCMOTOR24_ENABLE]
-#define DCMOTOR24_ENABLE_PORT           gpioPortC
+#define DCMOTOR24_ENABLE_PORT           SL_GPIO_PORT_C
 #define DCMOTOR24_ENABLE_PIN            8
 // [GPIO_DCMOTOR24_ENABLE]$
 
 // <<< sl:end pin_tool >>>
 
-#endif /* MIKROE_L9958_CONFIG_H_ */
+#endif // MIKROE_L9958_CONFIG_H_

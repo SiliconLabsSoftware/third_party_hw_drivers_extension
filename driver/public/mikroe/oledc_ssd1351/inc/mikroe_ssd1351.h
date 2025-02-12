@@ -2,9 +2,8 @@
 #ifndef MIKROE_SSD1351_H_
 #define MIKROE_SSD1351_H_
 
-#include "oledc.h"
 #include "sl_status.h"
-#include "drv_spi_master.h"
+#include "oledc.h"
 
 #ifdef __cplusplus
 extern "C" {

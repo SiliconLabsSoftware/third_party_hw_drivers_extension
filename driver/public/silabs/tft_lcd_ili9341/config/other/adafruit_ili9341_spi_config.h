@@ -37,8 +37,7 @@
 #define ADAFRUIT_ILI9341_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
@@ -77,8 +76,7 @@ extern "C"
 // <<< sl:end pin_tool >>>
 
 #ifdef __cplusplus
-extern "C"
 }
 #endif
 
-#endif /* ADAFRUIT_ILI9341_CONFIG_H_ */
+#endif // ADAFRUIT_ILI9341_CONFIG_H_

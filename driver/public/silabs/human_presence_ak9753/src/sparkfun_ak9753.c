@@ -39,12 +39,6 @@
 #include <string.h>
 #include "sl_sleeptimer.h"
 #include "sparkfun_ak9753.h"
-#include "sparkfun_ak9753_config.h"
-#include "drv_digital_out.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // instance for I2C communication
 i2c_master_t ak9753_i2c;
@@ -71,8 +65,8 @@ static sparkfun_ak9753_config_t sparkfun_ak9753_cfg = {
 };      /* Structure to hold AK9753 driver config */
 
 /***************************************************************************//**
-* Read register value
-*******************************************************************************/
+ * Read register value
+ *******************************************************************************/
 static sl_status_t sparkfun_ak9753_platform_read_register(uint8_t addr,
                                                           uint8_t *pdata)
 {
@@ -91,8 +85,8 @@ static sl_status_t sparkfun_ak9753_platform_read_register(uint8_t addr,
 }
 
 /***************************************************************************//**
-* Write into register
-*******************************************************************************/
+ * Write into register
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_platform_write_register(uint8_t addr,
                                                     uint8_t data)
 {
@@ -110,8 +104,8 @@ sl_status_t sparkfun_ak9753_platform_write_register(uint8_t addr,
 }
 
 /***************************************************************************//**
-* Read multiple bytes from sensor
-*******************************************************************************/
+ * Read multiple bytes from sensor
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_platform_read_blocking_register(uint8_t addr,
                                                             uint8_t *pdata,
                                                             uint8_t len)
@@ -131,8 +125,8 @@ sl_status_t sparkfun_ak9753_platform_read_blocking_register(uint8_t addr,
 }
 
 /***************************************************************************//**
-* Return the version information of the MMA8452Q.
-*******************************************************************************/
+ * Return the version information of the MMA8452Q.
+ *******************************************************************************/
 void sparkfun_ak9753_get_core_version(
   sparkfun_ak9753_core_version_t *core_version)
 {
@@ -145,8 +139,8 @@ void sparkfun_ak9753_get_core_version(
 }
 
 /***************************************************************************//**
-* Set mode of the sensor.
-*******************************************************************************/
+ * Set mode of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_set_mode(sparkfun_ak9753_mode_t mode)
 {
   sl_status_t sc = SL_STATUS_OK;
@@ -175,8 +169,8 @@ sl_status_t sparkfun_ak9753_set_mode(sparkfun_ak9753_mode_t mode)
 }
 
 /***************************************************************************//**
-* Power down the sensor.
-*******************************************************************************/
+ * Power down the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_power_down(void)
 {
   if (sparkfun_ak9753_cfg.PDN_present) {
@@ -187,8 +181,8 @@ sl_status_t sparkfun_ak9753_power_down(void)
 }
 
 /***************************************************************************//**
-* Power up the sensor.
-*******************************************************************************/
+ * Power up the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_power_up(void)
 {
   if (sparkfun_ak9753_cfg.PDN_present) {
@@ -199,8 +193,8 @@ sl_status_t sparkfun_ak9753_power_up(void)
 }
 
 /***************************************************************************//**
-* Get mode of the sensor.
-*******************************************************************************/
+ * Get mode of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_mode(sparkfun_ak9753_mode_t *mode)
 {
   if (mode == NULL) {
@@ -212,8 +206,8 @@ sl_status_t sparkfun_ak9753_get_mode(sparkfun_ak9753_mode_t *mode)
 }
 
 /***************************************************************************//**
-* Set cut off frequency of the sensor.
-*******************************************************************************/
+ * Set cut off frequency of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_set_cutoff_freq(sparkfun_ak9753_cutoff_freq_t fc)
 {
   sl_status_t sc = SL_STATUS_OK;
@@ -239,8 +233,8 @@ sl_status_t sparkfun_ak9753_set_cutoff_freq(sparkfun_ak9753_cutoff_freq_t fc)
 }
 
 /***************************************************************************//**
-* Get cut off frequency of the sensor.
-*******************************************************************************/
+ * Get cut off frequency of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_cutoff_freq(uint8_t *fc)
 {
   if (fc == NULL) {
@@ -252,8 +246,8 @@ sl_status_t sparkfun_ak9753_get_cutoff_freq(uint8_t *fc)
 }
 
 /***************************************************************************//**
-* Get the available status of the sensor.
-*******************************************************************************/
+ * Get the available status of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_is_data_ready(bool *data_ready)
 {
   if (data_ready == NULL) {
@@ -273,8 +267,8 @@ sl_status_t sparkfun_ak9753_is_data_ready(bool *data_ready)
 }
 
 /***************************************************************************//**
-* Initialize the sensor.
-*******************************************************************************/
+ * Initialize the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_init(
   sparkfun_ak9753_config_t *sparkfun_ak9753_config)
 {
@@ -352,16 +346,16 @@ sl_status_t sparkfun_ak9753_init(
 }
 
 /***************************************************************************//**
-* Deinitialize the sensor.
-*******************************************************************************/
+ * Deinitialize the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_deinit(void)
 {
   return SL_STATUS_OK;
 }
 
 /***************************************************************************//**
-* Refresh the sensor.
-*******************************************************************************/
+ * Refresh the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_dummy(void)
 {
   uint8_t dummy = 0;
@@ -370,8 +364,8 @@ sl_status_t sparkfun_ak9753_get_dummy(void)
 }
 
 /***************************************************************************//**
-* Get the value IR1 of the sensor.
-*******************************************************************************/
+ * Get the value IR1 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_ir1_data(int16_t *measurement_data)
 {
   if (measurement_data == NULL) {
@@ -390,8 +384,8 @@ sl_status_t sparkfun_ak9753_get_ir1_data(int16_t *measurement_data)
 }
 
 /***************************************************************************//**
-* Get the value IR2 of the sensor.
-*******************************************************************************/
+ * Get the value IR2 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_ir2_data(int16_t *measurement_data)
 {
   if (measurement_data == NULL) {
@@ -410,8 +404,8 @@ sl_status_t sparkfun_ak9753_get_ir2_data(int16_t *measurement_data)
 }
 
 /***************************************************************************//**
-* Get the value IR3 of the sensor.
-*******************************************************************************/
+ * Get the value IR3 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_ir3_data(int16_t *measurement_data)
 {
   if (measurement_data == NULL) {
@@ -430,8 +424,8 @@ sl_status_t sparkfun_ak9753_get_ir3_data(int16_t *measurement_data)
 }
 
 /***************************************************************************//**
-* Get the value IR4 of the sensor.
-*******************************************************************************/
+ * Get the value IR4 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_ir4_data(int16_t *measurement_data)
 {
   if (measurement_data == NULL) {
@@ -450,8 +444,8 @@ sl_status_t sparkfun_ak9753_get_ir4_data(int16_t *measurement_data)
 }
 
 /***************************************************************************//**
-* Get the value temperature in raw of the sensor.
-*******************************************************************************/
+ * Get the value temperature in raw of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_raw_temp(uint16_t *raw_temperature_data)
 {
   if (raw_temperature_data == NULL) {
@@ -472,8 +466,8 @@ sl_status_t sparkfun_ak9753_get_raw_temp(uint16_t *raw_temperature_data)
 }
 
 /***************************************************************************//**
-* Get the value temperature in Celcius of the sensor.
-*******************************************************************************/
+ * Get the value temperature in Celcius of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_tempC(float *tempC)
 {
   if (tempC == NULL) {
@@ -491,8 +485,8 @@ sl_status_t sparkfun_ak9753_get_tempC(float *tempC)
 }
 
 /***************************************************************************//**
-* Get the value temperature in F of the sensor.
-*******************************************************************************/
+ * Get the value temperature in F of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_tempF(float *tempF)
 {
   if (tempF == NULL) {
@@ -509,8 +503,8 @@ sl_status_t sparkfun_ak9753_get_tempF(float *tempF)
 }
 
 /***************************************************************************//**
-* Set the threshold Ir2-Ir4 of the sensor.
-*******************************************************************************/
+ * Set the threshold Ir2-Ir4 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_set_threshold_ir24(bool height,
                                                uint16_t threshold_value)
 {
@@ -540,8 +534,8 @@ sl_status_t sparkfun_ak9753_set_threshold_ir24(bool height,
 }
 
 /***************************************************************************//**
-* Get the threshold Ir2-Ir4 of the sensor.
-*******************************************************************************/
+ * Get the threshold Ir2-Ir4 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_threshold_ir24(bool height,
                                                uint16_t *threshold_value)
 {
@@ -562,8 +556,8 @@ sl_status_t sparkfun_ak9753_get_threshold_ir24(bool height,
 }
 
 /***************************************************************************//**
-* Set the threshold Ir2-Ir4 of the sensor to EEprom.
-*******************************************************************************/
+ * Set the threshold Ir2-Ir4 of the sensor to EEprom.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_set_threshold_eeprom_ir24(bool height,
                                                       uint16_t threshold_value)
 {
@@ -620,8 +614,8 @@ sl_status_t sparkfun_ak9753_set_threshold_eeprom_ir24(bool height,
 }
 
 /***************************************************************************//**
-* Get the threshold Ir2-Ir4 of the sensor to EEprom.
-*******************************************************************************/
+ * Get the threshold Ir2-Ir4 of the sensor to EEprom.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_eeprom_threshold_ir24(bool height,
                                                       uint16_t *threshold_value)
 {
@@ -664,8 +658,8 @@ sl_status_t sparkfun_ak9753_get_eeprom_threshold_ir24(bool height,
 }
 
 /***************************************************************************//**
-* Set the threshold Ir1-Ir3 of the sensor.
-*******************************************************************************/
+ * Set the threshold Ir1-Ir3 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_set_threshold_ir13(bool height,
                                                uint16_t threshold_value)
 {
@@ -696,8 +690,8 @@ sl_status_t sparkfun_ak9753_set_threshold_ir13(bool height,
 }
 
 /***************************************************************************//**
-* Get the threshold Ir1-Ir3 of the sensor.
-*******************************************************************************/
+ * Get the threshold Ir1-Ir3 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_threshold_ir13(bool height,
                                                uint16_t *threshold_value)
 {
@@ -715,8 +709,8 @@ sl_status_t sparkfun_ak9753_get_threshold_ir13(bool height,
 }
 
 /***************************************************************************//**
-* Set the threshold Ir1-Ir3 of the sensor to EEprom.
-*******************************************************************************/
+ * Set the threshold Ir1-Ir3 of the sensor to EEprom.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_set_threshold_eeprom_ir13(bool height,
                                                       uint16_t threshold_value)
 {
@@ -778,8 +772,8 @@ sl_status_t sparkfun_ak9753_set_threshold_eeprom_ir13(bool height,
 }
 
 /***************************************************************************//**
-* Get the threshold Ir1-Ir3 of the sensor to EEprom.
-*******************************************************************************/
+ * Get the threshold Ir1-Ir3 of the sensor to EEprom.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_eeprom_threshold_ir13(bool height,
                                                       uint16_t *threshold_value)
 {
@@ -825,8 +819,8 @@ sl_status_t sparkfun_ak9753_get_eeprom_threshold_ir13(bool height,
 }
 
 /***************************************************************************//**
-* Set hysteresis Ir2-Ir4 of the sensor.
-*******************************************************************************/
+ * Set hysteresis Ir2-Ir4 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_set_hysteresis_ir24(uint8_t hysteresis_value)
 {
   // we keep the 5 last bits mask
@@ -840,8 +834,8 @@ sl_status_t sparkfun_ak9753_set_hysteresis_ir24(uint8_t hysteresis_value)
 }
 
 /***************************************************************************//**
-* Get hysteresis Ir2-Ir4 of the sensor.
-*******************************************************************************/
+ * Get hysteresis Ir2-Ir4 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_hysteresis_ir24(uint8_t *hysteresis_value)
 {
   if (hysteresis_value == NULL) {
@@ -854,8 +848,8 @@ sl_status_t sparkfun_ak9753_get_hysteresis_ir24(uint8_t *hysteresis_value)
 }
 
 /***************************************************************************//**
-* Set hysteresis Ir2-Ir4 of the sensor to EEprom.
-*******************************************************************************/
+ * Set hysteresis Ir2-Ir4 of the sensor to EEprom.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_set_hysteresis_eeprom_ir24(uint8_t hysteresis_value)
 {
   sl_status_t sc = SL_STATUS_OK;
@@ -889,8 +883,8 @@ sl_status_t sparkfun_ak9753_set_hysteresis_eeprom_ir24(uint8_t hysteresis_value)
 }
 
 /***************************************************************************//**
-* Get hysteresis Ir2-Ir4 of the sensor to EEprom.
-*******************************************************************************/
+ * Get hysteresis Ir2-Ir4 of the sensor to EEprom.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_eeprom_hysteresis_ir24(
   uint8_t *hysteresis_value)
 {
@@ -921,8 +915,8 @@ sl_status_t sparkfun_ak9753_get_eeprom_hysteresis_ir24(
 }
 
 /***************************************************************************//**
-* Set hysteresis Ir1-Ir3 of the sensor.
-*******************************************************************************/
+ * Set hysteresis Ir1-Ir3 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_set_hysteresis_ir13(uint8_t hysteresis_value)
 {
   // we keep the 5 last bits mask
@@ -936,8 +930,8 @@ sl_status_t sparkfun_ak9753_set_hysteresis_ir13(uint8_t hysteresis_value)
 }
 
 /***************************************************************************//**
-* Get hysteresis Ir1-Ir3 of the sensor.
-*******************************************************************************/
+ * Get hysteresis Ir1-Ir3 of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_hysteresis_ir13(uint8_t *hysteresis_value)
 {
   if (hysteresis_value == NULL) {
@@ -950,8 +944,8 @@ sl_status_t sparkfun_ak9753_get_hysteresis_ir13(uint8_t *hysteresis_value)
 }
 
 /***************************************************************************//**
-* Set hysteresis Ir1-Ir3 of the sensor to EEprom.
-*******************************************************************************/
+ * Set hysteresis Ir1-Ir3 of the sensor to EEprom.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_set_hysteresis_eeprom_ir13(uint8_t hysteresis_value)
 {
   sl_status_t sc = SL_STATUS_OK;
@@ -985,8 +979,8 @@ sl_status_t sparkfun_ak9753_set_hysteresis_eeprom_ir13(uint8_t hysteresis_value)
 }
 
 /***************************************************************************//**
-* Get hysteresis Ir2-Ir4 of the sensor to EEprom.
-*******************************************************************************/
+ * Get hysteresis Ir2-Ir4 of the sensor to EEprom.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_eeprom_hysteresis_ir13(
   uint8_t *hysteresis_value)
 {
@@ -1017,8 +1011,8 @@ sl_status_t sparkfun_ak9753_get_eeprom_hysteresis_ir13(
 }
 
 /***************************************************************************//**
-* Set interrupts mode of the sensor.
-*******************************************************************************/
+ * Set interrupts mode of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_set_interrupts(uint8_t int_source)
 {
   // mask , assembly of SPARKFUN_AK975X_EINTEN bits
@@ -1028,8 +1022,8 @@ sl_status_t sparkfun_ak9753_set_interrupts(uint8_t int_source)
 }
 
 /***************************************************************************//**
-* Get interrupts mode of the sensor.
-*******************************************************************************/
+ * Get interrupts mode of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_get_int_source(uint8_t *int_source)
 {
   if (int_source == NULL) {
@@ -1041,8 +1035,8 @@ sl_status_t sparkfun_ak9753_get_int_source(uint8_t *int_source)
 }
 
 /***************************************************************************//**
-* Get the status over run state of the sensor.
-*******************************************************************************/
+ * Get the status over run state of the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_is_data_overrun(bool *data_overrun)
 {
   if (data_overrun == NULL) {
@@ -1063,16 +1057,16 @@ sl_status_t sparkfun_ak9753_is_data_overrun(bool *data_overrun)
 }
 
 /***************************************************************************//**
-* Soft reset the sensor.
-*******************************************************************************/
+ * Soft reset the sensor.
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_sw_reset(void)
 {
   return sparkfun_ak9753_platform_write_register(SPARKFUN_AK975X_CNTL2, 0xFF);
 }
 
 /***************************************************************************//**
-* Check the driver interrupt status
-*******************************************************************************/
+ * Check the driver interrupt status
+ *******************************************************************************/
 sl_status_t sparkfun_ak9753_is_interrupt(bool *isIR13H,
                                          bool *isIR13L,
                                          bool *isIR24H,
@@ -1105,7 +1099,3 @@ sl_status_t sparkfun_ak9753_is_interrupt(bool *isIR13H,
   }
   return SL_STATUS_OK;
 }
-
-#ifdef __cplusplus
-}
-#endif

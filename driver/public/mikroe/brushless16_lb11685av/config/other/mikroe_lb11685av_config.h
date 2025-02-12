@@ -39,10 +39,6 @@
 #ifndef MIKROE_LB11685AV_CONFIG_H_
 #define MIKROE_LB11685AV_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

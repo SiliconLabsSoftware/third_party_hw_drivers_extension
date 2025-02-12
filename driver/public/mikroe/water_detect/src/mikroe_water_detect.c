@@ -39,7 +39,6 @@
 
 #include "mikroe_water_detect_config.h"
 #include "mikroe_water_detect.h"
-#include "waterdetect.h"
 
 static waterdetect_t waterdetect;
 static waterdetect_cfg_t waterdetect_cfg;

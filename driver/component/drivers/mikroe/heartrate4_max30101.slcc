@@ -17,20 +17,25 @@ config_file:
     file_id: driver_config_heartrate4
     condition: [brd2703a]
   - path: public/mikroe/heartrate4_max30101/config/brd4108a/mikroe_max30101_config.h
-    file_id: driver_config_heaertrat4
+    file_id: driver_config_heartrate4
     condition: [brd4108a]
   - path: public/mikroe/heartrate4_max30101/config/brd4314a/mikroe_max30101_config.h
     file_id: driver_config_heartrate4
     condition: [brd4314a]
+  - path: public/mikroe/heartrate4_max30101/config/brd2605a/mikroe_max30101_config.h
+    file_id: driver_config_heartrate4
+    condition: [brd2605a]
   - path: public/mikroe/heartrate4_max30101/config/brd4338a/mikroe_max30101_config.h
     file_id: driver_config_heartrate4
     condition: [brd4338a]
   - path: public/mikroe/heartrate4_max30101/config/other/mikroe_max30101_config.h
     file_id: driver_config_heartrate4
-    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
 template_contribution:
   - name: component_catalog
     value: mikroe_heartrate4
+provides:
+  - name: mikroe_heartrate4
 include:
   - path: inc
     file_list:

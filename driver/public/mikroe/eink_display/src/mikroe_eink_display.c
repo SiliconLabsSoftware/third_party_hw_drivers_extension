@@ -66,8 +66,8 @@ static bool initialized = false;
 // -----------------------------------------------------------------------------
 
 /**************************************************************************//**
-*  E-Paper initialization.
-******************************************************************************/
+ *  E-Paper initialization.
+ ******************************************************************************/
 sl_status_t mikroe_eink_display_init(mikroe_spi_handle_t spi_instance)
 {
   if (spi_instance == NULL) {
@@ -93,10 +93,6 @@ sl_status_t mikroe_eink_display_init(mikroe_spi_handle_t spi_instance)
   eink_cfg.rst = hal_gpio_pin_name(EINK_DISPLAY_RST_PORT, EINK_DISPLAY_RST_PIN);
 #endif
 
-#if defined(EINK_DISPLAY_CS_PORT) && defined(EINK_DISPLAY_CS_PIN)
-  eink_cfg.cs = hal_gpio_pin_name(EINK_DISPLAY_CS_PORT, EINK_DISPLAY_CS_PIN);
-#endif
-
 #if (MIKROE_EINK_DISPLAY_SPI_UC == 1)
   eink_cfg.spi_speed = MIKROE_EINK_DISPLAY_SPI_UC_BITRATE;
 #endif
@@ -110,8 +106,8 @@ sl_status_t mikroe_eink_display_init(mikroe_spi_handle_t spi_instance)
 }
 
 /**************************************************************************//**
-*  E-Paper send command.
-******************************************************************************/
+ *  E-Paper send command.
+ ******************************************************************************/
 sl_status_t mikroe_eink_display_send_command(uint8_t command)
 {
   eink_display_send_command(&eink_ctx, command);
@@ -119,8 +115,8 @@ sl_status_t mikroe_eink_display_send_command(uint8_t command)
 }
 
 /**************************************************************************//**
-*  E-Paper send data.
-******************************************************************************/
+ *  E-Paper send data.
+ ******************************************************************************/
 sl_status_t mikroe_eink_display_send_data(uint8_t data)
 {
   eink_display_send_data(&eink_ctx, data);
@@ -128,8 +124,8 @@ sl_status_t mikroe_eink_display_send_data(uint8_t data)
 }
 
 /**************************************************************************//**
-*  E-Paper reset.
-******************************************************************************/
+ *  E-Paper reset.
+ ******************************************************************************/
 sl_status_t mikroe_eink_display_reset(void)
 {
   eink_display_reset(&eink_ctx);
@@ -137,8 +133,8 @@ sl_status_t mikroe_eink_display_reset(void)
 }
 
 /**************************************************************************//**
-*  E-Paper sleep mode.
-******************************************************************************/
+ *  E-Paper sleep mode.
+ ******************************************************************************/
 sl_status_t mikroe_eink_display_sleep_mode(void)
 {
   eink_display_sleep_mode(&eink_ctx);
@@ -146,8 +142,8 @@ sl_status_t mikroe_eink_display_sleep_mode(void)
 }
 
 /**************************************************************************//**
-*  E-Paper start config.
-******************************************************************************/
+ *  E-Paper start config.
+ ******************************************************************************/
 sl_status_t mikroe_eink_display_start_config(void)
 {
   eink_display_start_config(&eink_ctx);
@@ -155,8 +151,8 @@ sl_status_t mikroe_eink_display_start_config(void)
 }
 
 /**************************************************************************//**
-*  E-Paper set lut.
-******************************************************************************/
+ *  E-Paper set lut.
+ ******************************************************************************/
 sl_status_t mikroe_eink_display_set_lut(const uint8_t *lut, uint8_t n_bytes)
 {
   eink_display_set_lut(&eink_ctx, lut, n_bytes);
@@ -164,8 +160,8 @@ sl_status_t mikroe_eink_display_set_lut(const uint8_t *lut, uint8_t n_bytes)
 }
 
 /**************************************************************************//**
-*  E-Paper set memory pointer.
-******************************************************************************/
+ *  E-Paper set memory pointer.
+ ******************************************************************************/
 sl_status_t mikroe_eink_display_set_memory_pointer(uint8_t x, uint8_t y)
 {
   eink_display_set_mem_pointer(&eink_ctx, x, y);
@@ -173,8 +169,8 @@ sl_status_t mikroe_eink_display_set_memory_pointer(uint8_t x, uint8_t y)
 }
 
 /**************************************************************************//**
-*  E-Paper set memory area.
-******************************************************************************/
+ *  E-Paper set memory area.
+ ******************************************************************************/
 sl_status_t mikroe_eink_display_set_memory_area(eink_display_xy_t *xy)
 {
   eink_display_set_mem_area(&eink_ctx, xy);
@@ -182,8 +178,8 @@ sl_status_t mikroe_eink_display_set_memory_area(eink_display_xy_t *xy)
 }
 
 /**************************************************************************//**
-*  E-Paper update display.
-******************************************************************************/
+ *  E-Paper update display.
+ ******************************************************************************/
 sl_status_t mikroe_eink_display_update_display(void)
 {
   eink_display_update_display(&eink_ctx);
@@ -191,8 +187,8 @@ sl_status_t mikroe_eink_display_update_display(void)
 }
 
 /**************************************************************************//**
-*  E-Paper fill screen.
-******************************************************************************/
+ *  E-Paper fill screen.
+ ******************************************************************************/
 sl_status_t mikroe_eink_display_fill_screen(uint8_t color)
 {
   eink_display_fill_screen(&eink_ctx, color);
@@ -200,17 +196,17 @@ sl_status_t mikroe_eink_display_fill_screen(uint8_t color)
 }
 
 /**************************************************************************//**
-*  E-Paper display image.
-******************************************************************************/
-sl_status_t mikroe_eink_display_display_image(const uint8_t *image_buffer)
+ *  E-Paper display image.
+ ******************************************************************************/
+sl_status_t mikroe_eink_display_image(const uint8_t *image_buffer)
 {
   eink_display_display_image(&eink_ctx, image_buffer);
   return SL_STATUS_OK;
 }
 
 /**************************************************************************//**
-*  E-Paper display image for ESL.
-******************************************************************************/
+ *  E-Paper display image for ESL.
+ ******************************************************************************/
 #if (CONFIG_EINK_DISPLAY_RESOLUTION == EINK_DISPLAY_1_54_INCH)
 #if ESL_MODE == 1
 enum eink154_states {

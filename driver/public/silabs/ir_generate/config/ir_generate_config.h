@@ -35,23 +35,20 @@
 #ifndef IR_GENERATE_CONFIG_H_
 #define IR_GENERATE_CONFIG_H_
 
-// <<< Use Configuration Wizard in Context Menu >>>
-// <<< end of configuration section >>>
-
 // <<< sl:start pin_tool >>>
 
 // <gpio> IR_GENERATE_BSP_CARRIER
 // $[GPIO_IR_GENERATE_BSP_CARRIER]
-#define IR_GENERATE_BSP_CARRIER_PORT                 gpioPortD
+#define IR_GENERATE_BSP_CARRIER_PORT                 SL_GPIO_PORT_D
 #define IR_GENERATE_BSP_CARRIER_PIN                  2
 // [GPIO_IR_GENERATE_BSP_CARRIER]$
 
 // <gpio> IR_GENERATE_BSP_MODULATION
 // $[GPIO_IR_GENERATE_BSP_MODULATION]
-#define IR_GENERATE_BSP_MODULATION_PORT              gpioPortD
+#define IR_GENERATE_BSP_MODULATION_PORT              SL_GPIO_PORT_D
 #define IR_GENERATE_BSP_MODULATION_PIN               3
 // [GPIO_IR_GENERATE_BSP_MODULATION]$
 
 // <<< sl:end pin_tool >>>
 
-#endif /* IR_GENERATE_CONFIG_H_ */
+#endif // IR_GENERATE_CONFIG_H_

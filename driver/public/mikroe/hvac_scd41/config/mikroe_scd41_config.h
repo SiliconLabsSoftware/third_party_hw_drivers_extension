@@ -68,4 +68,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // MIKROE_SCD41_CONFIG_H

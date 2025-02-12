@@ -8,16 +8,16 @@ It can be used for human tracking, checking event attendance, and is also benefi
 
 ## Required Hardware ##
 
-- [A BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [SparkFun RFID Qwiic Reader](https://www.sparkfun.com/products/15191)
+- 1x [SparkFun RFID Qwiic Reader](https://www.sparkfun.com/products/15191)
 
-- [RFID Reader ID-12LA](https://www.sparkfun.com/products/11827)
+- 1x [RFID Reader ID-12LA](https://www.sparkfun.com/products/11827)
 
-- [RFID Tag (125kHz)](https://www.sparkfun.com/products/14325)
-  
+- 1x [RFID Tag (125kHz)](https://www.sparkfun.com/products/14325)
+
 ## Hardware Connection ##
 
 - **If the BGM220P Explorer Kit is used**:
@@ -26,14 +26,14 @@ It can be used for human tracking, checking event attendance, and is also benefi
 
   ![hardware_connection](image/hardware_connection.png)
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
-  
+- **If the Wi-Fi Development Kit is used**:
+
   The hardware connection is shown in the table below:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | SparkFun RFID Qwiic Reader |
-  | -------------| ------------- | ------------------ | ------------------ |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | SparkFun RFID Qwiic Reader |
+  | -------------| ------------------- | ------------ | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | Qwiic cable  | SDA                |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | Qwiic cable  | SCL                |
 
 ## Setup ##
 
@@ -67,10 +67,10 @@ You can either create a project based on an example project or start with an emp
        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
        - [Application] → [Utility] → [Log]
        - [Application] → [Utility] → [Assert]
-       - [Platform] → [Driver] → [I2C] → [I2CSPM] → qwiic instance
+       - [Platform] → [Driver] → [I2C] → [I2CSPM] → default instance name: qwiic
        - [Third Party Hardware Drivers] → [Wireless Connectivity] → [ID-12LA - RFID Reader (Sparkfun) - I2C]
 
-     - **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+     - **If the Wi-Fi Development Kit is used:**
        - [Application] → [Utility] → [Assert]
        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
        - [Third Party Hardware Drivers] → [Wireless Connectivity] → [ID-12LA - RFID Reader (Sparkfun) - I2C] → set the correct I2C address of the RFID Reader
@@ -81,7 +81,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "ID-12LA - RFID Reader (Sparkfun) - I2C" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "ID-12LA - RFID Reader (Sparkfun) - I2C" component.
 
 ## How It Works ##
 

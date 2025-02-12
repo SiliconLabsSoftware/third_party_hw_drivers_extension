@@ -1,4 +1,4 @@
-project_name: mikroe_ozone2_mq131_si91x
+project_name: mikroe_ozone2_mq131
 label: Third Party Hardware Drivers - MQ131 - Ozone 2 Click (Mikroe)
 package: platform
 description: |
@@ -7,44 +7,43 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/mikroe_ozone2_mq131/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: syscalls
-  from: wiseconnect3_sdk
-- id: si917_memory_default_config
-  from: wiseconnect3_sdk
-- id: sleeptimer_si91x
-  from: wiseconnect3_sdk
-- instance: [channel_1]
-  from: wiseconnect3_sdk
-  id: adc_instance
-- id: mikroe_ozone2
-  from: third_party_hw_drivers
+  - id: sl_system
+  - id: syscalls
+    from: wiseconnect3_sdk
+  - id: si917_memory_default_config
+    from: wiseconnect3_sdk
+  - id: sleeptimer
+  - id: adc_instance
+    instance: [channel_1]
+    from: wiseconnect3_sdk
+  - id: mikroe_ozone2
+    from: third_party_hw_drivers
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
-- id: wiseconnect3_sdk
-  version: 3.3.4
+  - id: third_party_hw_drivers
+    version: 4.1.0
+  - id: wiseconnect3_sdk
+    version: 3.4.0
+
+readme:
+  - path: ../../documentation/example/mikroe_ozone2_mq131/README.md
 
 other_file:
   - path: ../../documentation/example/mikroe_ozone2_mq131/images/create_example.png

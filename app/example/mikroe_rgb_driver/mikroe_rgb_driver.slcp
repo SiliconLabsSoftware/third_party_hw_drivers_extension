@@ -1,0 +1,57 @@
+project_name: mikroe_rgb_driver
+package: platform
+label: Third Party Hardware Drivers - RGB Driver Click (Mikroe)
+description: |
+  This example project shows an example for Mikroe RGB Driver Click board integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
+
+source:
+  - path: app.c
+  - path: main.c
+
+include:
+  - path: ''
+    file_list:
+    - path: app.h
+
+component:
+  - id: sl_system
+  - id: device_init
+  - id: iostream_usart
+    instance: [vcom]
+  - id: i2cspm
+    instance: [mikroe]
+  - id: sleeptimer
+  - id: app_log
+  - id: mikroe_rgbdriver
+    from: third_party_hw_drivers
+
+define:
+  - name: DEBUG_EFM
+
+sdk_extension:
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/mikroe_rgb_driver/README.md
+
+other_file:
+  - path: ../../documentation/example/mikroe_rgb_driver/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_rgb_driver/image/hardware_connection.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true

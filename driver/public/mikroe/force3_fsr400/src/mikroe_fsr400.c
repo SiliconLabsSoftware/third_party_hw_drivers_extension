@@ -38,7 +38,6 @@
  ******************************************************************************/
 #include "mikroe_fsr400.h"
 #include "mikroe_fsr400_config.h"
-#include "force3.h"
 
 static force3_t force3;
 static force3_cfg_t force3_cfg;

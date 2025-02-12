@@ -2,34 +2,34 @@
 
 ## Summary ##
 
-This project aims to implement a hardware driver interacting with the [Adafruit NeoTrellis RGB for 4x4 Keypad](https://www.adafruit.com/product/3954) via APIs of GSDK.
+This project aims to implement a hardware driver interacting with the [Adafruit NeoTrellis RGB for 4x4 Keypad](https://www.adafruit.com/product/3954) using Silicon Labs platform.
 
 Adafruit NeoTrellis 4x4 keypad is a trellis 4x4 elastomer-button keypad kit with a PCB with full-color NeoPixel support. These 4x4 button pad boards are fully tile-able and communicate over I2C. With 5 address pins, you get the ability to connect up to 32 together in any arrangement by soldering them edge-to-edge and soldering closed the I2C address jumpers, then use one I2C connection for all tiled NeoTrellis boards. Each NeoTrellis board comes with a seesaw chip and 16 NeoPixels already soldered in place.
 
 ## Required Hardware ##
 
-- [BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [Adafruit NeoTrellis RGB for 4x4 Keypad](https://www.adafruit.com/product/3954)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [Adafruit NeoTrellis RGB for 4x4 Keypad](https://www.adafruit.com/product/3954)
 
 ## Hardware Connection ##
 
 - **If the BGM220 Explorer Kit board is used**:
 
   Adafruit NeoTrellis can connect with your board easily via the Qwiic connector. It includes a JST-PH 4-pin connector that provides two I2C wires (SDA and SCL), 3v3, and GND. You can use [the JST PH to JST SH (qwiic) Cable](https://www.adafruit.com/product/4424) to connect to your board.
-  
+
   The Adafruit NeoTrellis supports Qwiic, so it can connect easily to the Qwiic header of the BGM220 Explorer Kit board. The hardware connection is shown in the image below:
 
   ![connection](image/connection.png)
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
-  
+- **If the Wi-Fi Development Kit is used**:
+
   The hardware connection is shown in the table below:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | Adafruit NeoTrellis |
-  | -------------| ------------- | ------------------ | ------------------ |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
+  | Description  | BRD4338A + BRD4002A | BRD2605A    | Adafruit NeoTrellis |
+  | -------------| ------------- | ------------------ | ------------------- |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | ULP_GPIO_6   | SDA            |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | ULP_GPIO_7   | SCL            |
 
 ## Setup ##
 
@@ -61,10 +61,10 @@ You can either create a project based on an example project or start with an emp
 
         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
-        - [Platform] → [Driver] → [I2C] → [I2CSPM] → qwiic instance
+        - [Platform] → [Driver] → [I2C] → [I2CSPM] → default instance name: qwiic
         - [Third Party Hardware Drivers] → [Human Machine Interface] → [NeoTrellis 4x4 Keypad (Adafruit)]
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
         - [Third Party Hardware Drivers] → [Human Machine Interface] → [NeoTrellis 4x4 Keypad (Adafruit)]
@@ -75,7 +75,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install **NeoTrellis 4x4 Keypad (Adafruit)** component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install **NeoTrellis 4x4 Keypad (Adafruit)** component.
 
 ## How It Works ##
 

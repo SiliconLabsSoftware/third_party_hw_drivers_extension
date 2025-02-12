@@ -41,8 +41,7 @@
 #define MIKROE_MQ7_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< sl:start pin_tool >>>
@@ -50,7 +49,7 @@ extern "C"
 // <gpio optional=true> MQ7_AN
 // $[GPIO_MQ7_AN]
 #warning "AN pin for MQ7 is not configured"
-// #define MQ7_AN_PORT                              gpioPortB
+// #define MQ7_AN_PORT                              0
 // #define MQ7_AN_PIN                               0
 // [GPIO_MQ7_AN]$
 
@@ -60,4 +59,4 @@ extern "C"
 }
 #endif
 
-#endif /* MIKROE_MQ7_CONFIG_H_ */
+#endif // MIKROE_MQ7_CONFIG_H_

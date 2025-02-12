@@ -43,27 +43,19 @@
 
 #if (defined(SLI_SI917))
 #include "sl_si91x_gspi.h"
+#include "rsi_debug.h"
+
+#define app_printf(...)          DEBUGOUT(__VA_ARGS__)
+
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #else
 #include "sl_spidrv_instances.h"
-#endif
-
-#if (defined(SLI_SI917))
-#include "rsi_debug.h"
-#else
 #include "app_log.h"
+
+#define app_printf(...)          app_log(__VA_ARGS__)
 #endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
-
-#define APP_TIMER_TIMEOUT 500
-
-#if (defined(SLI_SI917))
-static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
-#endif
+#define APP_TIMER_TIMEOUT        500
 
 mikroe_spi_handle_t app_spi_instance = NULL;
 mikroe_pwm_handle_t app_pwm_instance = NULL;
@@ -82,13 +74,9 @@ void app_init(void)
 
 #if (defined(SLI_SI917))
   app_spi_instance = &gspi_instance;
-#else
-  app_spi_instance = sl_spidrv_mikroe_handle;
-#endif
-
-#if (defined(SLI_SI917))
   app_pwm_instance = &sl_pwm_channel_0_config;
 #else
+  app_spi_instance = sl_spidrv_mikroe_handle;
   app_pwm_instance = &sl_pwm_mikroe;
 #endif
 

@@ -26,7 +26,7 @@ config_file:
   - path: public/mikroe/mic2/config/brd4314a/mikroe_mic2_config.h
     file_id: driver_config_mic2
     condition: [brd4314a]
-  - path: public/mikroe/mic2/config/brd4338a/mikroe_mic2_config.h
+  - path: public/mikroe/mic2/config/device_si91x/mikroe_mic2_config.h
     file_id: driver_config_mic2
     condition: [device_si91x]
   - path: public/mikroe/mic2/config/other/mikroe_mic2_config.h

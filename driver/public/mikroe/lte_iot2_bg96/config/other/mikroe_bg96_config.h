@@ -39,17 +39,13 @@
 #ifndef MIKROE_BG96_CONFIG_H_
 #define MIKROE_BG96_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu
 
-// <h>LTE IOT2 BG96 Settings
+// <h> LTE IOT2 BG96 Settings
 
 // <o CMD_MAX_SIZE> Maximum AT Command Length
 // <i> Default: 256
@@ -71,15 +67,15 @@ extern "C" {
 // <gpio optional=true> BG96_STA
 // $[GPIO_BG96_STA]
 #warning "GPIO_BG96_STA is not configured"
-// #define BG96_STA_PORT                            gpioPortB
+// #define BG96_STA_PORT                            0
 // #define BG96_STA_PIN                             0
 // [GPIO_BG96_STA]$
 
 // <gpio optional=true> BG96_PWK
 // $[GPIO_BG96_PWK]
 #warning "GPIO_BG96_PWK is not configured"
-// #define BG96_PWK_PORT                            gpioPortC
-// #define BG96_PWK_PIN                             6
+// #define BG96_PWK_PORT                            0
+// #define BG96_PWK_PIN                             0
 // [GPIO_BG96_PWK]$
 
 // <<< sl:end pin_tool >>>

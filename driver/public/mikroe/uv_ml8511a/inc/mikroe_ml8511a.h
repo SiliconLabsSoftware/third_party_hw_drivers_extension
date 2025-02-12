@@ -43,10 +43,8 @@
 //                               Includes
 // -----------------------------------------------------------------------------
 
-#include "uv.h"
 #include "sl_status.h"
-#include "drv_analog_in.h"
-#include "drv_spi_master.h"
+#include "uv.h"
 
 #ifdef __cplusplus
 extern "C" {

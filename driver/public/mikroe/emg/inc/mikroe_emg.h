@@ -41,48 +41,48 @@
 #define MIKROE_EMG_H_
 
 #include "sl_status.h"
-#include "drv_analog_in.h"
+#include "emg.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**************************************************************************//**
-* @brief EMG initialization function.
-* @details This function initializes all necessary pins and peripherals used
-* for this click board.
-*
-* @param[in] adc
-*   ADC or iADC instance
-*
-* @return SL_STATUS_OK on Success, otherwise on failure.
-*
-******************************************************************************/
+ * @brief EMG initialization function.
+ * @details This function initializes all necessary pins and peripherals used
+ * for this click board.
+ *
+ * @param[in] adc
+ *   ADC or iADC instance
+ *
+ * @return SL_STATUS_OK on Success, otherwise on failure.
+ *
+ ******************************************************************************/
 sl_status_t mikroe_emg_init(mikroe_adc_handle_t handle);
 
 /**************************************************************************//**
-* @brief EMG read AN pin value function.
-* @details This function reads results of AD conversion of the AN pin.
-*
-* @param[out] data_out
-*    Output ADC result.
-*
-* @return SL_STATUS_OK on Success, otherwise on failure.
-*
-******************************************************************************/
+ * @brief EMG read AN pin value function.
+ * @details This function reads results of AD conversion of the AN pin.
+ *
+ * @param[out] data_out
+ *    Output ADC result.
+ *
+ * @return SL_STATUS_OK on Success, otherwise on failure.
+ *
+ ******************************************************************************/
 sl_status_t mikroe_emg_read_an_pin_value(uint16_t *data_out);
 
 /**************************************************************************//**
-* @brief EMG read AN pin voltage level function.
-* @details This function reads results of AD conversion of the AN pin and
-* converts them to proportional voltage level
-*
-* @param[in] data_out
-*    Output voltage level of the analog pin [V].
-*
-* @return SL_STATUS_OK on Success, otherwise on failure.
-*
-******************************************************************************/
+ * @brief EMG read AN pin voltage level function.
+ * @details This function reads results of AD conversion of the AN pin and
+ * converts them to proportional voltage level
+ *
+ * @param[in] data_out
+ *    Output voltage level of the analog pin [V].
+ *
+ * @return SL_STATUS_OK on Success, otherwise on failure.
+ *
+ ******************************************************************************/
 sl_status_t mikroe_emg_read_an_pin_voltage(float *data_out);
 
 /** @} (end addtogroup EMG) */

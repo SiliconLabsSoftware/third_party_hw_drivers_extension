@@ -6,11 +6,11 @@ This project shows the implementation of Environment-sensor driver using SHT40 &
 
 ## Required Hardware ##
 
-- [**BRD2703A-EFR32xG24** EFR32xG24 Bluetooth Module Explorer Kit (BRD2703A-EFR32xG24 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [**Environment 2 Click** board based on SHT40 & SGP40 from Mikroe Integrated](https://www.mikroe.com/environment-2-click)
+- 1x [Environment 2 Click board](https://www.mikroe.com/environment-2-click) based on SHT40 & SGP40
 
 ## Hardware Connection ##
 
@@ -22,12 +22,12 @@ This project shows the implementation of Environment-sensor driver using SHT40 &
 
   ![board](image/hardware_connection.png "EFR32xG24 Explorer Kit Board and Environment 2 Click Board")
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | Temp&Hum 9 Click   |
-  | -------------| ------------- | ------------------ | ------------------ |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | Environment 2 Click |
+  | ----------- | -------------  | ------------------ | ------------- |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | ULP_GPIO_6   | SDA            |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | ULP_GPIO_7   | SCL            |
 
 ## Setup ##
 
@@ -64,19 +64,18 @@ You can either create a project based on an example project or start with an emp
         - [Application] → [Utility] → [Log]
         - [Third Party Hardware Drivers] → [Sensors] → [SHT40 & SGP40 - Environment 2 Click (Mikroe)] → using default configuration
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
         - [Third Party Hardware Drivers] → [Sensors] → [SHT40 & SGP40 - Environment 2 Click (Mikroe)] → using default configuration
 
-4. Install printf float
+4. Enable **Printf float**
 
-    - Open Properties of the project.
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
-    - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General. Check Printf float.
-
-       ![float](image/float.png)
+      ![float](image/float.png)
 
 5. Build and flash this example to the board.
 
@@ -84,7 +83,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "SHT40 & SGP40 - Environment 2 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "SHT40 & SGP40 - Environment 2 Click (Mikroe)" component.
 
 ## How It Works ##
 

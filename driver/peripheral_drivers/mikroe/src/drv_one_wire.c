@@ -39,6 +39,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include "em_gpio.h"
+#include "sl_udelay.h"
 #include "drv_one_wire.h"
 #include "drv_digital_in.h"
 #include "drv_digital_out.h"
@@ -51,6 +52,16 @@ typedef struct {
 
 /*!< @brief Helper macro getting minimum bits per transfer. */
 #define HAL_ONE_WIRE_MINIMUM_BITS_PER_TRANSFER   (8)
+
+#define DELAY_A                                  6
+#define DELAY_B                                  64
+#define DELAY_C                                  60
+#define DELAY_D                                  10
+#define DELAY_E                                  9
+#define DELAY_F                                  55
+#define DELAY_H                                  480
+#define DELAY_I                                  70
+#define DELAY_J                                  410
 
 // ------------------------------------------------------------------ VARIABLES
 
@@ -703,47 +714,47 @@ static void hal_one_wire_read_byte(uint8_t *read_data_buffer,
 
 static void one_wire_timing_value_a(void)
 {
-  sl_udelay_wait(6);
+  sl_udelay_wait(DELAY_A);
 }
 
 static void one_wire_timing_value_b(void)
 {
-  sl_udelay_wait(64);
+  sl_udelay_wait(DELAY_B);
 }
 
 static void one_wire_timing_value_c(void)
 {
-  sl_udelay_wait(60);
+  sl_udelay_wait(DELAY_C);
 }
 
 static void one_wire_timing_value_d(void)
 {
-  sl_udelay_wait(10);
+  sl_udelay_wait(DELAY_D);
 }
 
 static void one_wire_timing_value_e(void)
 {
-  sl_udelay_wait(9);
+  sl_udelay_wait(DELAY_E);
 }
 
 static void one_wire_timing_value_f(void)
 {
-  sl_udelay_wait(55);
+  sl_udelay_wait(DELAY_F);
 }
 
 static void one_wire_timing_value_h(void)
 {
-  sl_udelay_wait(480);
+  sl_udelay_wait(DELAY_H);
 }
 
 static void one_wire_timing_value_i(void)
 {
-  sl_udelay_wait(70);
+  sl_udelay_wait(DELAY_I);
 }
 
 static void one_wire_timing_value_j(void)
 {
-  sl_udelay_wait(410);
+  sl_udelay_wait(DELAY_J);
 }
 
 // ------------------------------------------------------------------------- END

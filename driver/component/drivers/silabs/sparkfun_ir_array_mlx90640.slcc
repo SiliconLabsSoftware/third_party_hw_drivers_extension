@@ -9,8 +9,6 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
   - name: app_assert
 config_file:
@@ -20,10 +18,10 @@ provides:
   - name: sparkfun_ir_array
 template_contribution:
   - name: component_catalog
-    value: sparkfun_ir_array_mlx90640 
+    value: sparkfun_ir_array_mlx90640
 include:
   - path: public/silabs/ir_array_mlx90640/inc
-    file_list: 
-      - path: sparkfun_mlx90640.h  
+    file_list:
+      - path: sparkfun_mlx90640.h
 source:
   - path: public/silabs/ir_array_mlx90640/src/sparkfun_mlx90640.c

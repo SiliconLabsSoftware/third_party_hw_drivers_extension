@@ -40,7 +40,6 @@
 #define MIKROE_SHT40_H
 
 #include "sl_status.h"
-#include "drv_i2c_master.h"
 #include "temphum15.h"
 
 #ifdef __cplusplus

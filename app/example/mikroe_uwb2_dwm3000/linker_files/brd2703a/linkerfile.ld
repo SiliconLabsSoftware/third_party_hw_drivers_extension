@@ -120,7 +120,7 @@ SECTIONS
     __zero_table_end__ = .;
   } > FLASH
 
-.dw_drivers ALIGN(4): 
+.dw_drivers ALIGN(4):
   {
     __dw_drivers_start = . ;
     KEEP(*(.dw_drivers*))
@@ -235,7 +235,6 @@ SECTIONS
   .internal_storage (DSECT) : {
     KEEP(*(.internal_storage*))
   } > FLASH
-  
 
   .nvm (DSECT) : {
     KEEP(*(.simee*))

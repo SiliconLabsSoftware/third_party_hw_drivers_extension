@@ -8,11 +8,11 @@ LTE IoT 2 Click is a Click board™ that allows connection to the LTE networks, 
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit (BRD2703A xG24 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [**LTE IoT 2 Click** board based on Quectel BG96 LTE module from Mikroe Integrated](https://www.mikroe.com/lte-iot-2-click)
+- 1x [LTE IoT 2 Click board](https://www.mikroe.com/lte-iot-2-click) based on Quectel BG96 LTE module
 
 ## Hardware Connection ##
 
@@ -24,14 +24,14 @@ LTE IoT 2 Click is a Click board™ that allows connection to the LTE networks, 
 
     ![board_1](image/hardware_connection_1.png "BRD2703A xG24 Explorer Kit Board and LTE IoT 2 Click Board")
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description       | BRD4338A GPIO            | BRD4002 Breakout Pad | LTE IOT 2 Click board |
-  | ----------------- | ------------------------ | -------------------- | ----------- |
-  | UART1_RX_PIN      | GPIO_6                   | P19                  | TX          |
-  | UART1_TX_PIN      | GPIO_7                   | P20                  | RX          |
-  | Module Power-Up   | GPIO_47                  | P26                  | PWK         |
-  | Module status     | GPIO_46                  | P24                  | STA         |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | LTE IOT 2 Click |
+  | ----------------- | -------------- | ------------ | --------------- |
+  | UART1_RX_PIN      | GPIO_6 [P19]   | GPIO_6       | TX              |
+  | UART1_TX_PIN      | GPIO_7 [P20]   | GPIO_7       | RX              |
+  | Module Power-Up   | GPIO_47 [P26]  | GPIO_11      | PWK             |
+  | Module status     | GPIO_46 [P24]  | GPIO_10      | STA             |
 
 ## Setup ##
 
@@ -45,7 +45,7 @@ You can either create a project based on an example project or start with an emp
 
     ![Create_example](image/create_example.png)
 
-3. From the project root folder, open file **app_iostream_cli.c** (if using EFR32xG24 Explorer Kit) or **app_iostream_cli_si91x.c** (if using SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit). Replace " *** " by the receiver's phone number.
+3. From the project root folder, open file **app_iostream_cli.c** (if using EFR32xG24 Explorer Kit) or **app_iostream_cli_si91x.c** (if using Wi-Fi Development Kit). Replace " *** " by the receiver's phone number.
 
     ![config_sms_phone_number](image/config_sms_phone_number.png)
 
@@ -64,7 +64,7 @@ You can either create a project based on an example project or start with an emp
     - `app/example/mikroe_lte_iot2_bg96/app.c`
     - `app/example/mikroe_lte_iot2_bg96/app_iostream_cli.h`
     - `app/example/mikroe_lte_iot2_bg96/app_iostream_cli.c` if using EFR32xG24 Explorer Kit
-    - `app/example/mikroe_lte_iot2_bg96/app_iostream_cli_si91x.c` if using the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit
+    - `app/example/mikroe_lte_iot2_bg96/app_iostream_cli_si91x.c` if using Wi-Fi Development Kit
 
 3. Install the software components:
 
@@ -84,7 +84,7 @@ You can either create a project based on an example project or start with an emp
 
             ![queue_config](image/config_queue_size.png)
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [Third-Party Hardware Drivers] → [Sensors] → [BG96 - LTE IoT 2 Click (Mikroe)]
         - [WiSeConnect 3 SDK v3.3.3] → [Device] → [Si91x] → [MCU] → [Peripheral] → [UART] → turn off DMA configuration as below:
@@ -103,7 +103,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "BG96 - LTE IoT 2 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "BG96 - LTE IoT 2 Click (Mikroe)" component.
 
 ## How It Works ##
 
@@ -200,13 +200,13 @@ Creating a high-level function means a single AT command or a list of AT command
   {
       //define command status variable as SL_STATUS_OK, this will collect the errors of low level functions
     sl_status_t cmd_status = SL_STATUS_OK;
-    //define the base and additional parts of the AT command, additional parts can be prameters inherited from user data 
+    //define the base and additional parts of the AT command, additional parts can be prameters inherited from user data
     uint8_t extend_str[]= "0,0",
     uint8_t base_cmd[] = "AT+QICLOSE=";
 
     //create a STATIC command descriptor, this descriptor MUST be allocated during the AT command parsing process!
     static at_cmd_desc_t at_custom = { .cms_string="",                     //use an empty cmd_string if there are additional parameters
-                                      .ln_cb=at_custom_cb,                //add the appropriate line callback function 
+                                      .ln_cb=at_custom_cb,                //add the appropriate line callback function
                                       .timeout_ms = AT_DEFAULT_TIMEOUT    //define a timeout for the command (check the BG96 datasheet for the decent timeout)
                                       };
       //prepare the command descriptor (clears the command string)
@@ -300,7 +300,7 @@ Creating a high-level function means a single AT command or a list of AT command
   ![usb_debug](image/log.png "USB Debug Output Data")
 
   ![usb_debug_gps](image/gps_log.png "USB Debug Output Data GPS")
-  
+
   ![sms_img](image/sms_receive.png "SMS Receive")
 
 ## Report Bugs & Get Support ##

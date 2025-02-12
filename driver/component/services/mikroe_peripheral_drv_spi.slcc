@@ -8,12 +8,8 @@ quality: evaluation
 root_path: driver
 requires:
   - name: spidrv
-    condition: [device_series_1]
-  - name: spidrv
-    condition: [device_series_2]
+    condition: [device_efx]
   - name: sl_gspi
-    condition: [device_si91x]
-  - name: sl_clock_manager
     condition: [device_si91x]
   - name: mikroe_peripheral_driver_digital_io
 recommends:
@@ -31,8 +27,6 @@ include:
       - path: drv_spi_master.h
 source:
   - path: peripheral_drivers/mikroe/src/drv_spi_master.c
-    condition: [device_series_1]
-  - path: peripheral_drivers/mikroe/src/drv_spi_master.c
-    condition: [device_series_2]
+    condition: [device_efx]
   - path: peripheral_drivers/mikroe/src/drv_spi_master_si91x.c
     condition: [device_si91x]

@@ -41,7 +41,7 @@
 #define MIKROE_SHTC3_H_
 
 #include "sl_status.h"
-#include "drv_i2c_master.h"
+#include "temphum9.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -123,10 +123,10 @@ extern "C" {
 /** @} (end addtogroup shtc3_commands) */
 
 /***************************************************************************//**
-* @addtogroup shtc3_typedefs Types
-* @brief SHTC3 Types
-* @{
-*******************************************************************************/
+ * @addtogroup shtc3_typedefs Types
+ * @brief SHTC3 Types
+ * @{
+ *******************************************************************************/
 
 /***************************************************************************//**
  * @brief

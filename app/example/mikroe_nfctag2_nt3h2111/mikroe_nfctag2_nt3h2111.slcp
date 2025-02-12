@@ -1,41 +1,49 @@
 project_name: mikroe_nfctag2_nt3h2111
 label: Third Party Hardware Drivers - NT3H2111 - NFC Tag 2 Click (Mikroe) - I2C
+package: platform
 description: |
   This example project shows an example for NT3H2111 - NFC Tag 2 Click board driver integration on I2C communication.
 category: Example|Platform
-filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-package: platform
 quality: evaluation
-readme:
-- path: ../../documentation/example/mikroe_nfctag2_nt3h2111/README.md
+
+filter:
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
+
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
+
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
+
 component:
-- id: sl_system
-- id: device_init
-- id: i2cspm
-  instance: [mikroe]
-- id: iostream_usart
-  instance: [vcom]
-- id: app_log
-- id: mikroe_nfctag2
-  from: third_party_hw_drivers
+  - id: sl_system
+  - id: device_init
+  - id: i2cspm
+    instance: [mikroe]
+  - id: iostream_usart
+    instance: [vcom]
+  - id: app_log
+  - id: mikroe_nfctag2
+    from: third_party_hw_drivers
+
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
+
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/mikroe_nfctag2_nt3h2111/README.md
+
 other_file:
   - path: ../../documentation/example/mikroe_nfctag2_nt3h2111/image/hardware_connection.png
     directory: image
@@ -45,6 +53,7 @@ other_file:
     directory: image
   - path: ../../documentation/example/mikroe_nfctag2_nt3h2111/image/nfc_tools.png
     directory: image
+
 ui_hints:
   highlight:
     - path: README.md

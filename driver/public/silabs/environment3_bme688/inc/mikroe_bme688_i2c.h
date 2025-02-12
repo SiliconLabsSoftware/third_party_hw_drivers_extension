@@ -34,6 +34,7 @@
  ******************************************************************************/
 #ifndef MIKROE_BME688_I2C_H
 #define MIKROE_BME688_I2C_H
+
 #include "bme68x.h"
 #include "bme68x_defs.h"
 #include "drv_i2c_master.h"

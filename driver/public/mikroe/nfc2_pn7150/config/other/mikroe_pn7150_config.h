@@ -40,10 +40,6 @@
 #ifndef MIKROE_PN7150_CONFIG_H_
 #define MIKROE_PN7150_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 // A CMSIS annotation block starts with the following line:
 // <<< Use Configuration Wizard in Context Menu >>>
 
@@ -81,15 +77,15 @@
 // <gpio optional=true> MIKROE_PN7150_INT
 // $[GPIO_MIKROE_PN7150_INT]
 #warning "INT pin for PN7150 is not configured"
-// #define MIKROE_PN7150_INT_PORT                        gpioPortB
-// #define MIKROE_PN7150_INT_PIN                         3
+// #define MIKROE_PN7150_INT_PORT                        0
+// #define MIKROE_PN7150_INT_PIN                         0
 // [GPIO_MIKROE_PN7150_INT]$
 
 // <gpio optional=true> MIKROE_PN7150_RESET
 // $[GPIO_MIKROE_PN7150_RESET]
 #warning "RST pin for PN7150 is not configured"
-// #define MIKROE_PN7150_RESET_PORT                      gpioPortC
-// #define MIKROE_PN7150_RESET_PIN                       6
+// #define MIKROE_PN7150_RESET_PORT                      0
+// #define MIKROE_PN7150_RESET_PIN                       0
 // [GPIO_MIKROE_PN7150_RESET]$
 
 // <<< sl:end pin_tool >>>

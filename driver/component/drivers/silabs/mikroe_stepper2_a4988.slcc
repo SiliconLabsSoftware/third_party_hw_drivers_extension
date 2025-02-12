@@ -1,0 +1,48 @@
+id: mikroe_stepper2_a4988
+package: third_party_hw_drivers
+label: A4988 - Stepper 2 Click (Mikroe)
+description: >
+  Driver for the Stepper 2 Click (Mikroe), this board relies on the A4988 IC.
+category: Motor Control
+quality: evaluation
+ui_hints:
+  visibility: basic
+root_path: driver
+requires:
+  - name: status
+  - name: sleeptimer
+  - name: mikroe_peripheral_driver_digital_io
+config_file:
+  - path: public/silabs/stepper2_a4988/config/brd2703a/mikroe_a4988_config.h
+    file_id: driver_config_stepper2
+    condition: [brd2703a]
+  - path: public/silabs/stepper2_a4988/config/brd4108a/mikroe_a4988_config.h
+    file_id: driver_config_stepper2
+    condition: [brd4108a]
+  - path: public/silabs/stepper2_a4988/config/brd4314a/mikroe_a4988_config.h
+    file_id: driver_config_stepper2
+    condition: [brd4314a]
+  - path: public/silabs/stepper2_a4988/config/brd4338a/mikroe_a4988_config.h
+    file_id: driver_config_stepper2
+    condition: [brd4338a]
+  - path: public/silabs/stepper2_a4988/config/brd2605a/mikroe_a4988_config.h
+    file_id: driver_config_stepper2
+    condition: [brd2605a]
+  - path: public/silabs/stepper2_a4988/config/other/mikroe_a4988_config.h
+    file_id: driver_config_stepper2
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
+provides:
+  - name: mikroe_stepper2_a4988
+    allow_multiple: false
+template_contribution:
+  - name: component_catalog
+    value: mikroe_stepper2_a4988
+include:
+  - path: inc
+    file_list:
+      - path: third_party_hw_drivers_helpers.h
+  - path: public/silabs/stepper2_a4988/inc
+    file_list:
+      - path: mikroe_a4988.h
+source:
+  - path: public/silabs/stepper2_a4988/src/mikroe_a4988.c

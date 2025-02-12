@@ -28,60 +28,62 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has been minimally tested to ensure that it builds and is suitable
- * as a demonstration for evaluation purposes only. This code will be maintained
- * at the sole discretion of Silicon Labs.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #ifndef MIKROE_MAX6969_H_
 #define MIKROE_MAX6969_H_
 
 #include "sl_status.h"
-#include "drv_spi_master.h"
-#include "drv_pwm.h"
 #include "utm7segr.h"
+#include "drv_pwm.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**************************************************************************//**
-* @addtogroup  max6969 MAX6969 - UT-M 7-SEG R click
-* @brief  Driver for the Mikroe UT-M 7-SEG R click
-*    @n @section max6969_example CAP1166 example
-*
-*      Basic example @n @n
-*      @code{.c}
-*
-* #include "mikroe_max6969.h"
-* #include "sl_spidrv_instances.h"
-* #include "sl_pwm_instances.h"
-*    int main(void)
-*    {
-*      ...
-*
-*      // Initialize led 7 seg
-*      mikroe_max6969_init(sl_spidrv_mikroe_handle, &sl_pwm_mikroe);
-*
-*      mikroe_max6969_display_number( 11, MIKROE_UTM7SEGR_DOT_LEFT );
-*
-*      while (true) {
-*
-*        ...
-*
-*      }
-*
-*    } @endcode
-*
-* @{
-******************************************************************************/
+ * @addtogroup  max6969 MAX6969 - UT-M 7-SEG R click
+ * @brief  Driver for the Mikroe UT-M 7-SEG R click
+ *    @n @section max6969_example CAP1166 example
+ *
+ *      Basic example @n @n
+ *      @code{.c}
+ *
+ * #include "mikroe_max6969.h"
+ * #include "sl_spidrv_instances.h"
+ * #include "sl_pwm_instances.h"
+ *    int main(void)
+ *    {
+ *      ...
+ *
+ *      // Initialize led 7 seg
+ *      mikroe_max6969_init(sl_spidrv_mikroe_handle, &sl_pwm_mikroe);
+ *
+ *      mikroe_max6969_display_number( 11, MIKROE_UTM7SEGR_DOT_LEFT );
+ *
+ *      while (true) {
+ *
+ *        ...
+ *
+ *      }
+ *
+ *    } @endcode
+ *
+ * @{
+ ******************************************************************************/
 
 /**************************************************************************//**
-* @addtogroup mikroe_utm7segr_def Mikroe utm7segr definitions
-* @brief Dot and display definitions
-* @{
-******************************************************************************/
+ * @addtogroup mikroe_utm7segr_def Mikroe utm7segr definitions
+ * @brief Dot and display definitions
+ * @{
+ ******************************************************************************/
 #define MIKROE_UTM7SEGR_DOT_LEFT              0x02
 #define MIKROE_UTM7SEGR_DOT_RIGHT             0x01
 #define MIKROE_UTM7SEGR_DOT_LEFT_RIGHT        0x03

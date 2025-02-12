@@ -38,8 +38,9 @@
  ******************************************************************************/
 #ifndef MIKROE_SI8711CC_H_
 #define MIKROE_SI8711CC_H_
+
 #include "sl_status.h"
-#include "drv_pwm.h"
+#include "pwmdriver.h"
 
 #ifdef __cplusplus
 extern "C" {

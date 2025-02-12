@@ -39,13 +39,8 @@
 #ifndef MM5D91_00_CONFIG_H
 #define MM5D91_00_CONFIG_H
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< sl:start pin_tool >>>

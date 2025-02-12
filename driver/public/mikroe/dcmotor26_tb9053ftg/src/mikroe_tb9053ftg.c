@@ -39,7 +39,6 @@
 
 #include "mikroe_tb9053ftg.h"
 #include "mikroe_dcmotor26_config.h"
-#include "dcmotor26.h"
 
 static dcmotor26_t ctx;
 static dcmotor26_cfg_t ctx_cfg;
@@ -114,17 +113,17 @@ sl_status_t mikroe_tb9053ftg_default_cfg(void)
 
 sl_status_t mikroe_tb9053ftg_write_register(uint8_t reg, uint32_t data_in)
 {
-  return (dcmotor26_pca9538a_write_register(&ctx, reg, data_in) == DCMOTOR26_OK)
+  return (dcmotor26_write_register(&ctx, reg, data_in) == DCMOTOR26_OK)
          ? SL_STATUS_OK : SL_STATUS_FAIL;
 }
 
-sl_status_t mikroe_tb9053ftg_read_register(uint8_t reg, uint8_t *data_out)
+sl_status_t mikroe_tb9053ftg_read_register(uint8_t reg, uint32_t *data_out)
 {
   if (NULL == data_out) {
     return SL_STATUS_INVALID_PARAMETER;
   }
 
-  return (dcmotor26_pca9538a_read_register(&ctx, reg, data_out) == DCMOTOR26_OK)
+  return (dcmotor26_read_register(&ctx, reg, data_out) == DCMOTOR26_OK)
          ? SL_STATUS_OK : SL_STATUS_FAIL;
 }
 

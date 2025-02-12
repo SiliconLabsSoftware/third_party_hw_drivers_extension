@@ -32,8 +32,9 @@
  * as a demonstration for evaluation purposes only. This code will be maintained
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
-#include "mikroe_bme688_spi.h"
+
 #include "sl_sleeptimer.h"
+#include "mikroe_bme688_spi.h"
 #include "mikroe_bme688_spi_config.h"
 
 // Local prototypes

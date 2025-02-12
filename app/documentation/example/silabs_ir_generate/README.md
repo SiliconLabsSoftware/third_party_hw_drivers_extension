@@ -6,8 +6,8 @@ This project shows the implementation of IR generator driver using WSTK kit. IR 
 
 ## Required Hardware ##
 
-- [EFR32xG21 Wireless Gecko Starter Kit](https://www.silabs.com/development-tools/wireless/efr32xg21-wireless-starter-kit?tab=overview)
-- [IR Led](https://www.robomart.com/ir-led-3mm)
+- 1x [EFR32xG21 Wireless Gecko Starter Kit](https://www.silabs.com/development-tools/wireless/efr32xg21-wireless-starter-kit?tab=overview)
+- 1x [IR Led](https://www.robomart.com/ir-led-3mm)
 
 ## Hardware Connection ##
 
@@ -59,9 +59,9 @@ You can either create a project based on an example project or start with an emp
 
 **Note:**
 
-- Make sure the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "IR_GENERATE_DRV (Sillabs)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "IR_GENERATE_DRV (Sillabs)" component.
 
 ## API ##
 
@@ -87,7 +87,7 @@ After initialization, the system is in idle status. When IR send is required, co
 
 ### Testing ###
 
-You can use Logic Analyzer to be able to measure the signal from Carrier Pin. A screenshot of the output and an actual test image is shown in the figure below.  
+You can use Logic Analyzer to be able to measure the signal from Carrier Pin. A screenshot of the output and an actual test image is shown in the figure below.
 
 ![logging_screen](image/log.png)
 

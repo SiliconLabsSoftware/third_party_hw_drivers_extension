@@ -34,6 +34,7 @@
  ******************************************************************************/
 #ifndef MIKROE_BME688_SPI_H
 #define MIKROE_BME688_SPI_H
+
 #include "bme68x_defs.h"
 #include "bme68x.h"
 #include "drv_spi_master.h"

@@ -27,10 +27,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # EXPERIMENTAL QUALITY
- * This code has not been formally tested and is provided as-is.
- * It is not suitable for production environments.
- * This code will not be maintained.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 #include "sl_component_catalog.h"
 #include "sl_sleeptimer.h"

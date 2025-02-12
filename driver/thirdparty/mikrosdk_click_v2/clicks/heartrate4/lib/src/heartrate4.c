@@ -138,25 +138,22 @@ uint8_t heartrate4_get_intrrupt ( heartrate4_t *ctx, uint8_t flag )
         // Get the temporary ready interrupt
         return heartrate4_read_data( ctx, HEARTRATE4_INT_STAT2 );
     }
+
+    // Silabs fix warning: [-Wreturn-type]
+    return 0;
 }
 
 void heartrate4_enable_disable_interrupts ( heartrate4_t *ctx, uint8_t interrupt_flag, uint8_t enable_flag )
 {
     uint8_t reg_addr;
-    uint8_t mask; 
-    uint8_t value;
+    // Silabs fix warning: [-Wmaybe-uninitialized]
+    uint8_t mask = 0;
+    uint8_t value = 0;
 
-    if ( interrupt_flag >= 0 && interrupt_flag <= 3 )
-    {
-        reg_addr = HEARTRATE4_INT_ENABLE1;
-    }
-    else if ( interrupt_flag == 4 )
-    {
-        reg_addr = HEARTRATE4_INT_ENABLE2;
-    }
-
+    // Silabs fix warning: [-Wtype-limits]
     if ( interrupt_flag == 0 )
     {
+        reg_addr = HEARTRATE4_INT_ENABLE1;
         mask = HEARTRATE4_INT_A_FULL_MASK;
         if ( enable_flag == 1 )
         {
@@ -170,6 +167,7 @@ void heartrate4_enable_disable_interrupts ( heartrate4_t *ctx, uint8_t interrupt
     
     if ( interrupt_flag == 1 )
     {
+        reg_addr = HEARTRATE4_INT_ENABLE1;
         mask = HEARTRATE4_INT_DATA_RDY_MASK;
         if ( enable_flag == 1 )
         {
@@ -183,6 +181,7 @@ void heartrate4_enable_disable_interrupts ( heartrate4_t *ctx, uint8_t interrupt
 
     if ( interrupt_flag == 2 )
     {
+        reg_addr = HEARTRATE4_INT_ENABLE1;
         mask = HEARTRATE4_INT_ALC_OVF_MASK;
         if ( enable_flag == 1 )
         {
@@ -196,6 +195,7 @@ void heartrate4_enable_disable_interrupts ( heartrate4_t *ctx, uint8_t interrupt
 
     if ( interrupt_flag == 3 )
     {
+        reg_addr = HEARTRATE4_INT_ENABLE1;
         mask = HEARTRATE4_INT_PROX_INT_MASK;
         if ( enable_flag == 1 )
         {
@@ -209,6 +209,7 @@ void heartrate4_enable_disable_interrupts ( heartrate4_t *ctx, uint8_t interrupt
 
     if ( interrupt_flag == 4 )
     {
+        reg_addr = HEARTRATE4_INT_ENABLE2;
         mask = HEARTRATE4_INT_DIE_TEMP_RDY_MASK;
         if ( enable_flag == 1 )
         {
@@ -225,43 +226,42 @@ void heartrate4_enable_disable_interrupts ( heartrate4_t *ctx, uint8_t interrupt
 
 void heartrate4_setting_function ( heartrate4_t *ctx, uint8_t flag, uint8_t mode )
 {
-    uint8_t reg_addr;
-    uint8_t mask; 
-    uint8_t value;
+    // Silabs fix warning: [-Wmaybe-uninitialized]
+    uint8_t reg_addr = 0;
+    uint8_t mask = 0;
+    uint8_t value = 0;
 
-    if ( flag >= 0 && flag <= 2 )
-    {
-        reg_addr = HEARTRATE4_MODE_CONFIG;
-    }
-    else if ( flag >= 3 && flag <= 5 )
-    {
-        reg_addr = HEARTRATE4_SPO2_CONFIG;
-    }
-
+    // Silabs fix warning: [-Wtype-limits]
     if ( flag == 0 )
     {
+        reg_addr = HEARTRATE4_MODE_CONFIG;
         mask  = HEARTRATE4_SHUTDOWN_MASK;
         value = HEARTRATE4_SHUTDOWN;
     }
     else if ( flag == 1 )
     {
+        reg_addr = HEARTRATE4_MODE_CONFIG;
         mask  = HEARTRATE4_SHUTDOWN_MASK;
         value = HEARTRATE4_WAKEUP;
     }
     else if ( flag == 2 )
     {
+        reg_addr = HEARTRATE4_MODE_CONFIG;
         mask  = HEARTRATE4_MODE_MASK;
     } 
     else if ( flag == 3 )
     {
+        reg_addr = HEARTRATE4_SPO2_CONFIG;
         mask  = HEARTRATE4_ADCRANGE_MASK;
     } 
     else if ( flag == 4 )
     {
+        reg_addr = HEARTRATE4_SPO2_CONFIG;
         mask  = HEARTRATE4_SAMPLERATE_MASK;
     } 
     else if ( flag == 5 )
     {
+        reg_addr = HEARTRATE4_SPO2_CONFIG;
         mask  = HEARTRATE4_PULSEWIDTH_MASK;
     } 
 
@@ -275,7 +275,8 @@ void heartrate4_setting_function ( heartrate4_t *ctx, uint8_t flag, uint8_t mode
 
 void heartrate4_setting_prox_and_amp ( heartrate4_t *ctx, uint8_t flag, uint8_t write_data )
 {
-   uint8_t write_addr;
+  // Silabs fix warning: [-Wmaybe-uninitialized]
+   uint8_t write_addr = 0;
 
     if ( flag == 0 )
     {
@@ -337,7 +338,8 @@ void heartrate4_clear_fifo ( heartrate4_t *ctx )
 void heartrate4_fifo_setting ( heartrate4_t *ctx, uint8_t flag, uint8_t samp_num )
 {
     uint8_t mask; 
-    uint8_t value;
+    // Silabs fix warning: [-Wmaybe-uninitialized]
+    uint8_t value = 0;
     
     if ( flag == 0 || flag == 1 )
     {

@@ -22,30 +22,27 @@
 
 #include "sl_status.h"
 #include "sl_sleeptimer.h"
+#include "app_assert.h"
 #include "mikroe_a172mrq.h"
 
 #if (defined(SLI_SI917))
 #include "sl_si91x_usart.h"
 #include "rsi_debug.h"
-#else
-#include "sl_iostream_init_usart_instances.h"
-#include "sl_iostream_init_eusart_instances.h"
-#include "app_log.h"
-#endif
 
-#include "app_assert.h"
-
-#define PROCESS_COUTER                 100
-#define READING_INTERVAL_MSEC          5000
-
-#if (defined(SLI_SI917))
 #define app_printf(...)                DEBUGOUT(__VA_ARGS__)
 #define USART_INSTANCE_USED            UART_1
 
 static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
 #else
+#include "sl_iostream_init_usart_instances.h"
+#include "sl_iostream_init_eusart_instances.h"
+#include "app_log.h"
+
 #define app_printf(...)                app_log(__VA_ARGS__)
 #endif
+
+#define PROCESS_COUTER                 100
+#define READING_INTERVAL_MSEC          5000
 
 static sl_sleeptimer_timer_handle_t app_timer_handle;
 static volatile bool app_timer_expire = false;

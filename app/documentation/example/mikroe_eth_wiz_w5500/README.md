@@ -10,30 +10,30 @@ The board can be used for industrial automation systems, IP set-top boxes, VoIP/
 
 ## Required Hardware ##
 
-- [A BGM220P Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [A ETH WIZ Click](https://www.mikroe.com/eth-wiz-click)
-- A Ethernet Cable, e.g. [Ethernet Roll Cable](https://www.mikroe.com/ethernet-roll-transparent)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [ETH WIZ Click board](https://www.mikroe.com/eth-wiz-click)
+- 1x Ethernet Cable, e.g. [Ethernet Roll Cable](https://www.mikroe.com/ethernet-roll-transparent)
 
 ## Hardware Connection ##
 
 - **If the BGM220P Explorer Kit is used:**
 
-    The ETH WIZ Click board supports MikroBus; therefore, it can easily connect to the MikroBus socket of the BGM220P Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit. The hardware connection is shown in the image below:
+  The ETH WIZ Click board supports MikroBus; therefore, it can easily connect to the MikroBus socket of the BGM220P Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit. The hardware connection is shown in the image below:
 
-    ![board](image/board.png)
+  ![board](image/board.png)
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+- **If the Wi-Fi Development Kit is used**:
 
-    The hardware connection is shown in the table below:
+  The hardware connection is shown in the table below:
 
-    | Description  | BRD4338A GPIO | BRD4002 Breakout Pad | The ETH WIZ Click board    |
-    | -------------| ------------- | -------------------- | ---------------------------|
-    | GPIO_RESET   | GPIO_46       | P24                  | RESET                      |
-    | GPIO_CS      | GPIO_47       | P26                  | CS                         |
-    | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25      | SCK                        |
-    | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27      | SDO                        |
-    | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27       | P29      | SDI                        |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | ETH WIZ Click       |
+  | -------------------------| ------------- | -------------------- | ------------------ |
+  | GPIO_RESET               | GPIO_47 [P26]       | GPIO_11        | RESET              |
+  | GPIO_CS                  | GPIO_46 [P24]       | GPIO_10        | CS                 |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25]       | GPIO_25        | SCK                |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26 [P27]       | GPIO_26        | SDO                |
+  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27 [P29]       | GPIO_27        | SDI                |
 
 ## Setup ##
 
@@ -72,20 +72,20 @@ You can either create a project based on an example project or start with an emp
            ![spi config](image/spi_config.png)
 
        - [Third Party Hardware Drivers] → [Interface] → [W5500 - ETH WIZ Click (Mikroe)] → use the default configuration
-  
+
           ![config](image/w5500_config.png)
-  
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+      **If the Wi-Fi Development Kit is used:**
        - [Third Party Hardware Drivers] → [Interface] → [W5500 - ETH WIZ Click (Mikroe)] → use the default configuration
        - [Application] → [Utility] → [Assert]
-  
+
 4. Build and flash the project to your device.
 
 **Note:**
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install **W5500 - ETH WIZ Click (Mikroe)** component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install **W5500 - ETH WIZ Click (Mikroe)** component.
 
 ## How It Works ##
 

@@ -37,10 +37,8 @@
  *
  ******************************************************************************/
 
-#include "uwb.h"
 #include "mikroe_uwb_dwm1000.h"
 #include "mikroe_uwb_dwm1000_config.h"
-#include "third_party_hw_drivers_helpers.h"
 
 #if (defined(SLI_SI917))
 #else
@@ -84,8 +82,6 @@ static digital_out_t cs_out;
 
 sl_status_t mikroe_dwm1000_init(mikroe_spi_handle_t spi_instance)
 {
-  THIRD_PARTY_HW_DRV_RETCODE_INIT();
-
   if ((NULL == spi_instance)) {
     return SL_STATUS_INVALID_PARAMETER;
   }
@@ -131,11 +127,13 @@ sl_status_t mikroe_dwm1000_init(mikroe_spi_handle_t spi_instance)
   digital_out_init(&cs_out, uwb_cfg.cs);
   digital_out_high(&cs_out);
 
-  THIRD_PARTY_HW_DRV_RETCODE_TEST(uwb_init(&uwb, &uwb_cfg));
+  if (uwb_init(&uwb, &uwb_cfg) != UWB_OK) {
+    return SL_STATUS_INITIALIZATION;
+  }
 
   initialized = true;
 
-  return THIRD_PARTY_HW_DRV_RETCODE_VALUE;
+  return SL_STATUS_OK;
 }
 
 sl_status_t mikroe_dwm1000_generic_write(

@@ -37,7 +37,6 @@
 #define MIKROE_EM3080W_H_
 
 #include "sl_status.h"
-#include "drv_uart.h"
 #include "barcode2.h"
 
 #ifdef __cplusplus

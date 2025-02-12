@@ -11,31 +11,32 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_digital_io
-provides:
-  - name: mikroe_stepper_a3967
-    allow_multiple: false
 config_file:
   - path: public/silabs/stepper_a3967/config/brd4314a/mikroe_a3967_config.h
-    file_id: mikroe_a3967_config  
+    file_id: mikroe_a3967_config
     condition: [brd4314a]
   - path: public/silabs/stepper_a3967/config/brd2703a/mikroe_a3967_config.h
-    file_id: mikroe_a3967_config  
+    file_id: mikroe_a3967_config
     condition: [brd2703a]
   - path: public/silabs/stepper_a3967/config/brd4108a/mikroe_a3967_config.h
-    file_id: mikroe_a3967_config  
+    file_id: mikroe_a3967_config
     condition: [brd4108a]
+  - path: public/silabs/stepper_a3967/config/brd2605a/mikroe_a3967_config.h
+    file_id: mikroe_a3967_config
+    condition: [brd2605a]
   - path: public/silabs/stepper_a3967/config/brd4338a/mikroe_a3967_config.h
-    file_id: mikroe_a3967_config  
+    file_id: mikroe_a3967_config
     condition: [brd4338a]
   - path: public/silabs/stepper_a3967/config/other/mikroe_a3967_config.h
-    file_id: mikroe_a3967_config  
-    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
+    file_id: mikroe_a3967_config
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
 template_contribution:
   - name: component_catalog
     value: mikroe_stepper_a3967
+provides:
+  - name: mikroe_stepper_a3967
+    allow_multiple: false
 include:
   - path: inc
     file_list:

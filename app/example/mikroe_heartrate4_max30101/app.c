@@ -42,51 +42,46 @@
 
 #if (defined(SLI_SI917))
 #include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+#include "sl_driver_gpio.h"
+
+#define PIN_INTR_NO               PIN_INTR_0
+#define AVL_INTR_NO               0 // available interrupt number
+#define app_printf(...)           DEBUGOUT(__VA_ARGS__)
+#define I2C_INSTANCE_USED         SL_I2C2
+
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #else
 #include "sl_i2cspm_instances.h"
-#endif
-
-#if (defined(SLI_SI917))
-#include "rsi_debug.h"
-#else
+#include "sl_gpio.h"
 #include "app_log.h"
+
+#define app_printf(...)           app_log(__VA_ARGS__)
 #endif
 
-#if (defined(SLI_SI917))
-#include "sl_driver_gpio.h"
-#else
-#include "gpiointerrupt.h"
-#endif
-
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
-
-// #define MIKROE_HEARTRATE4_MODE_INTERRUPT
-#define MIKROE_HEARTRATE4_MODE_POLLING
-
-#define READING_INTERVAL_MSEC        3000
-
-#if (defined(SLI_SI917))
-#define I2C_INSTANCE_USED            SL_I2C2
-static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
-#endif
+#define MIKROE_HEARTRATE4_MODE_INTERRUPT
+// #define MIKROE_HEARTRATE4_MODE_POLLING
+#define READING_INTERVAL_MSEC     500
 
 mikroe_i2c_handle_t app_i2c_instance = NULL;
 
 static volatile bool data_ready = false;
 
 #ifdef MIKROE_HEARTRATE4_MODE_INTERRUPT
-static void heartrate4_int_callback(uint8_t intNo)
+#if (defined(SLI_SI917))
+static void heartrate4_int_callback(uint32_t int_no)
 {
-  (void) intNo;
+#else // SLI_SI917
+static void heartrate4_int_callback(uint8_t int_no, void *ctx)
+{
+  (void)ctx;
+#endif // SLI_SI917
+  (void)int_no;
 
   data_ready = true;
 }
 
-#endif
+#endif // MIKROE_HEARTRATE4_MODE_INTERRUPT
 
 #ifdef MIKROE_HEARTRATE4_MODE_POLLING
 static sl_sleeptimer_timer_handle_t app_timer_handle;
@@ -98,7 +93,7 @@ static void app_timer_cb(sl_sleeptimer_timer_handle_t *handle, void *data)
   data_ready = true;
 }
 
-#endif
+#endif // MIKROE_HEARTRATE4_MODE_POLLING
 
 /***************************************************************************//**
  * Initialize application.
@@ -106,33 +101,36 @@ static void app_timer_cb(sl_sleeptimer_timer_handle_t *handle, void *data)
 void app_init(void)
 {
 #ifdef MIKROE_HEARTRATE4_MODE_INTERRUPT
+  int32_t int_no;
+  sl_gpio_t gpio_port_pin;
 #if (defined(SLI_SI917))
-  sl_gpio_t gpio_port_pin = {
-    MAX30101_INT_PIN / 16,
-    MAX30101_INT_PIN % 16
-  };
+  gpio_port_pin.port = (MAX30101_INT_PORT > 0)
+                       ? MAX30101_INT_PORT
+                       : (MAX30101_INT_PIN / 16);
+  gpio_port_pin.pin = MAX30101_INT_PIN % 16;
+  int_no = PIN_INTR_NO;
   sl_gpio_driver_configure_interrupt(&gpio_port_pin,
-                                     GPIO_M4_INTR,
-                                     SL_GPIO_INTERRUPT_RISING_EDGE | SL_GPIO_INTERRUPT_FALLING_EDGE,
-                                     (void *)&heartrate4_int_callback,
+                                     int_no,
+                                     SL_GPIO_INTERRUPT_FALLING_EDGE,
+                                     heartrate4_int_callback,
                                      AVL_INTR_NO);
-#else
-  GPIO_PinModeSet(MAX30101_INT_PORT, MAX30101_INT_PIN, gpioModeInputPull, 1);
-  GPIO_ExtIntConfig(MAX30101_INT_PORT,
-                    MAX30101_INT_PIN,
-                    MAX30101_INT_PIN,
-                    false,
-                    true,
-                    true);
-  GPIOINT_CallbackRegister(MAX30101_INT_PIN, heartrate4_int_callback);
-#endif
-#endif
+#else // SLI_SI917
+  gpio_port_pin.port = MAX30101_INT_PORT;
+  gpio_port_pin.pin = MAX30101_INT_PIN;
+  int_no = MAX30101_INT_PIN;
+  sl_gpio_configure_external_interrupt(&gpio_port_pin,
+                                       &int_no,
+                                       SL_GPIO_INTERRUPT_FALLING_EDGE,
+                                       heartrate4_int_callback,
+                                       NULL);
+#endif // SLI_SI917
+#endif // MIKROE_HEARTRATE4_MODE_INTERRUPT
 
 #if (defined(SLI_SI917))
   app_i2c_instance = &i2c_instance;
-#else
+#else // SLI_SI917
   app_i2c_instance = sl_i2cspm_mikroe;
-#endif
+#endif // SLI_SI917
 
   if (mikroe_max30101_init(app_i2c_instance) == SL_STATUS_OK) {
     app_printf("MAX30101 init successfully\n");
@@ -150,7 +148,7 @@ void app_init(void)
 
   // Clear interrupt flag of FIFO almost full flag
   mikroe_max30101_get_red_val();
-#endif
+#endif // MIKROE_HEARTRATE4_MODE_INTERRUPT
 
 #ifdef MIKROE_HEARTRATE4_MODE_POLLING
   sl_sleeptimer_start_periodic_timer_ms(&app_timer_handle,
@@ -159,7 +157,7 @@ void app_init(void)
                                         (void *) NULL,
                                         0,
                                         0);
-#endif
+#endif // MIKROE_HEARTRATE4_MODE_POLLING
 }
 
 /***************************************************************************//**
@@ -167,7 +165,8 @@ void app_init(void)
  ******************************************************************************/
 void app_process_action(void)
 {
-  static uint32_t red_samp;
+  uint32_t red_samp;
+  static uint8_t counter = 200;
 
   if (data_ready == false) {
     return;
@@ -182,11 +181,14 @@ void app_process_action(void)
 
   if (mikroe_max30101_get_intrrupt(1) & 0x40) {
     red_samp = mikroe_max30101_get_red_val();
+    counter++;
     // If sample pulse amplitude is not under threshold value 0x8000
     if (red_samp > 0x8000) {
       app_printf("%lu\r\n", red_samp);
-    } else {
+      counter = 200;
+    } else if (counter > 200) {
       app_printf("Place Finger On Sensor\r\n");
+      counter = 0;
     }
   }
 }

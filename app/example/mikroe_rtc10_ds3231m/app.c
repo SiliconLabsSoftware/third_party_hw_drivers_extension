@@ -41,23 +41,19 @@
 #if (defined(SLI_SI917))
 #include "sl_i2c_instances.h"
 #include "rsi_debug.h"
+
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
+#define I2C_INSTANCE_USED            SL_I2C2
+
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #else
 #include "sl_i2cspm_instances.h"
 #include "app_log.h"
-#endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
+#define app_printf(...)              app_log(__VA_ARGS__)
 #endif
 
 #define READING_INTERVAL_MSEC        1000
-
-#if (defined(SLI_SI917))
-#define I2C_INSTANCE_USED            SL_I2C2
-static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
-#endif
 
 static mikroe_i2c_handle_t app_i2c_instance = NULL;
 static volatile bool flag = false;

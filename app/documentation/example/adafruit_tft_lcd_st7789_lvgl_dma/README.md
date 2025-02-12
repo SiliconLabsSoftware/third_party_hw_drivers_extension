@@ -10,9 +10,9 @@ This example uses the source files which are generated from [SquareLine Studio](
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- A ST7789 TFT display as listed below:
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x ST7789 TFT display as listed below:
   - [Adafruit 1.14" 240x135 Color TFT Display + MicroSD Card Breakout - ST7789](https://www.adafruit.com/product/4383)
 
 ![st7789_display](image/st7789_display.png)
@@ -23,13 +23,13 @@ This example uses the source files which are generated from [SquareLine Studio](
 
 To connect the Adafruit 1.14" 240x135 Color TFT Display + MicroSD Card Breakout - ST7789 with your board, you can see the pins mapping table below.
 
-| EFR32xG24 Explorer Kit | SiWx917-RB4338A Radio Board  | Connection | Pin function |
-| --- | --- | --- | --- |
-| PC8 | GPIO_47 (P26) | D/C | GPIO |
-| PC0 | GPIO_28 (P31) | CS | SPI CS |
-| PC1 | GPIO_25 (P25) | CLK | SPI SCK |
-| PC2 | GPIO_26 (P27) | MISO | SPI MISO |
-| PC3 | GPIO_27 (P29) | MOSI | SPI MOSI |
+| EFR32xG24 Explorer Kit | BRD4338A + BRD4002A | BRD2605A    | Connection | Pin function |
+| --- | --- | --- | --- | --- |
+| PC8 | GPIO_47 (P26) | GPIO_10 | D/C | GPIO |
+| PC0 | GPIO_28 (P31) | GPIO_28 | CS  | SPI CS |
+| PC1 | GPIO_25 (P25) | GPIO_25 | CLK | SPI SCK |
+| PC2 | GPIO_26 (P27) | GPIO_26 | MISO | SPI MISO |
+| PC3 | GPIO_27 (P29) | GPIO_27 | MOSI | SPI MOSI |
 
 ## Setup ##
 
@@ -95,7 +95,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install **Third Party Hardware Drivers - ST7789 - TFT LCD Display (Adafruit) - with LVGL + DMA** component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install **Third Party Hardware Drivers - ST7789 - TFT LCD Display (Adafruit) - with LVGL + DMA** component.
 
 ## How It Works ##
 

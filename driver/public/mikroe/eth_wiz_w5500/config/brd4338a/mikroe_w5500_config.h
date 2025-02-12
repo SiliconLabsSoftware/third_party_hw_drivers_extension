@@ -85,20 +85,20 @@ extern "C" {
 
 // <gpio optional=true> W5500_RESET
 // $[GPIO_W5500_RESET]
-#ifndef W5500_RESET_PORT                        
+#ifndef W5500_RESET_PORT
 #define W5500_RESET_PORT                         HP
 #endif
-#ifndef W5500_RESET_PIN                         
+#ifndef W5500_RESET_PIN
 #define W5500_RESET_PIN                          46
 #endif
 // [GPIO_W5500_RESET]$
 
 // <gpio optional=true> MIKROE_W5500_CS
 // $[GPIO_MIKROE_W5500_CS]
-#ifndef MIKROE_W5500_CS_PORT                   
+#ifndef MIKROE_W5500_CS_PORT
 #define MIKROE_W5500_CS_PORT                    HP
 #endif
-#ifndef MIKROE_W5500_CS_PIN                    
+#ifndef MIKROE_W5500_CS_PIN
 #define MIKROE_W5500_CS_PIN                     47
 #endif
 // [GPIO_MIKROE_W5500_CS]$
@@ -108,4 +108,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif /* Wx500_CONFIG_H_ */
+
+#endif // Wx500_CONFIG_H_

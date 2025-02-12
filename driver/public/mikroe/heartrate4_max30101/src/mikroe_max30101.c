@@ -37,7 +37,6 @@
  *
  ******************************************************************************/
 
-#include "heartrate4.h"
 #include "mikroe_max30101.h"
 #include "mikroe_max30101_config.h"
 

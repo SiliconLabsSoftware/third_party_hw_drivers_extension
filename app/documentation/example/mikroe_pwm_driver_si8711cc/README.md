@@ -12,25 +12,25 @@ The click contains a P-channel DMP3010LK3 MOSFET transistor. When the click is u
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit (BRD2703A xG24 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [PWM Driver Click board based on Si8711CC one-channel isolator from Silicon Lab](https://www.mikroe.com/pwm-driver-click)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [PWM Driver Click board](https://www.mikroe.com/pwm-driver-click) based on Si8711CC one-channel isolator
 
 ## Hardware Connection ##
 
 - **If EFR32xG24 Explorer Kit is used:**
 
-    The PWM Driver Click board supports MikroBus; therefore, it can easily connect to the MikroBus socket of the EFR32xG24 Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit. The hardware connection is shown in the image below:
+  The PWM Driver Click board supports MikroBus; therefore, it can easily connect to the MikroBus socket of the EFR32xG24 Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit. The hardware connection is shown in the image below:
 
-    ![board_1](image/hardware_connection.png "BRD2703A xG24 Explorer Kit Board and PWM Driver Click Board")
+  ![board_1](image/hardware_connection.png "BRD2703A xG24 Explorer Kit Board and PWM Driver Click Board")
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+- **If the Wi-Fi Development Kit is used**:
 
-    The hardware connection is shown in the table below:
+  The hardware connection is shown in the table below:
 
-    | Description  | BRD4338A GPIO | BRD4002 Breakout Pad | PWM Driver Click board     |
-    | -------------| ------------- | -------------------- | ---------------------------|
-    | PWM_H        | GPIO_7        | P20                  | PWM                        |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | PWM Driver Click board     |
+  | -------------| ------------- | ------------------ | ---------------------------|
+  | PWM_H        | GPIO_7 [P20]  | GPIO_7             | PWM                        |
 
 ## Setup ##
 
@@ -67,7 +67,7 @@ You can either create a project based on an example project or start with an emp
         - [Application] → [Utility] → [Log]
         - [Third-Party Hardware Drivers] → [Motor Control] → [Si8711CC - PWM Driver Click (Mikroe)]
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [PWM] → [channel_0] → use default configuration
@@ -78,7 +78,7 @@ You can either create a project based on an example project or start with an emp
 **Note:**
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide)
-- Third-party Hardware Drivers Extension must be enabled for the project to install "Si8711CC - PWM Driver Click (Mikroe)" component
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "Si8711CC - PWM Driver Click (Mikroe)" component
 
 ## How It Works ##
 
@@ -93,7 +93,7 @@ You can either create a project based on an example project or start with an emp
   ![result_3](image/result_3.png "Result_3")
 
   ![result_1](image/result_1.png "Result_1")
-  
+
 ## Report Bugs & Get Support ##
 
 To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_Drivers_extension](https://github.com/SiliconLabs/third_party_hw_Drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.

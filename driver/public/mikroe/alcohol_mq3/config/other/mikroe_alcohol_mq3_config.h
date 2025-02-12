@@ -40,8 +40,6 @@
 #ifndef MIKORE_ALCOHOL_MQ3_CONFIG_H_
 #define MIKORE_ALCOHOL_MQ3_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

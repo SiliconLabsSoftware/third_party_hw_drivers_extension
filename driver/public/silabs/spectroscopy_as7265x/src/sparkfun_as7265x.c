@@ -36,7 +36,7 @@
  *
  ******************************************************************************/
 
-#include "string.h"
+#include <string.h>
 #include "sparkfun_as7265x.h"
 #include "spectroscopy_as7265x_config.h"
 
@@ -129,8 +129,8 @@ static sl_status_t get_calibrated_value(uint8_t cal_address,
                                         float *cal_val);
 
 /***************************************************************************//**
-* Read register value
-*******************************************************************************/
+ * Read register value
+ *******************************************************************************/
 static sl_status_t sparkfun_as7265x_platform_read_register(uint8_t addr,
                                                            uint8_t *pdata)
 {
@@ -149,8 +149,8 @@ static sl_status_t sparkfun_as7265x_platform_read_register(uint8_t addr,
 }
 
 /***************************************************************************//**
-* Write into register
-*******************************************************************************/
+ * Write into register
+ *******************************************************************************/
 static sl_status_t sparkfun_as7265x_platform_write_register(uint8_t addr,
                                                             uint8_t data)
 {
@@ -164,8 +164,8 @@ static sl_status_t sparkfun_as7265x_platform_write_register(uint8_t addr,
 }
 
 /***************************************************************************//**
-* Initialize as7265x sensor
-*******************************************************************************/
+ * Initialize as7265x sensor
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_init(mikroe_i2c_handle_t i2cspm)
 {
   uint8_t value = 0;
@@ -246,8 +246,8 @@ sl_status_t sparkfun_as7265x_init(mikroe_i2c_handle_t i2cspm)
 }
 
 /***************************************************************************//**
-* Get device type.
-*******************************************************************************/
+ * Get device type.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_get_device_type(uint8_t *dev_type)
 {
   uint8_t data = 0;
@@ -269,8 +269,8 @@ sl_status_t sparkfun_as7265x_get_device_type(uint8_t *dev_type)
 }
 
 /***************************************************************************//**
-* Get hardware version.
-*******************************************************************************/
+ * Get hardware version.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_get_hardware_version(uint8_t *hw_ver)
 {
   uint8_t data = 0;
@@ -292,8 +292,8 @@ sl_status_t sparkfun_as7265x_get_hardware_version(uint8_t *hw_ver)
 }
 
 /***************************************************************************//**
-* Get firmware version.
-*******************************************************************************/
+ * Get firmware version.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_get_firmware_version(
   sparkfun_as7265x_firmware_version_t *version)
 {
@@ -342,8 +342,8 @@ sl_status_t sparkfun_as7265x_get_firmware_version(
 }
 
 /***************************************************************************//**
-* Take measurements.
-*******************************************************************************/
+ * Take measurements.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_take_measurements(void)
 {
   sl_status_t sc = SL_STATUS_OK;
@@ -374,8 +374,8 @@ sl_status_t sparkfun_as7265x_take_measurements(void)
 }
 
 /***************************************************************************//**
-* Take measurements with bulbs.
-*******************************************************************************/
+ * Take measurements with bulbs.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_take_measurements_with_bulb(void)
 {
   sl_status_t sc = SL_STATUS_OK;
@@ -398,8 +398,8 @@ sl_status_t sparkfun_as7265x_take_measurements_with_bulb(void)
 }
 
 /***************************************************************************//**
-* Get all color readings.
-*******************************************************************************/
+ * Get all color readings.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_get_all_color_channel(
   sparkfun_as7265x_color_data_t *color_data)
 {
@@ -429,8 +429,8 @@ sl_status_t sparkfun_as7265x_get_all_color_channel(
 }
 
 /***************************************************************************//**
-* Get raw color data of a channel.
-*******************************************************************************/
+ * Get raw color data of a channel.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_get_channel(
   sparkfun_as7265x_color_channel_t channel,
   uint16_t *color_data)
@@ -445,8 +445,8 @@ sl_status_t sparkfun_as7265x_get_channel(
 }
 
 /***************************************************************************//**
-* Get all calibrated value.
-*******************************************************************************/
+ * Get all calibrated value.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_get_all_calibrated_value(
   sparkfun_as7265x_calibrated_data_t *cal_val)
 {
@@ -476,8 +476,8 @@ sl_status_t sparkfun_as7265x_get_all_calibrated_value(
 }
 
 /***************************************************************************//**
-* Get calibrated data of a channel.
-*******************************************************************************/
+ * Get calibrated data of a channel.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_get_calibrated_value(
   sparkfun_as7265x_color_channel_t channel,
   float *cal_val)
@@ -491,8 +491,8 @@ sl_status_t sparkfun_as7265x_get_calibrated_value(
 }
 
 /***************************************************************************//**
-* Set measurement mode.
-*******************************************************************************/
+ * Set measurement mode.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_set_measurement_mode(
   sparkfun_as7265x_device_mode_t mode)
 {
@@ -522,8 +522,8 @@ sl_status_t sparkfun_as7265x_set_measurement_mode(
 }
 
 /***************************************************************************//**
-* Set gain value.
-*******************************************************************************/
+ * Set gain value.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_set_gain(sparkfun_as7265x_gain_t gain)
 {
   uint8_t value = 0;
@@ -552,8 +552,8 @@ sl_status_t sparkfun_as7265x_set_gain(sparkfun_as7265x_gain_t gain)
 }
 
 /***************************************************************************//**
-* Sets the integration cycle amount.
-*******************************************************************************/
+ * Sets the integration cycle amount.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_set_integration_cycles(uint8_t cycle_value)
 {
   sl_status_t sc = SL_STATUS_OK;
@@ -572,8 +572,8 @@ sl_status_t sparkfun_as7265x_set_integration_cycles(uint8_t cycle_value)
 }
 
 /***************************************************************************//**
-* Enable interrupt pin.
-*******************************************************************************/
+ * Enable interrupt pin.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_enable_interrupt(void)
 {
   uint8_t value = 0;
@@ -595,8 +595,8 @@ sl_status_t sparkfun_as7265x_enable_interrupt(void)
 }
 
 /***************************************************************************//**
-* Disable interrupt pin.
-*******************************************************************************/
+ * Disable interrupt pin.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_disable_interrupt(void)
 {
   uint8_t value = 0;
@@ -618,8 +618,8 @@ sl_status_t sparkfun_as7265x_disable_interrupt(void)
 }
 
 /***************************************************************************//**
-* Check data available.
-*******************************************************************************/
+ * Check data available.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_data_available(bool *is_data_ready)
 {
   sl_status_t sc = SL_STATUS_OK;
@@ -638,8 +638,8 @@ sl_status_t sparkfun_as7265x_data_available(bool *is_data_ready)
 }
 
 /***************************************************************************//**
-* Enable bulb of given device.
-*******************************************************************************/
+ * Enable bulb of given device.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_enable_bulb(sparkfun_as7265x_led_type_t led_type)
 {
   uint8_t value = 0;
@@ -662,8 +662,8 @@ sl_status_t sparkfun_as7265x_enable_bulb(sparkfun_as7265x_led_type_t led_type)
 }
 
 /***************************************************************************//**
-* Disable bulb of given device.
-*******************************************************************************/
+ * Disable bulb of given device.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_disable_bulb(sparkfun_as7265x_led_type_t led_type)
 {
   uint8_t value = 0;
@@ -686,8 +686,8 @@ sl_status_t sparkfun_as7265x_disable_bulb(sparkfun_as7265x_led_type_t led_type)
 }
 
 /***************************************************************************//**
-* Set bulb current.
-*******************************************************************************/
+ * Set bulb current.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_set_bulb_current(
   sparkfun_as7265x_led_current_t current,
   sparkfun_as7265x_led_type_t led_type)
@@ -722,8 +722,8 @@ sl_status_t sparkfun_as7265x_set_bulb_current(
 }
 
 /***************************************************************************//**
-* Select device.
-*******************************************************************************/
+ * Select device.
+ *******************************************************************************/
 static sl_status_t select_device(sparkfun_as7265x_device_type_t device)
 {
   // Set the bits 0:1. Just overwrite whatever is there because masking in
@@ -732,8 +732,8 @@ static sl_status_t select_device(sparkfun_as7265x_device_type_t device)
 }
 
 /***************************************************************************//**
-* Enable the onboard indicator LED.
-*******************************************************************************/
+ * Enable the onboard indicator LED.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_enable_indicator(void)
 {
   uint8_t value = 0;
@@ -756,8 +756,8 @@ sl_status_t sparkfun_as7265x_enable_indicator(void)
 }
 
 /***************************************************************************//**
-* Disable the onboard indicator LED.
-*******************************************************************************/
+ * Disable the onboard indicator LED.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_disable_indicator(void)
 {
   uint8_t value = 0;
@@ -780,8 +780,8 @@ sl_status_t sparkfun_as7265x_disable_indicator(void)
 }
 
 /***************************************************************************//**
-* Set indicator current.
-*******************************************************************************/
+ * Set indicator current.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_set_indicator_current(
   sparkfun_as7265x_indicator_led_current_t current)
 {
@@ -813,8 +813,8 @@ sl_status_t sparkfun_as7265x_set_indicator_current(
 }
 
 /***************************************************************************//**
-* Get temperature.
-*******************************************************************************/
+ * Get temperature.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_get_temperature(
   sparkfun_as7265x_device_type_t device,
   uint8_t *temp_val)
@@ -840,8 +840,8 @@ sl_status_t sparkfun_as7265x_get_temperature(
 }
 
 /***************************************************************************//**
-* Soft reset device.
-*******************************************************************************/
+ * Soft reset device.
+ *******************************************************************************/
 sl_status_t sparkfun_as7265x_soft_reset(void)
 {
   uint8_t value = 0;
@@ -862,8 +862,8 @@ sl_status_t sparkfun_as7265x_soft_reset(void)
 }
 
 /***************************************************************************//**
-* Get calibrated color data of a channel.
-*******************************************************************************/
+ * Get calibrated color data of a channel.
+ *******************************************************************************/
 static sl_status_t get_calibrated_value(uint8_t cal_address,
                                         sparkfun_as7265x_device_type_t device,
                                         float *cal_val)
@@ -895,8 +895,8 @@ static sl_status_t get_calibrated_value(uint8_t cal_address,
 }
 
 /***************************************************************************//**
-* Get raw color data of a channel.
-*******************************************************************************/
+ * Get raw color data of a channel.
+ *******************************************************************************/
 static sl_status_t get_channel(uint8_t channel_register,
                                sparkfun_as7265x_device_type_t device,
                                uint16_t *color_data)
@@ -923,8 +923,8 @@ static sl_status_t get_channel(uint8_t channel_register,
 }
 
 /***************************************************************************//**
-* Write into virtual register.
-*******************************************************************************/
+ * Write into virtual register.
+ *******************************************************************************/
 static sl_status_t write_virtual_register(uint8_t virtual_addr, uint8_t data)
 {
   uint8_t status = 0;
@@ -995,8 +995,8 @@ static sl_status_t write_virtual_register(uint8_t virtual_addr, uint8_t data)
 }
 
 /***************************************************************************//**
-* Read virtual register.
-*******************************************************************************/
+ * Read virtual register.
+ *******************************************************************************/
 static sl_status_t read_virtual_register(uint8_t virtual_addr, uint8_t *pdata)
 {
   uint8_t status = 0;

@@ -16,10 +16,10 @@ provides:
   - name: sparkfun_ir_array_amg88xx
 template_contribution:
   - name: component_catalog
-    value: sparkfun_ir_array_amg88xx 
+    value: sparkfun_ir_array_amg88xx
 include:
   - path: public/silabs/ir_array_amg88xx/inc
     file_list:
-      - path: ir_array_amg88xx.h  
+      - path: ir_array_amg88xx.h
 source:
   - path: public/silabs/ir_array_amg88xx/src/ir_array_amg88xx.c

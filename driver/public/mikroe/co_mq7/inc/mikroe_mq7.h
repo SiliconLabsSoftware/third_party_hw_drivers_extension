@@ -40,7 +40,8 @@
 #ifndef MIKROE_MQ7_H_
 #define MIKROE_MQ7_H_
 
-#include "drv_analog_in.h"
+#include "sl_status.h"
+#include "co.h"
 
 #ifdef __cplusplus
 extern "C" {

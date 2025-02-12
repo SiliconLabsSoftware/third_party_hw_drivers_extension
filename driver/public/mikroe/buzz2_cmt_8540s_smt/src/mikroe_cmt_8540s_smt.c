@@ -39,7 +39,6 @@
 
 #include <stddef.h>
 #include "mikroe_cmt_8540s_smt.h"
-#include "buzz2.h"
 
 static buzz2_t buzz2;
 static buzz2_cfg_t buzz2_cfg;

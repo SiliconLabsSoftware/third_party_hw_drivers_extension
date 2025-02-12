@@ -39,10 +39,6 @@
 #ifndef MIKROE_DPS310_SPI_CONFIG_H
 #define MIKROE_DPS310_SPI_CONFIG_H
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -39,19 +39,14 @@
 #ifndef MAX6969_CONFIG_H_
 #define MAX6969_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
 // <h> MIKROE_MAX6969 SPI Configuration
 
-// <e>MIKROE_MAX6969 SPI UC Configuration
+// <e> MIKROE_MAX6969 SPI UC Configuration
 // <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
 // <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
 // <i> Default: 0
@@ -65,17 +60,8 @@ extern "C"
 // </h>
 // <<< end of configuration section >>>
 
-// <<< sl:start pin_tool >>>
-
-// <gpio optional=true> MIKROE_MAX6969_CS
-// $[GPIO_MIKROE_MAX6969_CS]
-// #define MIKROE_MAX6969_CS_PORT                        0
-// #define MIKROE_MAX6969_CS_PIN                         0
-// [GPIO_MIKROE_MAX6969_CS]$
-
-// <<< sl:end pin_tool >>>
-
 #ifdef __cplusplus
 }
 #endif
+
 #endif // MAX6969_CONFIG_H_

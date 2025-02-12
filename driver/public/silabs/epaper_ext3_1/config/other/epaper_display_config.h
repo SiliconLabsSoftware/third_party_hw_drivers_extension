@@ -41,9 +41,10 @@
 #define EPD_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
+
+#include "em_gpio.h"
 
 #define EPD_TYPE                    0x580B
 #define EPD_VERTICAL                256
@@ -108,7 +109,7 @@ extern "C"
 // $[SPI_EPD_TX]
 #warning "SPI_EPD_TX is not configured"
 // #ifndef SPI_EPD_TX_PORT
-// #define SPI_EPD_TX_PORT                 gpioPortC
+// #define SPI_EPD_TX_PORT                 SL_GPIO_PORT_C
 // #endif
 // #ifndef SPI_EPD_TX_PIN
 // #define SPI_EPD_TX_PIN                  0
@@ -118,7 +119,7 @@ extern "C"
 // $[SPI_EPD_RX]
 #warning "SPI_EPD_RX is not configured"
 // #ifndef SPI_EPD_RX_PORT
-// #define SPI_EPD_RX_PORT                 gpioPortC
+// #define SPI_EPD_RX_PORT                 SL_GPIO_PORT_C
 // #endif
 // #ifndef SPI_EPD_RX_PIN
 // #define SPI_EPD_RX_PIN                  1
@@ -128,7 +129,7 @@ extern "C"
 // $[SPI_EPD_CLK]
 #warning "SPI_EPD_CLK is not configured"
 // #ifndef SPI_EPD_CLK_PORT
-// #define SPI_EPD_CLK_PORT                gpioPortC
+// #define SPI_EPD_CLK_PORT                SL_GPIO_PORT_C
 // #endif
 // #ifndef SPI_EPD_CLK_PIN
 // #define SPI_EPD_CLK_PIN                 2
@@ -138,7 +139,7 @@ extern "C"
 // $[SPI_EPD_CS]
 #warning "SPI_EPD_CS is not configured"
 // #ifndef SPI_EPD_CS_PORT
-// #define SPI_EPD_CS_PORT                 gpioPortC
+// #define SPI_EPD_CS_PORT                 SL_GPIO_PORT_C
 // #endif
 // #ifndef SPI_EPD_CS_PIN
 // #define SPI_EPD_CS_PIN                  3
@@ -149,7 +150,7 @@ extern "C"
 // $[GPIO_EPD_DC]
 #warning "EPD_DC is not configured"
 // #ifndef EPD_DC_PORT
-// #define EPD_DC_PORT                     gpioPortB
+// #define EPD_DC_PORT                     SL_GPIO_PORT_B
 // #endif
 // #ifndef EPD_DC_PIN
 // #define EPD_DC_PIN                      4
@@ -160,7 +161,7 @@ extern "C"
 // $[GPIO_EPD_RST]
 #warning "EPD_RST is not configured"
 // #ifndef EPD_RST_PORT
-// #define EPD_RST_PORT                    gpioPortB
+// #define EPD_RST_PORT                    SL_GPIO_PORT_B
 // #endif
 // #ifndef EPD_RST_PIN
 // #define EPD_RST_PIN                     2
@@ -171,7 +172,7 @@ extern "C"
 // $[GPIO_EPD_BUSY]
 #warning "EPD_BUSY is not configured"
 // #ifndef EPD_BUSY_PORT
-// #define EPD_BUSY_PORT                   gpioPortB
+// #define EPD_BUSY_PORT                   SL_GPIO_PORT_B
 // #endif
 // #ifndef EPD_BUSY_PIN
 // #define EPD_BUSY_PIN                    3

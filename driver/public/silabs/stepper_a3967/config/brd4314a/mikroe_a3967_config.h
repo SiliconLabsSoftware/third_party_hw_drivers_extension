@@ -39,8 +39,6 @@
 #ifndef MIKROE_A3967_CONFIG_H_
 #define MIKROE_A3967_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -58,25 +56,25 @@ extern "C" {
 
 // <gpio optional=true> MIKROE_A3967_STEP
 // $[GPIO_MIKROE_A3967_STEP]
-#define MIKROE_A3967_STEP_PORT                  gpioPortB
+#define MIKROE_A3967_STEP_PORT                  SL_GPIO_PORT_B
 #define MIKROE_A3967_STEP_PIN                   4
 // [GPIO_MIKROE_A3967_STEP]$
 
 // <gpio optional=true> MIKROE_A3967_DIR
 // $[GPIO_MIKROE_A3967_DIR]
-#define MIKROE_A3967_DIR_PORT                   gpioPortC
+#define MIKROE_A3967_DIR_PORT                   SL_GPIO_PORT_C
 #define MIKROE_A3967_DIR_PIN                    3
 // [GPIO_MIKROE_A3967_DIR]$
 
 // <gpio optional=true> MIKROE_A3967_MS1
 // $[GPIO_MIKROE_A3967_MS1]
-#define MIKROE_A3967_MS1_PORT                   gpioPortB
+#define MIKROE_A3967_MS1_PORT                   SL_GPIO_PORT_B
 #define MIKROE_A3967_MS1_PIN                    0
 // [GPIO_MIKROE_A3967_MS1]$
 
 // <gpio optional=true> MIKROE_A3967_MS2
 // $[GPIO_MIKROE_A3967_MS2]
-#define MIKROE_A3967_MS2_PORT                   gpioPortC
+#define MIKROE_A3967_MS2_PORT                   SL_GPIO_PORT_C
 #define MIKROE_A3967_MS2_PIN                    6
 // [GPIO_MIKROE_A3967_MS2]$
 
@@ -86,4 +84,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_A3967_CONFIG_H_ */
+#endif // MIKROE_A3967_CONFIG_H_

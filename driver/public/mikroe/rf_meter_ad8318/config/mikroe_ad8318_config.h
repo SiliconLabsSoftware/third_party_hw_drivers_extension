@@ -39,13 +39,8 @@
 #ifndef AD8318_CONFIG_H_
 #define AD8318_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
@@ -65,17 +60,8 @@ extern "C"
 // </h>
 // <<< end of configuration section >>>
 
-// <<< sl:start pin_tool >>>
-
-// <gpio optional=true> MIKROE_AD8318_CS
-// $[GPIO_MIKROE_AD8318_CS]                 
-// #define MIKROE_AD8318_CS_PORT                 0
-// #define MIKROE_AD8318_CS_PIN                  0
-// [GPIO_MIKROE_AD8318_CS]$
-
-// <<< sl:end pin_tool >>>
-
 #ifdef __cplusplus
 }
 #endif
+
 #endif // AD8318_CONFIG_H_

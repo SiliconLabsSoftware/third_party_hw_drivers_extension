@@ -9,8 +9,6 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
 config_file:
   - path: public/silabs/sparkfun_6dof_imu_bmi270/config/sparkfun_bmi270_config.h
@@ -24,6 +22,6 @@ template_contribution:
 include:
   - path: public/silabs/sparkfun_6dof_imu_bmi270/inc
     file_list:
-      - path: sparkfun_bmi270.h   
+      - path: sparkfun_bmi270.h
 source:
   - path: public/silabs/sparkfun_6dof_imu_bmi270/src/sparkfun_bmi270.c

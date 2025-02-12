@@ -1,4 +1,4 @@
-project_name: sparkfun_human_presence_ak9753_si91x
+project_name: sparkfun_human_presence_ak9753
 label: Third Party Hardware Drivers - AK9753 - Human Presence Sensor (Sparkfun)
 package: platform
 description: |
@@ -7,50 +7,46 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/sparkfun_human_presence_ak9753/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: syscalls
-  from: wiseconnect3_sdk
-- id: si917_memory_default_config
-  from: wiseconnect3_sdk
-- instance: [i2c2]
-  from: wiseconnect3_sdk
-  id: i2c_instance
-- id: sparkfun_human_presence_ak9753
-  from: third_party_hw_drivers
+  - id: sl_system
+  - id: syscalls
+    from: wiseconnect3_sdk
+  - id: si917_memory_default_config
+    from: wiseconnect3_sdk
+  - id: i2c_instance
+    instance: [i2c2]
+    from: wiseconnect3_sdk
+  - id: sparkfun_human_presence_ak9753
+    from: third_party_hw_drivers
 
 toolchain_settings:
   - option: gcc_linker_option
     value: "-u _printf_float"
 
-define:
-- name: DEBUG_EFM
-
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
-- id: wiseconnect3_sdk
-  version: 3.3.4
+  - id: third_party_hw_drivers
+    version: 4.1.0
+  - id: wiseconnect3_sdk
+    version: 3.4.0
 
+readme:
+  - path: ../../documentation/example/sparkfun_human_presence_ak9753/README.md
 
 other_file:
   - path: ../../documentation/example/sparkfun_human_presence_ak9753/image/create_example.png
@@ -74,4 +70,4 @@ ui_hints:
       focus: true
 
 post_build:
-  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb 
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

@@ -68,4 +68,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // SPARKFUN_SOIL_MOISTURE_CONFIG_H

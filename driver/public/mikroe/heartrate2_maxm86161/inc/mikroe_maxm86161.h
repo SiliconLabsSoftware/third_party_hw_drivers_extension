@@ -41,7 +41,7 @@
 #define MIKROE_MAXM86161_H_
 
 #include "sl_status.h"
-#include "drv_i2c_master.h"
+#include "heartrate2.h"
 
 #ifdef __cplusplus
 extern "C" {

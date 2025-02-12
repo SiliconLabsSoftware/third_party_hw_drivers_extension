@@ -27,13 +27,15 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has not been formally tested and is provided as-is. It is not
- * suitable for production environments. In addition, this code will not be
- * maintained and there may be no bug maintenance planned for these resources.
- * Silicon Labs may update projects from time to time.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
-#include "string.h"
+#include <string.h>
 #include "app_assert.h"
 #include "sl_sleeptimer.h"
 #include "ff.h"
@@ -43,19 +45,15 @@
 #if (defined(SLI_SI917))
 #include "sl_si91x_gspi.h"
 #include "rsi_debug.h"
+
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #else
 #include "sl_spidrv_instances.h"
 #include "app_log.h"
-#endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
 #define app_printf(...) app_log(__VA_ARGS__)
-#endif
-
-#if (defined(SLI_SI917))
-static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #endif
 
 static mikroe_spi_handle_t app_spi_instance = NULL;

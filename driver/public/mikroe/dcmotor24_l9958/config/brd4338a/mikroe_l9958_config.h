@@ -60,16 +60,10 @@
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> DCMOTOR24_CS
-// $[GPIO_DCMOTOR24_CS]
-// #define DCMOTOR24_CS_PORT                  0
-// #define DCMOTOR24_CS_PIN                   0
-// [GPIO_DCMOTOR24_CS]$
-
 // <gpio optional=true> DCMOTOR24_DIRECTION
 // $[GPIO_DCMOTOR24_DIRECTION]
 #define DCMOTOR24_DIRECTION_PORT            HP
-#define DCMOTOR24_DIRECTION_PIN             48
+#define DCMOTOR24_DIRECTION_PIN             47
 // [GPIO_DCMOTOR24_DIRECTION]$
 
 // <gpio optional=true> DCMOTOR24_ENABLE
@@ -80,4 +74,4 @@
 
 // <<< sl:end pin_tool >>>
 
-#endif /* MIKROE_L9958_CONFIG_H_ */
+#endif // MIKROE_L9958_CONFIG_H_

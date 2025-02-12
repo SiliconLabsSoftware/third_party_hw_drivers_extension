@@ -12,29 +12,45 @@ For more information about the SparkFun Weather Meter Kit, see the [specificatio
 
 ## Required Hardware ##
 
-- [An EFR32xG24 Explorer Kit - xG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview#user-guides)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- [A SparkFun Weather Meter Kit](https://www.sparkfun.com/products/15901)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [A Sparkfun Photon Weather Shield](https://www.sparkfun.com/products/retired/13674)
+- 1x [SparkFun Weather Meter Kit](https://www.sparkfun.com/products/15901)
+
+- [A Sparkfun Photon Weather Shield](https://www.digikey.se/en/products/detail/sparkfun-electronics/DEV-13674/6797647)
 
 ## Hardware Connection ##
 
-Establish connection between the Weather Meter Kit and the Silabs EFR32xG24 Explorer Kit as described below:
+- If the Explorer Kit is used:
 
-1. Connect the 3V3 and GND pins of the Explorer Kit and the Photon Shield respectively.
+  Establish connection between the Weather Meter Kit and the Silabs EFR32xG24 Explorer Kit as described below:
 
-2. Connect the RJ11 cable of the anemometer to the socket of the wind vane.
+  1. Connect the 3V3 and GND pins of the Explorer Kit and the Photon Shield respectively.
 
-3. Connect the RJ11 cables of the wind vane and rain gauge to the corresponding RJ11 sockets of the Photon Weather Shield board.
+  2. Connect the RJ11 cable of the anemometer to the socket of the wind vane.
 
-4. Connect the analog pin of the Silabs Explorer Kit to the A0 pin of the Photon Weather Shield board.
+  3. Connect the RJ11 cables of the wind vane and rain gauge to the corresponding RJ11 sockets of the Photon Weather Shield board.
 
-5. Connect the PWM pin of the Silabs Explorer Kit to the D2 pin of the Photon Weather Shield board.
+  4. Connect the analog pin of the Silabs Explorer Kit to the A0 pin of the Photon Weather Shield board.
 
-6. Connect the Int pin of the Silabs Explorer Kit to the D3 pin of the Photon Weather Shield board.
+  5. Connect the PWM pin of the Silabs Explorer Kit to the D2 pin of the Photon Weather Shield board.
 
-![Connections](image/connection.png)
+  6. Connect the Int pin of the Silabs Explorer Kit to the D3 pin of the Photon Weather Shield board.
+
+  ![Connections](image/connection.png)
+
+- If the Wi-Fi Development Kit is used::
+
+  | Description   | BRD4338A + BRD4002A | BRD2605A | Sparkfun Photon Weather Shield |
+  | -----------   | ------------- | ------------------ | ------------------------------ |
+  | win direction | ULP_GPIO_1 [P16]   | ULP_GPIO_1      | A0                             |
+  | win speed     | GPIO_46 [P24]      | GPIO_10         | D3                             |
+  | rain fall     | GPIO_47 [P26]      | GPIO_11         | D2                             |
+
+  The sensor output (D3, D2) must connect with a external capacitor and a resistor as below:
+  
+  ![sensor_out](image/sensor_out.png)
 
 ## Setup ##
 
@@ -42,7 +58,7 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD2703A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter "weather".
+1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter "weather".
 
 2. Click **Create** button on the **Third Party Hardware Drivers - Weather Station (SparkFun)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 ![Create_example](image/create_example.png)
@@ -51,26 +67,35 @@ You can either create a project based on an example project or start with an emp
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "EFR32xG24 Explorer Kit" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/sparkfun_weatherstation/app.c` into the project root folder (overwriting the existing file).
 
 3. Install the software components:
 
-   - Open the .slcp file in the project.
+  - Open the .slcp file in the project.
 
-   - Select the SOFTWARE COMPONENTS tab.
+  - Select the SOFTWARE COMPONENTS tab.
 
-   - Select Third Party Hardware Drivers and click **Enable Extension**
+  - Select Third Party Hardware Drivers and click **Enable Extension**
 
-   - Install the following components:
+  - Install the following components:
 
-      - [Services] → [Timers] → [Sleep Timer]
-      - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
-      - [Third Party] → [Tiny printf]
-      - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Rainfall (Sparkfun)]
-      - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Direction (Sparkfun)]
-      - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Speed (Sparkfun)]
+    **If the Explorer Kit is used:**
+
+    - [Services] → [Timers] → [Sleep Timer]
+    - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
+    - [Third Party] → [Tiny printf]
+    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Rainfall (Sparkfun)]
+    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Direction (Sparkfun)]
+    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Speed (Sparkfun)]
+     
+    **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+
+    - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Rainfall (Sparkfun)]
+    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Direction (Sparkfun)]
+    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Speed (Sparkfun)]
 
 5. Build and flash the project to your device.
 
@@ -114,7 +139,7 @@ This example periodically reads the measured values from the sensors. Follow the
 
 2. Observe the measured values of the sensors.
 
-![Terminal Output](image/terminal.png)
+  ![Terminal Output](image/terminal.png)
 
 ## Report Bugs & Get Support ##
 

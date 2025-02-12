@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     sns.heatmap(data)
     plt.title("MLX90640 image")
-    
+
     plt.show()
     while True:
         com_output = ser.readline().decode("utf-8").split(",")

@@ -37,8 +37,7 @@
 #define ADAFRUIT_ST7789_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
@@ -71,34 +70,33 @@ extern "C"
 #define ADAFRUIT_ST7789_PERIPHERAL_NO           0
 
 // USART0 TX on PC00
-#define ADAFRUIT_ST7789_TX_PORT                 gpioPortC
+#define ADAFRUIT_ST7789_TX_PORT                 SL_GPIO_PORT_C
 #define ADAFRUIT_ST7789_TX_PIN                  3
 
 // USART0 RX on PC01
-#define ADAFRUIT_ST7789_RX_PORT                 gpioPortC
+#define ADAFRUIT_ST7789_RX_PORT                 SL_GPIO_PORT_C
 #define ADAFRUIT_ST7789_RX_PIN                  2
 
 // USART0 CLK on PC02
-#define ADAFRUIT_ST7789_CLK_PORT                gpioPortC
+#define ADAFRUIT_ST7789_CLK_PORT                SL_GPIO_PORT_C
 #define ADAFRUIT_ST7789_CLK_PIN                 1
 
 // USART0 CS on PC03
-#define ADAFRUIT_ST7789_CS_PORT                 gpioPortA
+#define ADAFRUIT_ST7789_CS_PORT                 SL_GPIO_PORT_A
 #define ADAFRUIT_ST7789_CS_PIN                  7
 
 // [USART_ADAFRUIT_ST7789]$
 
 // <gpio optional=true> ADAFRUIT_ST7789_DC
 // $[GPIO_ADAFRUIT_ST7789_DC]
-#define ADAFRUIT_ST7789_DC_PORT                 gpioPortC
+#define ADAFRUIT_ST7789_DC_PORT                 SL_GPIO_PORT_C
 #define ADAFRUIT_ST7789_DC_PIN                  5
 // [GPIO_ADAFRUIT_ST7789_DC]$
 
 // <<< sl:end pin_tool >>>
 
 #ifdef __cplusplus
-extern "C"
 }
 #endif
 
-#endif /* ADAFRUIT_ST7789_CONFIG_H_ */
+#endif // ADAFRUIT_ST7789_CONFIG_H_

@@ -72,12 +72,13 @@ You can either create a project based on an example project or start with an emp
 
 1. Create an "Bluetooth - SoC Empty" project for the BRD4182A using SimplicityStudio 5. Use the default project settings. Be sure to connect and select the BRD4182A from the "Debug Adapters" on the left before creating a project.
 
-2. Then copy the files app/example/silabs_lin_bus/slave/app.c into the project root folder and overwriting existing file.
+2. Then copy the files `app/example/silabs_lin_bus/slave/app.c` into the project root folder and overwriting existing file.
 
 3. Install software components in the .slcp
     - **[Third Party Hardware Drivers] → [Services] → [LIN bus slave]**
     - **[Services] → [IO Stream] → [IO Stream: USART]** → default instance name: vcom
     - **[Platform] → [Driver] → [LED] → [Simple LED]** component with the default instance name: **led0** and **led1**.
+    - **[Services] → [Interrupt Manager] → [Interrupt Manager]** → enable: "Interrupt Manager Configuration"
 
 4. Add preprocessor to project build option: SL_LIN_SLAVE1 for slave node 1 and SL_LIN_SLAVE2 for slave node 2
 

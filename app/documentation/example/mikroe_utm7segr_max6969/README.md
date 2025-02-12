@@ -6,29 +6,29 @@ This project aims to show the hardware driver that is used to interface with the
 
 ## Required Hardware ##
 
-- [A BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [UT-M 7-SEG R Click](https://www.mikroe.com/ut-m-7-seg-r-click)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [UT-M 7-SEG R Click](https://www.mikroe.com/ut-m-7-seg-r-click)
 
 ## Hardware Connection ##
 
 - **If the BGM220P Explorer Kit is used:**
 
-    The UT-M 7-SEG R Click board supports MikroBus, so it can connect easily to EFR32xG24 Explorer Kit via MikroBus header. Assure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line. The hardware connection is shown in the image below:
+    The UT-M 7-SEG R Click board supports MikroBus, so it can connect easily to the Explorer Kit via MikroBus header. Assure that the board's 45-degree corner matches the Explorer Kit's 45-degree white line. The hardware connection is shown in the image below:
 
     ![board](image/hardware_connection.png "Hardware connection")
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+- **If the Wi-Fi Development Kit is used**:
 
-    The hardware connection is shown in the table below:
+  The hardware connection is shown in the table below:
 
-    | Description  | BRD4338A GPIO | BRD4002 Breakout Pad | UT-M 7-SEG R Click board   |
-    | -------------| ------------- | -------------------- | ---------------------------|
-    | PWM_H        | GPIO_7        | P20                  | PWM                        |
-    | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                 |
-    | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27                  | SDO                 |
-    | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27       | P29                  | SDI                 |
-    | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28       | P31                  | LE                  |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | UT-M 7-SEG R Click board |
+  | -------------| ------------------- | -------------------- | ------------------- |
+  | PWM_H        | GPIO_7 [P20]        | GPIO_7               | PWM                 |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25] | GPIO_25        | SCK                 |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26 [P27] | GPIO_26        | SDO                 |
+  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27 [P29] | GPIO_27        | SDI                 |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28 [P31] | GPIO_28        | CS                  |
 
 ## Setup ##
 
@@ -66,7 +66,7 @@ You can either create a project based on an example project or start with an emp
        - [Application] → [Utility] → [Assert]
        - [Third Party Hardware Drivers] → [Display & LED] → [MAX6969 - UT-M 7-SEG R Click (Mikroe)]
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
        - [Application] → [Utility] → [Assert]
        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
@@ -79,7 +79,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "MAX6969 - UT-M 7-SEG R Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "MAX6969 - UT-M 7-SEG R Click (Mikroe)" component.
 
 ## How It Works ##
 

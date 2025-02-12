@@ -27,30 +27,30 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # EXPERIMENTAL QUALITY
- * This code has not been formally tested and is provided as-is.
- * It is not suitable for production environments.
- * This code will not be maintained.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #include "mikroe_a3967.h"
 #include "sl_sleeptimer.h"
 
 #if (defined(SLI_SI917))
-
 #include "rsi_debug.h"
+
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
 #else
 #include "app_log.h"
-#endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
+#define app_printf(...)              app_log(__VA_ARGS__)
 #endif
 
 // The 28BYJ-48 motor features a 1/64 reduction gear set.
-#define MOTOR_GEAR_RATIO  64
+#define MOTOR_GEAR_RATIO             64
 
 /***************************************************************************//**
  * Initialize application.

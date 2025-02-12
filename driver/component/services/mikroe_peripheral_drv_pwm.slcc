@@ -8,9 +8,7 @@ quality: evaluation
 root_path: driver
 requires:
   - name: pwm
-    condition: [device_series_1]
-  - name: pwm
-    condition: [device_series_2]
+    condition: [device_efx]
   - name: sl_pwm
     condition: [device_si91x]
   - name: mikroe_peripheral_driver_digital_io
@@ -29,8 +27,6 @@ include:
       - path: drv_pwm.h
 source:
   - path: peripheral_drivers/mikroe/src/drv_pwm.c
-    condition: [device_series_1]
-  - path: peripheral_drivers/mikroe/src/drv_pwm.c
-    condition: [device_series_2]
+    condition: [device_efx]
   - path: peripheral_drivers/mikroe/src/drv_pwm_si91x.c
     condition: [device_si91x]

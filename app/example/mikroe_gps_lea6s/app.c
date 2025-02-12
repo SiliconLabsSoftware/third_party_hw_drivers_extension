@@ -38,47 +38,34 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "app_queue.h"
 #include "sl_sleeptimer.h"
 #include "mikroe_lea6s.h"
 
 #if (defined(SLI_SI917))
 #include "sl_si91x_usart.h"
 #include "rsi_debug.h"
+
+#define app_printf(...)                DEBUGOUT(__VA_ARGS__)
+#define USART_INSTANCE_USED            UART_1
+
+static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
 #else
 #include "sl_iostream_init_usart_instances.h"
 #include "sl_iostream_init_eusart_instances.h"
 #include "app_log.h"
-#endif
 
-#define PROCESS_RX_BUFFER_SIZE         500
-#define PROCESS_PARSER_BUFFER_SIZE     PROCESS_RX_BUFFER_SIZE
-#define PROCESS_QUEUE_SIZE             (PROCESS_RX_BUFFER_SIZE * 2)
-
-#if (defined(SLI_SI917))
-#define app_printf(...)                DEBUGOUT(__VA_ARGS__)
-#define USART_INSTANCE_USED            UART_1
-static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
-#else
 #define app_printf(...)                app_log(__VA_ARGS__)
 #endif
 
-static void gps_process (void);
-static void parser_application (void);
-void timer_callback_fcn(sl_sleeptimer_timer_handle_t *handle, void *data);
+#define PROCESS_RX_BUFFER_SIZE         500
 
 static uint8_t uart_rx_buffer[PROCESS_RX_BUFFER_SIZE];
-static uint8_t parser_buffer[PROCESS_PARSER_BUFFER_SIZE];
+static mikroe_uart_handle_t app_uart_instance = NULL;
 
-APP_QUEUE(uart_rx_queue, uint8_t, PROCESS_QUEUE_SIZE);
-static sl_sleeptimer_timer_handle_t timer_handle;
-static bool trigger_gps_process = false;
-mikroe_uart_handle_t app_uart_instance = NULL;
+static void parser_application (uint8_t *ptr);
 
 void app_init(void)
 {
-  sl_status_t sc;
-
 #if (defined(SLI_SI917))
   app_uart_instance = &uart_instance;
 #else
@@ -86,21 +73,11 @@ void app_init(void)
   app_log_iostream_set(sl_iostream_vcom_handle);
 #endif
 
-  app_printf("Hello World GPS Click !!!\r\n");
-  sc = mikroe_lea6s_init(app_uart_instance, true);
-  app_printf("mikroe_lea6s_init = 0x%lx\r\n", sc);
-  sc = APP_QUEUE_INIT(&uart_rx_queue, uint8_t, PROCESS_QUEUE_SIZE);
-  app_printf("app_queue_init = 0x%lx\r\n", sc);
+  app_printf("LEA-6S - GPS Click (Mikroe) Example\r\n");
+  mikroe_lea6s_init(app_uart_instance, false);
   mikroe_lea6s_wakeup();
   sl_sleeptimer_delay_millisecond(5000);
-  app_printf("mikroe_lea6s_wakeup done\r\n");
-  sc = sl_sleeptimer_start_periodic_timer_ms(&timer_handle,
-                                             800,
-                                             timer_callback_fcn,
-                                             NULL,
-                                             0,
-                                             0);
-  app_printf("sl_sleeptimer_start_periodic = 0x%lx\r\n", sc);
+  app_printf("Start get the GPS data\r\n");
 }
 
 /***************************************************************************//**
@@ -108,125 +85,71 @@ void app_init(void)
  ******************************************************************************/
 void app_process_action(void)
 {
-  if (trigger_gps_process) {
-    trigger_gps_process = false;
-    gps_process();
-    parser_application();
+  uint16_t len;
+  static uint16_t index = 0;
+
+  if (index == sizeof(uart_rx_buffer) - 1) {
+    index = 0;
   }
-}
-
-void timer_callback_fcn(sl_sleeptimer_timer_handle_t *handle, void *data)
-{
-  (void) data;
-
-  if (handle == &timer_handle) {
-    trigger_gps_process = true;
-  }
-}
-
-static void gps_process(void)
-{
-  uint16_t actual_size;
-  uint16_t index;
-  sl_status_t stt = SL_STATUS_OK;
-
-  stt = mikroe_lea6s_generic_read((uint8_t *) &uart_rx_buffer,
-                                  PROCESS_RX_BUFFER_SIZE, &actual_size);
-
-  if ((actual_size > 0) && (stt == SL_STATUS_OK)) {
-    // Validation of the received data and push data to the queue
-    for ( index = 0; index < actual_size; index++ )
-    {
-      if (uart_rx_buffer[index] == 0) {
-        uart_rx_buffer[index] = 13;
-      }
-
-      if (false == app_queue_is_full(&uart_rx_queue)) {
-        app_queue_add(&uart_rx_queue, (uart_rx_buffer + index));
-      }
+  sl_status_t stt = mikroe_lea6s_generic_read(&uart_rx_buffer[index], 1, &len);
+  if ((len > 0) && (stt == SL_STATUS_OK)) {
+    index += len;
+    uart_rx_buffer[index] = '\0';
+    char *ptr = strchr((char *)uart_rx_buffer, '$');
+    char *ptr2 = strchr((char *)ptr, '\n');
+    if (ptr && ptr2) {
+      index = 0;
+      parser_application((uint8_t *)ptr);
     }
-
-    // Clear RX buffer
-    memset(uart_rx_buffer, 0, PROCESS_RX_BUFFER_SIZE);
   }
 }
 
-static void parser_application(void)
+static void parser_application(uint8_t *ptr)
 {
   uint8_t element_buf[200] = { 0 };
-  static uint16_t index = 0;
   mikroe_leas6_parser_result_t stt;
   uint8_t latitude_int[10];
   uint8_t latitude_decimal[10];
   uint8_t longitude_int[10];
   uint8_t longitude_decimal[10];
 
-  while (false == app_queue_is_empty(&uart_rx_queue)) {
-    app_queue_remove(&uart_rx_queue, parser_buffer + index);
-
-    if (*(parser_buffer + index) == '\n') {
-      stt = mikroe_lea6s_generic_parser(parser_buffer,
-                                        gps_command_nema_gpgga_e,
-                                        gpgga_element_latitude_e,
-                                        element_buf);
-
-      if ((strlen((const char *) element_buf) > 0)
-          && (gps_parser_no_error_e == stt)) {
-        /*
-         * Latitude ranges between -90 and 90 degrees.
-         * Longitude ranges between -180 and 180 degrees.
-         *
-         * Convert to degree calculation example:
-         * Latitude: [N] 02451.71 is 24 degrees north latitude and 51.71
-         *   minutes.
-         * Convert the points to degrees 51.71 / 60 = 0.86183.
-         * The actual Google Map corresponds to 24 + 0.86183 = +24.86183.
-         * Longitude: [E] 12100.99 is 121 degrees east long and 0.99 points.
-         * Convert the points to degrees 0.99 / 60 = 0.0165.
-         * The actual Google Map is 121 + 0.0165 = +121.0165.
-         * Combine the converted latitude and longitude data into
-         * + 24.86183, + 121.0165 and enter the field of Google Map to find the
-         * actual corresponding location.
-         */
-        app_printf("**************************************************\r\n");
-
-        memcpy((void *)latitude_int, (const void *)element_buf, 2);
-        memcpy((void *)latitude_decimal,
-               (const void *)(element_buf + 2),
-               strlen((const char *)element_buf) - 2);
-        double latitude = (atof((const char *)latitude_int)
-                           + (atof((const char *)(latitude_decimal)) / 60.0));
-        app_printf("Latitude:  %.6f\r\n", latitude);
-        memset(element_buf, 0, sizeof(element_buf));
-
-        mikroe_lea6s_generic_parser(parser_buffer,
+  stt = mikroe_lea6s_generic_parser(ptr,
                                     gps_command_nema_gpgga_e,
-                                    gpgga_element_longitude_e,
+                                    gpgga_element_latitude_e,
                                     element_buf);
 
-        memcpy((void *)longitude_int, (const void *)element_buf, 3);
-        memcpy((void *)longitude_decimal,
-               (const void *) (element_buf + 3),
-               strlen((const char *)element_buf) - 3);
-        double longtitude = (atof((const char *)longitude_int)
-                             + (atof((const char *)(longitude_decimal))
-                                / 60.0));
-        app_printf("Longitude:  %.6f\r\n", longtitude);
-        memset(element_buf, 0, sizeof(element_buf));
+  if ((strlen((const char *) element_buf) > 0)
+      && (gps_parser_no_error_e == stt)) {
+    app_printf("**************************************************\r\n");
 
-        mikroe_lea6s_generic_parser(parser_buffer,
-                                    gps_command_nema_gpgga_e,
-                                    gpgga_element_altitude_e,
-                                    element_buf);
-        app_printf("Altitude: %s \r\n", element_buf);
-      }
+    memcpy((void *)latitude_int, (const void *)element_buf, 2);
+    memcpy((void *)latitude_decimal,
+           (const void *)(element_buf + 2),
+           strlen((const char *)element_buf) - 2);
+    double latitude = (atof((const char *)latitude_int)
+                       + (atof((const char *)(latitude_decimal)) / 60.0));
+    app_printf("Latitude:  %.6f\r\n", latitude);
+    memset(element_buf, 0, sizeof(element_buf));
 
-      index = 0;
-      memset(parser_buffer, 0, PROCESS_PARSER_BUFFER_SIZE);
-    } else {
-      if (index < (PROCESS_PARSER_BUFFER_SIZE - 1)) {
-        index++;
-      }
-    }
+    mikroe_lea6s_generic_parser(ptr,
+                                gps_command_nema_gpgga_e,
+                                gpgga_element_longitude_e,
+                                element_buf);
+
+    memcpy((void *)longitude_int, (const void *)element_buf, 3);
+    memcpy((void *)longitude_decimal,
+           (const void *) (element_buf + 3),
+           strlen((const char *)element_buf) - 3);
+    double longtitude = (atof((const char *)longitude_int)
+                         + (atof((const char *)(longitude_decimal))
+                            / 60.0));
+    app_printf("Longitude:  %.6f\r\n", longtitude);
+    memset(element_buf, 0, sizeof(element_buf));
+
+    mikroe_lea6s_generic_parser(ptr,
+                                gps_command_nema_gpgga_e,
+                                gpgga_element_altitude_e,
+                                element_buf);
+    app_printf("Altitude: %s \r\n", element_buf);
   }
 }

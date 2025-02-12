@@ -47,20 +47,20 @@ extern "C" {
 
 // <gpio> CONFIG_EM3080W_RST
 // $[GPIO_CONFIG_EM3080W_RST]
-#ifndef CONFIG_EM3080W_RST_PORT                 
+#ifndef CONFIG_EM3080W_RST_PORT
 #define CONFIG_EM3080W_RST_PORT                  HP
 #endif
-#ifndef CONFIG_EM3080W_RST_PIN                  
+#ifndef CONFIG_EM3080W_RST_PIN
 #define CONFIG_EM3080W_RST_PIN                   46
 #endif
 // [GPIO_CONFIG_EM3080W_RST]$
 
 // <gpio> CONFIG_EM3080W_TRG
 // $[GPIO_CONFIG_EM3080W_TRG]
-#ifndef CONFIG_EM3080W_TRG_PORT                 
+#ifndef CONFIG_EM3080W_TRG_PORT
 #define CONFIG_EM3080W_TRG_PORT                  HP
 #endif
-#ifndef CONFIG_EM3080W_TRG_PIN                  
+#ifndef CONFIG_EM3080W_TRG_PIN
 #define CONFIG_EM3080W_TRG_PIN                   47
 #endif
 // [GPIO_CONFIG_EM3080W_TRG]$
@@ -71,4 +71,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_EM3080W_CONFIG_H_ */
+#endif // MIKROE_EM3080W_CONFIG_H_

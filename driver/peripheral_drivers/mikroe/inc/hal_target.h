@@ -46,10 +46,11 @@
 extern "C" {
 #endif
 
-#define HAL_PIN_NC       0xffffffff
-#define HAL_PORT_NC      0xffffffff
-
-#define US_DELAY_COUNTER 5  // Delay count
+#ifdef SLI_SI917
+#define UDELAY_MUL_FACTOR 0.55f
+#else // SLI_SI917
+#define UDELAY_MUL_FACTOR 1
+#endif // SLI_SI917
 
 typedef int32_t err_t;
 
@@ -59,30 +60,17 @@ typedef enum {
   ACQUIRE_FAIL = (-1)
 } acquire_t;
 
-#ifndef SLI_SI917
 extern void sl_udelay_wait(unsigned us);
-
-#else
-static inline void sl_udelay_wait(unsigned us)
-{
-  unsigned timeout = US_DELAY_COUNTER * us;
-  for (unsigned i = 0; i < timeout; i++) {
-    __asm__ __volatile__("nop");
-  }
-}
-
-#endif
-
 extern void sl_sleeptimer_delay_millisecond(uint16_t time_ms);
 
 // Delay functions in microseconds
-#define Delay_6us()   sl_udelay_wait(6)
-#define Delay_10us()  sl_udelay_wait(10)
-#define Delay_22us()  sl_udelay_wait(22)
-#define Delay_50us()  sl_udelay_wait(50)
-#define Delay_80us()  sl_udelay_wait(80)
-#define Delay_100us() sl_udelay_wait(100)
-#define Delay_500us() sl_udelay_wait(500)
+#define Delay_6us()   sl_udelay_wait(6 * UDELAY_MUL_FACTOR)
+#define Delay_10us()  sl_udelay_wait(10 * UDELAY_MUL_FACTOR)
+#define Delay_22us()  sl_udelay_wait(22 * UDELAY_MUL_FACTOR)
+#define Delay_50us()  sl_udelay_wait(50 * UDELAY_MUL_FACTOR)
+#define Delay_80us()  sl_udelay_wait(80 * UDELAY_MUL_FACTOR)
+#define Delay_100us() sl_udelay_wait(100 * UDELAY_MUL_FACTOR)
+#define Delay_500us() sl_udelay_wait(500 * UDELAY_MUL_FACTOR)
 
 // Delay functions in milliseconds
 #define Delay_1ms()   sl_sleeptimer_delay_millisecond(1)

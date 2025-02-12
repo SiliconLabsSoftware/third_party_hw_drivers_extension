@@ -8,9 +8,7 @@ quality: evaluation
 root_path: driver
 requires:
   - name: iostream_transport
-    condition: [device_series_1]
-  - name: iostream_transport
-    condition: [device_series_2]
+    condition: [device_efx]
   - name: sl_uart
     condition: [device_si91x]
   - name: app_assert
@@ -38,9 +36,7 @@ include:
         condition: [device_si91x]
 source:
   - path: peripheral_drivers/mikroe/src/drv_uart.c
-    condition: [device_series_1]
-  - path: peripheral_drivers/mikroe/src/drv_uart.c
-    condition: [device_series_2]
+    condition: [device_efx]
   - path: peripheral_drivers/mikroe/src/drv_uart_si91x.c
     condition: [device_si91x]
   - path: peripheral_drivers/mikroe/src/ring.c

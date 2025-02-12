@@ -46,12 +46,12 @@
 #include "sl_status.h"
 #include "drv_i2c_master.h"
 
-#define LOWER true
-#define UPPER false
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define LOWER true
+#define UPPER false
 
 /** @defgroup VCNL4040_Platform VCNL4040_Platform */
 

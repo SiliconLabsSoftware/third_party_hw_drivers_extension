@@ -37,8 +37,7 @@
 #define ADAFRUIT_ST7789_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
@@ -64,10 +63,10 @@ extern "C"
 
 // <gpio> ADAFRUIT_ST7789_DC
 // $[GPIO_ADAFRUIT_ST7789_DC]
-#ifndef ADAFRUIT_ST7789_DC_PORT                 
+#ifndef ADAFRUIT_ST7789_DC_PORT
 #define ADAFRUIT_ST7789_DC_PORT                  HP
 #endif
-#ifndef ADAFRUIT_ST7789_DC_PIN                  
+#ifndef ADAFRUIT_ST7789_DC_PIN
 #define ADAFRUIT_ST7789_DC_PIN                   47
 #endif
 // [GPIO_ADAFRUIT_ST7789_DC]$
@@ -75,8 +74,7 @@ extern "C"
 // <<< sl:end pin_tool >>>
 
 #ifdef __cplusplus
-extern "C"
 }
 #endif
 
-#endif /* ADAFRUIT_ST7789_CONFIG_H_ */
+#endif // ADAFRUIT_ST7789_CONFIG_H_

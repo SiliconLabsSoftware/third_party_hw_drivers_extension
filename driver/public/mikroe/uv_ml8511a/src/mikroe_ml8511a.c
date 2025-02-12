@@ -57,8 +57,8 @@ static bool initialized = false;
 // -----------------------------------------------------------------------------
 
 /**************************************************************************//**
-*  ML8511A initialization.
-******************************************************************************/
+ *  ML8511A initialization.
+ ******************************************************************************/
 sl_status_t mikroe_ml8511a_init(mikroe_spi_handle_t spi_instance,
                                 mikroe_adc_handle_t adc_instance)
 {
@@ -80,20 +80,13 @@ sl_status_t mikroe_ml8511a_init(mikroe_spi_handle_t spi_instance,
 
 #if defined(ML8511A_AN_PORT) && defined(ML8511A_AN_PIN)
   uv_cfg.an = hal_gpio_pin_name(ML8511A_AN_PORT, ML8511A_AN_PIN);
-#endif
+#endif // ML8511A_AN_PORT & ML8511A_AN_PIN
 
 #if MIKROE_ML8511A_OPERATION_MODE == ADC_MODE
-#if defined(ML8511A_CS_PORT) && defined(ML8511A_CS_PIN)
-  uv_cfg.cs = hal_gpio_pin_name(ML8511A_CS_PORT, ML8511A_CS_PIN);
-  // CS pin need to init here since the mikroe_sdk_v2 missed this step
-  digital_out_t struct_cs;
-  digital_out_init(&struct_cs, uv_cfg.cs);
-#endif
-
 #if (MIKROE_ML8511A_SPI_UC == 1)
   uv_cfg.spi_speed = MIKROE_ML8511A_SPI_BITRATE;
-#endif
-#endif
+#endif // MIKROE_ML8511A_SPI_UC
+#endif // MIKROE_ML8511A_OPERATION_MODE
 
   uv_cfg.en = hal_gpio_pin_name(ML8511A_EN_PORT, ML8511A_EN_PIN);
 
@@ -106,8 +99,8 @@ sl_status_t mikroe_ml8511a_init(mikroe_spi_handle_t spi_instance,
 }
 
 /**************************************************************************//**
-*  ML8511A sets callback.
-******************************************************************************/
+ *  ML8511A sets callback.
+ ******************************************************************************/
 sl_status_t mikroe_ml8511a_set_callback_handler(uv_callback_t handler)
 {
   uv_set_callback_handler(&uv_ctx, handler);
@@ -116,40 +109,40 @@ sl_status_t mikroe_ml8511a_set_callback_handler(uv_callback_t handler)
 }
 
 /**************************************************************************//**
-*  ML8511A reads adc value.
-******************************************************************************/
+ *  ML8511A reads adc value.
+ ******************************************************************************/
 sl_status_t mikroe_ml8511a_read_adc_value(uint16_t *data_out)
 {
   return uv_read_adc_value(&uv_ctx, data_out);
 }
 
 /**************************************************************************//**
-*  ML8511A reads adc voltage.
-******************************************************************************/
+ *  ML8511A reads adc voltage.
+ ******************************************************************************/
 sl_status_t mikroe_ml8511a_read_adc_voltage(float *data_out)
 {
   return uv_read_adc_voltage(&uv_ctx, data_out);
 }
 
 /**************************************************************************//**
-*  ML8511A reads an pin value.
-******************************************************************************/
+ *  ML8511A reads an pin value.
+ ******************************************************************************/
 sl_status_t mikroe_ml8511a_read_an_pin_value(uint16_t *data_out)
 {
   return uv_read_an_pin_value(&uv_ctx, data_out);
 }
 
 /**************************************************************************//**
-*  ML8511A reads an pin voltage.
-******************************************************************************/
+ *  ML8511A reads an pin voltage.
+ ******************************************************************************/
 sl_status_t mikroe_ml8511a_read_an_pin_voltage(float *data_out)
 {
   return uv_read_an_pin_voltage(&uv_ctx, data_out);
 }
 
 /**************************************************************************//**
-*  ML8511A calculates index.
-******************************************************************************/
+ *  ML8511A calculates index.
+ ******************************************************************************/
 sl_status_t mikroe_ml8511a_calc_index(float data_in, uint8_t *data_out)
 {
   uv_calc_index(&uv_ctx, data_in, data_out);
@@ -158,8 +151,8 @@ sl_status_t mikroe_ml8511a_calc_index(float data_in, uint8_t *data_out)
 }
 
 /**************************************************************************//**
-*  ML8511A enables device.
-******************************************************************************/
+ *  ML8511A enables device.
+ ******************************************************************************/
 sl_status_t mikroe_ml8511a_device_enable(void)
 {
   uv_device_enable(&uv_ctx);
@@ -168,8 +161,8 @@ sl_status_t mikroe_ml8511a_device_enable(void)
 }
 
 /**************************************************************************//**
-*  ML8511A disables device.
-******************************************************************************/
+ *  ML8511A disables device.
+ ******************************************************************************/
 sl_status_t mikroe_ml8511a_device_disable(void)
 {
   uv_device_disable(&uv_ctx);

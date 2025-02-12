@@ -27,14 +27,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has been minimally tested to ensure that it builds and is suitable
- * as a demonstration for evaluation purposes only. This code will be maintained
- * at the sole discretion of Silicon Labs.
- ******************************************************************************/
-
-/***************************************************************************//**
- * Initialize application.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 #include "sl_sleeptimer.h"
 #include "sparkfun_soil_moisture.h"
@@ -42,20 +41,15 @@
 #if (defined(SLI_SI917))
 #include "sl_i2c_instances.h"
 #include "rsi_debug.h"
+
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #else
 #include "sl_i2cspm_instances.h"
 #include "app_log.h"
-#endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
-
-#if (defined(SLI_SI917))
-#define I2C_INSTANCE_USED            SL_I2C2
-static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#define app_printf(...)              app_log(__VA_ARGS__)
 #endif
 
 #define MOISTURE_THRESHOLD           70

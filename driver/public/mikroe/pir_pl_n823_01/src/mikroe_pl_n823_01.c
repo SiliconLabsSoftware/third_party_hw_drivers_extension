@@ -39,7 +39,6 @@
 
 #include "mikroe_pl_n823_01.h"
 #include "mikroe_pir_pl_n823_01_config.h"
-#include "pir.h"
 
 static pir_t pir_ctx;
 static pir_cfg_t pir_cfg;

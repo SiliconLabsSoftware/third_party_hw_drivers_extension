@@ -38,79 +38,24 @@
  ******************************************************************************/
 
 #include "drv_digital_in.h"
-#include "sl_si91x_peripheral_gpio.h"
+#include "sl_si91x_driver_gpio.h"
 
 static err_t drv_digital_in_init(digital_in_t *in,
-                                 pin_name_t name,
-                                 sl_gpio_mode_t mode,
-                                 uint32_t out);
-
-static uint8_t sl_si91x_gpio_pad_mapping(unsigned int pin)
-{
-  switch (pin) {
-    case 6:
-      return 1;
-    case 7:
-      return 2;
-    case 8:
-      return 3;
-    case 9:
-      return 4;
-    case 10:
-      return 5;
-    case 11:
-      return 6;
-    case 12:
-      return 7;
-    case 15:
-      return 8;
-    case 31:
-    case 32:
-    case 33:
-    case 34:
-      return 9;
-    case 46:
-      return 10;
-    case 47:
-      return 11;
-    case 48:
-      return 12;
-    case 49:
-      return 13;
-    case 50:
-      return 14;
-    case 51:
-      return 15;
-    case 52:
-      return 16;
-    case 53:
-      return 17;
-    case 54:
-      return 18;
-    case 55:
-      return 19;
-    case 56:
-      return 20;
-    case 57:
-      return 21;
-    default:
-      return 0;
-  }
-}
+                                 pin_name_t name);
 
 err_t digital_in_init(digital_in_t *in, pin_name_t name)
 {
-  return drv_digital_in_init(in, name, SL_GPIO_MODE_0, 0);
+  return drv_digital_in_init(in, name);
 }
 
 err_t digital_in_pullup_init(digital_in_t *in, pin_name_t name)
 {
-  return drv_digital_in_init(in, name, SL_GPIO_MODE_0, 1);
+  return drv_digital_in_init(in, name);
 }
 
 err_t digital_in_pulldown_init(digital_in_t *in, pin_name_t name)
 {
-  return drv_digital_in_init(in, name, SL_GPIO_MODE_0, 0);
+  return drv_digital_in_init(in, name);
 }
 
 uint8_t digital_in_read(digital_in_t *in)
@@ -119,55 +64,32 @@ uint8_t digital_in_read(digital_in_t *in)
 }
 
 static err_t drv_digital_in_init(digital_in_t *in,
-                                 pin_name_t name,
-                                 sl_gpio_mode_t mode,
-                                 uint32_t out)
+                                 pin_name_t name)
 {
-  sl_gpio_port_t port_index;
-  unsigned int pin_index;
-  uint8_t pad_number;
+  sl_si91x_gpio_pin_config_t gpio_config;
 
-  in->pin.base = (uint32_t) -1;
+  in->pin.base = (uint8_t) -1;
   in->pin.mask = 0;
   if (HAL_PIN_NC == name) {
     return DIGITAL_IN_UNSUPPORTED_PIN;
   }
 
-  port_index = (sl_gpio_port_t) hal_gpio_port_index(name);
-  pin_index = hal_gpio_pin_index(name);
+  gpio_config.port_pin.port = (sl_gpio_port_t) hal_gpio_port_index(name);
+  gpio_config.port_pin.pin = hal_gpio_pin_index(name);
+  gpio_config.direction = GPIO_INPUT;
 
-  if (!SL_GPIO_VALIDATE_PORT(port_index)) {
-    return DIGITAL_IN_UNSUPPORTED_PIN;
-  }
-  if (port_index == SL_ULP_GPIO_PORT) {
-    if (!SL_GPIO_VALIDATE_ULP_PORT_PIN(port_index, pin_index)) {
-      return DIGITAL_IN_UNSUPPORTED_PIN;
-    }
-  } else {
-    if (!SL_GPIO_NDEBUG_PORT_PIN(port_index, pin_index)) {
-      return DIGITAL_IN_UNSUPPORTED_PIN;
-    }
-  }
-
-  if (port_index == SL_ULP_GPIO_PORT) {
+  if (gpio_config.port_pin.port == SL_ULP_GPIO_PORT) {
     sl_si91x_gpio_enable_clock((sl_si91x_gpio_select_clock_t)ULPCLK_GPIO);
-    sl_si91x_gpio_enable_ulp_pad_receiver(pin_index);
   } else {
     sl_si91x_gpio_enable_clock((sl_si91x_gpio_select_clock_t)M4CLK_GPIO);
-    sl_si91x_gpio_enable_pad_receiver(name);
-    pad_number = sl_si91x_gpio_pad_mapping(name);
-    if (pad_number) {
-      sl_si91x_gpio_enable_pad_selection(pad_number);
-    }
   }
 
-  sl_gpio_set_pin_mode(port_index, pin_index, mode, out);
-  sl_si91x_gpio_set_pin_direction(port_index,
-                                  pin_index,
-                                  (sl_si91x_gpio_direction_t)GPIO_INPUT);
+  if (sl_gpio_set_configuration(gpio_config) != SL_STATUS_OK) {
+    return DIGITAL_IN_UNSUPPORTED_PIN;
+  }
 
-  in->pin.base = port_index;
-  in->pin.mask = pin_index;
+  in->pin.base = gpio_config.port_pin.port;
+  in->pin.mask = gpio_config.port_pin.pin;
   return DIGITAL_IN_SUCCESS;
 }
 

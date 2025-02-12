@@ -40,7 +40,6 @@
 #include <stddef.h>
 #include "mikroe_alcohol_mq3.h"
 #include "mikroe_alcohol_mq3_config.h"
-#include "alcohol.h"
 
 static alcohol_t alcohol;
 static alcohol_cfg_t alcohol_cfg;

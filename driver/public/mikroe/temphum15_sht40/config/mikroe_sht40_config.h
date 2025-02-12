@@ -45,12 +45,12 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>MIKROE I2C SHT40 Configuration
+// <h> MIKROE I2C SHT40 Configuration
 
-//  <e>MIKROE I2C SHT40 UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> MIKROE I2C SHT40 UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define MIKROE_I2C_SHT40_UC                  0
 
 // <o MIKROE_I2C_SHT40_SPEED_MODE> Speed mode
@@ -67,4 +67,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // MIKROE_SHT40_CONFIG_H

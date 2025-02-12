@@ -34,7 +34,7 @@ include:
       - path: sparkfun_vl53l1_platform.h
       - path: sparkfun_vl53l1x_calibration.h
       - path: sparkfun_vl53l1x_core.h
-      
+
 source:
   - path: thirdparty/stmicroelectronics/distance_vl53l1x/src/sparkfun_vl53l1_platform.c
   - path: thirdparty/stmicroelectronics/distance_vl53l1x/src/sparkfun_vl53l1x_calibration.c

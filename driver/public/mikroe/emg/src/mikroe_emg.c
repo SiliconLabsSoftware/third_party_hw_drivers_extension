@@ -38,7 +38,6 @@
  ******************************************************************************/
 
 #include <stddef.h>
-#include "emg.h"
 #include "mikroe_emg.h"
 #include "mikroe_emg_config.h"
 

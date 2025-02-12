@@ -40,8 +40,6 @@
 #ifndef MIKORE_SERVO_CONFIG_H_
 #define MIKORE_SERVO_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -99,7 +97,7 @@ extern "C" {
 
 // <gpio optional=true> SERVO_OUTPUT_ENABLE
 // $[GPIO_SERVO_OUTPUT_ENABLE]
-#define SERVO_OUTPUT_ENABLE_PORT                  gpioPortC
+#define SERVO_OUTPUT_ENABLE_PORT                  SL_GPIO_PORT_C
 #define SERVO_OUTPUT_ENABLE_PIN                   3
 // [GPIO_SERVO_OUTPUT_ENABLE]$
 
@@ -107,6 +105,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-
 #endif
-#endif /* MIKORE_SERVO_CONFIG_H_ */
+
+#endif // MIKORE_SERVO_CONFIG_H_

@@ -68,10 +68,6 @@ sl_status_t mikroe_cap1166_init(mikroe_spi_handle_t spi_instance)
   captouch2_cfg.alt = hal_gpio_pin_name(CAP1166_ALERT_PORT, CAP1166_ALERT_PIN);
 #endif
 
-#if defined(CAP1166_CS_PORT) && defined(CAP1166_CS_PIN)
-  captouch2_cfg.cs = hal_gpio_pin_name(CAP1166_CS_PORT, CAP1166_CS_PIN);
-#endif
-
 #if (MIKROE_CAP1166_SPI_UC == 1)
   captouch2_cfg.spi_speed = MIKROE_CAP1166_SPI_BITRATE;
 #endif

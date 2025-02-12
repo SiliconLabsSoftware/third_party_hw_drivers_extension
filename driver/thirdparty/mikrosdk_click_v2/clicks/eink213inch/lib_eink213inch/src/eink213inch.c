@@ -140,6 +140,10 @@ void eink213inch_set_lut ( eink213inch_t *ctx, const uint8_t *lut, uint8_t n_byt
     }
 }
 
+/*
+ * Silicon Labs fix 18/12/2024
+ * The setting of incrementing of the address counter
+*/
 void eink213inch_start_config ( eink213inch_t *ctx )
 {
     eink213inch_reset( ctx );
@@ -157,16 +161,21 @@ void eink213inch_start_config ( eink213inch_t *ctx )
     
     eink213inch_send_cmd( ctx, EINK213INCH_CMD_SET_RAM_X_ADDRESS_START_END_POSITION );     
     eink213inch_send_data( ctx, 0x00 );                                                     
-    eink213inch_send_data( ctx, 0x0F );                                                     
+    eink213inch_send_data( ctx, 0x0C );
     eink213inch_send_cmd( ctx, EINK213INCH_CMD_SET_RAM_Y_ADDRESS_START_END_POSITION );     
-    eink213inch_send_data( ctx, 0xF9 );                                                     
-    eink213inch_send_data( ctx, 0x00 );                                                     
+    eink213inch_send_data( ctx, 0xD3 );
+    eink213inch_send_data( ctx, 0x00 );
+    eink213inch_send_data( ctx, 0x00 );
+    eink213inch_send_data( ctx, 0x00 );
 
     eink213inch_send_cmd( ctx, EINK213INCH_CMD_WRITE_VCOM_REGISTER );                      
     eink213inch_send_data( ctx, 0x4B ); 
     
     eink213inch_send_cmd( ctx, EINK213INCH_CMD_BORDER_WAVEFORM_CONTROL );                  
     eink213inch_send_data( ctx, 0x33) ; 
+
+    eink213inch_send_cmd( ctx, EINK213INCH_CMD_DATA_ENTRY_MODE_SETTING );
+    eink213inch_send_data( ctx, 0x03 );
 
     display_delay( );
 }
@@ -194,7 +203,8 @@ void eink213inch_set_mem_area( eink213inch_t *ctx, eink213inch_xy_t *xy )
 
 void eink213inch_update_display ( eink213inch_t *ctx )
 {
-    Delay_100ms( );
+    // Silicon Labs fixed: 23/1/2025
+    // Delay_100ms( );
     eink213inch_send_cmd( ctx, EINK213INCH_CMD_DISPLAY_UPDATE_CONTROL_2 );
     eink213inch_send_data( ctx, 0xC7 );
     eink213inch_send_cmd( ctx, EINK213INCH_CMD_MASTER_ACTIVATION );
@@ -316,7 +326,8 @@ static void wait_until_idle ( eink213inch_t *ctx )
     do
     {
         state = digital_in_read( &ctx->bsy );
-        Delay_100ms( );
+        // Silicon Labs fixed: 23/1/2025
+        // Delay_100ms( );
     } 
     while ( state == 1 );
 }

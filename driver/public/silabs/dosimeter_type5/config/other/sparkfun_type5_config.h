@@ -36,17 +36,13 @@
 #ifndef SPARKFUN_TYPE5_CONFIG_H_
 #define SPARKFUN_TYPE5_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-// <h>SPARKFUN TYPE5 configuration
+// <h> SPARKFUN TYPE5 configuration
 
 // <o SPARKFUN_TYPE5_PROCESS_PERIOD> Process period [MS]
 // <i> Default: 160
@@ -69,15 +65,15 @@ extern "C" {
 // <gpio optional=true> SPARKFUN_TYPE5_SIG
 // $[GPIO_SPARKFUN_TYPE5_SIG]
 #warning "SPARKFUN_TYPE5_SIG is not configured"
-// #define SPARKFUN_TYPE5_SIG_PORT                  gpioPortB
-// #define SPARKFUN_TYPE5_SIG_PIN                   3
+// #define SPARKFUN_TYPE5_SIG_PORT                  0
+// #define SPARKFUN_TYPE5_SIG_PIN                   0
 // [GPIO_SPARKFUN_TYPE5_SIG]$
 
 // <gpio optional=true> SPARKFUN_TYPE5_NS
 // $[GPIO_SPARKFUN_TYPE5_NS]
 #warning "SPARKFUN_TYPE5_NS is not configured"
-// #define SPARKFUN_TYPE5_NS_PORT                   gpioPortB
-// #define SPARKFUN_TYPE5_NS_PIN                    2
+// #define SPARKFUN_TYPE5_NS_PORT                   0
+// #define SPARKFUN_TYPE5_NS_PIN                    0
 // [GPIO_SPARKFUN_TYPE5_NS]$
 
 // <<< sl:end pin_tool >>>

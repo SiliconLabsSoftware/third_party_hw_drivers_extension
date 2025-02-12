@@ -12,9 +12,9 @@ The SPS30 has a five-pin interface that can communicate over two different proto
 
 ## Required Hardware ##
 
-- [EFR32xG24-EK2703A EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [Particulate Matter Sensor - SPS30](https://www.sparkfun.com/products/15103)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [Particulate Matter Sensor - SPS30](https://www.sparkfun.com/products/15103)
 
 ## Hardware Connection ##
 
@@ -37,29 +37,29 @@ The SPS30 has a five-pin interface that can communicate over two different proto
 
   ---------------------------------------------------------------------------------------------
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+- **If the Wi-Fi Development Kit is used**:
 
   The hardware connection is shown in the table below:
 
   **- If using I2C interface:**
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | SPS30               |
-  | -------------| ------------- | ------------------ | ------------------- |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | PIN 2 (SDA)         |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | PIN 3 (SCL)         |
-  | GND          |               |                    | PIN 4 (SEL)         |
-  | +5V          |               |                    | PIN 1 (+5V)         |
-  | GND          |               |                    | PIN 5 (GND)         |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | SPS30        |
+  | -------------| ------------------- | ------------ | ------------ |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] |  ULP_GPIO_6  | PIN 2 (SDA)  |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] |  ULP_GPIO_7  | PIN 3 (SCL)  |
+  | GND          |                     |              | PIN 4 (SEL)  |
+  | +5V          |                     |              | PIN 1 (+5V)  |
+  | GND          |                     |              | PIN 5 (GND)  |
 
   **- If using UART interface:**
 
-  | Description  | BRD4338A GPIO  | BRD4002 Breakout Header | SPS30               |
-  | ------------ | -------------- | ----------------------- | ------------------- |
-  | UART1_RX_PIN | GPIO_6         | P19                     | PIN 3 (TX)                  |
-  | UART1_TX_PIN | GPIO_7         | P20                     | PIN 2 (RX)          |
-  | Floating     |                |                         | PIN 4 (SEL)         |
-  | +5V          |                | +5V                     | PIN 1 (+5V)         |
-  | GND          |                | GND                     | PIN 5 (GND)         |
+  | Description  | BRD4338A + BRD4002A  | BRD2605A | SPS30               |
+  | ------------ | -------------------- | -------- | ------------------- |
+  | UART1_RX_PIN | GPIO_6 [P19]         | GPIO_6   | PIN 3 (TX)          |
+  | UART1_TX_PIN | GPIO_7 [P20]         | GPIO_7   | PIN 2 (RX)          |
+  | Floating     |                      |          | PIN 4 (SEL)         |
+  | +5V          |                      | +5V      | PIN 1 (+5V)         |
+  | GND          |                      | GND      | PIN 5 (GND)         |
 
 ## Setup ##
 
@@ -71,7 +71,7 @@ You can either create a project based on an example project or start with an emp
 
 2. Click **Create** button on the example:
 
-   - **Third Party Hardware Drivers - SPS30 - Particulate Matter Sensor (Sparkfun) - I2C** if using the I2C interface.  
+   - **Third Party Hardware Drivers - SPS30 - Particulate Matter Sensor (Sparkfun) - I2C** if using the I2C interface.
 
    - **Third Party Hardware Drivers - SPS30 - Particulate Matter Sensor (Sparkfun) - UART** if using the UART interface.
 
@@ -105,7 +105,7 @@ You can either create a project based on an example project or start with an emp
           - [Services] → [IO Stream] → [IO Stream: USART] → [mikroe] → set "Receive buffer size" to 256
           - [Third Party Hardware Drivers] → [Sensors] → [SPS30 - Particulate Matter Sensor (Sparkfun) - UART] → use default configuration
 
-        **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+        **If the Wi-Fi Development Kit is used**:
         - If using the I2C interface:
           - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
           - [Third Party Hardware Drivers] → [Sensors] → [SPS30 - Particulate Matter Sensor (Sparkfun) - I2C] → use default configuration
@@ -113,13 +113,12 @@ You can either create a project based on an example project or start with an emp
           - [Third Party Hardware Drivers] → [Sensors] → [SPS30 - Particulate Matter Sensor (Sparkfun) - UART] → use default configuration
           - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [UART] → disable "UART1 DMA"
 
-4. Install **printf float**
+4. Enable **Printf float**
 
-    - Open Properties of the project.
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
-    - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General. Check Printf float.
-
-        ![install_float](image/install_float.png)
+      ![install_float](image/install_float.png)
 
 5. Build and flash this example to the board.
 
@@ -127,7 +126,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "SPS30 - Particulate Matter Sensor (Sparkfun) - I2C" or "SPS30 - Particulate Matter Sensor (Sparkfun) - UART" component
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "SPS30 - Particulate Matter Sensor (Sparkfun) - I2C" or "SPS30 - Particulate Matter Sensor (Sparkfun) - UART" component
 
 ## How It Works ##
 

@@ -12,9 +12,6 @@ requires:
   - name: mikroe_peripheral_driver_i2c
   - name: mikroe_peripheral_driver_spi
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
-
 provides:
   - name: mikroe_pressure3_i2c
     allow_multiple: false

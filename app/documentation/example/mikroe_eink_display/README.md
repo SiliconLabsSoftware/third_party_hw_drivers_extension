@@ -8,34 +8,35 @@ E-Paper display is based on Active Matrix Electrophoretic Display (AMEPD) techno
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit?tab=overview) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [EINK CLICK - WITHOUT DISPLAY](https://www.mikroe.com/eink-click-without-display)
+- 1x [eINK Click - without display](https://www.mikroe.com/eink-click-without-display)
 
-- [E-Paper display 1,54" 200x200 dots](https://www.mikroe.com/e-paper-display-154-200x200-dots)
-- Or [E-Paper display 2,13" 122x250 dots](https://www.mikroe.com/e-paper-display-213-122x250-dots)
-- Or [E-Paper display 2,9" 296x128 dots](https://www.mikroe.com/e-paper-display-29-inches)
+- 1x E-Paper display as listed below:
+  - [E-Paper display 1,54" 200x200 dots](https://www.mikroe.com/e-paper-display-154-200x200-dots)
+  - [E-Paper display 2,13" 122x250 dots](https://www.mikroe.com/e-paper-display-213-122x250-dots)
+  - [E-Paper display 2,9" 296x128 dots](https://www.mikroe.com/e-paper-display-29-inches)
 
 ## Hardware Connection ##
 
 - If the EFR32xG24 Explorer Kit is used:
 
-    eINK display needs an external adapter to interface with the EFR32xG24 Explorer Kit. The hardware connection is shown in the image below:
+  eINK display needs an [external adapter](https://www.mikroe.com/eink-click-without-display) to interface with the EFR32xG24 Explorer Kit. The hardware connection is shown in the image below:
 
-    ![board](image/hardware_connection.png)
+  ![board](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-    | Description              | BRD4338A GPIO  | BRD4002 Breakout Pad | EINK CLICK - WITHOUT DISPLAY Board |
-    | -------------------------| ---------------| ---------------------| --------------------|
-    | Reset                    | GPIO_46        | P24                  | RTS                 |
-    | Busy indicator           | GPIO_47        | P26                  | BSY                 |
-    | Data/Config              | GPIO_48        | P28                  | D/C                 |
-    | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25        | P25                  | SCK                 |
-    | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27        | P29                  | SDI                 |
-    | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28        | P31                  | CS                  |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | EINK CLICK |
+  | -------------------------| ---------------| --------------------| -------------------|
+  | Reset                    | GPIO_46 [P24]       | GPIO_10        | RTS                |
+  | Busy indicator           | GPIO_47 [P26]       | GPIO_11        | BSY                |
+  | Data/Config              | GPIO_48 [P28]       | GPIO_12        | D/C                |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25]       | GPIO_25        | SCK                |
+  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27 [P29]       | GPIO_27        | SDI                |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28 [P31]       | GPIO_28        | CS                 |
 
 ## Setup ##
 
@@ -67,12 +68,12 @@ You can either create a project based on an example project or start with an emp
 
     **If the EFR32xG24 Explorer Kit is used:**
 
-      - [Third Party Hardware Drivers] → [Display & LED] → [E-Paper display 1.54" 200x200 dots (Mikroe)]
+      - [Third Party Hardware Drivers] → [Display & LED] → [E-Paper Display - eINK Click (Mikroe)] → Select the eINK Display Resolution corresponding to the E-Paper Display used
       - [Third Party Hardware Drivers] → [Services] → [GLIB - OLED Graphics Library]
 
-    **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+    **If the Wi-Fi Development Kit is used:**
 
-      - [Third Party Hardware Drivers] → [Display & LED] → [E-Paper display 1.54" 200x200 dots (Mikroe)]
+      - [Third Party Hardware Drivers] → [Display & LED] → [E-Paper Display - eINK Click (Mikroe)] → Select the eINK Display Resolution corresponding to the E-Paper Display used
       - [Third Party Hardware Drivers] → [Services] → [GLIB - OLED Graphics Library]
 
 4. Build and flash this example to the board.
@@ -81,7 +82,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "E-Paper Display (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "E-Paper Display - eINK Click (Mikroe)" component.
 
 ## How It Works ##
 

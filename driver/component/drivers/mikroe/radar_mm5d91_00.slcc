@@ -10,8 +10,6 @@ ui_hints:
 root_path: driver
 requires:
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_uart
 config_file:
@@ -24,12 +22,15 @@ config_file:
   - path: "public/mikroe/radar_mm5d91_00/config/brd2703a/mikroe_mm5d91_00_config.h"
     file_id: driver_config_radar
     condition: [brd2703a]
+  - path: public/mikroe/radar_mm5d91_00/config/brd2605a/mikroe_mm5d91_00_config.h
+    file_id: driver_config_radar
+    condition: [brd2605a]
   - path: public/mikroe/radar_mm5d91_00/config/brd4338a/mikroe_mm5d91_00_config.h
     file_id: driver_config_radar
     condition: [brd4338a]
   - path: public/mikroe/radar_mm5d91_00/config/other/mikroe_mm5d91_00_config.h
     file_id: driver_config_radar
-    unless: [brd2703a, brd4108a, brd4314a, brd4338a]
+    unless: [brd2703a, brd4108a, brd4314a, brd2605a, brd4338a]
 provides:
   - name: mikroe_radar
     allow_multiple: false

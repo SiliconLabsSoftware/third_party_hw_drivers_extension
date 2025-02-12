@@ -22,18 +22,13 @@ include:
       - path: drv_name.h
       - path: drv_digital_in.h
       - path: drv_digital_out.h
-      - path: drv_port.h
       - path: hal_gpio.h
 source:
   - path: peripheral_drivers/mikroe/src/drv_digital_in.c
-    condition: [device_series_1]
-  - path: peripheral_drivers/mikroe/src/drv_digital_in.c
-    condition: [device_series_2]
+    condition: [device_efx]
   - path: peripheral_drivers/mikroe/src/drv_digital_in_si91x.c
     condition: [device_si91x]
   - path: peripheral_drivers/mikroe/src/drv_digital_out.c
-    condition: [device_series_1]
-  - path: peripheral_drivers/mikroe/src/drv_digital_out.c
-    condition: [device_series_2]
+    condition: [device_efx]
   - path: peripheral_drivers/mikroe/src/drv_digital_out_si91x.c
     condition: [device_si91x]

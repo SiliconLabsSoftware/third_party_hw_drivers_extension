@@ -38,7 +38,6 @@
  ******************************************************************************/
 
 #include <stdbool.h>
-#include "relay2.h"
 #include "mikroe_relay2.h"
 #include "mikroe_relay2_config.h"
 

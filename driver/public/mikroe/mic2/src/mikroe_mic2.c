@@ -37,7 +37,6 @@
  *
  ******************************************************************************/
 
-#include "mic2.h"
 #include "mikroe_mic2.h"
 #include "mikroe_mic2_config.h"
 

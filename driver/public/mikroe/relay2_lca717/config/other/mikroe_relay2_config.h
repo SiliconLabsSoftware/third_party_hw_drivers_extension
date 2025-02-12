@@ -40,10 +40,6 @@
 #ifndef SCL_RELAY2_CONFIG_H_
 #define SCL_RELAY2_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -53,14 +49,14 @@ extern "C" {
 // <gpio optional=true> RELAY2_RL1
 // $[GPIO_RELAY2_RL1]
 #warning "GPIO_RELAY2_RL1 is not configured"
-// #define RELAY2_RL1_PORT                        gpioPortB
-// #define RELAY2_RL1_PIN                         4
+// #define RELAY2_RL1_PORT                        0
+// #define RELAY2_RL1_PIN                         0
 // [GPIO_RELAY2_RL1]$
 
 // <gpio optional=true> RELAY2_RL2
 // $[GPIO_RELAY2_RL2]
 #warning "GPIO_RELAY2_RL2 is not configured"
-// #define RELAY2_RL2_PORT                        gpioPortB
+// #define RELAY2_RL2_PORT                        0
 // #define RELAY2_RL2_PIN                         0
 // [GPIO_RELAY2_RL2]$
 
@@ -70,4 +66,4 @@ extern "C" {
 }
 #endif
 
-#endif /* SCL_RELAY2_CONFIG_H_ */
+#endif // SCL_RELAY2_CONFIG_H_

@@ -7,45 +7,45 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/sparkfun_environmental_bme280_ccs811/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: iostream_usart
-  instance: [vcom]
-- id: i2cspm
-  instance: [qwiic]
-- id: sleeptimer
-- id: app_log
-- id: sparkfun_atmospheric_bme280
-  from: third_party_hw_drivers
-- id: sparkfun_air_quality_ccs811
-  from: third_party_hw_drivers
+  - id: sl_system
+  - id: device_init
+  - id: iostream_usart
+    instance: [vcom]
+  - id: i2cspm
+    instance: [qwiic]
+  - id: sleeptimer
+  - id: app_log
+  - id: sparkfun_atmospheric_bme280
+    from: third_party_hw_drivers
+  - id: sparkfun_air_quality_ccs811
+    from: third_party_hw_drivers
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/sparkfun_environmental_bme280_ccs811/README.md
 
 other_file:
   - path: ../../documentation/example/sparkfun_environmental_bme280_ccs811/image/console_log.png

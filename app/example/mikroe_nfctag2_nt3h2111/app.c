@@ -42,14 +42,18 @@
 #if (defined(SLI_SI917))
 #include "rsi_debug.h"
 #include "sl_i2c_instances.h"
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
 #define I2C_INSTANCE_USED            SL_I2C2
+
 static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #else /* None Si91x device */
 #include "sl_i2cspm_instances.h"
 #include "app_log.h"
 #include "sl_iostream.h"
-#define app_printf(...) app_log(__VA_ARGS__)
+
+#define app_printf(...)              app_log(__VA_ARGS__)
+
 static sl_iostream_t *default_iostream = NULL;
 #endif
 

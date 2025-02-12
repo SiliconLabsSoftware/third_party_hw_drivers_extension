@@ -27,31 +27,29 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has not been formally tested and is provided as-is. It is not
- * suitable for production environments. In addition, this code will not be
- * maintained and there may be no bug maintenance planned for these resources.
- * Silicon Labs may update projects from time to time.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 #include "sparkfun_ak9753.h"
 
 #if (defined(SLI_SI917))
 #include "sl_i2c_instances.h"
 #include "rsi_debug.h"
+
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
+#define I2C_INSTANCE_USED            SL_I2C2
+
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #else
 #include "sl_i2cspm_instances.h"
 #include "app_log.h"
-#endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
-
-#if (defined(SLI_SI917))
-#define I2C_INSTANCE_USED            SL_I2C2
-static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#define app_printf(...)              app_log(__VA_ARGS__)
 #endif
 
 static mikroe_i2c_handle_t app_i2c_instance = NULL;

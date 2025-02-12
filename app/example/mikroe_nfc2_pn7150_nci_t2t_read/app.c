@@ -53,24 +53,34 @@
 
 #define app_printf(...)           DEBUGOUT(__VA_ARGS__)
 #define I2C_INSTANCE_USED         SL_I2C2
-#define GPIO_M4_INTR              0 // M4 Pin interrupt number
+#define PIN_INTR_NO               PIN_INTR_0
 #define AVL_INTR_NO               0 // available interrupt number
 
 static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
-#else
+#else // SLI_SI917
 #include "sl_i2cspm_instances.h"
-#include "gpiointerrupt.h"
+#include "sl_gpio.h"
 #include "app_log.h"
 
 #define app_printf(...)          app_log(__VA_ARGS__)
-#endif
+#endif // SLI_SI917
 
 static uint16_t read_index = 0;
 static uint16_t t2t_area_size = 0;
 static uint8_t data_buff[16];
 static mikroe_i2c_handle_t app_i2c_instance = NULL;
 
-static void app_int_callback(uint8_t intNo);
+#if (defined(SLI_SI917))
+static void app_int_callback(uint32_t int_no)
+{
+#else // SLI_SI917
+static void app_int_callback(uint8_t int_no, void *ctx)
+{
+  (void)ctx;
+#endif // SLI_SI917
+  (void)int_no;
+  nci_notify_incoming_packet();
+}
 
 /*
  * T2T Read Process
@@ -105,11 +115,14 @@ static void app_int_callback(uint8_t intNo);
  ******************************************************************************/
 void app_init(void)
 {
+  int32_t int_no;
+  sl_gpio_t gpio_port_pin;
+
 #if (defined(SLI_SI917))
   app_i2c_instance = &i2c_instance;
-#else
+#else // SLI_SI917
   app_i2c_instance = sl_i2cspm_mikroe;
-#endif
+#endif // SLI_SI917
 
   // Initialize PN71x0 I2C communication.
   if (SL_STATUS_OK != mikroe_pn7150_init(app_i2c_instance)) {
@@ -117,24 +130,26 @@ void app_init(void)
   }
 
 #if (defined(SLI_SI917))
-  sl_gpio_t gpio_port_pin = {
-    MIKROE_PN7150_INT_PIN / 16,
-    MIKROE_PN7150_INT_PIN % 16
-  };
+  gpio_port_pin.port = (MIKROE_PN7150_INT_PORT > 0)
+                       ? MIKROE_PN7150_INT_PORT
+                       : (MIKROE_PN7150_INT_PIN / 16);
+  gpio_port_pin.pin = MIKROE_PN7150_INT_PIN % 16;
+  int_no = PIN_INTR_NO;
   sl_gpio_driver_configure_interrupt(&gpio_port_pin,
-                                     GPIO_M4_INTR,
+                                     int_no,
                                      SL_GPIO_INTERRUPT_RISING_EDGE,
-                                     (void *)&app_int_callback,
+                                     app_int_callback,
                                      AVL_INTR_NO);
-#else
-  GPIO_ExtIntConfig(MIKROE_PN7150_INT_PORT,
-                    MIKROE_PN7150_INT_PIN,
-                    MIKROE_PN7150_INT_PIN,
-                    true,
-                    false,
-                    true);
-  GPIOINT_CallbackRegister(MIKROE_PN7150_INT_PIN, app_int_callback);
-#endif
+#else // SLI_SI917
+  gpio_port_pin.port = MIKROE_PN7150_INT_PORT;
+  gpio_port_pin.pin = MIKROE_PN7150_INT_PIN;
+  int_no = MIKROE_PN7150_INT_PIN;
+  sl_gpio_configure_external_interrupt(&gpio_port_pin,
+                                       &int_no,
+                                       SL_GPIO_INTERRUPT_RISING_EDGE,
+                                       app_int_callback,
+                                       NULL);
+#endif // SLI_SI917
 
   app_printf("        HW Reset       \r\n");
   mikroe_pn7150_hw_reset();
@@ -370,10 +385,4 @@ void app_process_action(void)
     default:
       break;
   }
-}
-
-static void app_int_callback(uint8_t intNo)
-{
-  (void) intNo;
-  nci_notify_incoming_packet();
 }

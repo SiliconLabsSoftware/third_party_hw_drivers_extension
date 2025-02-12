@@ -39,36 +39,33 @@
 #ifndef MM5D91_00_CONFIG_H
 #define MM5D91_00_CONFIG_H
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< sl:start pin_tool >>>
 
 // <gpio> CONFIG_MM5D91_00_RST
 // $[GPIO_CONFIG_MM5D91_00_RST]
-#define CONFIG_MM5D91_00_RST_PORT                  gpioPortC
+#define CONFIG_MM5D91_00_RST_PORT                  SL_GPIO_PORT_C
 #define CONFIG_MM5D91_00_RST_PIN                   6
 // [GPIO_CONFIG_MM5D91_00_RST]$
 
 // <gpio> CONFIG_MM5D91_00_GPIO0
 // $[GPIO_CONFIG_MM5D91_00_GPIO0]
-#define CONFIG_MM5D91_00_GPIO0_PORT                gpioPortB
+#define CONFIG_MM5D91_00_GPIO0_PORT                SL_GPIO_PORT_B
 #define CONFIG_MM5D91_00_GPIO0_PIN                 3
 // [GPIO_CONFIG_MM5D91_00_GPIO0]$
 
 // <gpio> CONFIG_MM5D91_00_GPIO1
 // $[GPIO_CONFIG_MM5D91_00_GPIO1]
-#define CONFIG_MM5D91_00_GPIO1_PORT                gpioPortB
+#define CONFIG_MM5D91_00_GPIO1_PORT                SL_GPIO_PORT_B
 #define CONFIG_MM5D91_00_GPIO1_PIN                 4
 // [GPIO_CONFIG_MM5D91_00_GPIO1]$
 
 // <gpio> CONFIG_MM5D91_00_GPIO2
 // $[GPIO_CONFIG_MM5D91_00_GPIO2]
-#define CONFIG_MM5D91_00_GPIO2_PORT                gpioPortB
+#define CONFIG_MM5D91_00_GPIO2_PORT                SL_GPIO_PORT_B
 #define CONFIG_MM5D91_00_GPIO2_PIN                 0
 // [GPIO_CONFIG_MM5D91_00_GPIO2]$
 

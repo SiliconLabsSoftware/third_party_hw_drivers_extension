@@ -38,10 +38,11 @@
  ******************************************************************************/
 #include <stddef.h>
 #include <stdbool.h>
+#include "sl_si91x_peripheral_gpio.h"
+#include "sl_udelay.h"
 #include "drv_one_wire.h"
 #include "drv_digital_in.h"
 #include "drv_digital_out.h"
-#include "sl_si91x_peripheral_gpio.h"
 
 typedef struct {
   pin_name_t pin_name;
@@ -51,6 +52,16 @@ typedef struct {
 
 /*!< @brief Helper macro getting minimum bits per transfer. */
 #define HAL_ONE_WIRE_MINIMUM_BITS_PER_TRANSFER   (8)
+
+#define DELAY_A                                  1
+#define DELAY_B                                  34
+#define DELAY_C                                  32
+#define DELAY_D                                  3
+#define DELAY_E                                  2
+#define DELAY_F                                  29
+#define DELAY_H                                  285
+#define DELAY_I                                  38
+#define DELAY_J                                  242
 
 // ------------------------------------------------------------------ VARIABLES
 
@@ -714,47 +725,47 @@ static void hal_one_wire_read_byte(uint8_t *read_data_buffer,
 
 static void one_wire_timing_value_a(void)
 {
-  sl_udelay_wait(1);
+  sl_udelay_wait(DELAY_A);
 }
 
 static void one_wire_timing_value_b(void)
 {
-  sl_udelay_wait(93);
+  sl_udelay_wait(DELAY_B);
 }
 
 static void one_wire_timing_value_c(void)
 {
-  sl_udelay_wait(89);
+  sl_udelay_wait(DELAY_C);
 }
 
 static void one_wire_timing_value_d(void)
 {
-  sl_udelay_wait(8);
+  sl_udelay_wait(DELAY_D);
 }
 
 static void one_wire_timing_value_e(void)
 {
-  sl_udelay_wait(7);
+  sl_udelay_wait(DELAY_E);
 }
 
 static void one_wire_timing_value_f(void)
 {
-  sl_udelay_wait(75);
+  sl_udelay_wait(DELAY_F);
 }
 
 static void one_wire_timing_value_h(void)
 {
-  sl_udelay_wait(755);
+  sl_udelay_wait(DELAY_H);
 }
 
 static void one_wire_timing_value_i(void)
 {
-  sl_udelay_wait(102);
+  sl_udelay_wait(DELAY_I);
 }
 
 static void one_wire_timing_value_j(void)
 {
-  sl_udelay_wait(645);
+  sl_udelay_wait(DELAY_J);
 }
 
 // ------------------------------------------------------------------------- END

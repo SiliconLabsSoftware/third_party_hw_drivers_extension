@@ -11,27 +11,15 @@ requires:
   - name: status
   - name: sleeptimer
   - name: tempdrv
-    condition: [device_series_1]
-  - name: tempdrv
-    condition: [device_series_2]
+    condition: [device_efx]
   - name: sl_bjt_temperature_sensor
-    condition: [device_si91x]
-  - name: gpiointerrupt
-    condition: [device_series_1]
-  - name: gpiointerrupt
-    condition: [device_series_2]
-  - name: sleeptimer_si91x
     condition: [device_si91x]
   - name: sl_power_manager
     condition: [device_si91x]
   - name: power_manager
-    condition: [device_series_1]
-  - name: power_manager
-    condition: [device_series_2]
+    condition: [device_efx]
   - name: power_manager_no_deepsleep
-    condition: [device_series_1]
-  - name: power_manager_no_deepsleep
-    condition: [device_series_2]
+    condition: [device_efx]
   - name: mikroe_peripheral_driver_i2c
   - name: mikroe_peripheral_driver_digital_io
 
@@ -46,12 +34,15 @@ config_file:
   - path: public/silabs/fuel_gauge_max17048/config/brd4180a/maxim_max17048_config.h
     file_id: maxim_max17048_config
     condition: [brd4180a]
+  - path: public/silabs/fuel_gauge_max17048/config/brd2605a/maxim_max17048_config.h
+    file_id: maxim_max17048_config
+    condition: [brd2605a]
   - path: public/silabs/fuel_gauge_max17048/config/brd4338a/maxim_max17048_config.h
     file_id: maxim_max17048_config
     condition: [brd4338a]
   - path: public/silabs/fuel_gauge_max17048/config/other/maxim_max17048_config.h
     file_id: maxim_max17048_config
-    unless: [brd4181b, brd4180a, brd4338a]
+    unless: [brd4181b, brd4180a, brd2605a, brd4338a]
   - override:
       component: i2cspm
       file_id: i2cspm_config
@@ -70,12 +61,12 @@ provides:
 
 template_contribution:
   - name: component_catalog
-    value: maxim_fuel_gauge_max17048 
+    value: maxim_fuel_gauge_max17048
 
 include:
   - path: public/silabs/fuel_gauge_max17048/inc
     file_list:
-      - path: maxim_fuel_gauge_max17048.h  
+      - path: maxim_fuel_gauge_max17048.h
 
 source:
   - path: public/silabs/fuel_gauge_max17048/src/maxim_fuel_gauge_max17048.c

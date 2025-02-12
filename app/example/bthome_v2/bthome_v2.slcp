@@ -1,4 +1,3 @@
-# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
 project_name: bthome_v2
 label: Third Party Hardware Drivers - BTHome v2
 description: |
@@ -7,60 +6,47 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/bthome_v2/README.md  
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: services_bthome_v2
-  from: third_party_hw_drivers
-- id: iostream_usart
-  instance: [vcom]
-- id: simple_button  
-  instance: [btn0]
-- id: bt_post_build
-- id: bluetooth_stack
-- id: bluetooth_feature_gatt_server
-- id: bluetooth_feature_sm
-- id: bluetooth_feature_legacy_advertiser
-- id: bluetooth_feature_gatt
-- id: bluetooth_feature_legacy_scanner
-- id: bluetooth_feature_connection
-- id: bluetooth_feature_system
-- id: gatt_configuration
-- id: gatt_service_device_information
-- id: app_log
-
-config_file:
-  - override:
-      component: gatt_configuration
-      file_id: gatt_configuration_file_id
-    path: btconf/gatt_configuration.btconf
-    directory: btconf
+  - id: sl_system
+  - id: device_init
+  - id: bluetooth_stack
+  - id: bluetooth_feature_legacy_advertiser
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_system
+  - id: iostream_usart
+    instance: [vcom]
+  - id: simple_button
+    instance: [btn0]
+  - id: app_log
+  - id: services_bthome_v2
+    from: third_party_hw_drivers
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/bthome_v2/README.md
 
 other_file:
   - path: ../../documentation/example/bthome_v2/image/app1.png
@@ -75,7 +61,7 @@ other_file:
     directory: "image"
   - path: ../../documentation/example/bthome_v2/image/overview.png
     directory: "image"
-  
+
 ui_hints:
   highlight:
     - path: README.md

@@ -44,17 +44,15 @@
 extern "C" {
 #endif
 
-#include "em_gpio.h"
-
 // A CMSIS annotation block starts with the following line:
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>MIKROE BMA400 I2C Configuration
+// <h> MIKROE BMA400 I2C Configuration
 
-//  <e>MIKROE BMA400 I2C UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> MIKROE BMA400 I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define MIKROE_BMA400_I2C_UC                  0
 
 // <o MIKROE_BMA400_I2C_SPEED_MODE> Speed mode
@@ -80,13 +78,13 @@ extern "C" {
 
 // <gpio optional=true> MIKROE_BMA400_INT1
 // $[GPIO_MIKROE_BMA400_INT1]
-#define MIKROE_BMA400_INT1_PORT                  gpioPortB
+#define MIKROE_BMA400_INT1_PORT                  SL_GPIO_PORT_B
 #define MIKROE_BMA400_INT1_PIN                   4
 // [GPIO_MIKROE_BMA400_INT1]$
 
 // <gpio optional=true> MIKROE_BMA400_INT2
 // $[GPIO_MIKROE_BMA400_INT2]
-#define MIKROE_BMA400_INT2_PORT                  gpioPortB
+#define MIKROE_BMA400_INT2_PORT                  SL_GPIO_PORT_B
 #define MIKROE_BMA400_INT2_PIN                   3
 // [GPIO_MIKROE_BMA400_INT2]$
 
@@ -96,4 +94,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_BMA400_CONFIG_H_ */
+#endif // MIKROE_BMA400_CONFIG_H_

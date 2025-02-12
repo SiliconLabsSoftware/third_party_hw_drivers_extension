@@ -37,11 +37,8 @@
  *
  ******************************************************************************/
 
-#include "fingerprint2.h"
 #include "mikroe_a172mrq.h"
 #include "mikroe_a172mrq_config.h"
-#include "drv_digital_out.h"
-#include "drv_digital_in.h"
 
 static fingerprint2_t fingerprint2;
 static fingerprint2_cfg_t fingerprint2_cfg;

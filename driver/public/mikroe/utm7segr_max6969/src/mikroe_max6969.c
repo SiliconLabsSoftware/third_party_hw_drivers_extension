@@ -28,13 +28,15 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has been minimally tested to ensure that it builds and is suitable
- * as a demonstration for evaluation purposes only. This code will be maintained
- * at the sole discretion of Silicon Labs.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
-#include "utm7segr.h"
 #include "mikroe_max6969.h"
 #include "utm7segr_max6969_config.h"
 
@@ -62,14 +64,6 @@ sl_status_t mikroe_max6969_init(mikroe_spi_handle_t spi_instance,
 
 #if (MIKROE_MAX6969_SPI_UC == 1)
   utm7segr_cfg.spi_speed = MIKROE_MAX6969_SPI_BITRATE;
-#endif
-
-#if defined(MIKROE_MAX6969_CS_PORT) && defined(MIKROE_MAX6969_CS_PIN)
-  utm7segr_cfg.cs = hal_gpio_pin_name(MIKROE_MAX6969_CS_PORT,
-                                      MIKROE_MAX6969_CS_PIN);
-  // CS pin need to init here since the mikroe_sdk_v2 missed this step
-  digital_out_t struct_cs;
-  digital_out_init(&struct_cs, utm7segr_cfg.cs);
 #endif
 
   if (utm7segr_init(&utm7segr, &utm7segr_cfg) != UTM7SEGR_OK) {

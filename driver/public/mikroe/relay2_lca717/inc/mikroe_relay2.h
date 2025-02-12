@@ -41,6 +41,7 @@
 #define MIKROE_RELAY2_H_
 
 #include "sl_status.h"
+#include "relay2.h"
 
 #ifdef __cplusplus
 extern "C" {

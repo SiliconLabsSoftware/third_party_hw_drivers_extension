@@ -8,11 +8,11 @@ DC Motor 24 Click is a compact add-on board with a brushed DC motor driver. This
 
 ## Required Hardware ##
 
-- [BGM220 Bluetooth Module Explorer Kit](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [DC Motor 24 Click](https://www.mikroe.com/dc-motor-24-click)
+- 1x [DC Motor 24 Click](https://www.mikroe.com/dc-motor-24-click)
 
 ## Hardware Connection ##
 
@@ -24,17 +24,17 @@ DC Motor 24 Click is a compact add-on board with a brushed DC motor driver. This
 
   ![board](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description              | BRD4338A GPIO | BRD4002 EXP Header | DC Motor 24 Click |
-  | ------------------------ | ------------- | ------------------ | ----------------- |
-  | DIR                      | GPIO_48       | P28                | DIR               |
-  | EN                       | GPIO_46       | P24                | EN                |
-  | PWM                      | GPIO_7        | P20                | PWM               |
-  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                 |
-  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27                  | SDO                 |
-  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27       | P29                  | SDI                 |
-  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28       | P31                  | CS                  |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | DC Motor 24 Click |
+  | ------------------------ | ------------- | -------------- | --------- |
+  | DIR                      | GPIO_47 [P26] | GPIO_11        | DIR       |
+  | EN                       | GPIO_46 [P24] | GPIO_10        | EN        |
+  | PWM                      | GPIO_7 [P20]  | GPIO_7         | PWM       |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25] | GPIO_25        | SCK       |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26 [P27] | GPIO_26        | SDO       |
+  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27 [P29] | GPIO_27        | SDI       |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28 [P31] | GPIO_28        | CS        |
 
 ## Setup ##
 
@@ -71,7 +71,7 @@ You can either create a project based on an example project or start with an emp
       - [Services] → [Timers] → [Sleep Timer]
       - [Third Party Hardware Drivers] → [Motor Control] → [L9958 - DC MOTOR 24 Click (Mikroe)]
 
-    **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+    **If the Wi-Fi Development Kit is used:**
 
       - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
       - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [PWM] → [channel_0] → use default configuration
@@ -83,7 +83,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension extension must be enabled for the project to install the "L9958 - DC MOTOR 24 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install the "L9958 - DC MOTOR 24 Click (Mikroe)" component.
 
 ## How It Works ##
 

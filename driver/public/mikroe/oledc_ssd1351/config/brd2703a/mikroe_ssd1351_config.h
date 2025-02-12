@@ -39,8 +39,6 @@
 #ifndef MIKROE_SSD1351_CONFIG_H_
 #define MIKROE_SSD1351_CONFIG_H_
 
-#include "em_gpio.h"
-
 #define SSD1351_DISPLAY_WIDTH                         96
 #define SSD1351_DISPLAY_HEIGHT                        96
 #define SSD1351_DISPLAY_COLOR                         16
@@ -49,7 +47,7 @@
 
 // <h> MIKROE SSD1351 SPI Configuration
 
-// <e>MIKROE SSD1351 SPI UC Configuration
+// <e> MIKROE SSD1351 SPI UC Configuration
 // <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
 // <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
 // <i> Default: 0
@@ -65,33 +63,27 @@
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> SSD1351_CS
-// $[GPIO_SSD1351_CS]
-// #define SSD1351_CS_PORT                        0
-// #define SSD1351_CS_PIN                         0
-// [GPIO_SSD1351_CS]$
-
 // <gpio optional=true> SSD1351_DC
 // $[GPIO_SSD1351_DC]
-#define SSD1351_DC_PORT                               gpioPortA
+#define SSD1351_DC_PORT                               SL_GPIO_PORT_A
 #define SSD1351_DC_PIN                                0
 // [GPIO_SSD1351_DC]$
 
 // <gpio optional=true> SSD1351_RST
 // $[GPIO_SSD1351_RST]
-#define SSD1351_RST_PORT                              gpioPortC
+#define SSD1351_RST_PORT                              SL_GPIO_PORT_C
 #define SSD1351_RST_PIN                               8
 // [GPIO_SSD1351_RST]$
 
 // <gpio optional=true> SSD1351_EN
 // $[GPIO_SSD1351_EN]
-#define SSD1351_EN_PORT                               gpioPortB
+#define SSD1351_EN_PORT                               SL_GPIO_PORT_B
 #define SSD1351_EN_PIN                                1
 // [GPIO_SSD1351_EN]$
 
 // <gpio optional=true> SSD1351_RW
 // $[GPIO_SSD1351_RW]
-#define SSD1351_RW_PORT                               gpioPortB
+#define SSD1351_RW_PORT                               SL_GPIO_PORT_B
 #define SSD1351_RW_PIN                                0
 // [GPIO_SSD1351_RW]$
 

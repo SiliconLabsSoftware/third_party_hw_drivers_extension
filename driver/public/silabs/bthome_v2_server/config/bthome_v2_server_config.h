@@ -42,8 +42,7 @@
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-// <o MAX_ENCRYPT_DEVICE> The maximum number of encrypted devices can supported
-//   store key.
+// <o MAX_ENCRYPT_DEVICE> The maximum number of encrypted devices can supported store key.
 // <i> Default: 5
 #define MAX_ENCRYPT_DEVICE    5
 
@@ -53,4 +52,4 @@
 
 // <<< end of configuration section >>>
 
-#endif /* BTHOME_V2_SERVER_CONFIG_H_ */
+#endif // BTHOME_V2_SERVER_CONFIG_H_

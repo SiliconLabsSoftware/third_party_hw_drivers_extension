@@ -50,7 +50,7 @@ extern "C" {
 
 // <h> MIKROE_ML8511A SPI Configuration
 
-// <e>MIKROE_ML8511A SPI UC Configuration
+// <e> MIKROE_ML8511A SPI UC Configuration
 // <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
 // <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
 // <i> Default: 0
@@ -63,7 +63,7 @@ extern "C" {
 // </e>
 // </h>
 
-//<h>MIKROE ML8511A Configuration
+// <h> MIKROE ML8511A Configuration
 // <o MIKROE_ML8511A_OPERATION_MODE> Operation mode
 // <AN_MODE=> Analog mode
 // <ADC_MODE=> ADC mode
@@ -74,12 +74,6 @@ extern "C" {
 // <<< end of configuration section >>>
 
 // <<< sl:start pin_tool >>>
-
-// <gpio optional=true> ML8511A_CS
-// $[GPIO_ML8511A_CS]
-// #define ML8511A_CS_PORT                       0
-// #define ML8511A_CS_PIN                        0
-// [GPIO_ML8511A_CS]$
 
 // <gpio optional=true> ML8511A_EN
 // $[GPIO_ML8511A_EN]
@@ -93,4 +87,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_ML8511A_CONFIG_H_ */
+#endif // MIKROE_ML8511A_CONFIG_H_

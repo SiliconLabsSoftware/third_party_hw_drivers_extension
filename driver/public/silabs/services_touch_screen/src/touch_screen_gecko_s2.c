@@ -111,16 +111,16 @@ static IADC_PosInput_t get_adc_aportx(GPIO_Port_TypeDef port,
   }
 
   switch (port) {
-    case gpioPortA:
+    case SL_GPIO_PORT_A:
       return (IADC_PosInput_t)calc_adc_pos(0, pin);
 
-    case gpioPortB:
+    case SL_GPIO_PORT_B:
       return (IADC_PosInput_t)calc_adc_pos(1, pin);
 
-    case gpioPortC:
+    case SL_GPIO_PORT_C:
       return (IADC_PosInput_t)calc_adc_pos(2, pin);
 
-    case gpioPortD:
+    case SL_GPIO_PORT_D:
       return (IADC_PosInput_t)calc_adc_pos(3, pin);
 
     default:
@@ -131,16 +131,16 @@ static IADC_PosInput_t get_adc_aportx(GPIO_Port_TypeDef port,
 static sl_status_t allocate_analog_bus_even0(GPIO_Port_TypeDef port)
 {
   switch (port) {
-    case gpioPortA:
+    case SL_GPIO_PORT_A:
       adc_mux_even(obj->handle, ADC0, A, 0);
       return SL_STATUS_OK;
 
-    case gpioPortB:
+    case SL_GPIO_PORT_B:
       adc_mux_even(obj->handle, ADC0, B, 0);
       return SL_STATUS_OK;
 
-    case gpioPortC:
-    case gpioPortD:
+    case SL_GPIO_PORT_C:
+    case SL_GPIO_PORT_D:
       adc_mux_even(obj->handle, ADC0, CD, 0);
       return SL_STATUS_OK;
 

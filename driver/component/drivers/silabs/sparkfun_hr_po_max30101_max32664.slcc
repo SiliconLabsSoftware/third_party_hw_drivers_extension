@@ -9,10 +9,7 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
-  
 config_file:
   - path: public/silabs/hr_po_max30101_max32664/config/sparkfun_max30101_max32664_config.h
     file_id: driver_config_sparkfun_hr_po_max30101_max32664
@@ -20,7 +17,7 @@ provides:
   - name: sparkfun_hr_po_max30101_max32664
 template_contribution:
   - name: component_catalog
-    value: sparkfun_hr_po_max30101_max32664 
+    value: sparkfun_hr_po_max30101_max32664
 include:
   - path: public/silabs/hr_po_max30101_max32664/inc
     file_list:

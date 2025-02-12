@@ -1,37 +1,37 @@
 /***************************************************************************//**
-* @file max1704x.h
-* @brief define driver structures and APIs for the max17048/max17049 Fuel Gauge
-*******************************************************************************
-* # License
-* <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
-********************************************************************************
-*
-* SPDX-License-Identifier: Zlib
-*
-* The licensor of this software is Silicon Laboratories Inc.
-*
-* This software is provided \'as-is\', without any express or implied
-* warranty. In no event will the authors be held liable for any damages
-* arising from the use of this software.
-*
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute it
-* freely, subject to the following restrictions:
-*
-* 1. The origin of this software must not be misrepresented; you must not
-*    claim that you wrote the original software. If you use this software
-*    in a product, an acknowledgment in the product documentation would be
-*    appreciated but is not required.
-* 2. Altered source versions must be plainly marked as such, and must not be
-*    misrepresented as being the original software.
-* 3. This notice may not be removed or altered from any source distribution.
-*
-*******************************************************************************
-* # Evaluation Quality
-* This code has been minimally tested to ensure that it builds and is suitable
-* as a demonstration for evaluation purposes only. This code will be maintained
-* at the sole discretion of Silicon Labs.
-*******************************************************************************/
+ * @file max1704x.h
+ * @brief define driver structures and APIs for the max17048/max17049 Fuel Gauge
+ *******************************************************************************
+ * # License
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ ********************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ * # Evaluation Quality
+ * This code has been minimally tested to ensure that it builds and is suitable
+ * as a demonstration for evaluation purposes only. This code will be maintained
+ * at the sole discretion of Silicon Labs.
+ *******************************************************************************/
 #ifndef __MAX17048_H_
 #define __MAX17048_H_
 
@@ -50,20 +50,22 @@
 #if (defined(SLI_SI917))
 #include "sl_driver_gpio.h"
 #include "sl_si91x_bjt_temperature_sensor.h"
-#define GPIO_M4_INTR              7 // M4 Pin interrupt number
+
+#define PIN_INTR_NO               PIN_INTR_0
 #define AVL_INTR_NO               0 // available interrupt number
-#else
-#include "gpiointerrupt.h"
+#else // SLI_SI917
+#include "sl_hal_gpio.h"
+#include "sl_gpio.h"
 #include "tempdrv.h"
-#endif
+#endif // SLI_SI917
 
 #if (MAX17048_ENABLE_POWER_MANAGER == 1)
 #if (defined(SLI_SI917))
 #include "sl_si91x_power_manager.h"
-#else
+#else // SLI_SI917
 #include "sl_power_manager.h"
-#endif
-#endif
+#endif // SLI_SI917
+#endif // MAX17048_ENABLE_POWER_MANAGER
 
 #ifdef __cplusplus
 extern "C" {

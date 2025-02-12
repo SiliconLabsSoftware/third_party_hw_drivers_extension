@@ -43,8 +43,6 @@
 extern "C" {
 #endif
 
-#include "em_gpio.h"
-
 // <<< Use Configuration Wizard in Context Menu >>>
 // <h> Ozone 2 Click ADC Select
 
@@ -77,13 +75,13 @@ extern "C" {
 
 // <gpio optional=true> MIKROE_OZONE2_AN
 // $[GPIO_MIKROE_OZONE2_AN]
-#define MIKROE_OZONE2_AN_PORT                      gpioPortB
+#define MIKROE_OZONE2_AN_PORT                      SL_GPIO_PORT_B
 #define MIKROE_OZONE2_AN_PIN                       0
 // [GPIO_MIKROE_OZONE2_AN]$
 
 // <gpio optional=true> MIKROE_OZONE2_CS
 // $[GPIO_MIKROE_OZONE2_CS]
-#define MIKROE_OZONE2_CS_PORT                      gpioPortC
+#define MIKROE_OZONE2_CS_PORT                      SL_GPIO_PORT_C
 #define MIKROE_OZONE2_CS_PIN                       3
 // [GPIO_MIKROE_OZONE2_CS]$
 

@@ -38,7 +38,6 @@
  ******************************************************************************/
 #include "mikroe_rng.h"
 #include "mikroe_rng_config.h"
-#include "rng.h"
 
 static rng_t rng;
 static rng_cfg_t rng_cfg;

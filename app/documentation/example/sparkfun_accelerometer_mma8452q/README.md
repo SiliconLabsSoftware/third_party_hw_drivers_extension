@@ -10,27 +10,27 @@ The goal is to provide a hardware driver that supports the basic accelerometer m
 
 ## Required Hardware ##
 
-- [A BGM220P Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [SparkFun Triple Axis Accelerometer Breakout - MMA8452Q (Qwiic)](https://www.sparkfun.com/products/14587)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x SparkFun Triple Axis Accelerometer Breakout - MMA8452Q (Qwiic)
 
 ## Hardware Connection ##
 
 - **If the BGM220P Explorer Kit is used**:
 
   An MMA8452Q sensor board can connect with your board easily via a Qwiic connector. It includes a JST-PH 4-pin connector that provides two I2C wires (SDA and SCL), 3v3, and GND. You can use [the JST PH to JST SH (qwiic) Cable](https://www.adafruit.com/product/4424) to connect to your board.
-  
+
   The hardware connection is shown in the image below:
   ![hardware_connection](image/hardware_connection.png)
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
-  
+- **If the Wi-Fi Development Kit is used**:
+
   The hardware connection is shown in the table below:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | MMA8452Q sensor board |
-  | -------------| ------------- | ------------------ | ------------------ |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | MMA8452Q sensor board |
+  | -------------| ------------------- | ------------ | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | Qwiic cable  | SDA                |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | Qwiic cable  | SCL                |
 
 - **Note:** There are several jumpers on SparkFun Triple Axis Accelerometer Breakout - MMA8452Q that can be changed to facilitate several different functions. The first of which is the Address jumper. The Address jumper can be used to change the I2C address of the board. The default jumper is open by default, pulling the address pin high and giving us an I2C address of 0X1D. Closing this jumper will ground the address pin, giving us an I2C address of 0X1C. The second of which is the I2C pull-up jumper. If multiple boards are connected to the I2C bus, the equivalent resistance goes down, increasing your pull-up strength. If multiple boards are connected on the same bus, make sure only one board has the pull-up resistors connected.
 
@@ -68,19 +68,18 @@ You can either create a project based on an example project or start with an emp
 
         - [Services] → [IO Stream] → [IO Stream: USART] with the default instance name: vcom
         - [Application] → [Utility] → [Log]
-        - [Platform] → [Driver] → [I2C] → [I2CSPM] → qwiic instance
+        - [Platform] → [Driver] → [I2C] → [I2CSPM] → default instance name: qwiic
         - [Third Party Hardware Drivers] → [Sensors] → [MMA8452Q - Triple Axis Accelerometer Breakout (Sparkfun)]
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
         - [Third Party Hardware Drivers] → [Sensors] → [MMA8452Q - Triple Axis Accelerometer Breakout (Sparkfun)]
 
-5. Install "Printf float"
+5. Enable **Printf float**
 
-    - Open Properties of the project.
-
-    - Select C/C++ Build > Settings > Tool Settings > GNU ARM C Linker > General > Check "Printf float".
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
 6. Build and flash the project to your device.
 
@@ -88,7 +87,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install the "MMA8452Q - Triple Axis Accelerometer Breakout (Sparkfun)" component
+- **Third Party Hardware Drivers** extension must be enabled for the project to install the "MMA8452Q - Triple Axis Accelerometer Breakout (Sparkfun)" component
 
 ## How It Works ##
 
@@ -198,15 +197,15 @@ Please follow the below steps to test the example:
 2. Depending on the test mode defined in the app.c file, the code application can operate in different modes.
 
    - If using **TEST_BASIC_READING** for testing, this example initializes the accelerometer and stream calculated x, y, z, and acceleration values from it (in g units).
-  
+
       ![basic reading](image/basic_reading.png "Basic Reading Result")
 
    - If using **TEST_RAW_DATA_READING** for testing, this example initializes the accelerometer and streams raw x, y, and z, acceleration values from it.
-  
+
       ![raw data reading](image/raw_data_reading.png "Raw Data Reading Result")
 
    - If using **TEST_ORIENTATION** for testing, this example initializes the accelerometer and streams its orientation.
-  
+
       ![orientation reading](image/orientation_reading.png "Orientation Reading")
 
    - If using **TEST_READ_TAPS** for testing, this example initializes the accelerometer and prints a message each time it is taped.

@@ -7,22 +7,22 @@ category: Human Machine Interface
 quality: evaluation
 root_path: driver
 requires:
-- name: status
-- name: mikroe_peripheral_driver_i2c
+  - name: status
+  - name: mikroe_peripheral_driver_i2c
 config_file:
-- path: public/silabs/touchscreen_tsc2007/config/adafruit_tsc2007_config.h
-  file_id: adafruit_tsc2007_config
+  - path: public/silabs/touchscreen_tsc2007/config/adafruit_tsc2007_config.h
+    file_id: adafruit_tsc2007_config
 provides:
-- name: adafruit_touchscreen_tsc2007
-  allow_multiple: false
+  - name: adafruit_touchscreen_tsc2007
+    allow_multiple: false
 template_contribution:
-- name: component_catalog
-  value: adafruit_touchscreen_tsc2007
+  - name: component_catalog
+    value: adafruit_touchscreen_tsc2007
 include:
-- path: public/silabs/touchscreen_tsc2007/inc
-  file_list:
-    - path: adafruit_tsc2007.h
-    - path: lvgl_input.h
+  - path: public/silabs/touchscreen_tsc2007/inc
+    file_list:
+      - path: adafruit_tsc2007.h
+      - path: lvgl_input.h
 source:
-- path: public/silabs/touchscreen_tsc2007/src/adafruit_tsc2007.c
-- path: public/silabs/touchscreen_tsc2007/src/lvgl_input.c
+  - path: public/silabs/touchscreen_tsc2007/src/adafruit_tsc2007.c
+  - path: public/silabs/touchscreen_tsc2007/src/lvgl_input.c

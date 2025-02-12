@@ -10,17 +10,35 @@ This example demonstrates the ability to transmit and receive data via the LoRaW
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- [Mikroe LR 9 Click](https://www.mikroe.com/lr-9-click)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+
+- 2x [LR 9 Click](https://www.mikroe.com/lr-9-click)
 
 ## Hardware Connection ##
 
-The LR 9 Click board supports MikroBus, so it can connect easily to Explorer Kit via MikroBus header. Assure that the 45-degree corner of the Click board matches the 45-degree white line of the Explorer Kit.
+- If the Explorer Kit is used:
 
-The hardware connection is shown in the image below:
+   The LR 9 Click board supports MikroBus, so it can connect easily to Explorer Kit via MikroBus header. Assure that the 45-degree corner of the Click board matches the 45-degree white line of the Explorer Kit.
 
-![hardware_connection](image/hardware_connection.png)
+   The hardware connection is shown in the image below:
+
+   ![hardware_connection](image/hardware_connection.png)
+
+- If the Wi-Fi Development Kit is used:
+
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | LR 9 Click |
+  | ----------------- | -------------- | ------------ | ----------- |
+  | UART1_RX_PIN      | GPIO_6 [P19]   | GPIO_6       | TX          |
+  | UART1_TX_PIN      | GPIO_7 [P20]   | GPIO_7       | RX          |
+  | RESET             | GPIO_46 [P24]  | GPIO_10      | RST         |
+
+**Note:**
+
+- There is a switch on the board allows the selection of the UART interface's function. Make sure that it is in the LPRX position for exchanging AT commands.
+
+- Don't need to connect to the BT pin since the default of this pin is low for normal operating mode. For more details, please check [RA-08_datasheet](https://download.mikroe.com/documents/datasheets/RA-08_datasheet.pdf).
 
 ## Setup ##
 
@@ -48,11 +66,19 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
+    **If the Explorer Kit is used:**
+
       - [Services] → [Timers] → [Sleep Timer]
       - [Services] → [IO Stream] → [IO Stream: USART] → use an instance name: **mikroe**
       - [Services] → [IO Stream] → [IO Stream: ESART] → use the default instance name: **vcom**
       - [Application] → [Utility] → [Log]
       - [Third Party Hardware Drivers] → [Wireless Connectivity] → [RA-08 - LR 9 Click (Mikroe)] → use default configuration
+
+   **If the Wi-Fi Development Kit is used:**
+
+      - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+      - [Third Party Hardware Drivers] → [Wireless Connectivity] → [RA-08 - LR 9 Click (Mikroe)] → use default configuration
+      - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [UART] → disable "UART1 DMA"
 
 4. Build and flash this example to the board.
 
@@ -60,7 +86,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install the "RA-08 - LR 9 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install the "RA-08 - LR 9 Click (Mikroe)" component.
 
 ## How It Works ##
 

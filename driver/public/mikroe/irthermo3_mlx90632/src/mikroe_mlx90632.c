@@ -37,7 +37,6 @@
  *
  ******************************************************************************/
 
-#include "irthermo3.h"
 #include "mikroe_mlx90632.h"
 #include "mikroe_mlx90632_config.h"
 

@@ -40,8 +40,6 @@
 #ifndef SCL_CAP1166_CONFIG_H_
 #define SCL_CAP1166_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -66,21 +64,15 @@ extern "C" {
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> CAP1166_CS
-// $[GPIO_CAP1166_CS]
-// #define CAP1166_CS_PORT                        0
-// #define CAP1166_CS_PIN                         0
-// [GPIO_CAP1166_CS]$
-
 // <gpio optional=true> CAP1166_RESET
 // $[GPIO_CAP1166_RESET]
-#define CAP1166_RESET_PORT                   gpioPortC
+#define CAP1166_RESET_PORT                   SL_GPIO_PORT_C
 #define CAP1166_RESET_PIN                    8
 // [GPIO_CAP1166_RESET]$
 
 // <gpio optional=true> CAP1166_ALERT
 // $[GPIO_CAP1166_ALERT]
-#define CAP1166_ALERT_PORT                   gpioPortB
+#define CAP1166_ALERT_PORT                   SL_GPIO_PORT_B
 #define CAP1166_ALERT_PIN                    1
 // [GPIO_CAP1166_ALERT]$
 

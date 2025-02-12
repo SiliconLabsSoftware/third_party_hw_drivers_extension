@@ -44,16 +44,14 @@
 #if (defined(SLI_SI917))
 #include "sl_si91x_gspi.h"
 #include "sl_si91x_button_instances.h"
+
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #else
 #include "sl_simple_button_instances.h"
 #include "sl_spidrv_instances.h"
 #endif
 
 #define DISPLAY_MODE_COUNT  (15)
-
-#if (defined(SLI_SI917))
-static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
-#endif
 
 static glib_context_t glib_context;
 static uint8_t display_mode = 0;

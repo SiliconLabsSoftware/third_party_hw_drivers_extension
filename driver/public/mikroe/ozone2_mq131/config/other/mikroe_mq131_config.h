@@ -43,10 +43,6 @@
 extern "C" {
 #endif
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 // <<< Use Configuration Wizard in Context Menu >>>
 // <h> Ozone 2 Click ADC Select
 
@@ -80,14 +76,14 @@ extern "C" {
 // <gpio optional=true> MIKROE_OZONE2_AN
 // $[GPIO_MIKROE_OZONE2_AN]
 #warning "MIKROE_OZONE2_AN is not configured"
-// #define MIKROE_OZONE2_AN_PORT                    gpioPortB
+// #define MIKROE_OZONE2_AN_PORT                    0
 // #define MIKROE_OZONE2_AN_PIN                     0
 // [GPIO_MIKROE_OZONE2_AN]$
 
 // <gpio optional=true> MIKROE_OZONE2_CS
 // $[GPIO_MIKROE_OZONE2_CS]
 #warning "MIKROE_OZONE2_CS is not configured"
-// #define MIKROE_OZONE2_CS_PORT                    gpioPortC
+// #define MIKROE_OZONE2_CS_PORT                    0
 // #define MIKROE_OZONE2_CS_PIN                     0
 // [GPIO_MIKROE_OZONE2_CS]$
 

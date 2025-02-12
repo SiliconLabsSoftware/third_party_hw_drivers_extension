@@ -58,14 +58,14 @@ const uint8_t ir_table[TABLE_INDEX_NUM][2] = {
   { 0x45, 0x45 }
 };
 
-static ir_t ir = {
+static volatile ir_t ir = {
   .code = CODE_NEC,
   .carrier = { 38000, 40000 },
   .timebase = { 1769, 1659 },
   .dutycycle = { 0.335, 0.335 },
   .head_bit_size = { { 16, 8 }, { 4, 1 } },
-  .address_length = { 8, 7 },
-  .command_length = { 8, 8 },
+  .address_length = { 8, 8 },
+  .command_length = { 8, 7 },
   .stream_active = false,
   .stream_index = 0,
 };
@@ -127,7 +127,8 @@ __STATIC_INLINE void ir_generate_stream_byte(uint16_t stream_data,
 {
   // NEC, SONY send in LSB
   for (uint8_t i = 0; i < length; i++) {
-    ir_generate_stream_logic(&ir.stream[ir.index], (stream_data & BIT(0)));
+    ir_generate_stream_logic((bool *)&ir.stream[ir.index],
+                             (stream_data & BIT(0)));
     stream_data >>= 1; // move left to get next bit
   }
 }
@@ -145,7 +146,7 @@ void ir_generate_stream(uint16_t address, uint16_t command, bool repeat)
   while (ir.stream_active) { // Wait until done transmitting last code
   }
   ir.index = 0;
-  ir_generate_stream_head(&ir.stream[ir.index], repeat);
+  ir_generate_stream_head((bool *)&ir.stream[ir.index], repeat);
   switch (ir.code) {
     case CODE_NEC:
       // address -> address complemented -> command -> command complemented

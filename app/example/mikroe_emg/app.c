@@ -42,16 +42,15 @@
 #if (defined(SLI_SI917))
 #include "sl_adc_instances.h"
 #include "rsi_debug.h"
+
+#define app_printf(...)          DEBUGOUT(__VA_ARGS__)
+
+static uint8_t channel = SL_ADC_CHANNEL_1;
 #else
 #include "em_iadc.h"
 #include "app_log.h"
-#endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-static uint8_t channel = SL_ADC_CHANNEL_1;
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
+#define app_printf(...)          app_log(__VA_ARGS__)
 #endif
 
 #define READING_INTERVAL_MSEC    5

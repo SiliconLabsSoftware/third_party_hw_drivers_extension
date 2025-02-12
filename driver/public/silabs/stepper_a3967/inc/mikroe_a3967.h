@@ -43,6 +43,8 @@
 #include <stdbool.h>
 #include "sl_status.h"
 
+#include "drv_digital_out.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

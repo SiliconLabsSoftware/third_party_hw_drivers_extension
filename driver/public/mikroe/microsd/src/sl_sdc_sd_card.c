@@ -93,7 +93,7 @@ typedef struct {
 
 static volatile DSTATUS sd_card_status = STA_NOINIT; // Disk status
 static BYTE sd_card_type; // Card type flags
-static volatile UINT sd_card_timer_1, sd_card_timer_2; // 1kHz decrement timer
+static volatile UINT sd_card_timer_1, sd_card_timer_2; // 100Hz decrement timer
 
 static sd_card_t sd_card;
 static sl_sleeptimer_timer_handle_t disk_timerproc_timer_handle;
@@ -124,7 +124,7 @@ static bool wait_ready(UINT wt)
 {
   BYTE data;
 
-  sd_card_timer_2 = wt;
+  sd_card_timer_2 = wt / 10;
   do {
     sdc_xchg_spi(&sd_card.spi, 0xff, &data);
     // This loop takes a time. Insert rot_rdq() here for multitask envilonment.
@@ -186,7 +186,7 @@ static bool rcvr_datablock(BYTE *buff, UINT btr)
 {
   BYTE token;
 
-  sd_card_timer_1 = 100;
+  sd_card_timer_1 = 10;
   do { // Wait for data packet in timeout of 100ms
     sdc_xchg_spi(&sd_card.spi, 0xff, &token);
   } while ((token == 0xff) && sd_card_timer_1);
@@ -316,7 +316,7 @@ DSTATUS sd_card_disk_initialize(void)
 {
   BYTE n, cmd, ty, ocr[4], data;
 
-  for (sd_card_timer_1 = 10; sd_card_timer_1;) {  // Wait for 10ms
+  for (sd_card_timer_1 = 1; sd_card_timer_1;) {  // Wait for 10ms
   }
   if (sd_card_status & STA_NODISK) {
     return sd_card_status; // Is card existing in the soket?
@@ -329,7 +329,7 @@ DSTATUS sd_card_disk_initialize(void)
 
   ty = 0;
   if (send_cmd(CMD0, 0) == 1) {       // Put the card SPI mode
-    sd_card_timer_1 = 1000;           // Initialization timeout = 1 sec
+    sd_card_timer_1 = 100;           // Initialization timeout = 1 sec
     if (send_cmd(CMD8, 0x1aa) == 1) { // Is the card SDv2?
       for (n = 0; n < 4; n++) {
         // Get 32 bit return value of R7 resp
@@ -684,9 +684,9 @@ sl_status_t sd_card_spi_init(mikroe_spi_handle_t spi_handle)
   sl_sleeptimer_is_timer_running(&disk_timerproc_timer_handle,
                                  &timer_is_running);
   if (timer_is_running == false) {
-    // Start a periodic timer 1 ms to generate card control timing
+    // Start a periodic timer 10 ms to generate card control timing
     sl_sleeptimer_start_periodic_timer_ms(&disk_timerproc_timer_handle,
-                                          1,
+                                          10,
                                           disk_timerproc_timer_callback,
                                           (void *)NULL,
                                           0,

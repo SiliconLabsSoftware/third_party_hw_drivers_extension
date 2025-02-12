@@ -46,7 +46,6 @@ extern "C" {
 
 #include "sl_status.h"
 #include "environment2.h"
-#include "drv_i2c_master.h"
 
 /*!
  * @addtogroup environment2 Environment 2 Click Driver

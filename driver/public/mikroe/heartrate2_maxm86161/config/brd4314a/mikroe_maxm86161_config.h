@@ -40,8 +40,6 @@
 #ifndef SCL_MAXM86161_CONFIG_H_
 #define SCL_MAXM86161_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -50,19 +48,19 @@ extern "C" {
 
 // <gpio optional=true> MAXM86161_GP
 // $[GPIO_MAXM86161_GP]
-#define MAXM86161_GP_PORT                        gpioPortB
+#define MAXM86161_GP_PORT                        SL_GPIO_PORT_B
 #define MAXM86161_GP_PIN                         0
 // [GPIO_MAXM86161_GP]$
 
 // <gpio optional=true> MAXM86161_EN
 // $[GPIO_MAXM86161_EN]
-#define MAXM86161_EN_PORT                        gpioPortC
+#define MAXM86161_EN_PORT                        SL_GPIO_PORT_C
 #define MAXM86161_EN_PIN                         3
 // [GPIO_MAXM86161_EN]$
 
 // <gpio optional=true> MAXM86161_INT
 // $[GPIO_MAXM86161_INT]
-#define MAXM86161_INT_PORT                       gpioPortB
+#define MAXM86161_INT_PORT                       SL_GPIO_PORT_B
 #define MAXM86161_INT_PIN                        3
 // [GPIO_MAXM86161_INT]$
 

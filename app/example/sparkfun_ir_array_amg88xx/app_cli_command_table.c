@@ -35,10 +35,6 @@
 #include "sl_cli_command.h"
 #include "sl_cli_arguments.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Provide function declarations
 void app_set_tempereture_scale(sl_cli_command_arg_t *arguments);
 void app_get_thermistor_temperature(sl_cli_command_arg_t *arguments);
@@ -52,11 +48,10 @@ void app_sensor_10_sec_standby(sl_cli_command_arg_t *arguments);
 void app_sensor_enable_moving_average(sl_cli_command_arg_t *arguments);
 void app_sensor_disable_moving_average(sl_cli_command_arg_t *arguments);
 
-// Command structs. Names are in the format : cli_cmd_{command group
-//   name}_{command name}
+// Command structs.
+// Names are in the format : cli_cmd_{command group name}_{command name}
 // In order to support hyphen in command and group name, every occurence of it
-//   while
-// building struct names will be replaced by "_hyphen_"
+// while building struct names will be replaced by "_hyphen_"
 static const sl_cli_command_info_t cli_cmd_set_temp_scale = \
   SL_CLI_COMMAND(app_set_tempereture_scale,
                  "Set sensor temperature scale",
@@ -162,7 +157,3 @@ const sl_cli_command_entry_t app_cli_command_table[] = {
   { "temperature", &cli_cmd_temperature_group, false },
   { NULL, NULL, false },
 };
-
-#ifdef __cplusplus
-}
-#endif

@@ -8,11 +8,11 @@ Thunder Click is a compact add-on board that detects the presence and proximity 
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [Thunder Click](https://www.mikroe.com/thunder-click)
+- 1x [Thunder Click](https://www.mikroe.com/thunder-click)
 
 ## Hardware Connection ##
 
@@ -24,15 +24,15 @@ Thunder Click is a compact add-on board that detects the presence and proximity 
 
   ![board](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description              | BRD4338A GPIO | BRD4002 EXP Header | Thunder Click     |
-  | ------------------------ | ------------- | ------------------ | ----------------- |
-  | IRQ                      | GPIO_46       | P24                | IRQ               |
-  | CS                       | GPIO_47       | P26                | CS                |
-  | RTE_SSI_MASTER_SCK_PIN   | GPIO_25       | P25                | SCK               |
-  | RTE_SSI_MASTER_MOSI_PIN  | GPIO_26       | P27                | SDI               |
-  | RTE_SSI_MASTER_MISO_PIN  | GPIO_27       | P29                | SDO               |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | Thunder Click  |
+  | -------------| ------------------- | -------------------- | --------------- |
+  | IRQ                      | GPIO_46 [P24] | GPIO_10        | IRQ             |
+  | CS                       | GPIO_47 [P26] | GPIO_11        | CS              |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25] | GPIO_25        | SCK             |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26 [P27] | GPIO_26        | SDO             |
+  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27 [P29] | GPIO_27        | SDI             |
 
 ## Setup ##
 
@@ -71,7 +71,7 @@ You can either create a project based on an example project or start with an emp
           ![spi config](image/spi_config.png)
         - [Third Party Hardware Drivers] → [Sensors] → [AS3935 - Thunder Click (Mikroe)] → use default configuration
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [Third Party Hardware Drivers] → [Sensors] → [AS3935 - Thunder Click (Mikroe)] → use default config
@@ -82,7 +82,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "Thunder Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "Thunder Click (Mikroe)" component.
 
 ## How It Works ##
 

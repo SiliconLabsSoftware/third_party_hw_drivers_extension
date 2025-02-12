@@ -43,7 +43,6 @@
 
 #include "spidrv.h"
 #include "em_gpio.h"
-
 #include "sl_sleeptimer.h"
 #include "sl_udelay.h"
 

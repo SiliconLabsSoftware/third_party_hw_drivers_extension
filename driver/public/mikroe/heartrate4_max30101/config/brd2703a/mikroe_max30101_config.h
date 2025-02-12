@@ -40,8 +40,6 @@
 #ifndef MIKROE_MAX30101_CONFIG_H_
 #define MIKROE_MAX30101_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -50,7 +48,7 @@ extern "C" {
 
 // <gpio optional=true> MAX30101_INT
 // $[GPIO_MAX30101_INT]
-#define MAX30101_INT_PORT                       gpioPortB
+#define MAX30101_INT_PORT                       SL_GPIO_PORT_B
 #define MAX30101_INT_PIN                        1
 // [GPIO_MAX30101_INT]$
 
@@ -60,4 +58,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_MAX30101_CONFIG_H_ */
+#endif // MIKROE_MAX30101_CONFIG_H_

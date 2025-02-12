@@ -40,8 +40,6 @@
 #ifndef MIKORE_STRETCH_CONFIG_H_
 #define MIKORE_STRETCH_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -50,13 +48,13 @@ extern "C" {
 
 // <gpio optional=true> STRETCH_ANALOG_OUTPUT
 // $[GPIO_STRETCH_ANALOG_OUTPUT]
-#define STRETCH_ANALOG_OUTPUT_PORT                   gpioPortB
+#define STRETCH_ANALOG_OUTPUT_PORT                   SL_GPIO_PORT_B
 #define STRETCH_ANALOG_OUTPUT_PIN                    0
 // [GPIO_STRETCH_ANALOG_OUTPUT]$
 
 // <gpio optional=true> STRETCH_LED
 // $[GPIO_STRETCH_LED]
-#define STRETCH_LED_PORT                             gpioPortB
+#define STRETCH_LED_PORT                             SL_GPIO_PORT_B
 #define STRETCH_LED_PIN                              4
 // [GPIO_STRETCH_LED]$
 
@@ -65,4 +63,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // MIKORE_STRETCH_CONFIG_H_

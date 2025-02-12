@@ -42,15 +42,16 @@
 
 #include "sparkfun_type5_config.h"
 #include "sparkfun_type5.h"
-#include "drv_digital_in.h"
 
 #if (defined(SLI_SI917))
 #include "sl_driver_gpio.h"
-#define GPIO_M4_INTR              0 // M4 Pin interrupt number
+
+#define SIG_PIN_INTR_NO           PIN_INTR_0
+#define NS_PIN_INTR_NO            PIN_INTR_1
 #define AVL_INTR_NO               0 // available interrupt number
-#else
-#include "gpiointerrupt.h"
-#endif
+#else // SLI_SI917
+#include "sl_gpio.h"
+#endif // SLI_SI917
 
 // -----------------------------------------------------------------------------
 //                               Macros
@@ -95,9 +96,15 @@ static const double k_alpha = 53.032;
  *  This function will be executed when there is an interrupt event on SIG_PIN.
  *
  ******************************************************************************/
-static void sparkfun_type5_on_radiation_handler(uint8_t sig_pin)
+#if (defined(SLI_SI917))
+static void sparkfun_type5_on_radiation_handler(uint32_t int_no)
 {
-  (void)sig_pin;
+#else // SLI_SI917
+static void sparkfun_type5_on_radiation_handler(uint8_t int_no, void *ctx)
+{
+  (void)ctx;
+#endif // SLI_SI917
+  (void)int_no;
   radiation_count++;
 }
 
@@ -109,9 +116,15 @@ static void sparkfun_type5_on_radiation_handler(uint8_t sig_pin)
  *  This function will be executed when there is an interrupt event on NS_PIN.
  *
  ******************************************************************************/
-static void sparkfun_type5_on_noise_handler(uint8_t ns_pin)
+#if (defined(SLI_SI917))
+static void sparkfun_type5_on_noise_handler(uint32_t int_no)
 {
-  (void)ns_pin;
+#else // SLI_SI917
+static void sparkfun_type5_on_noise_handler(uint8_t int_no, void *ctx)
+{
+  (void)ctx;
+#endif // SLI_SI917
+  (void)int_no;
   noise_count++;
 }
 
@@ -119,28 +132,25 @@ static void sparkfun_type5_on_noise_handler(uint8_t ns_pin)
 static void IntEnable(void)
 {
 #if (defined(SLI_SI917))
-  sl_gpio_driver_clear_interrupts(PIN_INTR_0);
-  sl_gpio_driver_clear_interrupts(PIN_INTR_1);
-  sl_gpio_driver_enable_interrupts(
-    (PIN_INTR_0 << 16) | SL_GPIO_INTERRUPT_FALL_EDGE);
-  sl_gpio_driver_enable_interrupts(
-    (PIN_INTR_1 << 16) | SL_GPIO_INTERRUPT_FALL_EDGE);
-#else
-  GPIO_IntClear((1 << SPARKFUN_TYPE5_SIG_PIN) | (1 << SPARKFUN_TYPE5_NS_PIN));
-  GPIO_IntEnable((1 << SPARKFUN_TYPE5_SIG_PIN) | (1 << SPARKFUN_TYPE5_NS_PIN));
-#endif
+  sl_gpio_enable_interrupts((SIG_PIN_INTR_NO << 16)
+                            | (NS_PIN_INTR_NO << 16)
+                            | SL_GPIO_INTERRUPT_FALL_EDGE);
+#else // SLI_SI917
+  sl_gpio_enable_interrupts((1 << SPARKFUN_TYPE5_SIG_PIN)
+                            | (1 << SPARKFUN_TYPE5_NS_PIN));
+#endif // SLI_SI917
 }
 
 static void IntDisable(void)
 {
 #if (defined(SLI_SI917))
-  sl_gpio_driver_disable_interrupts(
-    (PIN_INTR_0 << 16) | SL_GPIO_INTERRUPT_FALL_EDGE);
-  sl_gpio_driver_disable_interrupts(
-    (PIN_INTR_1 << 16) | SL_GPIO_INTERRUPT_FALL_EDGE);
-#else
-  GPIO_IntDisable((1 << SPARKFUN_TYPE5_SIG_PIN) | (1 << SPARKFUN_TYPE5_NS_PIN));
-#endif
+  sl_gpio_disable_interrupts((SIG_PIN_INTR_NO << 16)
+                             | (NS_PIN_INTR_NO << 16)
+                             | SL_GPIO_INTERRUPT_FALL_EDGE);
+#else // SLI_SI917
+  sl_gpio_disable_interrupts((1 << SPARKFUN_TYPE5_SIG_PIN)
+                             | (1 << SPARKFUN_TYPE5_NS_PIN));
+#endif // SLI_SI917
 }
 
 // -----------------------------------------------------------------------------
@@ -158,6 +168,7 @@ void sparkfun_type5_init(void)
 
   digital_in_t sig;
   digital_in_t ns;
+  int32_t int_no;
 
   pin_name_t sig_pin = hal_gpio_pin_name(SPARKFUN_TYPE5_SIG_PORT,
                                          SPARKFUN_TYPE5_SIG_PIN);
@@ -168,42 +179,34 @@ void sparkfun_type5_init(void)
   digital_in_init(&ns, ns_pin);
 
 #if (defined(SLI_SI917))
-  sl_gpio_t sig_port_pin = { SPARKFUN_TYPE5_SIG_PIN / 16,
-                             SPARKFUN_TYPE5_SIG_PIN % 16 };
-  sl_gpio_t ns_port_pin = { SPARKFUN_TYPE5_SIG_PIN / 16,
-                            SPARKFUN_TYPE5_NS_PIN % 16 };
-
-  sl_gpio_driver_configure_interrupt(&sig_port_pin,
-                                     PIN_INTR_0,
+  int_no = SIG_PIN_INTR_NO;
+  sl_gpio_driver_configure_interrupt((sl_gpio_t *)&sig.pin,
+                                     int_no,
                                      SL_GPIO_INTERRUPT_FALLING_EDGE,
-                                     (void *)&sparkfun_type5_on_radiation_handler,
+                                     sparkfun_type5_on_radiation_handler,
                                      AVL_INTR_NO);
-  sl_gpio_driver_configure_interrupt(&ns_port_pin,
-                                     PIN_INTR_1,
+
+  int_no = NS_PIN_INTR_NO;
+  sl_gpio_driver_configure_interrupt((sl_gpio_t *)&ns.pin,
+                                     int_no,
                                      SL_GPIO_INTERRUPT_FALLING_EDGE,
-                                     (void *)&sparkfun_type5_on_noise_handler,
+                                     sparkfun_type5_on_noise_handler,
                                      AVL_INTR_NO);
-#else // None Si91x device
-  GPIO_ExtIntConfig(SPARKFUN_TYPE5_SIG_PORT,
-                    SPARKFUN_TYPE5_SIG_PIN,
-                    SPARKFUN_TYPE5_SIG_PIN,
-                    false,
-                    true,
-                    true);
+#else // SLI_SI917
+  int_no = SPARKFUN_TYPE5_SIG_PIN;
+  sl_gpio_configure_external_interrupt((const sl_gpio_t *)&sig.pin,
+                                       &int_no,
+                                       SL_GPIO_INTERRUPT_FALLING_EDGE,
+                                       sparkfun_type5_on_radiation_handler,
+                                       NULL);
 
-  GPIO_ExtIntConfig(SPARKFUN_TYPE5_NS_PORT,
-                    SPARKFUN_TYPE5_NS_PIN,
-                    SPARKFUN_TYPE5_NS_PIN,
-                    false,
-                    true,
-                    true);
-
-  GPIOINT_CallbackRegister(SPARKFUN_TYPE5_SIG_PIN,
-                           sparkfun_type5_on_radiation_handler);
-
-  GPIOINT_CallbackRegister(SPARKFUN_TYPE5_NS_PIN,
-                           sparkfun_type5_on_noise_handler);
-#endif
+  int_no = SPARKFUN_TYPE5_NS_PIN;
+  sl_gpio_configure_external_interrupt((const sl_gpio_t *)&ns.pin,
+                                       &int_no,
+                                       SL_GPIO_INTERRUPT_FALLING_EDGE,
+                                       sparkfun_type5_on_noise_handler,
+                                       NULL);
+#endif // SLI_SI917
 
   initialized = true;
 }

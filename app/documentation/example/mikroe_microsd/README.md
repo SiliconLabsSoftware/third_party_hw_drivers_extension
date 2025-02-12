@@ -12,13 +12,13 @@ The microSD Click communicates with the target microcontroller over SPI interfac
 
 ## Required Hardware ##
 
-- [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [A microSD Click board](https://www.mikroe.com/microsd-click)
+- 1x [microSD Click board](https://www.mikroe.com/microsd-click)
 
-- A microSD card, e.g. [microSD card 32 GB with adapter](https://www.mikroe.com/microsd-32gb)
+- 1x microSD card, e.g. [microSD card 32 GB with adapter](https://www.mikroe.com/microsd-32gb)
 
 ## Connections Required ##
 
@@ -30,15 +30,15 @@ The microSD Click communicates with the target microcontroller over SPI interfac
 
   ![board](image/board.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description  | BRD4338A GPIO | BRD4002 Breakout Pad | microSD Click Board |
-  | -------------| ------------- | -------------------- | ------------------- |
-  | Card Detection           | GPIO_46       | P24                  | CD                  |
-  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                 |
-  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27                  | SDO                 |
-  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27       | P29                  | SDI                 |
-  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28       | P31                  | CS                  |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | microSD Click Board |
+  | -------------| ------------- | ------------------ | ------------------- |
+  | Card Detection           | GPIO_46 [P24] | GPIO_10        | CD                  |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25] | GPIO_25        | SCK                 |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26 [P27] | GPIO_26        | SDO                 |
+  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27 [P29] | GPIO_27        | SDI                 |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28 [P31] | GPIO_28        | CS                  |
 
 ## Setup ##
 
@@ -74,7 +74,7 @@ You can either create a project based on an example project or start with an emp
         - **[Application] → [Utility] → [Log]**
         - **[Application] → [Utility] → [Assert]**
 
-        **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+        **If the Wi-Fi Development Kit is used:**
         - **[Application] → [Utility] → [Assert]**
         - **[Third Party Hardware Drivers] → [Storage] → [microSD - microSD Click (Mikroe)]**
         - **[Third Party Hardware Drivers] → [Storage] → [FatFS - Generic FAT Filesystem]** -> turn on *Enable if the system does not have an RTC or valid timestamp*
@@ -86,7 +86,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "microSD - microSD Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "microSD - microSD Click (Mikroe)" component.
 
 ## How It Works ##
 

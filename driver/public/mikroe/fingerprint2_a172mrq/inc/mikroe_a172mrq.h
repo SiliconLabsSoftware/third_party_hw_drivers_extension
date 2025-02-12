@@ -41,7 +41,7 @@
 #define MIKROE_FINGERPRINT2_H_
 
 #include "sl_status.h"
-#include "drv_uart.h"
+#include "fingerprint2.h"
 
 #ifdef __cplusplus
 extern "C" {

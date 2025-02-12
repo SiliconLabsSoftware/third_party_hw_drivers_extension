@@ -42,7 +42,7 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-// <h>SPARKFUN TYPE5 configuration
+// <h> SPARKFUN TYPE5 configuration
 
 // <o SPARKFUN_TYPE5_PROCESS_PERIOD> Process period [MS]
 // <i> Default: 160

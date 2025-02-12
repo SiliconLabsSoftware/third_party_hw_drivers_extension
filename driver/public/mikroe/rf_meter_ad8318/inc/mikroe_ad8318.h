@@ -41,7 +41,7 @@
 #define MIKROE_AD8318_H_
 
 #include "sl_status.h"
-#include "drv_spi_master.h"
+#include "rfmeter.h"
 
 #ifdef __cplusplus
 extern "C" {

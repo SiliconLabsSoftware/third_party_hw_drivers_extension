@@ -37,10 +37,8 @@
  *
  ******************************************************************************/
 
-#include "sl_status.h"
 #include "mikroe_dps310_spi.h"
 #include "mikroe_dps310_spi_config.h"
-#include "pressure3.h"
 
 /********************************************************************************
  * static variables

@@ -44,19 +44,15 @@
 #if (defined(SLI_SI917))
 #include "rsi_debug.h"
 #include "sl_si91x_gspi.h"
+
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #else
 #include "app_log.h"
 #include "sl_spidrv_instances.h"
-#endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
 #define app_printf(...) app_log(__VA_ARGS__)
-#endif
-
-#if (defined(SLI_SI917))
-static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #endif
 
 static mikroe_spi_handle_t app_spi_instance = NULL;

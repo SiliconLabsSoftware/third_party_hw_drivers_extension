@@ -28,8 +28,6 @@ include:
       - path: hal_target.h
 source:
   - path: peripheral_drivers/mikroe/src/drv_analog_in.c
-    condition: [device_series_1]
-  - path: peripheral_drivers/mikroe/src/drv_analog_in.c
-    condition: [device_series_2]
+    condition: [device_efx]
   - path: peripheral_drivers/mikroe/src/drv_analog_in_si91x.c
     condition: [device_si91x]

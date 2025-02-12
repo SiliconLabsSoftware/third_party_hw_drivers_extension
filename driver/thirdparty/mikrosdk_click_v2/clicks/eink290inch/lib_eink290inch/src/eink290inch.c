@@ -198,7 +198,8 @@ void eink290inch_set_mem_area ( eink290inch_t *ctx, eink290inch_xy_t *xy )
 
 void eink290inch_update_display ( eink290inch_t *ctx )
 {
-    Delay_100ms( );
+    // Silicon Labs fixed: 23/1/2025
+    // Delay_100ms( );
     eink290inch_send_cmd( ctx, EINK290INCH_CMD_DISPLAY_UPDATE_CONTROL_2 );
     eink290inch_send_data( ctx, 0xC7 );
     eink290inch_send_cmd( ctx, EINK290INCH_CMD_MASTER_ACTIVATION );
@@ -308,7 +309,8 @@ static void wait_until_idle ( eink290inch_t *ctx )
     do
     {
         state = digital_in_read( &ctx->bsy );
-        Delay_100ms( );
+        // Silicon Labs fixed: 23/1/2025
+        // Delay_100ms( );
     } 
     while ( state == 1 );
 }

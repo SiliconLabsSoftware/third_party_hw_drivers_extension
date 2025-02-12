@@ -68,7 +68,7 @@ extern "C" {
 // <h> Connection
 // <o VL53L1X_ADDR> I2C Address <0x1..0x7E:0x1><f.h>
 // <i> Default: 0x29
-#define VL53L1X_ADDR                         0x29
+#define VL53L1X_ADDR                   0x29
 // </h>
 
 // The block ends with the following line or at the end of the file:

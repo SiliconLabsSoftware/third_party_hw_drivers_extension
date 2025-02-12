@@ -15,7 +15,7 @@ provides:
   - name: fatfs_sdc_spi_platform
 template_contribution:
   - name: component_catalog
-    value: fatfs_sdc_spi_platform 
+    value: fatfs_sdc_spi_platform
 include:
   - path: public/silabs/fatfs_sdc_spi_platform/inc
     file_list:

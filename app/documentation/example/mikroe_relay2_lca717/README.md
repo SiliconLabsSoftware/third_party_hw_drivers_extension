@@ -8,11 +8,11 @@ Relay 2 click is a dual relay click board™, equipped with two single-pole soli
 
 ## Required Hardware ##
 
-- [A BGM220P Explorer Kit board.](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit?tab=overview) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [A MikroE Relay 2 Click board.](https://www.mikroe.com/relay-2-click)
+- 1x [Relay 2 Click board](https://www.mikroe.com/relay-2-click)
 
 ## Hardware Connection ##
 
@@ -22,12 +22,12 @@ Relay 2 click is a dual relay click board™, equipped with two single-pole soli
 
   ![board](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | MikroE Relay 2 Click board |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | MikroE Relay 2 Click board |
   | -------------| ------------- | ------------------ | ---------------------------- |
-  | Relay 1      | GPIO_46       | P24                | RL1                          |
-  | Relay 2      | GPIO_47       | P26                | RL2                          |
+  | Relay 1      | GPIO_46 [P24]       | GPIO_10      | RL1                          |
+  | Relay 2      | GPIO_47 [P26]       | GPIO_11      | RL2                          |
 
 ## Setup ##
 
@@ -61,14 +61,14 @@ You can either create a project based on an example project or start with an emp
 
         - [Services] → [Timers] → [Sleep Timer]
         - [Third Party Hardware Drivers] → [Miscellaneous] → [LCA717 - Relay 2 Click (Mikroe)] → use default configuration.
-  
+
            ![config](image/configuration.png)
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [Third Party Hardware Drivers] → [Miscellaneous] → [LCA717 - Relay 2 Click (Mikroe)] → use default configuration.
-  
+
            ![config](image/configuration_si91x.png)
 
 4. Build and flash this example to the board.
@@ -77,7 +77,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "LCA717 - Relay 2 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "LCA717 - Relay 2 Click (Mikroe)" component.
 
 ## How It Works ##
 

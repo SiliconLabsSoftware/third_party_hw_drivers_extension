@@ -43,24 +43,20 @@
 #include "sl_adc_instances.h"
 #include "sl_si91x_gspi.h"
 #include "rsi_debug.h"
+
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
+
+static uint8_t channel = SL_ADC_CHANNEL_1;
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #else
 #include "em_iadc.h"
 #include "sl_spidrv_instances.h"
 #include "app_log.h"
+
+#define app_printf(...)              app_log(__VA_ARGS__)
 #endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
-
-#define READING_INTERVAL_MSEC       1000
-
-#if (defined(SLI_SI917))
-static uint8_t channel = SL_ADC_CHANNEL_1;
-static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
-#endif
+#define READING_INTERVAL_MSEC        1000
 
 static mikroe_adc_handle_t app_adc_instance = NULL;
 static mikroe_spi_handle_t app_spi_instance = NULL;

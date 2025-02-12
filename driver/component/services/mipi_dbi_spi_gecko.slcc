@@ -10,8 +10,8 @@ ui_hints:
 root_path: driver
 requires:
   - name: emlib_usart
-    condition: 
-      - device # Enable for gecko device
+    condition:
+      - device_efx # Enable for gecko device
 provides:
   - name: mipi_dbi_spi_gecko
     allow_multiple: false

@@ -63,9 +63,6 @@ void i2c_master_configure_default(i2c_master_config_t *config)
 
 err_t i2c_master_open(i2c_master_t *obj, i2c_master_config_t *config)
 {
-  sl_i2c_status_t i2c_status;
-  sl_i2c_instance_t i2c_handle = *(sl_i2c_instance_t *)obj->handle;
-
   i2c_master_config_t *p_config = &obj->config;
   memcpy(p_config, config, sizeof(i2c_master_config_t));
 
@@ -73,24 +70,16 @@ err_t i2c_master_open(i2c_master_t *obj, i2c_master_config_t *config)
     return I2C_MASTER_ERROR;
   }
 
-  if (i2c_master_set_configuration(obj) != I2C_MASTER_SUCCESS) {
-    return I2C_MASTER_ERROR;
-  }
-  // Configuring RX and TX FIFO thresholds
-  i2c_status
-    = sl_i2c_driver_configure_fifo_threshold(i2c_handle,
-                                             TX_THRESHOLD,
-                                             RX_THRESHOLD);
-  if (i2c_status != SL_I2C_SUCCESS) {
-    return I2C_MASTER_ERROR;
-  }
-
-  return I2C_MASTER_SUCCESS;
+  return i2c_master_set_configuration(obj);
 }
 
 err_t i2c_master_set_speed(i2c_master_t *obj, uint32_t speed)
 {
   if (_acquire(obj, false) == ACQUIRE_FAIL) {
+    return I2C_MASTER_ERROR;
+  }
+
+  if (speed > I2C_MASTER_SPEED_FAST) {
     return I2C_MASTER_ERROR;
   }
 
@@ -182,6 +171,11 @@ err_t i2c_master_write_then_read(i2c_master_t *obj,
 {
   sl_i2c_status_t i2c_status;
   sl_i2c_instance_t i2c_handle = *(sl_i2c_instance_t *)obj->handle;
+  sl_i2c_transfer_config_t i2c_transfer_config;
+  i2c_transfer_config.rx_buffer = read_data_buf;
+  i2c_transfer_config.tx_buffer = write_data_buf;
+  i2c_transfer_config.rx_len = len_read_data;
+  i2c_transfer_config.tx_len = len_write_data;
 
   if (_acquire(obj, false) == ACQUIRE_FAIL) {
     return I2C_MASTER_ERROR;
@@ -192,27 +186,10 @@ err_t i2c_master_write_then_read(i2c_master_t *obj,
   }
 
   // Enabling combined format transfer, by enabling repeated start
-  sl_i2c_driver_enable_repeated_start(i2c_handle, TRUE);
-  i2c_status
-    = sl_i2c_driver_send_data_blocking(i2c_handle,
-                                       obj->config.addr,
-                                       write_data_buf,
-                                       len_write_data);
-  if (i2c_status != SL_I2C_SUCCESS) {
-    return I2C_MASTER_ERROR;
-  }
-
-  // Adding delay for synchronization before leader sends read request
-  for (uint32_t x = 0; x < 2500; x++) {
-    __NOP();
-  }
-  // Disabling repeated start before last cycle of transfer
-  sl_i2c_driver_enable_repeated_start(i2c_handle, FALSE);
-  i2c_status
-    = sl_i2c_driver_receive_data_blocking(i2c_handle,
-                                          obj->config.addr,
-                                          read_data_buf,
-                                          len_read_data);
+  sl_i2c_driver_enable_repeated_start(i2c_handle, true);
+  i2c_status = sl_i2c_driver_transfer_data(i2c_handle,
+                                           &i2c_transfer_config,
+                                           obj->config.addr);
   if (i2c_status != SL_I2C_SUCCESS) {
     return I2C_MASTER_ERROR;
   }
@@ -262,10 +239,19 @@ static err_t i2c_master_set_configuration(i2c_master_t *obj)
 
   /**
    * Re-Initializing I2C instance
-   * (update i2c config-strucure name as per instance used)
+   * (update i2c config-structure name as per instance used)
    */
   i2c_status = sl_i2c_driver_init(i2c_handle,
                                   &i2c_config);
+  if (i2c_status != SL_I2C_SUCCESS) {
+    return I2C_MASTER_ERROR;
+  }
+
+  // Configuring RX and TX FIFO thresholds
+  i2c_status
+    = sl_i2c_driver_configure_fifo_threshold(i2c_handle,
+                                             TX_THRESHOLD,
+                                             RX_THRESHOLD);
   if (i2c_status != SL_I2C_SUCCESS) {
     return I2C_MASTER_ERROR;
   }

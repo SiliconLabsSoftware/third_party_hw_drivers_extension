@@ -34,8 +34,6 @@
  ******************************************************************************/
 
 #include "mikroe_mq131.h"
-#include "drv_digital_in.h"
-#include "drv_digital_out.h"
 
 #ifdef SLI_SI917
 #include "RTE_Device_917.h"

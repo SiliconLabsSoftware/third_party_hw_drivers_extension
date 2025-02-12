@@ -48,10 +48,10 @@ extern "C" {
 
 // <h> MIKROE PL_N823_01 I2C Configuration
 
-//  <e>MIKROE PL_N823_01 I2C UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> MIKROE PL_N823_01 I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define MIKROE_PL_N823_01_I2C_UC                  0
 
 // <o MIKROE_PL_N823_01_I2C_SPEED_MODE> Speed mode
@@ -68,4 +68,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // MIKORE_PIR_PL_N823_01_CONFIG_H_

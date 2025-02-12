@@ -37,11 +37,12 @@
 
 #if (defined(SLI_SI917))
 #include "sl_driver_gpio.h"
-#define GPIO_M4_INTR              7 // M4 Pin interrupt number
+
+#define PIN_INTR_NO               PIN_INTR_0
 #define AVL_INTR_NO               0 // available interrupt number
-#else
-#include "gpiointerrupt.h"
-#endif
+#else // SLI_SI917
+#include "sl_gpio.h"
+#endif // SLI_SI917
 
 typedef struct
 {
@@ -51,6 +52,22 @@ typedef struct
 }qwiic_keypad_t;
 
 static qwiic_keypad_t qwiic_keypad;
+
+#if defined(SPARKFUN_KEYPAD_GPIO_INT_PORT) \
+  && defined(SPARKFUN_KEYPAD_GPIO_INT_PIN)
+#if (defined(SLI_SI917))
+static void qwiic_keypad_cb(uint32_t int_no)
+{
+#else // SLI_SI917
+static void qwiic_keypad_cb(uint8_t int_no, void *ctx)
+{
+  (void)ctx;
+#endif // SLI_SI917
+  (void)int_no;
+  qwiic_keypad.user_callback();
+}
+
+#endif // SPARKFUN_KEYPAD_GPIO_INT_PORT && SPARKFUN_KEYPAD_GPIO_INT_PIN
 
 /***************************************************************************//**
  *  Initialize the keypad.
@@ -76,7 +93,7 @@ sl_status_t sparkfun_keypad_init(mikroe_i2c_handle_t i2c_handle,
 
 #if (SPARKFUN_KEYPAD_I2C_UC == 1)
   i2c_cfg.speed = SPARKFUN_KEYPAD_I2C_SPEED_MODE;
-#endif
+#endif // SPARKFUN_KEYPAD_I2C_UC
 
   if (i2c_master_open(&qwiic_keypad.i2c, &i2c_cfg) == I2C_MASTER_ERROR) {
     return SL_STATUS_INITIALIZATION;
@@ -88,30 +105,32 @@ sl_status_t sparkfun_keypad_init(mikroe_i2c_handle_t i2c_handle,
   if (NULL != user_callback) {
     qwiic_keypad.user_callback = user_callback;
 
-#ifdef SPARKFUN_KEYPAD_GPIO_INT_PIN
+#if defined(SPARKFUN_KEYPAD_GPIO_INT_PORT) \
+    && defined(SPARKFUN_KEYPAD_GPIO_INT_PIN)
     pin_name_t int_pin_1 = hal_gpio_pin_name(SPARKFUN_KEYPAD_GPIO_INT_PORT,
                                              SPARKFUN_KEYPAD_GPIO_INT_PIN);
     digital_in_init(&qwiic_keypad.interrupt_pin, int_pin_1);
 
+    int32_t int_no;
 #if (defined(SLI_SI917))
-    sl_gpio_t gpio_port_pin = { SPARKFUN_KEYPAD_GPIO_INT_PIN / 16,
-                                SPARKFUN_KEYPAD_GPIO_INT_PIN % 16 };
-    sl_gpio_driver_configure_interrupt(&gpio_port_pin,
-                                       GPIO_M4_INTR,
-                                       SL_GPIO_INTERRUPT_FALLING_EDGE,
-                                       (void *)qwiic_keypad.user_callback,
-                                       AVL_INTR_NO);
-#else // None Si91x device
-    GPIOINT_CallbackRegister(SPARKFUN_KEYPAD_GPIO_INT_PIN,
-                             qwiic_keypad.user_callback);
-    GPIO_ExtIntConfig(SPARKFUN_KEYPAD_GPIO_INT_PORT,
-                      SPARKFUN_KEYPAD_GPIO_INT_PIN,
-                      SPARKFUN_KEYPAD_GPIO_INT_PIN,
-                      false,
-                      true,
-                      true);
-#endif
-#endif
+
+    int_no = PIN_INTR_NO;
+    sl_gpio_driver_configure_interrupt(
+      (sl_gpio_t *)&qwiic_keypad.interrupt_pin.pin,
+      int_no,
+      SL_GPIO_INTERRUPT_FALLING_EDGE,
+      qwiic_keypad_cb,
+      AVL_INTR_NO);
+#else // SLI_SI917
+    int_no = SPARKFUN_KEYPAD_GPIO_INT_PIN;
+    sl_gpio_configure_external_interrupt(
+      (const sl_gpio_t *)&qwiic_keypad.interrupt_pin.pin,
+      &int_no,
+      SL_GPIO_INTERRUPT_FALLING_EDGE,
+      qwiic_keypad_cb,
+      NULL);
+#endif // SLI_SI917
+#endif // SPARKFUN_KEYPAD_GPIO_INT_PORT && SPARKFUN_KEYPAD_GPIO_INT_PIN
   }
 
   if (!sparkfun_keypad_present(address)) {

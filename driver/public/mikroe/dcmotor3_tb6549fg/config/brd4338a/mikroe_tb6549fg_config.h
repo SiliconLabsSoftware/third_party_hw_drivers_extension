@@ -62,4 +62,4 @@
 
 // <<< sl:end pin_tool >>>
 
-#endif /* MIKROE_TB6549FG_CONFIG_H_ */
+#endif // MIKROE_TB6549FG_CONFIG_H_

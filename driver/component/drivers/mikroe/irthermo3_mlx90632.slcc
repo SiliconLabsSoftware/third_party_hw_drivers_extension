@@ -15,8 +15,11 @@ requires:
 template_contribution:
   - name: component_catalog
     value: mikroe_irthermo3
+provides:
+  - name: mikroe_irthermo3
 config_file:
   - path: public/mikroe/irthermo3_mlx90632/config/mikroe_mlx90632_config.h
+    file_id: driver_config_irthermo3
 include:
   - path: inc
     file_list:

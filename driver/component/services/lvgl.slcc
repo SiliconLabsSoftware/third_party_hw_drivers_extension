@@ -7,507 +7,509 @@ category: Services
 quality: evaluation
 root_path: driver
 requires:
-- name: lvgl_display
+  - name: lvgl_display
+template_contribution:
+  - name: component_catalog
+    value: services_lvgl
 provides:
-- name: services_lvgl
-  allow_multiple: false
+  - name: services_lvgl
 config_file:
-- path: public/silabs/services_lvgl/config/lv_conf.h
-  file_id: lvgl_config
+  - path: public/silabs/services_lvgl/config/lv_conf.h
+    file_id: lvgl_config
 include:
-- path: public/silabs/services_lvgl/inc
-  file_list:
-    - path: lv_port_disp.h
-    - path: lv_port_indev.h
-- path: thirdparty/lvgl
-  file_list:
-    - path: lvgl.h
-- path: thirdparty/lvgl/src
-  file_list:
-    - path: lv_api_map.h
-    - path: lv_conf_internal.h
-    - path: lv_conf_kconfig.h
-    - path: lvgl.h
-- path: thirdparty/lvgl/src/core
-  file_list:
-    - path: lv_disp.h
-    - path: lv_event.h
-    - path: lv_group.h
-    - path: lv_indev_scroll.h
-    - path: lv_indev.h
-    - path: lv_obj_class.h
-    - path: lv_obj_draw.h
-    - path: lv_obj_pos.h
-    - path: lv_obj_scroll.h
-    - path: lv_obj_style_gen.h
-    - path: lv_obj_style.h
-    - path: lv_obj_tree.h
-    - path: lv_obj.h
-    - path: lv_refr.h
-    - path: lv_theme.h
+  - path: public/silabs/services_lvgl/inc
+    file_list:
+      - path: lv_port_disp.h
+      - path: lv_port_indev.h
+  - path: thirdparty/lvgl
+    file_list:
+      - path: lvgl.h
+  - path: thirdparty/lvgl/src
+    file_list:
+      - path: lv_api_map.h
+      - path: lv_conf_internal.h
+      - path: lv_conf_kconfig.h
+      - path: lvgl.h
+  - path: thirdparty/lvgl/src/core
+    file_list:
+      - path: lv_disp.h
+      - path: lv_event.h
+      - path: lv_group.h
+      - path: lv_indev_scroll.h
+      - path: lv_indev.h
+      - path: lv_obj_class.h
+      - path: lv_obj_draw.h
+      - path: lv_obj_pos.h
+      - path: lv_obj_scroll.h
+      - path: lv_obj_style_gen.h
+      - path: lv_obj_style.h
+      - path: lv_obj_tree.h
+      - path: lv_obj.h
+      - path: lv_refr.h
+      - path: lv_theme.h
 
-- path: thirdparty/lvgl/src/draw
-  file_list:
-    - path: lv_draw.h
-    - path: lv_draw_arc.h
-    - path: lv_draw_img.h
-    - path: lv_draw_label.h
-    - path: lv_draw_layer.h
-    - path: lv_draw_line.h
-    - path: lv_draw_mask.h
-    - path: lv_draw_rect.h
-    - path: lv_draw_transform.h
-    - path: lv_draw_triangle.h
-    - path: lv_img_buf.h
-    - path: lv_img_cache.h
-    - path: lv_img_decoder.h
+  - path: thirdparty/lvgl/src/draw
+    file_list:
+      - path: lv_draw.h
+      - path: lv_draw_arc.h
+      - path: lv_draw_img.h
+      - path: lv_draw_label.h
+      - path: lv_draw_layer.h
+      - path: lv_draw_line.h
+      - path: lv_draw_mask.h
+      - path: lv_draw_rect.h
+      - path: lv_draw_transform.h
+      - path: lv_draw_triangle.h
+      - path: lv_img_buf.h
+      - path: lv_img_cache.h
+      - path: lv_img_decoder.h
 
-- path: thirdparty/lvgl/src/draw/arm2d
-  file_list:
-    - path: lv_gpu_arm2d.h
+  - path: thirdparty/lvgl/src/draw/arm2d
+    file_list:
+      - path: lv_gpu_arm2d.h
 
-- path: thirdparty/lvgl/src/draw/nxp/pxp
-  file_list:
-    - path: lv_draw_pxp_blend.h
-    - path: lv_draw_pxp.h
-    - path: lv_gpu_nxp_pxp_osa.h
-    - path: lv_gpu_nxp_pxp.h
+  - path: thirdparty/lvgl/src/draw/nxp/pxp
+    file_list:
+      - path: lv_draw_pxp_blend.h
+      - path: lv_draw_pxp.h
+      - path: lv_gpu_nxp_pxp_osa.h
+      - path: lv_gpu_nxp_pxp.h
 
-- path: thirdparty/lvgl/src/draw/nxp/vglite
-  file_list:
-    - path: lv_draw_vglite_arc.h
-    - path: lv_draw_vglite_blend.h
-    - path: lv_draw_vglite_line.h
-    - path: lv_draw_vglite_rect.h
-    - path: lv_draw_vglite.h
-    - path: lv_vglite_buf.h
-    - path: lv_vglite_utils.h
+  - path: thirdparty/lvgl/src/draw/nxp/vglite
+    file_list:
+      - path: lv_draw_vglite_arc.h
+      - path: lv_draw_vglite_blend.h
+      - path: lv_draw_vglite_line.h
+      - path: lv_draw_vglite_rect.h
+      - path: lv_draw_vglite.h
+      - path: lv_vglite_buf.h
+      - path: lv_vglite_utils.h
 
-- path: thirdparty/lvgl/src/draw/renesas
-  file_list:
-    - path: lv_gpu_d2_ra6m3.h
+  - path: thirdparty/lvgl/src/draw/renesas
+    file_list:
+      - path: lv_gpu_d2_ra6m3.h
 
-- path: thirdparty/lvgl/src/draw/stm32_dma2d
-  file_list:
-    - path: lv_gpu_stm32_dma2d.h
+  - path: thirdparty/lvgl/src/draw/stm32_dma2d
+    file_list:
+      - path: lv_gpu_stm32_dma2d.h
 
-- path: thirdparty/lvgl/src/draw/swm341_dma2d
-  file_list:
-    - path: lv_gpu_swm341_dma2d.h
+  - path: thirdparty/lvgl/src/draw/swm341_dma2d
+    file_list:
+      - path: lv_gpu_swm341_dma2d.h
 
-- path: thirdparty/lvgl/src/draw/sdl
-  file_list:
-    - path: lv_draw_sdl_composite.h
-    - path: lv_draw_sdl_img.h
-    - path: lv_draw_sdl_layer.h
-    - path: lv_draw_sdl_mask.h
-    - path: lv_draw_sdl_priv.h
-    - path: lv_draw_sdl_rect.h
-    - path: lv_draw_sdl_stack_blur.h
-    - path: lv_draw_sdl_texture_cache.h
-    - path: lv_draw_sdl_utils.h
-    - path: lv_draw_sdl.h
+  - path: thirdparty/lvgl/src/draw/sdl
+    file_list:
+      - path: lv_draw_sdl_composite.h
+      - path: lv_draw_sdl_img.h
+      - path: lv_draw_sdl_layer.h
+      - path: lv_draw_sdl_mask.h
+      - path: lv_draw_sdl_priv.h
+      - path: lv_draw_sdl_rect.h
+      - path: lv_draw_sdl_stack_blur.h
+      - path: lv_draw_sdl_texture_cache.h
+      - path: lv_draw_sdl_utils.h
+      - path: lv_draw_sdl.h
 
-- path: thirdparty/lvgl/src/draw/sw
-  file_list:
-    - path: lv_draw_sw.h
-    - path: lv_draw_sw_blend.h
-    - path: lv_draw_sw_dither.h
-    - path: lv_draw_sw_gradient.h
+  - path: thirdparty/lvgl/src/draw/sw
+    file_list:
+      - path: lv_draw_sw.h
+      - path: lv_draw_sw_blend.h
+      - path: lv_draw_sw_dither.h
+      - path: lv_draw_sw_gradient.h
 
-- path: thirdparty/lvgl/src/extra
-  file_list:
-    - path: lv_extra.h
-- path: thirdparty/lvgl/src/extra/layouts
-  file_list:
-    - path: lv_layouts.h
-- path: thirdparty/lvgl/src/extra/layouts/flex
-  file_list:
-    - path: lv_flex.h
-- path: thirdparty/lvgl/src/extra/layouts/grid
-  file_list:
-    - path: lv_grid.h
-- path: thirdparty/lvgl/src/extra/libs
-  file_list:
-    - path: lv_libs.h
-- path: thirdparty/lvgl/src/extra/libs/bmp
-  file_list:
-    - path: lv_bmp.h
-- path: thirdparty/lvgl/src/extra/libs/ffmpeg
-  file_list:
-    - path: lv_ffmpeg.h
-- path: thirdparty/lvgl/src/extra/libs/freetype
-  file_list:
-    - path: lv_freetype.h
-- path: thirdparty/lvgl/src/extra/libs/fsdrv
-  file_list:
-    - path: lv_fsdrv.h
-- path: thirdparty/lvgl/src/extra/libs/gif/
-  file_list:
-    - path: gifdec.h
-    - path: lv_gif.h
-- path: thirdparty/lvgl/src/extra/libs/png
-  file_list:
-    - path: lodepng.h
-    - path: lv_png.h
-- path: thirdparty/lvgl/src/extra/libs/qrcode
-  file_list:
-    - path: lv_qrcode.h
-    - path: qrcodegen.h
-- path: thirdparty/lvgl/src/extra/libs/rlottie
-  file_list:
-    - path: lv_rlottie.h
-- path: thirdparty/lvgl/src/extra/libs/sjpg
-  file_list:
-    - path: lv_sjpg.h
-    - path: tjpgd.h
-    - path: tjpgdcnf.h
+  - path: thirdparty/lvgl/src/extra
+    file_list:
+      - path: lv_extra.h
+  - path: thirdparty/lvgl/src/extra/layouts
+    file_list:
+      - path: lv_layouts.h
+  - path: thirdparty/lvgl/src/extra/layouts/flex
+    file_list:
+      - path: lv_flex.h
+  - path: thirdparty/lvgl/src/extra/layouts/grid
+    file_list:
+      - path: lv_grid.h
+  - path: thirdparty/lvgl/src/extra/libs
+    file_list:
+      - path: lv_libs.h
+  - path: thirdparty/lvgl/src/extra/libs/bmp
+    file_list:
+      - path: lv_bmp.h
+  - path: thirdparty/lvgl/src/extra/libs/ffmpeg
+    file_list:
+      - path: lv_ffmpeg.h
+  - path: thirdparty/lvgl/src/extra/libs/freetype
+    file_list:
+      - path: lv_freetype.h
+  - path: thirdparty/lvgl/src/extra/libs/fsdrv
+    file_list:
+      - path: lv_fsdrv.h
+  - path: thirdparty/lvgl/src/extra/libs/gif/
+    file_list:
+      - path: gifdec.h
+      - path: lv_gif.h
+  - path: thirdparty/lvgl/src/extra/libs/png
+    file_list:
+      - path: lodepng.h
+      - path: lv_png.h
+  - path: thirdparty/lvgl/src/extra/libs/qrcode
+    file_list:
+      - path: lv_qrcode.h
+      - path: qrcodegen.h
+  - path: thirdparty/lvgl/src/extra/libs/rlottie
+    file_list:
+      - path: lv_rlottie.h
+  - path: thirdparty/lvgl/src/extra/libs/sjpg
+    file_list:
+      - path: lv_sjpg.h
+      - path: tjpgd.h
+      - path: tjpgdcnf.h
 
-- path: thirdparty/lvgl/src/extra/others
-  file_list: 
-    - path: lv_others.h
-- path: thirdparty/lvgl/src/extra/others/fragment
-  file_list: 
-    - path: lv_fragment.h
-- path: thirdparty/lvgl/src/extra/others/gridnav
-  file_list: 
-    - path: lv_gridnav.h
-- path: thirdparty/lvgl/src/extra/others/ime
-  file_list: 
-    - path: lv_ime_pinyin.h
-- path: thirdparty/lvgl/src/extra/others/imgfont
-  file_list: 
-    - path: lv_imgfont.h
-- path: thirdparty/lvgl/src/extra/others/monkey
-  file_list: 
-    - path: lv_monkey.h
-- path: thirdparty/lvgl/src/extra/others/msg
-  file_list: 
-    - path: lv_msg.h
-- path: thirdparty/lvgl/src/extra/others/snapshot
-  file_list: 
-    - path: lv_snapshot.h
+  - path: thirdparty/lvgl/src/extra/others
+    file_list:
+      - path: lv_others.h
+  - path: thirdparty/lvgl/src/extra/others/fragment
+    file_list:
+      - path: lv_fragment.h
+  - path: thirdparty/lvgl/src/extra/others/gridnav
+    file_list:
+      - path: lv_gridnav.h
+  - path: thirdparty/lvgl/src/extra/others/ime
+    file_list:
+      - path: lv_ime_pinyin.h
+  - path: thirdparty/lvgl/src/extra/others/imgfont
+    file_list:
+      - path: lv_imgfont.h
+  - path: thirdparty/lvgl/src/extra/others/monkey
+    file_list:
+      - path: lv_monkey.h
+  - path: thirdparty/lvgl/src/extra/others/msg
+    file_list:
+      - path: lv_msg.h
+  - path: thirdparty/lvgl/src/extra/others/snapshot
+    file_list:
+      - path: lv_snapshot.h
 
-- path: thirdparty/lvgl/src/extra/themes
-  file_list: 
-    - path: lv_themes.h
-- path: thirdparty/lvgl/src/extra/themes/basic
-  file_list: 
-    - path: lv_theme_basic.h
-- path: thirdparty/lvgl/src/extra/themes/default
-  file_list: 
-    - path: lv_theme_default.h
-- path: thirdparty/lvgl/src/extra/themes/mono
-  file_list: 
-    - path: lv_theme_mono.h
+  - path: thirdparty/lvgl/src/extra/themes
+    file_list:
+      - path: lv_themes.h
+  - path: thirdparty/lvgl/src/extra/themes/basic
+    file_list:
+      - path: lv_theme_basic.h
+  - path: thirdparty/lvgl/src/extra/themes/default
+    file_list:
+      - path: lv_theme_default.h
+  - path: thirdparty/lvgl/src/extra/themes/mono
+    file_list:
+      - path: lv_theme_mono.h
 
-- path: thirdparty/lvgl/src/extra/widgets
-  file_list: 
-    - path: lv_widgets.h
-- path: thirdparty/lvgl/src/extra/widgets/animimg
-  file_list: 
-    - path: lv_animimg.h
-- path: thirdparty/lvgl/src/extra/widgets/calendar
-  file_list: 
-    - path: lv_calendar.h
-    - path: lv_calendar_header_arrow.h
-    - path: lv_calendar_header_dropdown.h
-- path: thirdparty/lvgl/src/extra/widgets/chart
-  file_list: 
-    - path: lv_chart.h
-- path: thirdparty/lvgl/src/extra/widgets/colorwheel
-  file_list: 
-    - path: lv_colorwheel.h
-- path: thirdparty/lvgl/src/extra/widgets/imgbtn
-  file_list: 
-    - path: lv_imgbtn.h
-- path: thirdparty/lvgl/src/extra/widgets/keyboard
-  file_list: 
-    - path: lv_keyboard.h
-- path: thirdparty/lvgl/src/extra/widgets/led
-  file_list: 
-    - path: lv_led.h
-- path: thirdparty/lvgl/src/extra/widgets/list
-  file_list: 
-    - path: lv_list.h
-- path: thirdparty/lvgl/src/extra/widgets/menu
-  file_list: 
-    - path: lv_menu.h
-- path: thirdparty/lvgl/src/extra/widgets/meter
-  file_list: 
-    - path: lv_meter.h
-- path: thirdparty/lvgl/src/extra/widgets/msgbox
-  file_list: 
-    - path: lv_msgbox.h
-- path: thirdparty/lvgl/src/extra/widgets/span
-  file_list: 
-    - path: lv_span.h
-- path: thirdparty/lvgl/src/extra/widgets/spinbox
-  file_list: 
-    - path: lv_spinbox.h
-- path: thirdparty/lvgl/src/extra/widgets/spinner
-  file_list: 
-    - path: lv_spinner.h
-- path: thirdparty/lvgl/src/extra/widgets/tabview
-  file_list: 
-    - path: lv_tabview.h
-- path: thirdparty/lvgl/src/extra/widgets/tileview
-  file_list: 
-    - path: lv_tileview.h
-- path: thirdparty/lvgl/src/extra/widgets/win
-  file_list: 
-    - path: lv_win.h
+  - path: thirdparty/lvgl/src/extra/widgets
+    file_list:
+      - path: lv_widgets.h
+  - path: thirdparty/lvgl/src/extra/widgets/animimg
+    file_list:
+      - path: lv_animimg.h
+  - path: thirdparty/lvgl/src/extra/widgets/calendar
+    file_list:
+      - path: lv_calendar.h
+      - path: lv_calendar_header_arrow.h
+      - path: lv_calendar_header_dropdown.h
+  - path: thirdparty/lvgl/src/extra/widgets/chart
+    file_list:
+      - path: lv_chart.h
+  - path: thirdparty/lvgl/src/extra/widgets/colorwheel
+    file_list:
+      - path: lv_colorwheel.h
+  - path: thirdparty/lvgl/src/extra/widgets/imgbtn
+    file_list:
+      - path: lv_imgbtn.h
+  - path: thirdparty/lvgl/src/extra/widgets/keyboard
+    file_list:
+      - path: lv_keyboard.h
+  - path: thirdparty/lvgl/src/extra/widgets/led
+    file_list:
+      - path: lv_led.h
+  - path: thirdparty/lvgl/src/extra/widgets/list
+    file_list:
+      - path: lv_list.h
+  - path: thirdparty/lvgl/src/extra/widgets/menu
+    file_list:
+      - path: lv_menu.h
+  - path: thirdparty/lvgl/src/extra/widgets/meter
+    file_list:
+      - path: lv_meter.h
+  - path: thirdparty/lvgl/src/extra/widgets/msgbox
+    file_list:
+      - path: lv_msgbox.h
+  - path: thirdparty/lvgl/src/extra/widgets/span
+    file_list:
+      - path: lv_span.h
+  - path: thirdparty/lvgl/src/extra/widgets/spinbox
+    file_list:
+      - path: lv_spinbox.h
+  - path: thirdparty/lvgl/src/extra/widgets/spinner
+    file_list:
+      - path: lv_spinner.h
+  - path: thirdparty/lvgl/src/extra/widgets/tabview
+    file_list:
+      - path: lv_tabview.h
+  - path: thirdparty/lvgl/src/extra/widgets/tileview
+    file_list:
+      - path: lv_tileview.h
+  - path: thirdparty/lvgl/src/extra/widgets/win
+    file_list:
+      - path: lv_win.h
 
-- path: thirdparty/lvgl/src/font
-  file_list: 
-    - path: lv_font.h
-    - path: lv_font_fmt_txt.h
-    - path: lv_font_loader.h
-    - path: lv_symbol_def.h
+  - path: thirdparty/lvgl/src/font
+    file_list:
+      - path: lv_font.h
+      - path: lv_font_fmt_txt.h
+      - path: lv_font_loader.h
+      - path: lv_symbol_def.h
 
-- path: thirdparty/lvgl/src/hal
-  file_list: 
-    - path: lv_hal.h
-    - path: lv_hal_disp.h
-    - path: lv_hal_indev.h
-    - path: lv_hal_tick.h
+  - path: thirdparty/lvgl/src/hal
+    file_list:
+      - path: lv_hal.h
+      - path: lv_hal_disp.h
+      - path: lv_hal_indev.h
+      - path: lv_hal_tick.h
 
-- path: thirdparty/lvgl/src/misc
-  file_list: 
-    - path: lv_anim.h
-    - path: lv_anim_timeline.h
-    - path: lv_area.h
-    - path: lv_assert.h
-    - path: lv_async.h
-    - path: lv_bidi.h
-    - path: lv_color.h
-    - path: lv_fs.h
-    - path: lv_gc.h
-    - path: lv_ll.h
-    - path: lv_log.h
-    - path: lv_lru.h
-    - path: lv_math.h
-    - path: lv_mem.h
-    - path: lv_printf.h
-    - path: lv_style.h
-    - path: lv_style_gen.h
-    - path: lv_templ.h
-    - path: lv_timer.h
-    - path: lv_tlsf.h
-    - path: lv_txt.h
-    - path: lv_txt_ap.h
-    - path: lv_types.h
-    - path: lv_utils.h
+  - path: thirdparty/lvgl/src/misc
+    file_list:
+      - path: lv_anim.h
+      - path: lv_anim_timeline.h
+      - path: lv_area.h
+      - path: lv_assert.h
+      - path: lv_async.h
+      - path: lv_bidi.h
+      - path: lv_color.h
+      - path: lv_fs.h
+      - path: lv_gc.h
+      - path: lv_ll.h
+      - path: lv_log.h
+      - path: lv_lru.h
+      - path: lv_math.h
+      - path: lv_mem.h
+      - path: lv_printf.h
+      - path: lv_style.h
+      - path: lv_style_gen.h
+      - path: lv_templ.h
+      - path: lv_timer.h
+      - path: lv_tlsf.h
+      - path: lv_txt.h
+      - path: lv_txt_ap.h
+      - path: lv_types.h
+      - path: lv_utils.h
 
-- path: thirdparty/lvgl/src/widgets
-  file_list: 
-    - path: lv_arc.h
-    - path: lv_bar.h
-    - path: lv_btn.h
-    - path: lv_btnmatrix.h
-    - path: lv_canvas.h
-    - path: lv_checkbox.h
-    - path: lv_dropdown.h
-    - path: lv_img.h
-    - path: lv_label.h
-    - path: lv_line.h
-    - path: lv_objx_templ.h
-    - path: lv_roller.h
-    - path: lv_slider.h
-    - path: lv_switch.h
-    - path: lv_table.h
-    - path: lv_textarea.h
+  - path: thirdparty/lvgl/src/widgets
+    file_list:
+      - path: lv_arc.h
+      - path: lv_bar.h
+      - path: lv_btn.h
+      - path: lv_btnmatrix.h
+      - path: lv_canvas.h
+      - path: lv_checkbox.h
+      - path: lv_dropdown.h
+      - path: lv_img.h
+      - path: lv_label.h
+      - path: lv_line.h
+      - path: lv_objx_templ.h
+      - path: lv_roller.h
+      - path: lv_slider.h
+      - path: lv_switch.h
+      - path: lv_table.h
+      - path: lv_textarea.h
 
 source:
-- path: public/silabs/services_lvgl/src/lv_port_disp.c
-- path: public/silabs/services_lvgl/src/lv_port_indev.c
-- path: thirdparty/lvgl/src/core/lv_disp.c
-- path: thirdparty/lvgl/src/core/lv_event.c
-- path: thirdparty/lvgl/src/core/lv_group.c
-- path: thirdparty/lvgl/src/core/lv_indev.c
-- path: thirdparty/lvgl/src/core/lv_indev_scroll.c
-- path: thirdparty/lvgl/src/core/lv_obj.c
-- path: thirdparty/lvgl/src/core/lv_obj_class.c
-- path: thirdparty/lvgl/src/core/lv_obj_draw.c
-- path: thirdparty/lvgl/src/core/lv_obj_pos.c
-- path: thirdparty/lvgl/src/core/lv_obj_scroll.c
-- path: thirdparty/lvgl/src/core/lv_obj_style.c
-- path: thirdparty/lvgl/src/core/lv_obj_style_gen.c
-- path: thirdparty/lvgl/src/core/lv_obj_tree.c
-- path: thirdparty/lvgl/src/core/lv_refr.c
-- path: thirdparty/lvgl/src/core/lv_theme.c
-- path: thirdparty/lvgl/src/draw/arm2d/lv_gpu_arm2d.c
-- path: thirdparty/lvgl/src/draw/nxp/pxp/lv_draw_pxp_blend.c
-- path: thirdparty/lvgl/src/draw/nxp/pxp/lv_draw_pxp.c
-- path: thirdparty/lvgl/src/draw/nxp/pxp/lv_gpu_nxp_pxp_osa.c
-- path: thirdparty/lvgl/src/draw/nxp/pxp/lv_gpu_nxp_pxp.c
-- path: thirdparty/lvgl/src/draw/nxp/vglite/lv_draw_vglite_arc.c
-- path: thirdparty/lvgl/src/draw/nxp/vglite/lv_draw_vglite_blend.c
-- path: thirdparty/lvgl/src/draw/nxp/vglite/lv_draw_vglite_line.c
-- path: thirdparty/lvgl/src/draw/nxp/vglite/lv_draw_vglite_rect.c
-- path: thirdparty/lvgl/src/draw/nxp/vglite/lv_draw_vglite.c
-- path: thirdparty/lvgl/src/draw/nxp/vglite/lv_vglite_buf.c
-- path: thirdparty/lvgl/src/draw/nxp/vglite/lv_vglite_utils.c
-- path: thirdparty/lvgl/src/draw/renesas/lv_gpu_d2_draw_label.c
-- path: thirdparty/lvgl/src/draw/renesas/lv_gpu_d2_ra6m3.c
-- path: thirdparty/lvgl/src/draw/stm32_dma2d/lv_gpu_stm32_dma2d.c
-- path: thirdparty/lvgl/src/draw/swm341_dma2d/lv_gpu_swm341_dma2d.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_arc.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_bg.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_composite.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_img.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_label.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_layer.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_line.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_mask.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_polygon.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_rect.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_stack_blur.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_texture_cache.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_utils.c
-- path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_arc.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_blend.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_dither.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_gradient.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_img.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_layer.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_letter.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_line.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_polygon.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_rect.c
-- path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_transform.c
-- path: thirdparty/lvgl/src/draw/lv_draw.c
-- path: thirdparty/lvgl/src/draw/lv_draw_arc.c
-- path: thirdparty/lvgl/src/draw/lv_draw_img.c
-- path: thirdparty/lvgl/src/draw/lv_draw_label.c
-- path: thirdparty/lvgl/src/draw/lv_draw_layer.c
-- path: thirdparty/lvgl/src/draw/lv_draw_line.c
-- path: thirdparty/lvgl/src/draw/lv_draw_mask.c
-- path: thirdparty/lvgl/src/draw/lv_draw_rect.c
-- path: thirdparty/lvgl/src/draw/lv_draw_transform.c
-- path: thirdparty/lvgl/src/draw/lv_draw_triangle.c
-- path: thirdparty/lvgl/src/draw/lv_img_buf.c
-- path: thirdparty/lvgl/src/draw/lv_img_cache.c
-- path: thirdparty/lvgl/src/draw/lv_img_decoder.c
-- path: thirdparty/lvgl/src/extra/lv_extra.c
-- path: thirdparty/lvgl/src/extra/layouts/flex/lv_flex.c
-- path: thirdparty/lvgl/src/extra/layouts/grid/lv_grid.c
-- path: thirdparty/lvgl/src/extra/libs/bmp/lv_bmp.c
-- path: thirdparty/lvgl/src/extra/libs/ffmpeg/lv_ffmpeg.c
-- path: thirdparty/lvgl/src/extra/libs/freetype/lv_freetype.c
-- path: thirdparty/lvgl/src/extra/libs/fsdrv/lv_fs_fatfs.c
-- path: thirdparty/lvgl/src/extra/libs/fsdrv/lv_fs_posix.c
-- path: thirdparty/lvgl/src/extra/libs/fsdrv/lv_fs_stdio.c
-- path: thirdparty/lvgl/src/extra/libs/fsdrv/lv_fs_win32.c
-- path: thirdparty/lvgl/src/extra/libs/gif/gifdec.c
-- path: thirdparty/lvgl/src/extra/libs/gif/lv_gif.c
-- path: thirdparty/lvgl/src/extra/libs/png/lodepng.c
-- path: thirdparty/lvgl/src/extra/libs/png/lv_png.c
-- path: thirdparty/lvgl/src/extra/libs/qrcode/lv_qrcode.c
-- path: thirdparty/lvgl/src/extra/libs/qrcode/qrcodegen.c
-- path: thirdparty/lvgl/src/extra/libs/rlottie/lv_rlottie.c
-- path: thirdparty/lvgl/src/extra/libs/sjpg/lv_sjpg.c
-- path: thirdparty/lvgl/src/extra/libs/sjpg/tjpgd.c
-- path: thirdparty/lvgl/src/extra/others/fragment/lv_fragment.c
-- path: thirdparty/lvgl/src/extra/others/fragment/lv_fragment_manager.c
-- path: thirdparty/lvgl/src/extra/others/gridnav/lv_gridnav.c
-- path: thirdparty/lvgl/src/extra/others/ime/lv_ime_pinyin.c
-- path: thirdparty/lvgl/src/extra/others/imgfont/lv_imgfont.c
-- path: thirdparty/lvgl/src/extra/others/monkey/lv_monkey.c
-- path: thirdparty/lvgl/src/extra/others/msg/lv_msg.c
-- path: thirdparty/lvgl/src/extra/others/snapshot/lv_snapshot.c
-- path: thirdparty/lvgl/src/extra/themes/basic/lv_theme_basic.c
-- path: thirdparty/lvgl/src/extra/themes/default/lv_theme_default.c
-- path: thirdparty/lvgl/src/extra/themes/mono/lv_theme_mono.c
-- path: thirdparty/lvgl/src/extra/widgets/animimg/lv_animimg.c
-- path: thirdparty/lvgl/src/extra/widgets/calendar/lv_calendar.c
-- path: thirdparty/lvgl/src/extra/widgets/calendar/lv_calendar_header_arrow.c
-- path: thirdparty/lvgl/src/extra/widgets/calendar/lv_calendar_header_dropdown.c
-- path: thirdparty/lvgl/src/extra/widgets/chart/lv_chart.c
-- path: thirdparty/lvgl/src/extra/widgets/colorwheel/lv_colorwheel.c
-- path: thirdparty/lvgl/src/extra/widgets/imgbtn/lv_imgbtn.c
-- path: thirdparty/lvgl/src/extra/widgets/keyboard/lv_keyboard.c
-- path: thirdparty/lvgl/src/extra/widgets/led/lv_led.c
-- path: thirdparty/lvgl/src/extra/widgets/list/lv_list.c
-- path: thirdparty/lvgl/src/extra/widgets/menu/lv_menu.c
-- path: thirdparty/lvgl/src/extra/widgets/meter/lv_meter.c
-- path: thirdparty/lvgl/src/extra/widgets/msgbox/lv_msgbox.c
-- path: thirdparty/lvgl/src/extra/widgets/span/lv_span.c
-- path: thirdparty/lvgl/src/extra/widgets/spinbox/lv_spinbox.c
-- path: thirdparty/lvgl/src/extra/widgets/spinner/lv_spinner.c
-- path: thirdparty/lvgl/src/extra/widgets/tabview/lv_tabview.c
-- path: thirdparty/lvgl/src/extra/widgets/tileview/lv_tileview.c
-- path: thirdparty/lvgl/src/extra/widgets/win/lv_win.c
-- path: thirdparty/lvgl/src/font/lv_font.c
-- path: thirdparty/lvgl/src/font/lv_font_dejavu_16_persian_hebrew.c
-- path: thirdparty/lvgl/src/font/lv_font_fmt_txt.c
-- path: thirdparty/lvgl/src/font/lv_font_loader.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_10.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_12.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_12_subpx.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_14.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_16.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_18.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_20.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_22.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_24.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_26.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_28.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_28_compressed.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_30.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_32.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_34.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_36.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_38.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_40.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_42.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_44.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_46.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_48.c
-- path: thirdparty/lvgl/src/font/lv_font_montserrat_8.c
-- path: thirdparty/lvgl/src/font/lv_font_simsun_16_cjk.c
-- path: thirdparty/lvgl/src/font/lv_font_unscii_16.c
-- path: thirdparty/lvgl/src/font/lv_font_unscii_8.c
-- path: thirdparty/lvgl/src/hal/lv_hal_disp.c
-- path: thirdparty/lvgl/src/hal/lv_hal_indev.c
-- path: thirdparty/lvgl/src/hal/lv_hal_tick.c
-- path: thirdparty/lvgl/src/misc/lv_anim.c
-- path: thirdparty/lvgl/src/misc/lv_anim_timeline.c
-- path: thirdparty/lvgl/src/misc/lv_area.c
-- path: thirdparty/lvgl/src/misc/lv_async.c
-- path: thirdparty/lvgl/src/misc/lv_bidi.c
-- path: thirdparty/lvgl/src/misc/lv_color.c
-- path: thirdparty/lvgl/src/misc/lv_fs.c
-- path: thirdparty/lvgl/src/misc/lv_gc.c
-- path: thirdparty/lvgl/src/misc/lv_ll.c
-- path: thirdparty/lvgl/src/misc/lv_log.c
-- path: thirdparty/lvgl/src/misc/lv_lru.c
-- path: thirdparty/lvgl/src/misc/lv_math.c
-- path: thirdparty/lvgl/src/misc/lv_mem.c
-- path: thirdparty/lvgl/src/misc/lv_printf.c
-- path: thirdparty/lvgl/src/misc/lv_style.c
-- path: thirdparty/lvgl/src/misc/lv_style_gen.c
-- path: thirdparty/lvgl/src/misc/lv_templ.c
-- path: thirdparty/lvgl/src/misc/lv_timer.c
-- path: thirdparty/lvgl/src/misc/lv_tlsf.c
-- path: thirdparty/lvgl/src/misc/lv_txt.c
-- path: thirdparty/lvgl/src/misc/lv_txt_ap.c
-- path: thirdparty/lvgl/src/misc/lv_utils.c
-- path: thirdparty/lvgl/src/widgets/lv_arc.c
-- path: thirdparty/lvgl/src/widgets/lv_bar.c
-- path: thirdparty/lvgl/src/widgets/lv_btn.c
-- path: thirdparty/lvgl/src/widgets/lv_btnmatrix.c
-- path: thirdparty/lvgl/src/widgets/lv_canvas.c
-- path: thirdparty/lvgl/src/widgets/lv_checkbox.c
-- path: thirdparty/lvgl/src/widgets/lv_dropdown.c
-- path: thirdparty/lvgl/src/widgets/lv_img.c
-- path: thirdparty/lvgl/src/widgets/lv_label.c
-- path: thirdparty/lvgl/src/widgets/lv_line.c
-- path: thirdparty/lvgl/src/widgets/lv_objx_templ.c
-- path: thirdparty/lvgl/src/widgets/lv_roller.c
-- path: thirdparty/lvgl/src/widgets/lv_slider.c
-- path: thirdparty/lvgl/src/widgets/lv_switch.c
-- path: thirdparty/lvgl/src/widgets/lv_table.c
-- path: thirdparty/lvgl/src/widgets/lv_textarea.c
+  - path: public/silabs/services_lvgl/src/lv_port_disp.c
+  - path: public/silabs/services_lvgl/src/lv_port_indev.c
+  - path: thirdparty/lvgl/src/core/lv_disp.c
+  - path: thirdparty/lvgl/src/core/lv_event.c
+  - path: thirdparty/lvgl/src/core/lv_group.c
+  - path: thirdparty/lvgl/src/core/lv_indev.c
+  - path: thirdparty/lvgl/src/core/lv_indev_scroll.c
+  - path: thirdparty/lvgl/src/core/lv_obj.c
+  - path: thirdparty/lvgl/src/core/lv_obj_class.c
+  - path: thirdparty/lvgl/src/core/lv_obj_draw.c
+  - path: thirdparty/lvgl/src/core/lv_obj_pos.c
+  - path: thirdparty/lvgl/src/core/lv_obj_scroll.c
+  - path: thirdparty/lvgl/src/core/lv_obj_style.c
+  - path: thirdparty/lvgl/src/core/lv_obj_style_gen.c
+  - path: thirdparty/lvgl/src/core/lv_obj_tree.c
+  - path: thirdparty/lvgl/src/core/lv_refr.c
+  - path: thirdparty/lvgl/src/core/lv_theme.c
+  - path: thirdparty/lvgl/src/draw/arm2d/lv_gpu_arm2d.c
+  - path: thirdparty/lvgl/src/draw/nxp/pxp/lv_draw_pxp_blend.c
+  - path: thirdparty/lvgl/src/draw/nxp/pxp/lv_draw_pxp.c
+  - path: thirdparty/lvgl/src/draw/nxp/pxp/lv_gpu_nxp_pxp_osa.c
+  - path: thirdparty/lvgl/src/draw/nxp/pxp/lv_gpu_nxp_pxp.c
+  - path: thirdparty/lvgl/src/draw/nxp/vglite/lv_draw_vglite_arc.c
+  - path: thirdparty/lvgl/src/draw/nxp/vglite/lv_draw_vglite_blend.c
+  - path: thirdparty/lvgl/src/draw/nxp/vglite/lv_draw_vglite_line.c
+  - path: thirdparty/lvgl/src/draw/nxp/vglite/lv_draw_vglite_rect.c
+  - path: thirdparty/lvgl/src/draw/nxp/vglite/lv_draw_vglite.c
+  - path: thirdparty/lvgl/src/draw/nxp/vglite/lv_vglite_buf.c
+  - path: thirdparty/lvgl/src/draw/nxp/vglite/lv_vglite_utils.c
+  - path: thirdparty/lvgl/src/draw/renesas/lv_gpu_d2_draw_label.c
+  - path: thirdparty/lvgl/src/draw/renesas/lv_gpu_d2_ra6m3.c
+  - path: thirdparty/lvgl/src/draw/stm32_dma2d/lv_gpu_stm32_dma2d.c
+  - path: thirdparty/lvgl/src/draw/swm341_dma2d/lv_gpu_swm341_dma2d.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_arc.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_bg.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_composite.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_img.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_label.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_layer.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_line.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_mask.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_polygon.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_rect.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_stack_blur.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_texture_cache.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl_utils.c
+  - path: thirdparty/lvgl/src/draw/sdl/lv_draw_sdl.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_arc.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_blend.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_dither.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_gradient.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_img.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_layer.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_letter.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_line.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_polygon.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_rect.c
+  - path: thirdparty/lvgl/src/draw/sw/lv_draw_sw_transform.c
+  - path: thirdparty/lvgl/src/draw/lv_draw.c
+  - path: thirdparty/lvgl/src/draw/lv_draw_arc.c
+  - path: thirdparty/lvgl/src/draw/lv_draw_img.c
+  - path: thirdparty/lvgl/src/draw/lv_draw_label.c
+  - path: thirdparty/lvgl/src/draw/lv_draw_layer.c
+  - path: thirdparty/lvgl/src/draw/lv_draw_line.c
+  - path: thirdparty/lvgl/src/draw/lv_draw_mask.c
+  - path: thirdparty/lvgl/src/draw/lv_draw_rect.c
+  - path: thirdparty/lvgl/src/draw/lv_draw_transform.c
+  - path: thirdparty/lvgl/src/draw/lv_draw_triangle.c
+  - path: thirdparty/lvgl/src/draw/lv_img_buf.c
+  - path: thirdparty/lvgl/src/draw/lv_img_cache.c
+  - path: thirdparty/lvgl/src/draw/lv_img_decoder.c
+  - path: thirdparty/lvgl/src/extra/lv_extra.c
+  - path: thirdparty/lvgl/src/extra/layouts/flex/lv_flex.c
+  - path: thirdparty/lvgl/src/extra/layouts/grid/lv_grid.c
+  - path: thirdparty/lvgl/src/extra/libs/bmp/lv_bmp.c
+  - path: thirdparty/lvgl/src/extra/libs/ffmpeg/lv_ffmpeg.c
+  - path: thirdparty/lvgl/src/extra/libs/freetype/lv_freetype.c
+  - path: thirdparty/lvgl/src/extra/libs/fsdrv/lv_fs_fatfs.c
+  - path: thirdparty/lvgl/src/extra/libs/fsdrv/lv_fs_posix.c
+  - path: thirdparty/lvgl/src/extra/libs/fsdrv/lv_fs_stdio.c
+  - path: thirdparty/lvgl/src/extra/libs/fsdrv/lv_fs_win32.c
+  - path: thirdparty/lvgl/src/extra/libs/gif/gifdec.c
+  - path: thirdparty/lvgl/src/extra/libs/gif/lv_gif.c
+  - path: thirdparty/lvgl/src/extra/libs/png/lodepng.c
+  - path: thirdparty/lvgl/src/extra/libs/png/lv_png.c
+  - path: thirdparty/lvgl/src/extra/libs/qrcode/lv_qrcode.c
+  - path: thirdparty/lvgl/src/extra/libs/qrcode/qrcodegen.c
+  - path: thirdparty/lvgl/src/extra/libs/rlottie/lv_rlottie.c
+  - path: thirdparty/lvgl/src/extra/libs/sjpg/lv_sjpg.c
+  - path: thirdparty/lvgl/src/extra/libs/sjpg/tjpgd.c
+  - path: thirdparty/lvgl/src/extra/others/fragment/lv_fragment.c
+  - path: thirdparty/lvgl/src/extra/others/fragment/lv_fragment_manager.c
+  - path: thirdparty/lvgl/src/extra/others/gridnav/lv_gridnav.c
+  - path: thirdparty/lvgl/src/extra/others/ime/lv_ime_pinyin.c
+  - path: thirdparty/lvgl/src/extra/others/imgfont/lv_imgfont.c
+  - path: thirdparty/lvgl/src/extra/others/monkey/lv_monkey.c
+  - path: thirdparty/lvgl/src/extra/others/msg/lv_msg.c
+  - path: thirdparty/lvgl/src/extra/others/snapshot/lv_snapshot.c
+  - path: thirdparty/lvgl/src/extra/themes/basic/lv_theme_basic.c
+  - path: thirdparty/lvgl/src/extra/themes/default/lv_theme_default.c
+  - path: thirdparty/lvgl/src/extra/themes/mono/lv_theme_mono.c
+  - path: thirdparty/lvgl/src/extra/widgets/animimg/lv_animimg.c
+  - path: thirdparty/lvgl/src/extra/widgets/calendar/lv_calendar.c
+  - path: thirdparty/lvgl/src/extra/widgets/calendar/lv_calendar_header_arrow.c
+  - path: thirdparty/lvgl/src/extra/widgets/calendar/lv_calendar_header_dropdown.c
+  - path: thirdparty/lvgl/src/extra/widgets/chart/lv_chart.c
+  - path: thirdparty/lvgl/src/extra/widgets/colorwheel/lv_colorwheel.c
+  - path: thirdparty/lvgl/src/extra/widgets/imgbtn/lv_imgbtn.c
+  - path: thirdparty/lvgl/src/extra/widgets/keyboard/lv_keyboard.c
+  - path: thirdparty/lvgl/src/extra/widgets/led/lv_led.c
+  - path: thirdparty/lvgl/src/extra/widgets/list/lv_list.c
+  - path: thirdparty/lvgl/src/extra/widgets/menu/lv_menu.c
+  - path: thirdparty/lvgl/src/extra/widgets/meter/lv_meter.c
+  - path: thirdparty/lvgl/src/extra/widgets/msgbox/lv_msgbox.c
+  - path: thirdparty/lvgl/src/extra/widgets/span/lv_span.c
+  - path: thirdparty/lvgl/src/extra/widgets/spinbox/lv_spinbox.c
+  - path: thirdparty/lvgl/src/extra/widgets/spinner/lv_spinner.c
+  - path: thirdparty/lvgl/src/extra/widgets/tabview/lv_tabview.c
+  - path: thirdparty/lvgl/src/extra/widgets/tileview/lv_tileview.c
+  - path: thirdparty/lvgl/src/extra/widgets/win/lv_win.c
+  - path: thirdparty/lvgl/src/font/lv_font.c
+  - path: thirdparty/lvgl/src/font/lv_font_dejavu_16_persian_hebrew.c
+  - path: thirdparty/lvgl/src/font/lv_font_fmt_txt.c
+  - path: thirdparty/lvgl/src/font/lv_font_loader.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_10.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_12.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_12_subpx.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_14.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_16.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_18.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_20.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_22.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_24.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_26.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_28.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_28_compressed.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_30.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_32.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_34.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_36.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_38.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_40.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_42.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_44.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_46.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_48.c
+  - path: thirdparty/lvgl/src/font/lv_font_montserrat_8.c
+  - path: thirdparty/lvgl/src/font/lv_font_simsun_16_cjk.c
+  - path: thirdparty/lvgl/src/font/lv_font_unscii_16.c
+  - path: thirdparty/lvgl/src/font/lv_font_unscii_8.c
+  - path: thirdparty/lvgl/src/hal/lv_hal_disp.c
+  - path: thirdparty/lvgl/src/hal/lv_hal_indev.c
+  - path: thirdparty/lvgl/src/hal/lv_hal_tick.c
+  - path: thirdparty/lvgl/src/misc/lv_anim.c
+  - path: thirdparty/lvgl/src/misc/lv_anim_timeline.c
+  - path: thirdparty/lvgl/src/misc/lv_area.c
+  - path: thirdparty/lvgl/src/misc/lv_async.c
+  - path: thirdparty/lvgl/src/misc/lv_bidi.c
+  - path: thirdparty/lvgl/src/misc/lv_color.c
+  - path: thirdparty/lvgl/src/misc/lv_fs.c
+  - path: thirdparty/lvgl/src/misc/lv_gc.c
+  - path: thirdparty/lvgl/src/misc/lv_ll.c
+  - path: thirdparty/lvgl/src/misc/lv_log.c
+  - path: thirdparty/lvgl/src/misc/lv_lru.c
+  - path: thirdparty/lvgl/src/misc/lv_math.c
+  - path: thirdparty/lvgl/src/misc/lv_mem.c
+  - path: thirdparty/lvgl/src/misc/lv_printf.c
+  - path: thirdparty/lvgl/src/misc/lv_style.c
+  - path: thirdparty/lvgl/src/misc/lv_style_gen.c
+  - path: thirdparty/lvgl/src/misc/lv_templ.c
+  - path: thirdparty/lvgl/src/misc/lv_timer.c
+  - path: thirdparty/lvgl/src/misc/lv_tlsf.c
+  - path: thirdparty/lvgl/src/misc/lv_txt.c
+  - path: thirdparty/lvgl/src/misc/lv_txt_ap.c
+  - path: thirdparty/lvgl/src/misc/lv_utils.c
+  - path: thirdparty/lvgl/src/widgets/lv_arc.c
+  - path: thirdparty/lvgl/src/widgets/lv_bar.c
+  - path: thirdparty/lvgl/src/widgets/lv_btn.c
+  - path: thirdparty/lvgl/src/widgets/lv_btnmatrix.c
+  - path: thirdparty/lvgl/src/widgets/lv_canvas.c
+  - path: thirdparty/lvgl/src/widgets/lv_checkbox.c
+  - path: thirdparty/lvgl/src/widgets/lv_dropdown.c
+  - path: thirdparty/lvgl/src/widgets/lv_img.c
+  - path: thirdparty/lvgl/src/widgets/lv_label.c
+  - path: thirdparty/lvgl/src/widgets/lv_line.c
+  - path: thirdparty/lvgl/src/widgets/lv_objx_templ.c
+  - path: thirdparty/lvgl/src/widgets/lv_roller.c
+  - path: thirdparty/lvgl/src/widgets/lv_slider.c
+  - path: thirdparty/lvgl/src/widgets/lv_switch.c
+  - path: thirdparty/lvgl/src/widgets/lv_table.c
+  - path: thirdparty/lvgl/src/widgets/lv_textarea.c

@@ -84,9 +84,9 @@ static sl_status_t draw_pixel(int16_t x, int16_t y, uint16_t color)
   uint16_t off;
   uint16_t pos;
 
-  if ((x >= 0) && (x < MIKROE_EINK_DISPLAY_WIDTH) && (y >= 0)
-      && (y < MIKROE_EINK_DISPLAY_HEIGHT)) {
-    pos = (y * (MIKROE_EINK_DISPLAY_WIDTH / 8)) + (x / 8);
+  if ((x >= 0) && (x < oled_display_instance.width) && (y >= 0)
+      && (y < oled_display_instance.height)) {
+    pos = (y * (oled_display_instance.width / 8)) + (x / 8);
     off = 7 - (x % 8);
     oled_frame_buffer[pos] &= ~(0x01 << off);
     oled_frame_buffer[pos] |= ((color & 0x01) << off);
@@ -111,8 +111,8 @@ static sl_status_t update_display(void)
 
   xy.x_start = 0;
   xy.y_start = 0;
-  xy.x_end = MIKROE_EINK_DISPLAY_WIDTH - 1;
-  xy.y_end = MIKROE_EINK_DISPLAY_HEIGHT - 1;
+  xy.x_end = oled_display_instance.width - 1;
+  xy.y_end = oled_display_instance.height - 1;
 
   mikroe_eink_display_set_memory_area(&xy);
   mikroe_eink_display_set_memory_pointer(0, 0);

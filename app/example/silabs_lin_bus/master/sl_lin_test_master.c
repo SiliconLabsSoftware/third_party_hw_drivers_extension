@@ -27,10 +27,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has been minimally tested to ensure that it builds and is suitable
- * as a demonstration for evaluation purposes only. This code will be maintained
- * at the sole discretion of Silicon Labs.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #pragma GCC optimize "O2"
@@ -74,6 +77,7 @@
 #include <inttypes.h>
 #include <string.h>
 
+#include <sl_gpio.h>
 #include "sl_component_catalog.h"
 #include "sl_sleeptimer.h"
 #include "sl_power_manager.h"
@@ -134,9 +138,6 @@
 
 // PB3, the LIN_RX GPIO is the wakeup signal GPIO_EM4WU
 #define WAKEUP_SIGNAL                  4U
-// 4 is even
-#define WAKEUP_IRQ_LINE                GPIO_EVEN_IRQn
-#define WAKEUP_IRQ_HANDLER             GPIO_EVEN_IRQHandler
 
 #if defined(DO_WAKEUPS)
 static volatile bool need_wakeup = true;
@@ -180,49 +181,32 @@ void BURTC_IRQHandler(void)
 
 // EXTI 0, 1, 2, 3, 5, 6 are consumed
 // EXTI 4, 7, 8, 9, 10, 11 are free
-
-// handle signals of slave1, all of them are routed to odd numbered pins
-void GPIO_ODD_IRQHandler(void)
+// handle signals of slave1 & slave2, all of them are routed to odd numbered pins
+static void gpio_int_cb(uint8_t int_no, void *ctx)
 {
-  uint32_t flags;
+  (void)ctx;
 
-  flags = GPIO->IF & (SLAVE1_CHECKSUM_MASK
-                      | SLAVE1_CONFLICT_MASK
-                      | SLAVE1_GENERIC_MASK);
-  GPIO_IntClear(flags);
-
-  if (flags & SLAVE1_CHECKSUM_MASK) {
+  if (int_no & SLAVE1_CHECKSUM_MASK) {
     sl_lin_counter_slave1_checksum++;
   }
 
-  if (flags & SLAVE1_CONFLICT_MASK) {
+  if (int_no & SLAVE1_CONFLICT_MASK) {
     sl_lin_counter_slave1_conflict++;
   }
 
-  if (flags & SLAVE1_GENERIC_MASK) {
+  if (int_no & SLAVE1_GENERIC_MASK) {
     sl_lin_counter_slave1_generic++;
   }
-}
 
-// handle signals of slave2, all of them are routed to even numbered pins
-void GPIO_EVEN_IRQHandler(void)
-{
-  uint32_t flags;
-
-  flags = GPIO->IF & (SLAVE2_CHECKSUM_MASK
-                      | SLAVE2_CONFLICT_MASK
-                      | SLAVE2_GENERIC_MASK);
-  GPIO_IntClear(flags);
-
-  if (flags & SLAVE2_CHECKSUM_MASK) {
+  if (int_no & SLAVE2_CHECKSUM_MASK) {
     sl_lin_counter_slave2_checksum++;
   }
 
-  if (flags & SLAVE2_CONFLICT_MASK) {
+  if (int_no & SLAVE2_CONFLICT_MASK) {
     sl_lin_counter_slave2_conflict++;
   }
 
-  if (flags & SLAVE2_GENERIC_MASK) {
+  if (int_no & SLAVE2_GENERIC_MASK) {
     sl_lin_counter_slave2_generic++;
   }
 }
@@ -284,6 +268,8 @@ static uint8_t sl_lin_calc_checksum(uint8_t init, const uint8_t *data, int len)
 
 void sl_lin_master_init(int baud)
 {
+  sl_gpio_t gpio_port_pin;
+  int32_t int_no;
   USART_InitAsync_TypeDef uart = USART_INITASYNC_DEFAULT;
   LETIMER_Init_TypeDef letimer = LETIMER_INIT_DEFAULT;
   TIMER_Init_TypeDef breakTimer = TIMER_INIT_DEFAULT;
@@ -362,62 +348,74 @@ void sl_lin_master_init(int baud)
 
 #if defined(SLAVE1_CHECKSUM_PORT) && defined(SLAVE1_CHECKSUM_PIN)
   GPIO_PinModeSet(SLAVE1_CHECKSUM_PORT, SLAVE1_CHECKSUM_PIN, gpioModeInput, 0);
-  GPIO_ExtIntConfig(SLAVE1_CHECKSUM_PORT,
-                    SLAVE1_CHECKSUM_PIN,
-                    SLAVE1_CHECKSUM_PIN,
-                    true,
-                    true,
-                    true);
+  gpio_port_pin.port = SLAVE1_CHECKSUM_PORT;
+  gpio_port_pin.pin = SLAVE1_CHECKSUM_PIN;
+  int_no = SLAVE1_CHECKSUM_PIN;
+  sl_gpio_configure_external_interrupt(&gpio_port_pin,
+                                       &int_no,
+                                       SL_GPIO_INTERRUPT_RISING_FALLING_EDGE,
+                                       gpio_int_cb,
+                                       NULL);
 #endif
 
 #if defined(SLAVE1_CONFLICT_PORT) && defined(SLAVE1_CONFLICT_PIN)
   GPIO_PinModeSet(SLAVE1_CONFLICT_PORT, SLAVE1_CONFLICT_PIN, gpioModeInput, 0);
-  GPIO_ExtIntConfig(SLAVE1_CONFLICT_PORT,
-                    SLAVE1_CONFLICT_PIN,
-                    SLAVE1_CONFLICT_PIN,
-                    true,
-                    true,
-                    true);
+  gpio_port_pin.port = SLAVE1_CONFLICT_PORT;
+  gpio_port_pin.pin = SLAVE1_CONFLICT_PIN;
+  int_no = SLAVE1_CONFLICT_PIN;
+  sl_gpio_configure_external_interrupt(&gpio_port_pin,
+                                       &int_no,
+                                       SL_GPIO_INTERRUPT_RISING_FALLING_EDGE,
+                                       gpio_int_cb,
+                                       NULL);
 #endif
 
 #if defined(SLAVE1_GENERIC_PORT) && defined(SLAVE1_GENERIC_PIN)
   GPIO_PinModeSet(SLAVE1_GENERIC_PORT, SLAVE1_GENERIC_PIN, gpioModeInput, 0);
-  GPIO_ExtIntConfig(SLAVE1_GENERIC_PORT,
-                    SLAVE1_GENERIC_PIN,
-                    SLAVE1_GENERIC_PIN,
-                    true,
-                    true,
-                    true);
+  gpio_port_pin.port = SLAVE1_GENERIC_PORT;
+  gpio_port_pin.pin = SLAVE1_GENERIC_PIN;
+  int_no = SLAVE1_GENERIC_PIN;
+  sl_gpio_configure_external_interrupt(&gpio_port_pin,
+                                       &int_no,
+                                       SL_GPIO_INTERRUPT_RISING_FALLING_EDGE,
+                                       gpio_int_cb,
+                                       NULL);
 #endif
 
 #if defined(SLAVE2_CHECKSUM_PORT) && defined(SLAVE2_CHECKSUM_PIN)
   GPIO_PinModeSet(SLAVE2_CHECKSUM_PORT, SLAVE2_CHECKSUM_PIN, gpioModeInput, 0);
-  GPIO_ExtIntConfig(SLAVE2_CHECKSUM_PORT,
-                    SLAVE2_CHECKSUM_PIN,
-                    SLAVE2_CHECKSUM_PIN,
-                    true,
-                    true,
-                    true);
+  gpio_port_pin.port = SLAVE2_CHECKSUM_PORT;
+  gpio_port_pin.pin = SLAVE2_CHECKSUM_PIN;
+  int_no = SLAVE2_CHECKSUM_PIN;
+  sl_gpio_configure_external_interrupt(&gpio_port_pin,
+                                       &int_no,
+                                       SL_GPIO_INTERRUPT_RISING_FALLING_EDGE,
+                                       gpio_int_cb,
+                                       NULL);
 #endif
 
 #if defined(SLAVE2_CONFLICT_PORT) && defined(SLAVE2_CONFLICT_PIN)
   GPIO_PinModeSet(SLAVE2_CONFLICT_PORT, SLAVE2_CONFLICT_PIN, gpioModeInput, 0);
-  GPIO_ExtIntConfig(SLAVE2_CONFLICT_PORT,
-                    SLAVE2_CONFLICT_PIN,
-                    SLAVE2_CONFLICT_PIN,
-                    true,
-                    true,
-                    true);
+  gpio_port_pin.port = SLAVE2_CONFLICT_PORT;
+  gpio_port_pin.pin = SLAVE2_CONFLICT_PIN;
+  int_no = SLAVE2_CONFLICT_PIN;
+  sl_gpio_configure_external_interrupt(&gpio_port_pin,
+                                       &int_no,
+                                       SL_GPIO_INTERRUPT_RISING_FALLING_EDGE,
+                                       gpio_int_cb,
+                                       NULL);
 #endif
 
 #if defined(SLAVE2_GENERIC_PORT) && defined(SLAVE2_GENERIC_PIN)
   GPIO_PinModeSet(SLAVE2_GENERIC_PORT, SLAVE2_GENERIC_PIN, gpioModeInput, 0);
-  GPIO_ExtIntConfig(SLAVE2_GENERIC_PORT,
-                    SLAVE2_GENERIC_PIN,
-                    SLAVE2_GENERIC_PIN,
-                    true,
-                    true,
-                    true);
+  gpio_port_pin.port = SLAVE2_GENERIC_PORT;
+  gpio_port_pin.pin = SLAVE2_GENERIC_PIN;
+  int_no = SLAVE2_GENERIC_PIN;
+  sl_gpio_configure_external_interrupt(&gpio_port_pin,
+                                       &int_no,
+                                       SL_GPIO_INTERRUPT_RISING_FALLING_EDGE,
+                                       gpio_int_cb,
+                                       NULL);
 #endif
 
   GPIO->USARTROUTE[1].ROUTEEN = 0;

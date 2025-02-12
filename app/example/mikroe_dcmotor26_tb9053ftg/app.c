@@ -46,21 +46,19 @@
 #include "sl_i2c_instances.h"
 #include "sl_adc_instances.h"
 #include "rsi_debug.h"
+
+#define I2C_INSTANCE_USED            SL_I2C2
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
+
+static sl_ssi_instance_t ssi_instance = SL_SSI_PRIMARY_ACTIVE;
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+static uint8_t adc_channel = SL_ADC_CHANNEL_1;
 #else
 #include "sl_spidrv_instances.h"
 #include "sl_i2cspm_instances.h"
 #include "em_iadc.h"
 #include "app_log.h"
-#endif
 
-#if (defined(SLI_SI917))
-#define I2C_INSTANCE_USED            SL_I2C2
-#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
-
-static sl_ssi_instance_t ssi_instance = SL_SSI_MASTER_ACTIVE;
-static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
-static uint8_t adc_channel = SL_ADC_CHANNEL_1;
-#else
 #define app_printf(...)              app_log(__VA_ARGS__)
 #endif
 

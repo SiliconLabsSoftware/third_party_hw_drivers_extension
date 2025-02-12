@@ -27,10 +27,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has been minimally tested to ensure that it builds and is suitable
- * as a demonstration for evaluation purposes only. This code will be maintained
- * at the sole discretion of Silicon Labs.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #include "sl_sleeptimer.h"
@@ -51,8 +54,10 @@ static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #include "sl_i2cspm_instances.h"
 #include "app_log.h"
 
-#define app_printf(...) app_log(__VA_ARGS__)
+#define app_printf(...)              app_log(__VA_ARGS__)
 #endif
+
+#define READING_INTERVAL_MSEC        250
 
 static mikroe_i2c_handle_t app_i2c_instance = NULL;
 static float mlx90640_image[SPARKFUN_MLX90640_NUM_OF_PIXELS];
@@ -89,7 +94,7 @@ void app_init(void)
     app_printf("RefreshRate: %x\n", refrate);
 
     sc = sl_sleeptimer_start_periodic_timer_ms(&app_timer_handle,
-                                               250,
+                                               READING_INTERVAL_MSEC,
                                                app_timer_cb,
                                                (void *) NULL,
                                                0,

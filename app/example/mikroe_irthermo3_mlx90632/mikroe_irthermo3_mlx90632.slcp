@@ -7,57 +7,57 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/mikroe_irthermo3_mlx90632/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: sleeptimer
-- id: mikroe_irthermo3
-  from: third_party_hw_drivers
-- id: iostream_usart
-  instance: [vcom]
-- id: app_log
-- id: i2cspm
-  instance: [mikroe]
+  - id: sl_system
+  - id: device_init
+  - id: sleeptimer
+  - id: mikroe_irthermo3
+    from: third_party_hw_drivers
+  - id: iostream_usart
+    instance: [vcom]
+  - id: app_log
+  - id: i2cspm
+    instance: [mikroe]
 
 toolchain_settings:
   - option: gcc_linker_option
     value: "-u _printf_float"
 
+define:
+  - name: DEBUG_EFM
+
+sdk_extension:
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/mikroe_irthermo3_mlx90632/README.md
+
 other_file:
   - path: ../../documentation/example/mikroe_irthermo3_mlx90632/image/create_example.png
-    directory: "image"  
+    directory: "image"
   - path: ../../documentation/example/mikroe_irthermo3_mlx90632/image/float.png
     directory: "image"
   - path: ../../documentation/example/mikroe_irthermo3_mlx90632/image/log.png
     directory: "image"
   - path: ../../documentation/example/mikroe_irthermo3_mlx90632/image/hardware_connection.png
     directory: "image"
-
-define:
-- name: DEBUG_EFM
-
-sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
 
 ui_hints:
   highlight:

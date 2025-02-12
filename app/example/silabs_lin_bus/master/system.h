@@ -27,10 +27,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has been minimally tested to ensure that it builds and is suitable
- * as a demonstration for evaluation purposes only. This code will be maintained
- * at the sole discretion of Silicon Labs.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #ifndef SYSTEM__H
@@ -76,34 +79,34 @@
     }                                 \
   }
 
-#define SLAVE1_GENERIC_PORT                      gpioPortA
+#define SLAVE1_GENERIC_PORT                      SL_GPIO_PORT_A
 #define SLAVE1_GENERIC_PIN                       5
 
-#define SLAVE2_GENERIC_PORT                      gpioPortA
+#define SLAVE2_GENERIC_PORT                      SL_GPIO_PORT_A
 #define SLAVE2_GENERIC_PIN                       6
 
-#define LIN_TX_PORT                              gpioPortB
+#define LIN_TX_PORT                              SL_GPIO_PORT_B
 #define LIN_TX_PIN                               2
 
-#define LIN_RX_PORT                              gpioPortB
+#define LIN_RX_PORT                              SL_GPIO_PORT_B
 #define LIN_RX_PIN                               3
 
-#define SLAVE2_CHECKSUM_PORT                     gpioPortC
+#define SLAVE2_CHECKSUM_PORT                     SL_GPIO_PORT_C
 #define SLAVE2_CHECKSUM_PIN                      0
 
-#define SLAVE1_CHECKSUM_PORT                     gpioPortC
+#define SLAVE1_CHECKSUM_PORT                     SL_GPIO_PORT_C
 #define SLAVE1_CHECKSUM_PIN                      1
 
-#define SLAVE2_CONFLICT_PORT                     gpioPortC
+#define SLAVE2_CONFLICT_PORT                     SL_GPIO_PORT_C
 #define SLAVE2_CONFLICT_PIN                      2
 
-#define SLAVE1_CONFLICT_PORT                     gpioPortC
+#define SLAVE1_CONFLICT_PORT                     SL_GPIO_PORT_C
 #define SLAVE1_CONFLICT_PIN                      3
 
-#define LIN_TX_PORT                              gpioPortB
+#define LIN_TX_PORT                              SL_GPIO_PORT_B
 #define LIN_TX_PIN                               2
 
-#define LIN_RX_PORT                              gpioPortB
+#define LIN_RX_PORT                              SL_GPIO_PORT_B
 #define LIN_RX_PIN                               3
 
 #endif // __SYSTEM_H

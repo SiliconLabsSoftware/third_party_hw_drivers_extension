@@ -4,18 +4,19 @@ label: IS31FL3741 - 13x9 PWM RGB LED Matrix (Adafruit) - I2C
 description: >
   Driver for the Adafruit 13x9 PWM RGB LED Matrix Board.
 category: Display & LED
-quality: evaluation 
+quality: evaluation
 root_path: driver
 requires:
   - name: status
   - name: mikroe_peripheral_driver_i2c
-provides:
-  - name: oled_display
 config_file:
   - path: public/silabs/rgb_led_is31fl3741/config/adafruit_is31fl3741_config.h
+    file_id: driver_config_adafruit_is31fl3741
 template_contribution:
   - name: component_catalog
-    value: adafruit_rgb_led_is31fl3741 
+    value: adafruit_rgb_led_is31fl3741
+provides:
+  - name: oled_display
 include:
   - path: public/silabs/rgb_led_is31fl3741/inc
     file_list:

@@ -38,8 +38,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-#include "drv_digital_out.h"
-#include "sparkfun_ccs811_config.h"
+
 #include "sparkfun_ccs811.h"
 
 #define SPARKFUN_CCS811_HW_ID           (0x81)
@@ -62,11 +61,11 @@ static uint32_t sparkfun_ccs811_set_app_start(void);
 /** @endcond */
 
 /**************************************************************************//**
-* @defgroup CCS811 CCS811 - Indoor Air Quality Sensor
-* @{
-* @brief Driver for the Cambridge CMOS Sensors CCS811 gas and indoor air
-* quality sensor
-******************************************************************************/
+ * @defgroup CCS811 CCS811 - Indoor Air Quality Sensor
+ * @{
+ * @brief Driver for the Cambridge CMOS Sensors CCS811 gas and indoor air
+ * quality sensor
+ ******************************************************************************/
 
 /***************************************************************************//**
  * @brief
@@ -182,8 +181,8 @@ sl_status_t sparkfun_ccs811_get_hardware_id(uint8_t *hardwareID)
 }
 
 /**************************************************************************//**
-*    Reads the status of the CCS811 sensor
-******************************************************************************/
+ *    Reads the status of the CCS811 sensor
+ ******************************************************************************/
 sl_status_t sparkfun_ccs811_get_status(uint8_t *status)
 {
   sl_status_t result;

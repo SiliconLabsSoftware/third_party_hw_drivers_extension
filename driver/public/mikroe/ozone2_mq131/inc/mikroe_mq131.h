@@ -37,6 +37,7 @@
 
 #include "sl_status.h"
 #include "ozone2.h"
+#include "drv_digital_out.h"
 #include "mikroe_mq131_config.h"
 
 #ifdef __cplusplus

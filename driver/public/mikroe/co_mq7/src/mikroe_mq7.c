@@ -38,9 +38,8 @@
  ******************************************************************************/
 
 #include <stddef.h>
-#include "sl_status.h"
-#include "co.h"
 #include "mikroe_mq7_config.h"
+#include "mikroe_mq7.h"
 
 static co_t co;
 static co_cfg_t co_cfg;

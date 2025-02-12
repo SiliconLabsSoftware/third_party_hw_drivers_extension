@@ -15,8 +15,6 @@ requires:
   - name: mikroe_peripheral_driver_digital_io
   - name: status
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
 
 config_file:
   - path: public/mikroe/servo_pca9685/config/brd2703a/mikroe_servo_config.h
@@ -28,12 +26,15 @@ config_file:
   - path: public/mikroe/servo_pca9685/config/brd4314a/mikroe_servo_config.h
     file_id: driver_config_servo
     condition: [brd4314a]
+  - path: public/mikroe/servo_pca9685/config/brd2605a/mikroe_servo_config.h
+    file_id: driver_config_servo
+    condition: [brd2605a]
   - path: public/mikroe/servo_pca9685/config/brd4338a/mikroe_servo_config.h
     file_id: driver_config_servo
     condition: [brd4338a]
   - path: public/mikroe/servo_pca9685/config/other/mikroe_servo_config.h
     file_id: driver_config_servo
-    unless: [brd2703a, brd4108a, brd4314a, brd4338a]
+    unless: [brd2703a, brd4108a, brd4314a, brd2605a, brd4338a]
 
 provides:
   - name: servo_pca9685

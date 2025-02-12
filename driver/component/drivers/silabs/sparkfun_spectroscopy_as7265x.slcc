@@ -10,8 +10,6 @@ ui_hints:
 root_path: driver
 requires:
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
 provides:
   - name: sparkfun_spectroscopy_as7265x
@@ -21,7 +19,7 @@ template_contribution:
     value: sparkfun_spectroscopy_as7265x
 config_file:
   - path: public/silabs/spectroscopy_as7265x/config/spectroscopy_as7265x_config.h
-    file_id: sparkfun_sgp40_config
+    file_id: driver_config_spectroscopy_as7265x
 include:
   - path: public/silabs/spectroscopy_as7265x/inc
     file_list:

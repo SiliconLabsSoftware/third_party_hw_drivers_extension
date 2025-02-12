@@ -9,10 +9,7 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_uart
-
 provides:
   - name: pm_sps30_uart
     allow_multiple: false
@@ -25,8 +22,8 @@ include:
       - path: third_party_hw_drivers_helpers.h
   - path: public/silabs/particulate_matter_sensor_sps30/inc
     file_list:
-      - path: sensirion_common.h   
-      - path: sensirion_shdlc.h   
+      - path: sensirion_common.h
+      - path: sensirion_shdlc.h
       - path: sensirion_uart_hal.h
       - path: sparkfun_sps30_uart.h
 source:

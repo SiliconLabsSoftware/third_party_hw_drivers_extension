@@ -6,54 +6,55 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../../documentation/example/mikroe_uwb2_dwm3000/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: ../app_files/app.c
-  directory: app_files
-- path: ../app_files/config_options.c
-  directory: app_files
-- path: ../app_files/shared_functions.c
-  directory: app_files
-- path: ../main.c
+  - path: ../app_files/app.c
+    directory: app_files
+  - path: ../app_files/config_options.c
+    directory: app_files
+  - path: ../app_files/shared_functions.c
+    directory: app_files
+  - path: ../main.c
 
 include:
-- path: ../app_files
-  file_list:
-    - path: app.h
-    - path: config_options.h
-    - path: shared_defines.h
-    - path: shared_functions.h
-  directory: app_files
+  - path: ../app_files
+    file_list:
+      - path: app.h
+      - path: config_options.h
+      - path: shared_defines.h
+      - path: shared_functions.h
+    directory: app_files
 
 component:
-- id: device_init
-- id: sl_system
-- id: component_catalog
-- id: app_log
-- instance: [vcom]
-  id: iostream_eusart
-- id: mikroe_uwb2_dwm3000
-  from: third_party_hw_drivers
+  - id: device_init
+  - id: sl_system
+  - id: component_catalog
+  - id: app_log
+  - id: sleeptimer
+  - id: iostream_eusart
+    instance: [vcom]
+  - id: mikroe_uwb2_dwm3000
+    from: third_party_hw_drivers
 
 toolchain_settings:
   - option: linkerfile
     value: linkerfile.ld
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../../documentation/example/mikroe_uwb2_dwm3000/README.md
 
 other_file:
   - path: ../linker_files/brd2703a/linkerfile.ld

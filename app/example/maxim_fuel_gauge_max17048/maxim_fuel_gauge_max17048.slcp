@@ -7,48 +7,48 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/maxim_fuel_gauge_max17048/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: maxim_fuel_gauge_max17048
-  from: third_party_hw_drivers
-- id: iostream_usart
-  instance: [vcom]
-- id: i2cspm
-  instance: [fuel_gauge]
-- id: sleeptimer
-- id: app_log
-- id: app_assert
+  - id: sl_system
+  - id: device_init
+  - id: maxim_fuel_gauge_max17048
+    from: third_party_hw_drivers
+  - id: iostream_usart
+    instance: [vcom]
+  - id: i2cspm
+    instance: [fuel_gauge]
+  - id: sleeptimer
+  - id: app_log
+  - id: app_assert
 
 toolchain_settings:
   - option: gcc_linker_option
     value: "-u _printf_float"
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/maxim_fuel_gauge_max17048/README.md
 
 other_file:
   - path: ../../documentation/example/maxim_fuel_gauge_max17048/image/overview.png
@@ -60,8 +60,6 @@ other_file:
   - path: ../../documentation/example/maxim_fuel_gauge_max17048/image/workflow.png
     directory: "image"
   - path: ../../documentation/example/maxim_fuel_gauge_max17048/image/vcom.png
-    directory: "image"
-  - path: ../../documentation/example/maxim_fuel_gauge_max17048/image/max17048_config.png
     directory: "image"
   - path: ../../documentation/example/maxim_fuel_gauge_max17048/image/create_example.png
     directory: "image"

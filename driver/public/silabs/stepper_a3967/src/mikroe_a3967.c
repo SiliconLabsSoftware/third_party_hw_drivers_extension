@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file mikroe_a3967.h
+ * @file mikroe_a3967.c
  * @brief Mikroe Stepper driver.
  * @version 1.0.0
  *******************************************************************************
@@ -39,7 +39,6 @@
 #include "mikroe_a3967.h"
 #include "mikroe_a3967_config.h"
 #include "sl_sleeptimer.h"
-#include "drv_digital_out.h"
 
 typedef struct {
   digital_out_t ms1_pin;

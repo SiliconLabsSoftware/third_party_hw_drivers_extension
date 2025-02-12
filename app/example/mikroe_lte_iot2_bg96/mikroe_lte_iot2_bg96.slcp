@@ -7,37 +7,34 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/mikroe_lte_iot2_bg96/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
-- path: app_iostream_cli.c
+  - path: app.c
+  - path: main.c
+  - path: app_iostream_cli.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
-  - path: app_iostream_cli.h
+  - path: ''
+    file_list:
+    - path: app.h
+    - path: app_iostream_cli.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: mikroe_lte_iot2
-  from: third_party_hw_drivers
-- id: iostream_eusart
-  instance: [vcom]
-- id: iostream_usart
-  instance: [mikroe]
-- id: app_log
+  - id: sl_system
+  - id: device_init
+  - id: iostream_eusart
+    instance: [vcom]
+  - id: iostream_usart
+    instance: [mikroe]
+  - id: app_log
+  - id: mikroe_lte_iot2
+    from: third_party_hw_drivers
 
 configuration:
   - name: SL_IOSTREAM_USART_MIKROE_FLOW_CONTROL_TYPE
@@ -52,8 +49,11 @@ toolchain_settings:
     value: "-u _printf_float"
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/mikroe_lte_iot2_bg96/README.md
 
 other_file:
   - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/create_example.png

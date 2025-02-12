@@ -41,7 +41,6 @@
 
 #include "sl_status.h"
 #include "hvac.h"
-#include "drv_i2c_master.h"
 
 #ifdef __cplusplus
 extern "C" {

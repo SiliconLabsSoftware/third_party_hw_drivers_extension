@@ -40,10 +40,6 @@
 #ifndef MIKROE_PH2_CONFIG_H
 #define MIKROE_PH2_CONFIG_H
 
-#ifndef(SLI_SI917)
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -74,33 +70,33 @@ extern "C" {
 // <gpio optional=true> MIKROE_PH2_ST1
 #warning "MIKROE_PH2_ST1 is not configured"
 // $[GPIO_MIKROE_PH2_ST1]
-// #ifndef MIKROE_PH2_ST1_PORT                        
-// #define MIKROE_PH2_ST1_PORT                         gpioPortC
+// #ifndef MIKROE_PH2_ST1_PORT
+// #define MIKROE_PH2_ST1_PORT                         0
 // #endif
-// #ifndef MIKROE_PH2_ST1_PIN                         
-// #define MIKROE_PH2_ST1_PIN                          6
+// #ifndef MIKROE_PH2_ST1_PIN
+// #define MIKROE_PH2_ST1_PIN                          0
 // #endif
 // [GPIO_MIKROE_PH2_ST1]$
 
 // <gpio optional=true> MIKROE_PH2_ST2
 #warning "MIKROE_PH2_ST2 is not configured"
 // $[GPIO_MIKROE_PH2_ST2]
-// #ifndef MIKROE_PH2_ST2_PORT                   
-// #define MIKROE_PH2_ST2_PORT                         gpioPortB
+// #ifndef MIKROE_PH2_ST2_PORT
+// #define MIKROE_PH2_ST2_PORT                         0
 // #endif
-// #ifndef MIKROE_PH2_ST2_PIN                    
-// #define MIKROE_PH2_ST2_PIN                          3
+// #ifndef MIKROE_PH2_ST2_PIN
+// #define MIKROE_PH2_ST2_PIN                          0
 // #endif
 // [GPIO_MIKROE_PH2_ST2]$
 
 // <gpio optional=true> MIKROE_DS18B20_DQ
 #warning "MIKROE_DS18B20_DQ is not configured"
 // $[GPIO_MIKROE_DS18B20_DQ]
-// #ifndef MIKROE_DS18B20_DQ_PORT                        
-// #define MIKROE_DS18B20_DQ_PORT                      gpioPortB
+// #ifndef MIKROE_DS18B20_DQ_PORT
+// #define MIKROE_DS18B20_DQ_PORT                      0
 // #endif
-// #ifndef MIKROE_DS18B20_DQ_PIN                         
-// #define MIKROE_DS18B20_DQ_PIN                       4
+// #ifndef MIKROE_DS18B20_DQ_PIN
+// #define MIKROE_DS18B20_DQ_PIN                       0
 // #endif
 // [GPIO_MIKROE_DS18B20_DQ]$
 
@@ -109,4 +105,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // MIKROE_PH2_CONFIG_H

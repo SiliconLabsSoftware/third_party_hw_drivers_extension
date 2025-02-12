@@ -8,11 +8,11 @@ Heart Rate 2 Click board™ is an add-on board based on MAXM86161 integrated opt
 
 ## Required Hardware ##
 
-- [**BGM220-EK4314A** BGM220 Bluetooth Module Explorer Kit (BRD4314A BGM220 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [**Heart Rate 2 Click** board based on MAXM86161 from Maxim Integrated](https://www.mikroe.com/heart-rate-2-click)
+- 1x [Heart Rate 2 Click board](https://www.mikroe.com/heart-rate-2-click) based on MAXM86161
 
 ## Hardware Connection ##
 
@@ -23,15 +23,15 @@ Heart Rate 2 Click board™ is an add-on board based on MAXM86161 integrated opt
 
   ![board](image/hardware_connection.png "BGM220 Explorer Kit Board and Heart Rate 2 Click Board")
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description     | BRD4338A GPIO | BRD4002 Breakout/ EXP Header | Heartrate 2 Click  |
-  | ----------------| ------------- | ---------------------------- | ------------------ |
-  | I2C_SDA         | ULP_GPIO_6    | EXP_16                       | SDA                |
-  | I2C_SCL         | ULP_GPIO_7    | EXP_15                       | SCL                |
-  | General Purpose | GPIO_46       | P24                          | GP                 |
-  | Enable Input    | GPIO_47       | P26                          | EN                 |
-  | Interrupt       | GPIO_48       | P28                          | INT                |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | Heartrate 2 Click  |
+  | ----------------| --------------- | ------------- | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16]   | ULP_GPIO_6 | SDA                |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15]   | ULP_GPIO_7 | SCL                |
+  | General Purpose | GPIO_46 [P24]      | GPIO_10    | GP                 |
+  | Enable Input    | GPIO_47 [P26]      | GPIO_11    | EN                 |
+  | Interrupt       | GPIO_48 [P28]      | GPIO_12    | INT                |
 
 ## Setup ##
 
@@ -68,7 +68,7 @@ You can either create a project based on an example project or start with an emp
         - [Application] → [Utility] → [Log]
         - [Third Party Hardware Drivers] → [Sensors] → [MAXM86161 - Heart Rate 2 Click (Mikroe)] -> use default configuration
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
@@ -80,7 +80,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "MAXM86161 - Heart Rate 2 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "MAXM86161 - Heart Rate 2 Click (Mikroe)" component.
 
 ## How It Works ##
 

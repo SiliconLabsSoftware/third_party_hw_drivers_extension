@@ -61,7 +61,7 @@
 // <o FF_FS_MINIMIZE> Define minimization level to remove some basic API functions. <0-3>
 #define FF_FS_MINIMIZE  0
 // <i> This option defines minimization level to remove some basic API functions.
-// <i> 
+// <i>
 // <i> 0: Basic functions are fully enabled.
 // <i> 1: f_stat(), f_getfree(), f_unlink(), f_mkdir(), f_truncate() and f_rename()
 // <i> are removed.
@@ -103,7 +103,7 @@
 #define FF_USE_STRFUNC  0
 // <i> FF_USE_STRFUNC switches string functions, f_gets(), f_putc(), f_puts() and
 // <i> f_printf().
-// <i> 
+// <i>
 // <i> 0: Disable. FF_PRINT_LLI, FF_PRINT_FLOAT and FF_STRF_ENCODE have no effect.
 // <i> 1: Enable without LF-CRLF conversion.
 // <i> 2: Enable with LF-CRLF conversion.
@@ -117,7 +117,7 @@
 #define FF_PRINT_FLOAT  1
 
 // <o FF_STRF_ENCODE> Character encoding type. <0-3>
-// <i> 
+// <i>
 // <i> When FF_LFN_UNICODE >= 1 with LFN enabled, string functions convert the character
 // <i> encoding in it. FF_STRF_ENCODE selects assumption of character encoding ON THE FILE
 // <i> to be read/written via those functions.
@@ -195,7 +195,7 @@
 // <o FF_USE_LFN_OPT> LFN (long file name) option <0-3>
 #define FF_USE_LFN_OPT 1
 // <i> The FF_USE_LFN switches the support for LFN (long file name).
-// <i> 
+// <i>
 // <i>   0: Disable LFN. FF_MAX_LFN has no effect.
 // <i>   1: Enable LFN with static  working buffer on the BSS. Always NOT thread-safe.
 // <i>   2: Enable LFN with dynamic working buffer on the STACK.
@@ -209,7 +209,7 @@
 
 // <o FF_MAX_LFN> Define size of the working buffer in UTF-16 code unit. <1-255>
 #define FF_MAX_LFN    255
-// <i> 
+// <i>
 // <i>  The FF_MAX_LFN defines size of the working buffer in UTF-16 code unit and it can
 // <i>  be in range of 12 to 255. It is recommended to be set it 255 to fully support LFN
 // <i>  specification.
@@ -220,12 +220,12 @@
 // <o FF_LFN_UNICODE> Character encoding on the API when LFN is enabled <0-3>
 #define FF_LFN_UNICODE  0
 // <i> This option switches the character encoding on the API when LFN is enabled.
-// <i> 
+// <i>
 // <i>   0: ANSI/OEM in current CP (TCHAR = char)
 // <i>   1: Unicode in UTF-16 (TCHAR = WCHAR)
 // <i>   2: Unicode in UTF-8 (TCHAR = char)
 // <i>   3: Unicode in UTF-32 (TCHAR = DWORD)
-// <i> 
+// <i>
 // <i>  Also behavior of string I/O functions will be affected by this option.
 // <i>  When LFN is not enabled, this option has no effect.
 
@@ -243,7 +243,7 @@
 // <q FF_FS_RPATH> Enable relative path. <0-2>
 #define FF_FS_RPATH   0
 // <i> This option configures support for relative path.
-// <i> 
+// <i>
 // <i>   0: Disable relative path and remove related functions.
 // <i>   1: Enable relative path. f_chdir() and f_chdrive() are available.
 // <i>   2: f_getcwd() function is available in addition to 1.
@@ -347,12 +347,12 @@
 // <o FF_FS_NOFSINFO_BIT0> Enable force a full FAT scan at the first time after volume mount.
 #define FF_FS_NOFSINFO_BIT0  0
 // <o FF_FS_NOFSINFO_BIT0> Enable the use of last allocated cluster number.
-#define FF_FS_NOFSINFO_BIT1  1
+#define FF_FS_NOFSINFO_BIT1  0
 #define FF_FS_NOFSINFO       (FF_FS_NOFSINFO_BIT0 | FF_FS_NOFSINFO_BIT1)
 // <i> If you need to know correct free space on the FAT32 volume, set bit 0 of this
 // <i>  option, and f_getfree() function at the first time after volume mount will force
 // <i>  a full FAT scan. Bit 1 controls the use of last allocated cluster number.
-// <i> 
+// <i>
 // <i>  bit0=0: Use free cluster count in the FSINFO if available.
 // <i>  bit0=1: Do not trust free cluster count in the FSINFO.
 // <i>  bit1=0: Use last allocated cluster number in the FSINFO if available.
@@ -363,7 +363,7 @@
 // <i> The option FF_FS_LOCK switches file lock function to control duplicated file open
 // <i>  and illegal operation to open objects. This option must be 0 when FF_FS_READONLY
 // <i>  is 1.
-// <i> 
+// <i>
 // <i>  0:  Disable file lock function. To avoid volume corruption, application program
 // <i>      should avoid illegal open, remove and rename to the open objects.
 // <i>  >0: Enable file lock function. The value defines how many files/sub-directories
@@ -377,20 +377,16 @@
 // <i>  volume is always re-entrant and volume control functions, f_mount(), f_mkfs()
 // <i>  and f_fdisk() function, are always not re-entrant. Only file/directory access
 // <i>  to the same volume is under control of this featuer.
-// <i> 
+// <i>
 // <i>   0: Disable re-entrancy. FF_FS_TIMEOUT have no effect.
 // <i>   1: Enable re-entrancy. Also user provided synchronization handlers,
 // <i>      ff_mutex_create(), ff_mutex_delete(), ff_mutex_take() and ff_mutex_give()
 // <i>      function, must be added to the project. Samples are available in ffsystem.c.
 // <o FF_FS_TIMEOUT> Timeout period in unit of O/S time tick.
-#define FF_FS_TIMEOUT 1000 
+#define FF_FS_TIMEOUT 1000
 // <i>  The FF_FS_TIMEOUT defines timeout period in unit of O/S time tick.
 
 // </h>
 // <<< end of configuration section >>>
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* FFCONF_H_ */

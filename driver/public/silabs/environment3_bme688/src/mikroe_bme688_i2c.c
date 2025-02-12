@@ -33,8 +33,8 @@
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 
-#include "mikroe_bme688_i2c.h"
 #include "sl_sleeptimer.h"
+#include "mikroe_bme688_i2c.h"
 #include "mikroe_bme688_i2c_config.h"
 
 // Local prototypes

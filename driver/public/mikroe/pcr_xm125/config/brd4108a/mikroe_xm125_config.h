@@ -39,8 +39,6 @@
 #ifndef MIKROE_XM125_CONFIG_H_
 #define MIKROE_XM125_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -70,19 +68,19 @@ extern "C" {
 
 // <gpio> CONFIG_XM125_RST
 // $[GPIO_CONFIG_XM125_RST]
-#define CONFIG_XM125_RST_PORT                       gpioPortC
+#define CONFIG_XM125_RST_PORT                       SL_GPIO_PORT_C
 #define CONFIG_XM125_RST_PIN                        6
 // [GPIO_CONFIG_XM125_RST]$
 
 // <gpio> CONFIG_XM125_WUP
 // $[GPIO_CONFIG_XM125_WUP]
-#define CONFIG_XM125_WUP_PORT                       gpioPortB
+#define CONFIG_XM125_WUP_PORT                       SL_GPIO_PORT_B
 #define CONFIG_XM125_WUP_PIN                        4
 // [GPIO_CONFIG_XM125_WUP]$
 
 // <gpio> CONFIG_XM125_INT
 // $[GPIO_CONFIG_XM125_INT]
-#define CONFIG_XM125_INT_PORT                       gpioPortB
+#define CONFIG_XM125_INT_PORT                       SL_GPIO_PORT_B
 #define CONFIG_XM125_INT_PIN                        3
 // [GPIO_CONFIG_XM125_INT]$
 

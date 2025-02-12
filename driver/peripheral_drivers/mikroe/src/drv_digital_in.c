@@ -38,59 +38,59 @@
  ******************************************************************************/
 
 #include "drv_digital_in.h"
-#include "em_gpio.h"
+#include "sl_gpio.h"
 
 static err_t drv_digital_in_init(digital_in_t *in,
                                  pin_name_t name,
-                                 GPIO_Mode_TypeDef mode,
-                                 unsigned int out);
+                                 sl_gpio_mode_t mode,
+                                 bool output_value);
 
 err_t digital_in_init(digital_in_t *in, pin_name_t name)
 {
-  return drv_digital_in_init(in, name, gpioModeInput, 0);
+  return drv_digital_in_init(in, name, SL_GPIO_MODE_INPUT, 0);
 }
 
 err_t digital_in_pullup_init(digital_in_t *in, pin_name_t name)
 {
-  return drv_digital_in_init(in, name, gpioModeInputPull, 1);
+  return drv_digital_in_init(in, name, SL_GPIO_MODE_INPUT_PULL, 1);
 }
 
 err_t digital_in_pulldown_init(digital_in_t *in, pin_name_t name)
 {
-  return drv_digital_in_init(in, name, gpioModeInputPull, 0);
+  return drv_digital_in_init(in, name, SL_GPIO_MODE_INPUT_PULL, 0);
 }
 
 uint8_t digital_in_read(digital_in_t *in)
 {
-  if (GPIO_PORT_VALID(in->pin.base)) {
-    return (uint8_t) ((GPIO_PortInGet(in->pin.base) & in->pin.mask) != 0);
+  bool pin_value;
+
+  if (sl_gpio_get_pin_input((const sl_gpio_t *)in,
+                            &pin_value) == SL_STATUS_OK) {
+    return pin_value;
   }
   return 0;
 }
 
 static err_t drv_digital_in_init(digital_in_t *in,
                                  pin_name_t name,
-                                 GPIO_Mode_TypeDef mode,
-                                 unsigned int out)
+                                 sl_gpio_mode_t mode,
+                                 bool output_value)
 {
-  GPIO_Port_TypeDef port_index;
-  unsigned int pin_index;
-
-  in->pin.base = (uint32_t) -1;
-  in->pin.mask = 0;
   if (HAL_PIN_NC == name) {
     return DIGITAL_IN_UNSUPPORTED_PIN;
   }
 
-  port_index = (GPIO_Port_TypeDef) hal_gpio_port_index(name);
-  pin_index = hal_gpio_pin_index(name);
+  in->pin.base = hal_gpio_port_index(name);
+  in->pin.mask = hal_gpio_pin_index(name);
 
-  if (!GPIO_PORT_PIN_VALID(port_index, pin_index)) {
+  if (sl_gpio_set_pin_mode((const sl_gpio_t *)in,
+                           mode,
+                           output_value) != SL_STATUS_OK) {
+    in->pin.base = (uint8_t) -1;
+    in->pin.mask = 0;
     return DIGITAL_IN_UNSUPPORTED_PIN;
   }
-  GPIO_PinModeSet(port_index, pin_index, mode, out);
-  in->pin.base = port_index;
-  in->pin.mask = 1 << pin_index;
+
   return DIGITAL_IN_SUCCESS;
 }
 

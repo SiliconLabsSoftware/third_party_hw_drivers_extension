@@ -37,8 +37,7 @@
 #define ADAFRUIT_TSC2007_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
@@ -109,15 +108,14 @@ extern "C"
 
 // <gpio optional=true> ADAFRUIT_TSC2007_INT
 // $[GPIO_ADAFRUIT_TSC2007_INT]
-#define ADAFRUIT_TSC2007_INT_PORT                gpioPortB
+#define ADAFRUIT_TSC2007_INT_PORT                SL_GPIO_PORT_B
 #define ADAFRUIT_TSC2007_INT_PIN                 0
 // [GPIO_ADAFRUIT_TSC2007_INT]$
 
 // <<< sl:end pin_tool >>>
 
 #ifdef __cplusplus
-extern "C"
 }
 #endif
 
-#endif /* ADAFRUIT_TSC2007_CONFIG_H_ */
+#endif // ADAFRUIT_TSC2007_CONFIG_H_

@@ -9,8 +9,11 @@ It is the fastest miniature ToF sensor on the market with accurate ranging up to
 
 ## Hardware Required ##
 
-- [BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [SparkFun Distance Sensor Breakout - 4 Meter, VL53L1X (Qwiic)](https://www.sparkfun.com/products/14722) or [MikroE LIGHTRANGER 4 Click](https://www.mikroe.com/lightranger-4-click)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
+
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+
+- 1x [SparkFun Distance Sensor Breakout - 4 Meter, VL53L1X (Qwiic)](https://www.sparkfun.com/products/14722) or [LightRanger 4 click](https://www.mikroe.com/lightranger-4-click)
 
 ## Connections Required ##
 
@@ -22,12 +25,12 @@ A VL53L1X sensor board can be easily connected up with two I2C wires (SDA and SC
 
   ![connection](image/connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | Sparkfun AK9753 sensor board |
-  | -------------| ------------- | ------------------ | ------------------ |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | SparkFun Distance Sensor Breakout |
+  | -------------| ------------------- | ------------ | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | Qwiic cable  | SDA                |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | Qwiic cable  | SCL                |
 
 ## Setup ##
 
@@ -65,7 +68,7 @@ You can either create a project based on an example project or start with an emp
          - [Platform] → [Driver] → [I2C] → [I2CSPM] → default instance name: **qwiic**
          - [Third Party Hardware Drivers] → [Sensors] → [**VL53L1X - Distance Sensor Breakout (Sparkfun)**]
 
-      - If the **SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit** is used:
+      - If the **Wi-Fi Development Kit** is used:
 
          - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
          - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
@@ -77,7 +80,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install **VL53L1X - Distance Sensor Breakout (Sparkfun) - I2C** component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install **VL53L1X - Distance Sensor Breakout (Sparkfun) - I2C** component.
 
 ## How It Works ##
 

@@ -69,30 +69,30 @@ extern "C" {
 
 // <gpio optional=true> MIKROE_PH2_ST1
 // $[GPIO_MIKROE_PH2_ST1]
-#ifndef MIKROE_PH2_ST1_PORT                        
+#ifndef MIKROE_PH2_ST1_PORT
 #define MIKROE_PH2_ST1_PORT                         HP
 #endif
-#ifndef MIKROE_PH2_ST1_PIN                         
+#ifndef MIKROE_PH2_ST1_PIN
 #define MIKROE_PH2_ST1_PIN                          46
 #endif
 // [GPIO_MIKROE_PH2_ST1]$
 
 // <gpio optional=true> MIKROE_PH2_ST2
 // $[GPIO_MIKROE_PH2_ST2]
-#ifndef MIKROE_PH2_ST2_PORT                   
+#ifndef MIKROE_PH2_ST2_PORT
 #define MIKROE_PH2_ST2_PORT                         HP
 #endif
-#ifndef MIKROE_PH2_ST2_PIN                    
+#ifndef MIKROE_PH2_ST2_PIN
 #define MIKROE_PH2_ST2_PIN                          47
 #endif
 // [GPIO_MIKROE_PH2_ST2]$
 
 // <gpio optional=true> MIKROE_DS18B20_DQ
 // $[GPIO_MIKROE_DS18B20_DQ]
-#ifndef MIKROE_DS18B20_DQ_PORT                        
+#ifndef MIKROE_DS18B20_DQ_PORT
 #define MIKROE_DS18B20_DQ_PORT                      HP
 #endif
-#ifndef MIKROE_DS18B20_DQ_PIN                         
+#ifndef MIKROE_DS18B20_DQ_PIN
 #define MIKROE_DS18B20_DQ_PIN                       48
 #endif
 // [GPIO_MIKROE_DS18B20_DQ]$
@@ -102,4 +102,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // MIKROE_PH2_CONFIG_H

@@ -40,10 +40,6 @@
 #ifndef MIKROE_NT3H211_CONFIG_H_
 #define MIKROE_NT3H211_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 // A CMSIS annotation block starts with the following line:
 // <<< Use Configuration Wizard in Context Menu >>>
 
@@ -79,10 +75,10 @@
 // <gpio optional=true> MIKROE_NT3H211_FD
 // $[GPIO_MIKROE_NT3H211_FD]
 #warning "FD GPIO not configured"
-// #define MIKROE_NT3H211_FD_PORT                        gpioPortB
-// #define MIKROE_NT3H211_FD_PIN                         3
+// #define MIKROE_NT3H211_FD_PORT                        0
+// #define MIKROE_NT3H211_FD_PIN                         0
 // [GPIO_MIKROE_NT3H211_FD]$
 
 // <<< sl:end pin_tool >>>
 
-#endif /* MIKROE_NT3H211_CONFIG_H_ */
+#endif // MIKROE_NT3H211_CONFIG_H_

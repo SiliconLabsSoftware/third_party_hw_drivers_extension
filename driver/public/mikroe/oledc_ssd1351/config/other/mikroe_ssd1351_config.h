@@ -39,10 +39,6 @@
 #ifndef MIKROE_SSD1351_CONFIG_H_
 #define MIKROE_SSD1351_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #define SSD1351_DISPLAY_WIDTH                         96
 #define SSD1351_DISPLAY_HEIGHT                        96
 #define SSD1351_DISPLAY_COLOR                         16
@@ -51,7 +47,7 @@
 
 // <h> MIKROE SSD1351 SPI Configuration
 
-// <e>MIKROE SSD1351 SPI UC Configuration
+// <e> MIKROE SSD1351 SPI UC Configuration
 // <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
 // <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
 // <i> Default: 0
@@ -67,37 +63,31 @@
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> SSD1351_CS
-// $[GPIO_SSD1351_CS]
-// #define SSD1351_CS_PORT                        0
-// #define SSD1351_CS_PIN                         0
-// [GPIO_SSD1351_CS]$
-
 // <gpio optional=true> SSD1351_DC
 // $[GPIO_SSD1351_DC]
 #warning "SSD1351_DC is not configured"
-// #define SSD1351_DC_PORT                               gpioPortB
-// #define SSD1351_DC_PIN                                4
+// #define SSD1351_DC_PORT                               0
+// #define SSD1351_DC_PIN                                0
 // [GPIO_SSD1351_DC]$
 
 // <gpio optional=true> SSD1351_RST
 // $[GPIO_SSD1351_RST]
 #warning "SSD1351_RST is not configured"
-// #define SSD1351_RST_PORT                              gpioPortC
-// #define SSD1351_RST_PIN                               6
+// #define SSD1351_RST_PORT                              0
+// #define SSD1351_RST_PIN                               0
 // [GPIO_SSD1351_RST]$
 
 // <gpio optional=true> SSD1351_EN
 // $[GPIO_SSD1351_EN]
 #warning "SSD1351_EN is not configured"
-// #define SSD1351_EN_PORT                               gpioPortB
-// #define SSD1351_EN_PIN                                3
+// #define SSD1351_EN_PORT                               0
+// #define SSD1351_EN_PIN                                0
 // [GPIO_SSD1351_EN]$
 
 // <gpio optional=true> SSD1351_RW
 // $[GPIO_SSD1351_RW]
 #warning "SSD1351_RW is not configured"
-// #define SSD1351_RW_PORT                               gpioPortB
+// #define SSD1351_RW_PORT                               0
 // #define SSD1351_RW_PIN                                0
 // [GPIO_SSD1351_RW]$
 

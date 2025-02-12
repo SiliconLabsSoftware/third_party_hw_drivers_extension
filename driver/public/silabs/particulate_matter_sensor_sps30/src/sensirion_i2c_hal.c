@@ -77,9 +77,6 @@ sl_status_t sensirion_i2c_hal_init(mikroe_i2c_handle_t i2c_handle)
 
     i2c_master_config_t i2c_cfg;
     i2c_master_configure_default(&i2c_cfg);
-    i2c_cfg.speed = I2C_MASTER_SPEED_STANDARD;
-    i2c_cfg.scl = HAL_PIN_NC;
-    i2c_cfg.sda = HAL_PIN_NC;
 
 #if (PM_SENSOR_SPS30_I2C_UC == 1)
     i2c_cfg.speed = PM_SENSOR_SPS30_I2C_SPEED_MODE;
@@ -146,7 +143,7 @@ sl_status_t sensirion_i2c_hal_write(uint8_t address, const uint8_t *data,
     i2c_master_set_slave_address(&s_i2c_handle, address);
 
     if (I2C_MASTER_SUCCESS != i2c_master_write(&s_i2c_handle,
-                                               data,
+                                               (uint8_t *) data,
                                                count)) {
       return SL_STATUS_FAIL;
     }

@@ -9,10 +9,7 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
-
 provides:
   - name: adafruit_neotrellis_keypad_atsamd09
     allow_multiple: false
@@ -28,7 +25,6 @@ include:
       - path: adafruit_neotrellis.h
       - path: adafruit_neopixel.h
       - path: adafruit_seesaw.h
-
 source:
   - path: public/silabs/adafruit_neotrellis_keypad_atsamd09/src/adafruit_neotrellis.c
   - path: public/silabs/adafruit_neotrellis_keypad_atsamd09/src/adafruit_neopixel.c

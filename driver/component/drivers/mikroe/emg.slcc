@@ -25,8 +25,8 @@ config_file:
   - path: public/mikroe/emg/config/brd4314a/mikroe_emg_config.h
     file_id: driver_config_emg
     condition: [brd4314a]
-  - path: public/mikroe/emg/config/brd4338a/mikroe_emg_config.h
-    file_id: driver_config_alcohol
+  - path: public/mikroe/emg/config/device_si91x/mikroe_emg_config.h
+    file_id: driver_config_emg
     condition: [device_si91x]
   - path: public/mikroe/emg/config/other/mikroe_emg_config.h
     file_id: driver_config_emg

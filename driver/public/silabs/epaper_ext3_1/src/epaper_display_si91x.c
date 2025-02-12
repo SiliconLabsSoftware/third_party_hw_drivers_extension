@@ -37,24 +37,18 @@
  *
  ******************************************************************************/
 #include <string.h>
-#include "sl_si91x_clock_manager.h"
 #include "sl_si91x_peripheral_gpio.h"
-#include "rsi_egpio.h"
+#include "sl_si91x_gspi_common_config.h"
 #include "sl_si91x_gspi.h"
 
 #include "epaper_display.h"
 #include "epaper_display_config.h"
+#include "drv_digital_in.h"
+#include "drv_digital_out.h"
 
 #include "sl_sleeptimer.h"
 
 #define DELAY_10US_COUNTER           46             // Delay count
-
-#define SOC_PLL_CLK \
-  ((uint32_t) (180000000L)) // 180MHz default SoC PLL Clock
-                            // as source to Processor
-#define INTF_PLL_CLK \
-  ((uint32_t) (180000000L)) // 180MHz default Interface PLL Clock
-                            // as source to all peripherals
 
 #define GSPI_BUFFER_SIZE             1024      // Size of buffer
 #define GSPI_INTF_PLL_CLK            180000000 // Intf pll clock frequency
@@ -71,6 +65,13 @@
 #define GSPI_MAX_BIT_WIDTH           16        // Maximum Bit width
 
 static sl_gspi_handle_t spi_epd_handle = NULL;
+
+static digital_in_t busy_pin;
+static digital_out_t dc_pin;
+static digital_out_t rst_pin;
+static digital_out_t cs_pin;
+static digital_out_t sck_pin;
+static digital_out_t mosi_pin;
 
 // read/write for OTP
 static uint8_t sspi_read();
@@ -111,82 +112,6 @@ static const struct epd_driver epd_driver = {
     } while (gspi_status.busy);                       \
   } while (0)
 
-#define si91x_get_port(num)           ((num) / 16)
-#define si91x_get_pin(num)            ((num) % 16)
-#define si91x_get_gpio_num(port, pin) (((port) * 16)  + pin)
-
-static inline uint8_t si91x_gpio_get_pad(uint16_t gpio_num)
-{
-  if ((gpio_num >= 6) && (gpio_num <= 12)) {
-    return gpio_num - 5;
-  } else if (gpio_num == 15) {
-    return 8;
-  } else if ((gpio_num == 31)
-             || (gpio_num == 32)
-             || (gpio_num == 33)
-             || (gpio_num == 34)) {
-    return 9;
-  } else if ((gpio_num >= 46) && (gpio_num <= 57)) {
-    return gpio_num - 36;
-  } else {
-    return 0;
-  }
-}
-
-static inline sl_status_t si91x_gpio_setup(uint16_t gpio_num,
-                                           sl_gpio_mode_t mode,
-                                           sl_si91x_gpio_direction_t direction,
-                                           uint32_t output_value)
-{
-  sl_gpio_port_t port = si91x_get_port(gpio_num);
-  uint8_t pin = si91x_get_pin(gpio_num);
-
-  if (!SL_GPIO_VALIDATE_PORT(port)) {
-    return SL_STATUS_INVALID_PARAMETER;
-  }
-
-  if (port == SL_ULP_GPIO_PORT) {
-    if (!SL_GPIO_VALIDATE_ULP_PORT_PIN(port, pin)) {
-      return SL_STATUS_INVALID_PARAMETER;
-    }
-  } else {
-    if (!SL_GPIO_NDEBUG_PORT_PIN(port, pin)) {
-      return SL_STATUS_INVALID_PARAMETER;
-    }
-  }
-
-  if (port == SL_ULP_GPIO_PORT) {
-    sl_si91x_gpio_enable_clock(ULPCLK_GPIO);
-    sl_si91x_gpio_enable_ulp_pad_receiver(pin);
-  } else {
-    sl_si91x_gpio_enable_clock(M4CLK_GPIO);
-    sl_si91x_gpio_enable_pad_receiver(gpio_num);
-    uint8_t pad = si91x_gpio_get_pad(gpio_num);
-    if (pad) {
-      sl_si91x_gpio_enable_pad_selection(pad);
-    }
-  }
-
-  sl_gpio_set_pin_mode(port, pin, mode, output_value);
-  sl_si91x_gpio_set_pin_direction(port, pin, direction);
-  return SL_STATUS_OK;
-}
-
-/*******************************************************************************
- * default_clock_configuration
- ******************************************************************************/
-static void default_clock_configuration(void)
-{
-  // Core Clock runs at 180MHz SOC PLL Clock
-  sl_si91x_clock_manager_m4_set_core_clk(M4_SOCPLLCLK, SOC_PLL_CLK);
-
-  // All peripherals' source to be set to Interface PLL Clock
-  // and it runs at 180MHz
-  sl_si91x_clock_manager_set_pll_freq(INFT_PLL,
-                                      INTF_PLL_CLK,
-                                      PLL_REF_CLK_VAL_XTAL);
-}
-
 static sl_status_t spi_config(void)
 {
   sl_status_t status;
@@ -207,8 +132,6 @@ static sl_status_t spi_config(void)
     .swap_read = GSPI_SWAP_READ_DATA,
     .swap_write = GSPI_SWAP_WRITE_DATA,
   };
-
-  default_clock_configuration();
 
 //  gspi_configuration = control_config;
   // Configuration of clock with the default clock parameters
@@ -251,14 +174,13 @@ static sl_status_t spi_config(void)
 
 static void sspi_init(void)
 {
-  si91x_gpio_setup(RTE_GSPI_MASTER_CS0_PIN,
-                   SL_GPIO_MODE_0,
-                   GPIO_OUTPUT,
-                   0);
-  si91x_gpio_setup(RTE_GSPI_MASTER_CLK_PIN,
-                   SL_GPIO_MODE_0,
-                   GPIO_OUTPUT,
-                   0);
+  pin_name_t pin = hal_gpio_pin_name(SL_GSPI_MASTER_MOSI__PORT,
+                                     SL_GSPI_MASTER_MOSI__PIN);
+  digital_out_init(&mosi_pin, pin);
+  digital_out_low(&mosi_pin);
+  pin = hal_gpio_pin_name(SL_GSPI_MASTER_SCK__PORT, SL_GSPI_MASTER_SCK__PIN);
+  digital_out_init(&sck_pin, pin);
+  digital_out_low(&sck_pin);
 }
 
 static void spi_init(void)
@@ -270,24 +192,16 @@ static uint8_t sspi_read(void)
 {
   uint8_t value = 0;
 
-  si91x_gpio_setup(RTE_GSPI_MASTER_CLK_PIN,
-                   SL_GPIO_MODE_0,
-                   GPIO_OUTPUT,
-                   0);
-  si91x_gpio_setup(RTE_GSPI_MASTER_MOSI_PIN,
-                   SL_GPIO_MODE_0,
-                   GPIO_INPUT,
-                   0);
+  digital_out_low(&sck_pin);
+  sl_si91x_gpio_set_pin_direction(mosi_pin.pin.base,
+                                  mosi_pin.pin.mask,
+                                  (sl_si91x_gpio_direction_t)GPIO_INPUT);
 
   for (uint8_t i = 0; i < 8; i++) {
-    sl_gpio_set_pin_output(si91x_get_port(RTE_GSPI_MASTER_CLK_PIN),
-                           si91x_get_pin(RTE_GSPI_MASTER_CLK_PIN));
+    digital_out_high(&sck_pin);
     delay_10us(1);
-    value |= (sl_gpio_get_pin_input(
-                si91x_get_port(RTE_GSPI_MASTER_MOSI_PIN),
-                si91x_get_pin(RTE_GSPI_MASTER_MOSI_PIN)) ? 1 : 0) << (7 - i);
-    sl_gpio_clear_pin_output(si91x_get_port(RTE_GSPI_MASTER_CLK_PIN),
-                             si91x_get_pin(RTE_GSPI_MASTER_CLK_PIN));
+    value |= digital_in_read((digital_in_t *)&mosi_pin) << (7 - i);
+    digital_out_low(&sck_pin);
     delay_10us(1);
   }
 
@@ -296,30 +210,22 @@ static uint8_t sspi_read(void)
 
 static void sspi_write(uint8_t value)
 {
-  si91x_gpio_setup(RTE_GSPI_MASTER_CLK_PIN,
-                   SL_GPIO_MODE_0,
-                   GPIO_OUTPUT,
-                   0);
-  si91x_gpio_setup(RTE_GSPI_MASTER_MOSI_PIN,
-                   SL_GPIO_MODE_0,
-                   GPIO_OUTPUT,
-                   0);
+  digital_out_low(&sck_pin);
+  sl_si91x_gpio_set_pin_direction(mosi_pin.pin.base,
+                                  mosi_pin.pin.mask,
+                                  (sl_si91x_gpio_direction_t)GPIO_OUTPUT);
 
   for (uint8_t i = 0; i < 8; i++) {
     if (!(value & (1 << (7 - i)))) {
-      sl_gpio_clear_pin_output(si91x_get_port(RTE_GSPI_MASTER_MOSI_PIN),
-                               si91x_get_pin(RTE_GSPI_MASTER_MOSI_PIN));
+      digital_out_low(&mosi_pin);
     } else {
-      sl_gpio_set_pin_output(si91x_get_port(RTE_GSPI_MASTER_MOSI_PIN),
-                             si91x_get_pin(RTE_GSPI_MASTER_MOSI_PIN));
+      digital_out_high(&mosi_pin);
     }
     delay_10us(1);
 
-    sl_gpio_set_pin_output(si91x_get_port(RTE_GSPI_MASTER_CLK_PIN),
-                           si91x_get_pin(RTE_GSPI_MASTER_CLK_PIN));
+    digital_out_high(&sck_pin);
     delay_10us(1);
-    sl_gpio_clear_pin_output(si91x_get_port(RTE_GSPI_MASTER_CLK_PIN),
-                             si91x_get_pin(RTE_GSPI_MASTER_CLK_PIN));
+    digital_out_low(&sck_pin);
     delay_10us(1);
   }
 }
@@ -327,18 +233,15 @@ static void sspi_write(uint8_t value)
 static void set_reset_pin(bool active)
 {
   if (active) {
-    sl_gpio_clear_pin_output(si91x_get_port(EPD_RST_PIN),
-                             si91x_get_pin(EPD_RST_PIN));
+    digital_out_low(&rst_pin);
   } else {
-    sl_gpio_set_pin_output(si91x_get_port(EPD_RST_PIN),
-                           si91x_get_pin(EPD_RST_PIN));
+    digital_out_high(&rst_pin);
   }
 }
 
 static bool get_busy_pin(void)
 {
-  return (sl_gpio_get_pin_input(si91x_get_port(EPD_BUSY_PIN),
-                                si91x_get_pin(EPD_BUSY_PIN)) == 0);
+  return (digital_in_read(&busy_pin) == 0);
 }
 
 static void delay_10us(uint32_t idelay)
@@ -354,10 +257,8 @@ static sl_status_t sspi_command_read(struct epd *epd,
 {
   (void) epd;
 
-  sl_gpio_clear_pin_output(si91x_get_port(EPD_DC_PIN),
-                           si91x_get_pin(EPD_DC_PIN));
-  sl_gpio_clear_pin_output(si91x_get_port(RTE_GSPI_MASTER_CS0_PIN),
-                           si91x_get_pin(RTE_GSPI_MASTER_CS0_PIN));
+  digital_out_low(&dc_pin);
+  digital_out_low(&cs_pin);
 
   while (num_cmds--) {
     sspi_write(*cmds++);
@@ -365,16 +266,14 @@ static sl_status_t sspi_command_read(struct epd *epd,
   sl_sleeptimer_delay_millisecond(5);
 
   // Start OTP reading
-  sl_gpio_set_pin_output(si91x_get_port(EPD_DC_PIN),
-                         si91x_get_pin(EPD_DC_PIN));
+  digital_out_high(&dc_pin);
   sspi_read(); // Dummy
   while (len--) {
     *response++ = sspi_read();
   }
 
   // End of OTP reading
-  sl_gpio_set_pin_output(si91x_get_port(RTE_GSPI_MASTER_CS0_PIN),
-                         si91x_get_pin(RTE_GSPI_MASTER_CS0_PIN));
+  digital_out_high(&cs_pin);
 
   return SL_STATUS_OK;
 }
@@ -386,10 +285,8 @@ static sl_status_t spi_command_write(struct epd *epd,
   (void) epd;
   sl_status_t status;
 
-  sl_gpio_clear_pin_output(si91x_get_port(EPD_DC_PIN),
-                           si91x_get_pin(EPD_DC_PIN));
-  sl_gpio_clear_pin_output(si91x_get_port(RTE_GSPI_MASTER_CS0_PIN),
-                           si91x_get_pin(RTE_GSPI_MASTER_CS0_PIN));
+  digital_out_low(&dc_pin);
+  digital_out_low(&cs_pin);
 
   status = sl_si91x_gspi_send_data(spi_epd_handle, &cmd, 1);
   if (SL_STATUS_OK != status) {
@@ -398,8 +295,7 @@ static sl_status_t spi_command_write(struct epd *epd,
 
   wait_spi_transfer_ready(spi_epd_handle);
 
-  sl_gpio_set_pin_output(si91x_get_port(EPD_DC_PIN),
-                         si91x_get_pin(EPD_DC_PIN));
+  digital_out_high(&dc_pin);
 
   status = sl_si91x_gspi_send_data(spi_epd_handle, data, len);
   if (SL_STATUS_OK != status) {
@@ -408,8 +304,7 @@ static sl_status_t spi_command_write(struct epd *epd,
 
   wait_spi_transfer_ready(spi_epd_handle);
 
-  sl_gpio_set_pin_output(si91x_get_port(RTE_GSPI_MASTER_CS0_PIN),
-                         si91x_get_pin(RTE_GSPI_MASTER_CS0_PIN));
+  digital_out_high(&cs_pin);
 
   return SL_STATUS_OK;
 }
@@ -430,21 +325,18 @@ void epd_driver_init(struct epd *epd)
 {
   epd->drv = &epd_driver;
 
-  // Config pin
-  si91x_gpio_setup(EPD_BUSY_PIN,
-                   SL_GPIO_MODE_0,
-                   GPIO_INPUT,
-                   0);
-  si91x_gpio_setup(EPD_DC_PIN,
-                   SL_GPIO_MODE_0,
-                   GPIO_OUTPUT,
-                   1);
-  si91x_gpio_setup(EPD_RST_PIN,
-                   SL_GPIO_MODE_0,
-                   GPIO_OUTPUT,
-                   1);
-  si91x_gpio_setup(RTE_GSPI_MASTER_CS0_PIN,
-                   SL_GPIO_MODE_0,
-                   GPIO_OUTPUT,
-                   1);
+  pin_name_t pin = hal_gpio_pin_name(EPD_BUSY_PORT, EPD_BUSY_PIN);
+  digital_in_init(&busy_pin, pin);
+
+  pin = hal_gpio_pin_name(EPD_DC_PORT, EPD_DC_PIN);
+  digital_out_init(&dc_pin, pin);
+  digital_out_high(&dc_pin);
+
+  pin = hal_gpio_pin_name(EPD_RST_PORT, EPD_RST_PIN);
+  digital_out_init(&rst_pin, pin);
+  digital_out_high(&rst_pin);
+
+  pin = hal_gpio_pin_name(SL_GSPI_MASTER_CS0__PORT, SL_GSPI_MASTER_CS0__PIN);
+  digital_out_init(&cs_pin, pin);
+  digital_out_high(&cs_pin);
 }

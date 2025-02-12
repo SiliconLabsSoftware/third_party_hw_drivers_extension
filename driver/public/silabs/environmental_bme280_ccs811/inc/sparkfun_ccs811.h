@@ -40,6 +40,7 @@
 #include "sl_status.h"
 #include "sl_sleeptimer.h"
 #include "drv_i2c_master.h"
+#include "drv_digital_out.h"
 #include "sparkfun_ccs811_config.h"
 
 #ifdef __cplusplus
@@ -47,54 +48,54 @@ extern "C" {
 #endif
 
 /**************************************************************************//**
-* @addtogroup ccs811 CCS811 - Gas Sensor
-* @brief  Driver for the Cambridge CMOS Sensors CCS811 gas and indoor air
-* quality sensor.
-*
-*     @n @section ccs811_example CCS811 usage example code
-*
-*     Basic example for initializing measuring equivalent Co2 and TVOC level.
-*     @verbatim
-*
-#include "sl_i2cspm_instances.h"
-#include "sl_ccs811.h"
-*
-*     int main( void )
-*     {
-*
-*     ...
-*
-*     // Initialize sensor and set measure mode
-*     sl_ccs811_init(sl_i2cspm_sensor_gas);
-*     sl_ccs811_set_measure_mode(sl_i2cspm_sensor_gas,
-*   CCS811_MEASURE_MODE_DRIVE_MODE_1SEC);
-*
-*     uint16_t eco2;
-*     uint16_t tvoc;
-*
-*     while (true) {
-*
-*      if ( sl_ccs811_is_data_available(sl_i2cspm_sensor_gas) ) {
-*        sl_ccs811_get_measurement(sl_i2cspm_sensor_gas, &eco2, &tvoc);
-*      }
-*
-*      ...
-*
-*     }
-*
-*     } @endverbatim
-* @{
-******************************************************************************/
+ * @addtogroup ccs811 CCS811 - Gas Sensor
+ * @brief  Driver for the Cambridge CMOS Sensors CCS811 gas and indoor air
+ * quality sensor.
+ *
+ *     @n @section ccs811_example CCS811 usage example code
+ *
+ *     Basic example for initializing measuring equivalent Co2 and TVOC level.
+ *     @verbatim
+ *
+ #include "sl_i2cspm_instances.h"
+ #include "sl_ccs811.h"
+ *
+ *     int main( void )
+ *     {
+ *
+ *     ...
+ *
+ *     // Initialize sensor and set measure mode
+ *     sl_ccs811_init(sl_i2cspm_sensor_gas);
+ *     sl_ccs811_set_measure_mode(sl_i2cspm_sensor_gas,
+ *   CCS811_MEASURE_MODE_DRIVE_MODE_1SEC);
+ *
+ *     uint16_t eco2;
+ *     uint16_t tvoc;
+ *
+ *     while (true) {
+ *
+ *      if ( sl_ccs811_is_data_available(sl_i2cspm_sensor_gas) ) {
+ *        sl_ccs811_get_measurement(sl_i2cspm_sensor_gas, &eco2, &tvoc);
+ *      }
+ *
+ *      ...
+ *
+ *     }
+ *
+ *     } @endverbatim
+ * @{
+ ******************************************************************************/
 /**************************************************************************//**
-* @addtogroup ccs811_details CCS881 - Gas Sensor Details
-* @brief CCS881 register interface
-* @{
-******************************************************************************/
+ * @addtogroup ccs811_details CCS881 - Gas Sensor Details
+ * @brief CCS881 register interface
+ * @{
+ ******************************************************************************/
 /**************************************************************************//**
-* @addtogroup ccs811_registers Register Addresses
-* @brief Register definitions
-* @{
-******************************************************************************/
+ * @addtogroup ccs811_registers Register Addresses
+ * @brief Register definitions
+ * @{
+ ******************************************************************************/
 
 /* Status register */
 #define SPARKFUN_CCS811_ADDR_STATUS                   0x00
@@ -152,10 +153,10 @@ extern "C" {
 /** @} (end addtogroup ccs811_registers) */
 
 /**************************************************************************//**
-* @addtogroup ccs811_measuremode Measure mode value definitions
-* @brief Measure mode value definitions
-* @{
-******************************************************************************/
+ * @addtogroup ccs811_measuremode Measure mode value definitions
+ * @brief Measure mode value definitions
+ * @{
+ ******************************************************************************/
 
 /* DRIVE_MODE field bit shift value */
 #define SPARKFUN_CCS811_MEASURE_MODE_DRIVE_MODE_SHIFT 4
@@ -264,16 +265,16 @@ sl_status_t sparkfun_ccs811_update_firmware(const uint8_t *firmware,
 sl_status_t sparkfun_ccs811_read_firmware_version(uint16_t *fw_version);
 
 /**************************************************************************//**
-* @brief
-*    Read the status of the CCS811 sensor.
-*
-* @param[out] status
-*    The content of the CCS811 Status Register
-*
-* @return
-*    @retval SL_STATUS_OK Success
-*    @retval SL_STATUS_TRANSMIT I2C transmission error
-******************************************************************************/
+ * @brief
+ *    Read the status of the CCS811 sensor.
+ *
+ * @param[out] status
+ *    The content of the CCS811 Status Register
+ *
+ * @return
+ *    @retval SL_STATUS_OK Success
+ *    @retval SL_STATUS_TRANSMIT I2C transmission error
+ ******************************************************************************/
 sl_status_t sparkfun_ccs811_get_status(uint8_t *status);
 
 /***************************************************************************//**

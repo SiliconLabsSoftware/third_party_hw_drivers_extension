@@ -1,51 +1,49 @@
-project_name: sparkfun_distance_vl53l1x_si91x
+project_name: sparkfun_distance_vl53l1x
 label: Third Party Hardware Drivers - VL53L1X - Distance Sensor (Sparkfun)
 package: platform
-
 description: |
   This example project shows an example for Sparkfun VL53L1X Distance board driver integration.
 category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/sparkfun_distance_vl53l1x/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: sleeptimer_si91x
-  from: wiseconnect3_sdk
-- id: sparkfun_distance_vl53l1x
-  from: third_party_hw_drivers
-- id: syscalls
-  from: wiseconnect3_sdk
-- id: si917_memory_default_config
-  from: wiseconnect3_sdk
-- instance: [i2c2]
-  from: wiseconnect3_sdk
-  id: i2c_instance
+  - id: sl_system
+  - id: syscalls
+    from: wiseconnect3_sdk
+  - id: si917_memory_default_config
+    from: wiseconnect3_sdk
+  - id: i2c_instance
+    instance: [i2c2]
+    from: wiseconnect3_sdk
+  - id: sleeptimer
+  - id: sparkfun_distance_vl53l1x
+    from: third_party_hw_drivers
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
-- id: wiseconnect3_sdk
-  version: 3.3.4
+  - id: third_party_hw_drivers
+    version: 4.1.0
+  - id: wiseconnect3_sdk
+    version: 3.4.0
+
+readme:
+  - path: ../../documentation/example/sparkfun_distance_vl53l1x/README.md
 
 other_file:
   - path: ../../documentation/example/sparkfun_distance_vl53l1x/image/create_example.png

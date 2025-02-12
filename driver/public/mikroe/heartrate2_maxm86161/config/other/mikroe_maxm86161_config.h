@@ -49,22 +49,22 @@ extern "C" {
 // <gpio optional=true> MAXM86161_GP
 // $[GPIO_MAXM86161_GP]
 #warning "General Purpose pin for MAXM86161 is not configured"
-// #define MAXM86161_GP_PORT                        gpioPortB
+// #define MAXM86161_GP_PORT                        0
 // #define MAXM86161_GP_PIN                         0
 // [GPIO_MAXM86161_GP]$
 
 // <gpio optional=true> MAXM86161_EN
 // $[GPIO_MAXM86161_EN]
 #warning "Enable pin for MAXM86161 is not configured"
-// #define MAXM86161_EN_PORT                        gpioPortC
-// #define MAXM86161_EN_PIN                         3
+// #define MAXM86161_EN_PORT                        0
+// #define MAXM86161_EN_PIN                         0
 // [GPIO_MAXM86161_EN]$
 
 // <gpio optional=true> MAXM86161_INT
 // $[GPIO_MAXM86161_INT]
 #warning "Interrupt pin for MAXM86161 is not configured"
-// #define MAXM86161_INT_PORT                       gpioPortB
-// #define MAXM86161_INT_PIN                        3
+// #define MAXM86161_INT_PORT                       0
+// #define MAXM86161_INT_PIN                        0
 // [GPIO_MAXM86161_INT]$
 
 // <<< sl:end pin_tool >>>

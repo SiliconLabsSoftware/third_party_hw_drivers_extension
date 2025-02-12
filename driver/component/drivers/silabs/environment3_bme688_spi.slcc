@@ -11,8 +11,6 @@ root_path: driver
 
 requires:
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_spi
 provides:
   - name: environment3_bme688_spi

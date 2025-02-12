@@ -36,30 +36,21 @@
  *
  ******************************************************************************/
 #include "sl_sleeptimer.h"
-
-#if (defined(SLI_SI917))
-#include "rsi_debug.h"
-#else
-#include "app_log.h"
-#endif
-
 #include "mikroe_adpd188bi_i2c.h"
 
 #if (defined(SLI_SI917))
 #include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
+#define I2C_INSTANCE_USED            SL_I2C2
+
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #else
 #include "sl_i2cspm_instances.h"
-#endif
+#include "app_log.h"
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
-
-#if (defined(SLI_SI917))
-#define I2C_INSTANCE_USED            SL_I2C2
-static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#define app_printf(...)              app_log(__VA_ARGS__)
 #endif
 
 #define SMOKE_THRESHOLD_VALUE        500

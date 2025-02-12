@@ -10,9 +10,9 @@ This example can be used for testing equipment that includes RF transmitters or 
 
 ## Required Hardware ##
 
-- [EFR32xG24-EK2703A EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [Mikroe RF Meter Click board based on AD8318](https://www.mikroe.com/rf-meter-click-click)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [RF Meter Click board](https://www.mikroe.com/rf-meter-click-click) based on AD8318
 
 ## Hardware Connection ##
 
@@ -22,15 +22,15 @@ This example can be used for testing equipment that includes RF transmitters or 
 
   ![hardware_connection](image/hardware_connection.png)
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+- **If the Wi-Fi Development Kit is used**:
 
   The hardware connection is shown in the table below:
 
-  | Description  | BRD4338A GPIO | BRD4002 Breakout Pad | The RF Meter Click board   |
-  | -------------| ------------- | -------------------- | ---------------------------|
-  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                 |
-  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27                  | SDO                 |
-  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28       | P31                  | CS                  |
+  | Description  | BRD4338A + BRD4002A | BRD2605A    | The RF Meter Click board   |
+  | -------------| ------------- | ----------------- | ---------------------------|
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25]      | GPIO_25    | SCK              |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26 [P27]      | GPIO_26    | SDO              |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28 [P31]      | GPIO_28    | CS               |
 
 ## Setup ##
 
@@ -65,23 +65,23 @@ You can either create a project based on an example project or start with an emp
         - [Application] → [Utility] → [Log]
         - [Third Party Hardware Drivers] → [Sensors] → [AD8318 - RF Meter Click (Mikroe)]
 
-        **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+        **If the Wi-Fi Development Kit is used**:
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [Third Party Hardware Drivers] → [Sensors] → [AD8318 - RF Meter Click (Mikroe)]
 
-4. Install printf float
+4. Enable **Printf float**
 
-    - Open Properties of the Project.
-    - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General. Check Printf float.
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
 5. Build and flash this example to the board.
 
 **Note :**
 
-- Make sure that the **Third Party Hardware Drivers** extension has already be installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install the " AD8318 - RF Meter Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install the " AD8318 - RF Meter Click (Mikroe)" component.
 
 ## How It Works ##
 

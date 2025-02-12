@@ -1,4 +1,3 @@
----
 project_name: mikroe_uwb_dwm1000
 label: Third Party Hardware Drivers - DWM1000 - UWB Click (Mikroe)
 package: platform
@@ -7,6 +6,7 @@ description: >
   Click board driver integration.
 category: Example|Platform
 quality: evaluation
+
 filter:
   - name: Device Type
     value:
@@ -17,52 +17,58 @@ filter:
   - name: Project Difficulty
     value:
       - Beginner
-readme:
-  - path: ../../documentation/example/mikroe_uwb_dwm1000/README.md
+
 source:
   - path: app.c
   - path: main.c
+
 include:
   - path: ""
     file_list:
       - path: app.h
+
 component:
-- id: sl_system
-- id: device_init
-- id: uwb_dwm1000
-  from: third_party_hw_drivers
-- id: iostream_eusart
-  instance:
-    - vcom
-- id: simple_button
-  instance:
-    - btn0
-- id: spidrv
-  instance:
-    - mikroe
-- id: app_assert
-- id: app_log
+  - id: sl_system
+  - id: device_init
+  - id: iostream_eusart
+    instance:
+      - vcom
+  - id: simple_button
+    instance:
+      - btn0
+  - id: spidrv
+    instance:
+      - mikroe
+  - id: app_assert
+  - id: app_log
+  - id: uwb_dwm1000
+    from: third_party_hw_drivers
 
 configuration:
   - name: SL_SPIDRV_MIKROE_CS_CONTROL
     value: spidrvCsControlApplication
+
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
 
 define:
   - name: DEBUG_EFM
+
+readme:
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/README.md
+
 other_file:
-- path: ../../documentation/example/mikroe_uwb_dwm1000/image/hardware_connection.png
-  directory: image
-- path: ../../documentation/example/mikroe_uwb_dwm1000/image/sw_layer.png
-  directory: image
-- path: ../../documentation/example/mikroe_uwb_dwm1000/image/create_example.png
-  directory: image
-- path: ../../documentation/example/mikroe_uwb_dwm1000/image/receive_cli.png
-  directory: image
-- path: ../../documentation/example/mikroe_uwb_dwm1000/image/transmit_cli.png
-  directory: image
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/hardware_connection.png
+    directory: image
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/sw_layer.png
+    directory: image
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/create_example.png
+    directory: image
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/receive_cli.png
+    directory: image
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/transmit_cli.png
+    directory: image
 
 ui_hints:
   highlight:

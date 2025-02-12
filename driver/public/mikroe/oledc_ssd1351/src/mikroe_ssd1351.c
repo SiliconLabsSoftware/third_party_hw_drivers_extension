@@ -35,10 +35,9 @@
  * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
-
+#include <stdio.h>
 #include "mikroe_ssd1351.h"
 #include "mikroe_ssd1351_config.h"
-#include "stdio.h"
 
 static oledc_t oledc;
 static oledc_cfg_t oledc_cfg;
@@ -65,9 +64,6 @@ sl_status_t mikroe_ssd1351_init(mikroe_spi_handle_t spi_instance)
 
 #if (MIKROE_SSD1351_SPI_UC == 1)
   oledc_cfg.spi_speed = MIKROE_SSD1351_SPI_BITRATE;
-#endif
-#if defined(SSD1351_CS_PORT) && defined(SSD1351_CS_PIN)
-  oledc_cfg.cs = hal_gpio_pin_name(SSD1351_CS_PORT, SSD1351_CS_PIN);
 #endif
 
   oledc_cfg.dc = hal_gpio_pin_name(SSD1351_DC_PORT, SSD1351_DC_PIN);

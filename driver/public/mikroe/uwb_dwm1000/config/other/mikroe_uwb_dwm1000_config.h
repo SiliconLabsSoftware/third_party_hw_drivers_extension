@@ -44,12 +44,12 @@ extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
-//<h>UWB_DWM1000 SPI Configuration
+// <h> UWB_DWM1000 SPI Configuration
 
-//  <e>UWB_DWM1000 SPI UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> UWB_DWM1000 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define UWB_DWM1000_SPI_UC                  0
 
 // <o UWB_DWM1000_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
@@ -65,26 +65,27 @@ extern "C" {
 // <gpio optional=true> DWM1000_RESET
 // $[GPIO_DWM1000_RESET]
 #warning "GPIO_DWM1000_RESET pin for DWM1000 is not configured"
-// #define DWM1000_RESET_PORT                 gpioPortC
-// #define DWM1000_RESET_PIN                  8
+// #define DWM1000_RESET_PORT                 0
+// #define DWM1000_RESET_PIN                  0
 // [GPIO_DWM1000_RESET]$
 
 // <gpio optional=true> DWM1000_INT
 // $[GPIO_DWM1000_INT]
 #warning "GPIO_DWM1000_INT pin for DWM1000 is not configured"
-// #define DWM1000_INT_PORT                   gpioPortB
-// #define DWM1000_INT_PIN                    1
+// #define DWM1000_INT_PORT                   0
+// #define DWM1000_INT_PIN                    0
 // [GPIO_DWM1000_INT]$
 
 // <gpio optional=true> DWM1000_SPI_CS
 // $[DWM1000_SPI_CS]
 #warning "DWM1000_SPI_CS pin for DWM1000 is not configured"
 // #define DWM1000_SPI_CS_PORT                0
-// #define DWM1000_SPI_CS_PIN                 48
+// #define DWM1000_SPI_CS_PIN                 0
 // [DWM1000_SPI_CS]$
 // <<< sl:end pin_tool >>>
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* DWM1000_CONFIG_H_ */
+
+#endif // DWM1000_CONFIG_H_

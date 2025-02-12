@@ -39,7 +39,6 @@
 
 #include "mikroe_pn7150_config.h"
 #include "mikroe_pn7150.h"
-#include "nfc2.h"
 
 static nfc2_t nfc2;
 static nfc2_cfg_t nfc2_cfg;

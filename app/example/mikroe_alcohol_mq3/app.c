@@ -39,22 +39,22 @@
 #include "sl_status.h"
 #include "sl_sleeptimer.h"
 #include "mikroe_alcohol_mq3.h"
+
 #if (defined(SLI_SI917))
 #include "sl_adc_instances.h"
 #include "rsi_debug.h"
+
+#define app_printf(...)           DEBUGOUT(__VA_ARGS__)
+
+static uint8_t channel = SL_ADC_CHANNEL_1;
 #else
 #include "em_iadc.h"
 #include "app_log.h"
+
+#define app_printf(...)           app_log(__VA_ARGS__)
 #endif
 
 #define READING_INTERVAL_MSEC     1000
-
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-static uint8_t channel = SL_ADC_CHANNEL_1;
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
 
 static volatile bool alcohol_timer_expire = false;
 static sl_sleeptimer_timer_handle_t alcohol_timer;

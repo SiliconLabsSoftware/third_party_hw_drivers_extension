@@ -35,32 +35,74 @@
 #include "sparkfun_weather_station_rainfall.h"
 #include "sparkfun_weather_station_rainfall_config.h"
 
-#include <stddef.h>
+#include "sl_sleeptimer.h"
 
-#include "em_cmu.h"
-#include "em_emu.h"
+#if (defined(SLI_SI917))
+#include "sl_si91x_driver_gpio.h"
+#else
 #include "em_gpio.h"
 #include "gpiointerrupt.h"
+#endif
 
-#include "sl_status.h"
-#include "sl_sleeptimer.h"
+#ifndef HP
+#define HP                                   0
+#endif
+
+#ifndef ULP
+#define ULP                                  4
+#endif
+
+#ifndef UULP_VBAT
+#define UULP_VBAT                            5
+#endif
+
+#define INT_NO                               0 // available interrupt number
+#define INT_CH                               1 // GPIO Pin interrupt
 
 static uint64_t sparkfun_last_rainfall_millis = 0;
 static uint32_t sparkfun_rainfall_count = 0;
 
 static void sparkfun_weatherstation_rainfall_sensor_callback(uint8_t intNo);
 
-static void sparkfun_weatherstation_rainfall_init_CMU(void);
-static void sparkfun_weatherstation_rainfall_init_GPIO(void);
-
 /************************************************************************
  *    Init function
  *****************************************************************************/
 void sparkfun_weatherstation_rainfall_init(void)
 {
-  sparkfun_weatherstation_rainfall_init_CMU();
-  sparkfun_weatherstation_rainfall_init_GPIO();
-  sparkfun_weatherstation_rainfall_reset_rainfall_count();
+  sparkfun_rainfall_count = 0;
+
+#if (defined(SLI_SI917))
+  sl_si91x_gpio_pin_config_t sparkfun_rainfall_cfg = {
+    .port_pin = {
+      (SPARKFUN_WEATHER_STATION_RAINFALL_INT_PORT == HP)
+      ? SPARKFUN_WEATHER_STATION_RAINFALL_INT_PIN / 16
+      : SPARKFUN_WEATHER_STATION_RAINFALL_INT_PORT,
+      SPARKFUN_WEATHER_STATION_RAINFALL_INT_PIN % 16
+    },
+    .direction = GPIO_INPUT
+  };
+
+  sl_gpio_set_configuration(sparkfun_rainfall_cfg);
+  sl_gpio_driver_configure_interrupt(&sparkfun_rainfall_cfg.port_pin,
+                                     INT_CH,
+                                     SL_GPIO_INTERRUPT_RISING_EDGE,
+                                     (void *)&sparkfun_weatherstation_rainfall_sensor_callback,
+                                     INT_NO);
+
+#else
+  GPIO_PinModeSet(SPARKFUN_WEATHER_STATION_RAINFALL_INT_PORT,
+                  SPARKFUN_WEATHER_STATION_RAINFALL_INT_PIN,
+                  gpioModeInputPullFilter,
+                  1);
+  GPIO_ExtIntConfig(SPARKFUN_WEATHER_STATION_RAINFALL_INT_PORT,
+                    SPARKFUN_WEATHER_STATION_RAINFALL_INT_PIN,
+                    SPARKFUN_WEATHER_STATION_RAINFALL_INT_PIN,
+                    false,
+                    true,
+                    true);
+  GPIOINT_CallbackRegister(SPARKFUN_WEATHER_STATION_RAINFALL_INT_PORT,
+                           sparkfun_weatherstation_rainfall_sensor_callback);
+#endif
 }
 
 /************************************************************************
@@ -126,34 +168,4 @@ static void sparkfun_weatherstation_rainfall_sensor_callback(uint8_t intNo)
 
   // Increment counter
   sparkfun_rainfall_count++;
-}
-
-/************************************************************************
- *    Init Clock Management Unit
- *****************************************************************************/
-static void sparkfun_weatherstation_rainfall_init_CMU(void)
-{
-  CMU_ClockEnable(cmuClock_GPIO, true);
-}
-
-/************************************************************************
- *    Init GPIO
- *****************************************************************************/
-static void sparkfun_weatherstation_rainfall_init_GPIO(void)
-{
-  GPIO_PinModeSet(SPARKFUN_WEATHER_STATION_RAINFALL_INT_PORT,
-                  SPARKFUN_WEATHER_STATION_RAINFALL_INT_PIN,
-                  gpioModeInputPullFilter,
-                  1);
-
-  GPIO_ExtIntConfig(SPARKFUN_WEATHER_STATION_RAINFALL_INT_PORT,
-                    SPARKFUN_WEATHER_STATION_RAINFALL_INT_PIN,
-                    SPARKFUN_WEATHER_STATION_RAINFALL_INT_PIN,
-                    false,
-                    true,
-                    true);
-
-  GPIOINT_Init();
-  GPIOINT_CallbackRegister(SPARKFUN_WEATHER_STATION_RAINFALL_INT_PORT,
-                           sparkfun_weatherstation_rainfall_sensor_callback);
 }

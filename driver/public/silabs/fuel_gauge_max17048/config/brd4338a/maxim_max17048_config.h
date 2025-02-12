@@ -107,4 +107,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MAXIM_FUEL_GAUGE_MAX17048_CONFIG_H_ */
+#endif // MAXIM_FUEL_GAUGE_MAX17048_CONFIG_H_

@@ -36,15 +36,13 @@
 #ifndef SPARKFUN_TYPE5_CONFIG_H_
 #define SPARKFUN_TYPE5_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-// <h>SPARKFUN TYPE5 configuration
+// <h> SPARKFUN TYPE5 configuration
 
 // <o SPARKFUN_TYPE5_PROCESS_PERIOD> Process period [MS]
 // <i> Default: 160
@@ -66,13 +64,13 @@ extern "C" {
 
 // <gpio optional=true> SPARKFUN_TYPE5_SIG
 // $[GPIO_SPARKFUN_TYPE5_SIG]
-#define SPARKFUN_TYPE5_SIG_PORT                  gpioPortB
+#define SPARKFUN_TYPE5_SIG_PORT                  SL_GPIO_PORT_B
 #define SPARKFUN_TYPE5_SIG_PIN                   1
 // [GPIO_SPARKFUN_TYPE5_SIG]$
 
 // <gpio optional=true> SPARKFUN_TYPE5_NS
 // $[GPIO_SPARKFUN_TYPE5_NS]
-#define SPARKFUN_TYPE5_NS_PORT                   gpioPortD
+#define SPARKFUN_TYPE5_NS_PORT                   SL_GPIO_PORT_D
 #define SPARKFUN_TYPE5_NS_PIN                    5
 // [GPIO_SPARKFUN_TYPE5_NS]$
 

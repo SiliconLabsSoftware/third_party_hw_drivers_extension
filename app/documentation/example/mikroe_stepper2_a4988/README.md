@@ -8,15 +8,30 @@ Stepper 2 click is a complete solution for driving bipolar stepper motors with f
 
 ## Required Hardware ##
 
-- [**BGM220-EK4314A** BGM220 Bluetooth Module Explorer Kit (BRD4314A BGM220 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- [**Stepper 2 Click** board based on A4988 IC](https://www.mikroe.com/stepper-2-click)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+
+- 1x [Stepper 2 Click](https://www.mikroe.com/stepper-2-click)
 
 ## Hardware Connection ##
+
+- If the EFR32xG24 Explorer Kit is used:
 
 The Stepper 2 Click Board™ supports MikroBus, so it can connect easily to BGM220P Explorer Kit's MikroBus header. Be sure that the 45-degree corner of the Click Board™ matches the 45-degree white line of the Silicon Labs Explorer Kit. In this example, we use a 28BYJ-48 12V stepper motor, so the +12V power supply and GND are connected to the Stepper 2 Click Board™. Also, four control signals for the stepper motor are connected to pins 1A, 1B, 2A, and 2B respectively. The hardware connection is shown in the image below:
 
 ![board](image/hardware_connection.png)
+
+- If the Wi-Fi Development Kit is used:
+
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | DC Motor 26 Click |
+  | ------------ | ------------- | ------------------ | ----------------- |
+  | Chip Enable    | GPIO_50 [P32] | GPIO_7      | EN        |
+  | Reset          | GPIO_49 [P30] | GPIO_6      | RST       |
+  | Sleep          | GPIO_46 [P24] | GPIO_10     | SLP(CS)   |
+  | Direction      | GPIO_47 [P26] | GPIO_11     | INT       |
+  | Step trigger   | GPIO_48 [P28] | GPIO_12     | PWM       |
+
 
 ## Setup ##
 
@@ -24,7 +39,7 @@ You can either create a project based on an example project or start with an emp
 
 ### Create a project based on an example project ###
 
-1. From the Launcher Home, add the BRD4314A to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter "stepper2".
+1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with the filter "stepper2".
 
 2. Click **Create** button on the **Third Party Hardware Drivers - A4988 - Stepper 2 Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
 ![Create_example](image/create_example.png)
@@ -33,7 +48,7 @@ You can either create a project based on an example project or start with an emp
 
 ### Start with an empty example project ###
 
-1. Create an "Empty C Project" for the "BGM220 Explorer Kit Board" using Simplicity Studio v5. Use the default project settings.
+1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
 2. Copy the file `app/example/mikroe_stepper2_a4988/app.c` into the project root folder (overwriting the existing file).
 
@@ -44,18 +59,25 @@ You can either create a project based on an example project or start with an emp
     - Select the SOFTWARE COMPONENTS tab.
 
     - Install the following components:
-
+      
+      **If the Explorer Kit is used:**
         - [Services] → [Timer] → [Sleep Timer]
+        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
         - [Platform] → [Driver] → [Button] → [Simple Button] → default instance name: btn0
         - [Third-Party Hardware Drivers] → [Motor Control] → [A4988 - Stepper 2 Click (Mikroe)]
+
+      **If the Wi-Fi Development Kit is used:**
+        - [Device] → [Si91x] → [MCU] → [Hardware] → [Button] → default instance name: btn0
+        - [Third-Party Hardware Drivers] → [Motor Control] → [A4988 - Stepper 2 Click (Mikroe)]
+
 4. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the SDK extension already be installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "A4988 - Stepper 2 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "A4988 - Stepper 2 Click (Mikroe)" component.
 
 ## How It Works ##
 

@@ -39,12 +39,12 @@
 #define SPARKFUN_KEYPAD_CONFIG_H
 
 // <<< Use Configuration Wizard in Context Menu >>>
-//<h>SPARKFUN KEYPAD I2C Configuration
+// <h> SPARKFUN KEYPAD I2C Configuration
 
-//  <e>SPARKFUN KEYPAD I2C UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> SPARKFUN KEYPAD I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define SPARKFUN_KEYPAD_I2C_UC                  0
 
 // <o SPARKFUN_KEYPAD_I2C_SPEED_MODE> Speed mode
@@ -62,7 +62,7 @@
 
 // <gpio> SPARKFUN_KEYPAD_GPIO_INT
 // $[GPIO_SPARKFUN_KEYPAD_GPIO_INT]
-#define SPARKFUN_KEYPAD_GPIO_INT_PORT gpioPortB
+#define SPARKFUN_KEYPAD_GPIO_INT_PORT SL_GPIO_PORT_B
 #define SPARKFUN_KEYPAD_GPIO_INT_PIN  3
 // [GPIO_SPARKFUN_KEYPAD_GPIO_INT]$
 

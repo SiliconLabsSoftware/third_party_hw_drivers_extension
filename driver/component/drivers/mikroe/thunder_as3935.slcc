@@ -11,9 +11,7 @@ root_path: driver
 requires:
   - name: status
   - name: mikroe_peripheral_driver_spi
-    condition: [device_series_1]
-  - name: mikroe_peripheral_driver_spi
-    condition: [device_series_2]
+    condition: [device_efx]
   - name: mikroe_peripheral_driver_ssi
     condition: [device_si91x]
 config_file:
@@ -26,12 +24,15 @@ config_file:
   - path: public/mikroe/thunder_as3935/config/brd4314a/mikroe_thunder_as3935_config.h
     file_id: mikroe_thunder_config
     condition: [brd4314a]
+  - path: public/mikroe/thunder_as3935/config/brd2605a/mikroe_thunder_as3935_config.h
+    file_id: mikroe_thunder_config
+    condition: [brd2605a]
   - path: public/mikroe/thunder_as3935/config/brd4338a/mikroe_thunder_as3935_config.h
     file_id: mikroe_thunder_config
     condition: [brd4338a]
   - path: public/mikroe/thunder_as3935/config/other/mikroe_thunder_as3935_config.h
     file_id: mikroe_thunder_config
-    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
 provides:
   - name: mikroe_thunder
     allow_multiple: false

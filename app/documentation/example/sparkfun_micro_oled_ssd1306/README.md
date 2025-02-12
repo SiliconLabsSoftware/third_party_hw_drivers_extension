@@ -16,11 +16,11 @@ For more information about the SSD1306 controller, see the [specification page](
 
 ## Required Hardware ##
 
-- [A BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [A SparkFun Micro OLED Breakout (Qwiic) board](https://www.sparkfun.com/products/14532)
+- 1x [SparkFun Micro OLED Breakout (Qwiic) board](https://www.sparkfun.com/products/14532)
 
 ## Hardware Connection ##
 
@@ -30,12 +30,12 @@ For more information about the SSD1306 controller, see the [specification page](
 
   ![bgm220_kit_sparkfun_oled](image/bgm220_kit_sparkfun_oled.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | SparkFun Micro OLED Breakout |
-  | -------------| ------------- | ------------------ | ---------------------------- |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                          |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                          |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | SparkFun Micro OLED Breakout |
+  | -------------| ------------------- | ------------ | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | Qwiic cable  | SDA                |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | Qwiic cable  | SCL                |
 
 **Note:** There are several jumpers on *SparkFun Micro OLED Breakout (Qwiic) board* that can be changed to facilitate several different functions. The first of which is the ADDR jumper. The ADDR jumper can be used to change the I2C address of the board. The default jumper is open by default, pulling the address pin high and giving us an I2C address of 0X3D. Closing this jumper will ground the address pin, giving us an I2C address of 0X3C.
 
@@ -76,7 +76,7 @@ To test this application, you should connect your board to the PC using a micro 
         - [Third Party Hardware Drivers] → [Display & LED] → [SSD1306 - Micro OLED Breakout (Sparkfun) - I2C] → use default configuration
         - [Third Party Hardware Drivers] → [Services] → [GLIB - OLED Graphics Library]
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Hardware] → [Button] → [btn0]
@@ -90,7 +90,7 @@ To test this application, you should connect your board to the PC using a micro 
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "SSD1306 - Micro OLED Breakout (Sparkfun) - I2C" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "SSD1306 - Micro OLED Breakout (Sparkfun) - I2C" component.
 
 ## How It Works ##
 

@@ -40,8 +40,7 @@
 #include "drv_spi_master.h"
 #include "drv_digital_out.h"
 #include "sl_si91x_ssi.h"
-#include "sl_si91x_clock_manager.h"
-#include "rsi_rom_clks.h"
+#include "sl_component_catalog.h"
 
 #define SSI_MASTER_BUFFER_SIZE             1024      // Length of data to be sent through SPI
 #define SSI_MASTER_DIVISION_FACTOR         0         // Division Factor
@@ -56,18 +55,10 @@
 #define SSI_MASTER_MAX_BIT_WIDTH           16        // Maximum Bit width
 #define SSI_MASTER_RECEIVE_SAMPLE_DELAY    0         // By default sample delay is 0
 
-#define SOC_PLL_CLK                        ((uint32_t)(180000000)) // 180MHz default SoC PLL Clock as source to Processor
-#define INTF_PLL_CLK                       ((uint32_t)(180000000)) // 180MHz default Interface PLL Clock as source to all peripherals
-#define QSPI_ODD_DIV_ENABLE                0         // Odd division enable for QSPI clock
-#define QSPI_SWALLO_ENABLE                 0         // Swallo enable for QSPI clock
-#define QSPI_DIVISION_FACTOR               0         // Division factor for QSPI clock
-
 static spi_master_t *_owner = NULL;
 static sl_ssi_handle_t ssi_driver_handle = NULL;
 static uint32_t last_spi_speed_used;
 static spi_master_mode_t last_spi_mode_used;
-
-extern sl_ssi_control_config_t ssi_configuration;
 
 static spi_master_chip_select_polarity_t spi_master_chip_select_polarity =
   SPI_MASTER_CHIP_SELECT_DEFAULT_POLARITY;
@@ -76,7 +67,6 @@ static void callback_event(uint32_t event);
 static err_t _acquire(spi_master_t *obj, bool obj_open_state);
 static void spi_master_configure_gpio_pin(digital_out_t *out, pin_name_t name);
 static err_t spi_master_set_configuration(spi_master_t *obj);
-static void default_clock_configuration(void);
 
 void spi_master_configure_default(spi_master_config_t *config)
 {
@@ -91,6 +81,7 @@ void spi_master_configure_default(spi_master_config_t *config)
 err_t spi_master_open(spi_master_t *obj, spi_master_config_t *config)
 {
   sl_status_t status;
+  sl_ssi_instance_t ssi_handle = *(sl_ssi_instance_t *)obj->handle;
   spi_master_config_t *p_config = &obj->config;
   sl_ssi_clock_config_t ssi_clock_config = {
     .soc_pll_mm_count_value = SSI_MASTER_SOC_PLL_MM_COUNT_LIMIT,
@@ -107,16 +98,13 @@ err_t spi_master_open(spi_master_t *obj, spi_master_config_t *config)
     return SPI_MASTER_ERROR;
   }
 
-  // default clock configuration by application common for whole system
-  default_clock_configuration();
-
   // Configuration of clock with the default clock parameters
   status = sl_si91x_ssi_configure_clock(&ssi_clock_config);
   if (status != SL_STATUS_OK) {
     return SPI_MASTER_ERROR;
   }
   // Initialize the SSI driver
-  status = sl_si91x_ssi_init(SL_SSI_MASTER_ACTIVE, &ssi_driver_handle);
+  status = sl_si91x_ssi_init(ssi_handle, &ssi_driver_handle);
   if (status != SL_STATUS_OK) {
     return SPI_MASTER_ERROR;
   }
@@ -400,7 +388,7 @@ static err_t spi_master_set_configuration(spi_master_t *obj)
 {
   sl_ssi_control_config_t ssi_config = {
     .bit_width = SSI_MASTER_BIT_WIDTH,
-    .device_mode = (uint32_t) SL_SSI_MASTER_ACTIVE,
+    .device_mode = *(sl_ssi_instance_t *)obj->handle,
     .baud_rate = obj->config.speed,
     .receive_sample_delay = SSI_MASTER_RECEIVE_SAMPLE_DELAY,
   };
@@ -420,8 +408,16 @@ static err_t spi_master_set_configuration(spi_master_t *obj)
   last_spi_speed_used = obj->config.speed;
   last_spi_mode_used = obj->config.mode;
 
-  // Overwrite gspi default
-  ssi_configuration = ssi_config;
+  // Overwrite ssi default
+#ifdef SL_CATALOG_SSI_PRIMARY_PRESENT
+  extern sl_ssi_control_config_t ssi_primary_configuration;
+  ssi_primary_configuration = ssi_config;
+#endif
+
+#ifdef SL_CATALOG_SSI_ULP_PRIMARY_PRESENT
+  extern sl_ssi_control_config_t ssi_ulp_primary_configuration;
+  ssi_ulp_primary_configuration = ssi_config;
+#endif
 
   /**
    * Configuration of all other parameters that are required by GSPI
@@ -436,26 +432,6 @@ static err_t spi_master_set_configuration(spi_master_t *obj)
   }
 
   return SPI_MASTER_SUCCESS;
-}
-
-// Function to configure clock on powerup
-static void default_clock_configuration(void)
-{
-  // Core Clock runs at 180MHz SOC PLL Clock
-  sl_si91x_clock_manager_m4_set_core_clk(M4_SOCPLLCLK, SOC_PLL_CLK);
-
-  // All peripherals' source to be set to Interface PLL Clock
-  // and it runs at 180MHz
-  sl_si91x_clock_manager_set_pll_freq(INFT_PLL,
-                                      INTF_PLL_CLK,
-                                      PLL_REF_CLK_VAL_XTAL);
-
-  // Configure QSPI clock as input source
-  ROMAPI_M4SS_CLK_API->clk_qspi_clk_config(M4CLK,
-                                           QSPI_INTFPLLCLK,
-                                           QSPI_SWALLO_ENABLE,
-                                           QSPI_ODD_DIV_ENABLE,
-                                           QSPI_DIVISION_FACTOR);
 }
 
 /*******************************************************************************

@@ -9,19 +9,19 @@ ui_hints:
 root_path: driver
 
 requires:
-  - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: udelay
-    condition: [device_series_1]
-  - name: udelay
-    condition: [device_series_2]
-  - name: gpiointerrupt
-    condition: [device_series_1]
-  - name: gpiointerrupt
-    condition: [device_series_2]
+  - name: emlib_eusart
+    condition:
+      - device_efx # Enable for gecko device
+  - name: emlib_usart
+    condition:
+      - device_efx # Enable for gecko device
   - name: mikroe_peripheral_driver_spi
+    condition:
+      - device_si91x
   - name: mikroe_peripheral_driver_digital_io
+    condition:
+      - device_si91x
 
 provides:
   - name: mikroe_uwb2_dwm3000
@@ -40,12 +40,15 @@ config_file:
   - path: public/silabs/uwb2_dwm3000/config/brd4314a/uwb2_dwm3000_config.h
     file_id: driver_config_dwm3000
     condition: [brd4314a]
+  - path: public/silabs/uwb2_dwm3000/config/brd2605a/uwb2_dwm3000_config.h
+    file_id: driver_config_dwm3000
+    condition: [brd2605a]
   - path: public/silabs/uwb2_dwm3000/config/brd4338a/uwb2_dwm3000_config.h
     file_id: driver_config_dwm3000
     condition: [brd4338a]
   - path: public/silabs/uwb2_dwm3000/config/other/uwb2_dwm3000_config.h
     file_id: driver_config_dwm3000
-    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
 
 include:
   - path: inc
@@ -68,10 +71,15 @@ include:
       - path: deca_probe_interface.h
   - path: public/silabs/uwb2_dwm3000/platform/port
     file_list:
-      - path: port_dw3000.h     
+      - path: port_dw3000.h
 source:
   - path: public/silabs/uwb2_dwm3000/platform/deca_probe/deca_probe_interface.c
-  - path: public/silabs/uwb2_dwm3000/platform/port/port_dw3000.c
+  - path: public/silabs/uwb2_dwm3000/platform/port/port_dw3000_gecko.c
+    condition:
+      - device_efx # Enable for gecko device
+  - path: public/silabs/uwb2_dwm3000/platform/port/port_dw3000_si91x.c
+    condition:
+      - device_si91x
 
 toolchain_settings:
   - option: gcc_linker_option

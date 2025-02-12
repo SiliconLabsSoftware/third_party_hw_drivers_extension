@@ -1,0 +1,69 @@
+project_name: sparkfun_weatherstation_si91x
+label: Third Party Hardware Drivers - Weather Station (Sparkfun)
+package: platform
+description: |
+  This project shows the implementation of the sensors of a Sparkfun Weather Station (wind speed and direction, rainfall)
+category: Example|Platform
+quality: evaluation
+
+filter:
+- name: Device Type
+  value: [SoC]
+- name: MCU
+  value: [32-bit MCU]
+- name: Project Difficulty
+  value: [Beginner]
+
+readme:
+- path: ../../documentation/example/sparkfun_weatherstation/README.md
+
+source:
+- path: app.c
+- path: main.c
+
+include:
+- path: ''
+  file_list:
+  - path: app.h
+
+component:
+- id: sl_system
+- id: sleeptimer_si91x
+  from: wiseconnect3_sdk
+- id: syscalls
+  from: wiseconnect3_sdk
+- id: si917_memory_default_config
+  from: wiseconnect3_sdk
+- instance: [channel_1]
+  from: wiseconnect3_sdk
+  id: adc_instance
+- id: sparkfun_weather_station_rainfall
+  from: third_party_hw_drivers
+- id: sparkfun_weather_station_wind_direction
+  from: third_party_hw_drivers
+- id: sparkfun_weather_station_wind_speed
+  from: third_party_hw_drivers
+
+sdk_extension:
+- id: third_party_hw_drivers
+  version: 4.1.0
+- id: wiseconnect3_sdk
+  version: 3.4.0
+
+other_file:
+  - path: ../../documentation/example/sparkfun_weatherstation/image/create_example.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_weatherstation/image/terminal.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_weatherstation/image/connection.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_weatherstation/image/sensor_out.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb

@@ -42,19 +42,15 @@
 
 #if (defined(SLI_SI917))
 #include "sl_i2c_instances.h"
+
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #else
 #include "sl_i2cspm_instances.h"
 #endif
 
-#if (defined(SLI_SI917))
-#define I2C_INSTANCE_USED            SL_I2C2
-static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
-#endif
-
 static mikroe_i2c_handle_t app_i2c_instance = NULL;
-
 extern const sl_cli_command_entry_t app_cli_command_table[];
-
 extern sl_cli_handle_t sl_cli_vcom_handle;
 extern sl_cli_command_group_t sl_cli_vcom_command_group;
 

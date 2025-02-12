@@ -102,12 +102,6 @@ extern "C" {
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> SSD1306_CS
-// $[GPIO_SSD1306_CS]
-// #define SSD1306_CS_PORT                        0
-// #define SSD1306_CS_PIN                         0
-// [GPIO_SSD1306_CS]$
-
 // <gpio optional=true> SSD1306_DC
 // $[GPIO_SSD1306_DC]
 #define SSD1306_DC_PORT                        HP

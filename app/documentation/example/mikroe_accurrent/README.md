@@ -10,11 +10,11 @@ The Click board™ comes equipped with the 3.5mm jack connector which is used to
 
 ## Required Hardware ##
 
-- [BGM220 Bluetooth Module Explorer Kit](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [AC Current Click](https://www.mikroe.com/ac-current-click)
+- 1x [AC Current Click board](https://www.mikroe.com/ac-current-click)
 
 ## Hardware Connection ##
 
@@ -26,13 +26,13 @@ The Click board™ comes equipped with the 3.5mm jack connector which is used to
 
   ![board](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description | BRD4338A GPIO  | BRD4002 EXP Header | AC Current Click |
+  | Description | BRD4338A + BRD4002A  | BRD2605A | AC Current Click |
   | ----------- | -------------  | ------------------ | ---------------- |
-  | CLK         | GPIO_25        | P25                | SCK              |
-  | MISO        | GPIO_26        | P27                | SDO              |
-  | CS          | GPIO_28        | P31                | CS               |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25]  | GPIO_25  | SCK           |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26 [P27]  | GPIO_26  | SDO           |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28 [P31]  | GPIO_28  | CS            |
 
 ## Setup ##
 
@@ -69,7 +69,7 @@ You can either create a project based on an example project or start with an emp
       - [Services] → [Timers] → [Sleep Timer]
       - [Third Party Hardware Drivers] → [Sensors] → [AC Current Click (Mikroe)]
 
-    **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+    **If the Wi-Fi Development Kit is used:**
 
       - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
       - [Third Party Hardware Drivers] → [Sensors] → [AC Current Click (Mikroe)]
@@ -80,7 +80,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension extension must be enabled for the project to install the "AC Current Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install the "AC Current Click (Mikroe)" component.
 
 ## How It Works ##
 

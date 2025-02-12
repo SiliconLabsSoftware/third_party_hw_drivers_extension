@@ -42,12 +42,12 @@
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>MIKROE DS3231M I2C Configuration
+// <h> MIKROE DS3231M I2C Configuration
 
-//  <e>MIKROE DS3231M I2C UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> MIKROE DS3231M I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define MIKROE_DS3231M_I2C_UC                            0
 
 // <o MIKROE_DS3231M_I2C_SPEED_MODE> Speed mode

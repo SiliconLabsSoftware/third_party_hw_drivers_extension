@@ -1,0 +1,34 @@
+id: mikroe_rgbdriver
+package: third_party_hw_drivers
+label: RGB Driver Click (Mikroe)
+description: >
+  Driver for the RGB Driver Click board using I2C interface.
+category: Display & LED
+quality: evaluation
+ui_hints:
+  visibility: basic
+root_path: driver
+requires:
+  - name: status
+  - name: mikroe_peripheral_driver_digital_io
+  - name: mikroe_peripheral_driver_i2c
+config_file:
+provides:
+  - name: mikroe_rgbdriver
+    allow_multiple: false
+template_contribution:
+  - name: component_catalog
+    value: mikroe_rgbdriver
+include:
+  - path: inc
+    file_list:
+      - path: third_party_hw_drivers_helpers.h
+  - path: thirdparty/mikrosdk_click_v2/clicks/rgbdriver/lib/include
+    file_list:
+      - path: rgbdriver.h
+  - path: public/mikroe/rgb/inc
+    file_list:
+      - path: mikroe_rgb.h
+source:
+  - path: thirdparty/mikrosdk_click_v2/clicks/rgbdriver/lib/src/rgbdriver.c
+  - path: public/mikroe/rgb/src/mikroe_rgb.c

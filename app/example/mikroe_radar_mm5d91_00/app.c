@@ -39,18 +39,16 @@
 #if (defined(SLI_SI917))
 #include "sl_si91x_usart.h"
 #include "rsi_debug.h"
-#else
-#include "sl_iostream_init_usart_instances.h"
-#include "sl_iostream_init_eusart_instances.h"
-#include "app_log.h"
-#endif
 
-#if (defined(SLI_SI917))
 #define app_printf(...)                DEBUGOUT(__VA_ARGS__)
 #define USART_INSTANCE_USED            UART_1
 
 static usart_peripheral_t uart_instance = USART_INSTANCE_USED;
 #else
+#include "sl_iostream_init_usart_instances.h"
+#include "sl_iostream_init_eusart_instances.h"
+#include "app_log.h"
+
 #define app_printf(...)                app_log(__VA_ARGS__)
 #endif
 

@@ -46,8 +46,7 @@
 #include "sl_status.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 struct epd_driver;

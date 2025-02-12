@@ -11,13 +11,8 @@ root_path: driver
 requires:
   - name: status
   - name: udelay
-    condition: [device_series_1]
-  - name: udelay
-    condition: [device_series_2]
   - name: mikroe_peripheral_driver_spi
   - name: mikroe_peripheral_driver_digital_io
-provides:
-  - name: oled_display
 config_file:
   - path: public/mikroe/eink_display/config/brd2703a/mikroe_eink_display_config.h
     file_id: mikroe_eink_display_config
@@ -31,16 +26,23 @@ config_file:
   - path: public/mikroe/eink_display/config/brd4314a/mikroe_eink_display_config.h
     file_id: mikroe_eink_display_config
     condition: [brd4314a]
+  - path: public/mikroe/eink_display/config/brd2605a/mikroe_eink_display_config.h
+    file_id: mikroe_eink_display_config
+    condition: [brd2605a]
   - path: public/mikroe/eink_display/config/brd4338a/mikroe_eink_display_config.h
     file_id: mikroe_eink_display_config
     condition: [brd4338a]
   - path: public/mikroe/eink_display/config/other/mikroe_eink_display_config.h
     file_id: mikroe_eink_display_config
-    unless: [brd4314a, brd4108a, brd2703a, brd4182a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd4182a, brd2605a, brd4338a]
 
 template_contribution:
   - name: component_catalog
-    value: mikroe_epaper_display_154_inch
+    value: mikroe_eink_display
+provides:
+  - name: mikroe_eink_display
+  - name: eink_display
+  - name: oled_display
 include:
   - path: inc
     file_list:

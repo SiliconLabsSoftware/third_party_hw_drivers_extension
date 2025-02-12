@@ -41,9 +41,10 @@
 #define EPD_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
+
+#include "em_gpio.h"
 
 #define EPD_TYPE                    0x580B
 #define EPD_VERTICAL                256
@@ -105,7 +106,7 @@ extern "C"
 
 // USART0 TX on PC00
 #ifndef SPI_EPD_TX_PORT
-#define SPI_EPD_TX_PORT                 gpioPortC
+#define SPI_EPD_TX_PORT                 SL_GPIO_PORT_C
 #endif
 #ifndef SPI_EPD_TX_PIN
 #define SPI_EPD_TX_PIN                  3
@@ -113,7 +114,7 @@ extern "C"
 
 // USART0 RX on PC01
 #ifndef SPI_EPD_RX_PORT
-#define SPI_EPD_RX_PORT                 gpioPortC
+#define SPI_EPD_RX_PORT                 SL_GPIO_PORT_C
 #endif
 #ifndef SPI_EPD_RX_PIN
 #define SPI_EPD_RX_PIN                  2
@@ -121,7 +122,7 @@ extern "C"
 
 // USART0 CLK on PC02
 #ifndef SPI_EPD_CLK_PORT
-#define SPI_EPD_CLK_PORT                gpioPortC
+#define SPI_EPD_CLK_PORT                SL_GPIO_PORT_C
 #endif
 #ifndef SPI_EPD_CLK_PIN
 #define SPI_EPD_CLK_PIN                 1
@@ -129,7 +130,7 @@ extern "C"
 
 // USART0 CS on PC03
 #ifndef SPI_EPD_CS_PORT
-#define SPI_EPD_CS_PORT                 gpioPortC
+#define SPI_EPD_CS_PORT                 SL_GPIO_PORT_C
 #endif
 #ifndef SPI_EPD_CS_PIN
 #define SPI_EPD_CS_PIN                  0
@@ -138,7 +139,7 @@ extern "C"
 // <gpio optional=true> EPD_DC
 // $[GPIO_EPD_DC]
 #ifndef EPD_DC_PORT
-#define EPD_DC_PORT                     gpioPortA
+#define EPD_DC_PORT                     SL_GPIO_PORT_A
 #endif
 #ifndef EPD_DC_PIN
 #define EPD_DC_PIN                      0
@@ -148,7 +149,7 @@ extern "C"
 // <gpio optional=true> EPD_RST
 // $[GPIO_EPD_RST]
 #ifndef EPD_RST_PORT
-#define EPD_RST_PORT                    gpioPortD
+#define EPD_RST_PORT                    SL_GPIO_PORT_D
 #endif
 #ifndef EPD_RST_PIN
 #define EPD_RST_PIN                     5
@@ -158,7 +159,7 @@ extern "C"
 // <gpio optional=true> EPD_BUSY
 // $[GPIO_EPD_BUSY]
 #ifndef EPD_BUSY_PORT
-#define EPD_BUSY_PORT                   gpioPortB
+#define EPD_BUSY_PORT                   SL_GPIO_PORT_B
 #endif
 #ifndef EPD_BUSY_PIN
 #define EPD_BUSY_PIN                    1

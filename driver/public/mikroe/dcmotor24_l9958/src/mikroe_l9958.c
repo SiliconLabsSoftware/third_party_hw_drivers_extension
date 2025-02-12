@@ -37,7 +37,6 @@
  *
  ******************************************************************************/
 
-#include "dcmotor24.h"
 #include "mikroe_l9958.h"
 #include "mikroe_l9958_config.h"
 
@@ -71,13 +70,6 @@ sl_status_t mikroe_l9958_init(mikroe_spi_handle_t spi_instance,
 #if defined(DCMOTOR24_DIRECTION_PORT) && defined(DCMOTOR24_DIRECTION_PIN)
   dcmotor_cfg.dir = hal_gpio_pin_name(DCMOTOR24_DIRECTION_PORT,
                                       DCMOTOR24_DIRECTION_PIN);
-#endif
-
-#if defined(DCMOTOR24_CS_PORT) && defined(DCMOTOR24_CS_PIN)
-  dcmotor_cfg.cs = hal_gpio_pin_name(DCMOTOR24_CS_PORT, DCMOTOR24_CS_PIN);
-  // CS pin need to init here since the mikroe_sdk_v2 missed this step
-  digital_out_t struct_cs;
-  digital_out_init(&struct_cs, dcmotor_cfg.cs);
 #endif
 
 #if (MIKROE_L9958_SPI_UC == 1)

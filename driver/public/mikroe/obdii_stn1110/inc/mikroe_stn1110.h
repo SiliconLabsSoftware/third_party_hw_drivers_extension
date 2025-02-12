@@ -42,9 +42,6 @@
 
 #include "sl_status.h"
 #include "obdii.h"
-#include "drv_uart.h"
-#include "drv_digital_out.h"
-#include "drv_digital_in.h"
 
 #ifdef __cplusplus
 extern "C" {

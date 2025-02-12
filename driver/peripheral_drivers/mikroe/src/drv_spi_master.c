@@ -36,10 +36,13 @@
  * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
-
+#include "em_gpio.h"
 #include "drv_spi_master.h"
 #include "drv_digital_out.h"
 #include "spidrv.h"
+
+#define SPI_GPIO_SLOW_SLEWRATE 5
+#define SPI_GPIO_FAST_SLEWRATE 7
 
 static spi_master_t *_owner = NULL;
 static uint32_t last_spi_speed_used;
@@ -126,10 +129,20 @@ err_t spi_master_set_speed(spi_master_t *obj, uint32_t speed)
     return SPI_MASTER_ERROR;
   }
 
+  SPIDRV_Handle_t spidrv = (SPIDRV_Handle_t)obj->handle;
+  uint32_t required_slewrate =
+    (speed >= 10000000) ? SPI_GPIO_FAST_SLEWRATE : SPI_GPIO_SLOW_SLEWRATE;
+  GPIO_SlewrateSet(spidrv->initData.portClk,
+                   required_slewrate,
+                   required_slewrate);
+  GPIO_SlewrateSet(spidrv->initData.portTx,
+                   required_slewrate,
+                   required_slewrate);
+
   obj->config.speed = speed;
   last_spi_speed_used = speed;
   // Set SPI bus bitrate.
-  if (SPIDRV_SetBitrate((SPIDRV_Handle_t)obj->handle, speed)
+  if (SPIDRV_SetBitrate(spidrv, speed)
       != ECODE_EMDRV_SPIDRV_OK) {
     return SPI_MASTER_ERROR;
   }
@@ -355,8 +368,8 @@ static err_t _acquire(spi_master_t *obj, bool obj_open_state)
 
 static void spi_master_configure_gpio_pin(digital_out_t *out, pin_name_t name)
 {
-  out->pin.base = (GPIO_Port_TypeDef) hal_gpio_port_index(name);
-  out->pin.mask = 1 << hal_gpio_pin_index(name);
+  out->pin.base = hal_gpio_port_index(name);
+  out->pin.mask = hal_gpio_pin_index(name);
 }
 
 static err_t spi_master_set_config(spi_master_t *obj)

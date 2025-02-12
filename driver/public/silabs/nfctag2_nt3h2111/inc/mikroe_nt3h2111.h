@@ -43,6 +43,7 @@
 #include <stddef.h>
 #include "sl_status.h"
 #include "drv_i2c_master.h"
+#include "drv_digital_in.h"
 
 #define ENABLED                                          1
 #define DISABLED                                         0
@@ -194,7 +195,7 @@ typedef struct {
   bool    sram_rf_ready;
 
   /* 1b: HV voltage error during EEPROM write or erase cycle
-  * Needs to be written back via I2C to 0b to be cleared. */
+   * Needs to be written back via I2C to 0b to be cleared. */
   bool    eeprom_wr_err;
 
   /* 1b: EEPROM write cycle in progress - access to EEPROM disabled.

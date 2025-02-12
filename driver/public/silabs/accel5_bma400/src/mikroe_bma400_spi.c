@@ -33,10 +33,8 @@
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 
-#include "mikroe_bma400_spi.h"
 #include "sl_sleeptimer.h"
-#include "drv_spi_master.h"
-#include "drv_digital_in.h"
+#include "mikroe_bma400_spi.h"
 
 // Read write length varies based on user requirement
 #define READ_WRITE_LENGTH  UINT8_C(46)

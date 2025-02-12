@@ -7,86 +7,87 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../../documentation/example/silabs_lin_bus/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: simple_led
-  instance: [led0, led1]
-- id: services_lin_bus_slave
-  from: third_party_hw_drivers
-- id: bluetooth_feature_gatt_server
-- id: bluetooth_feature_sm
-- id: bluetooth_feature_legacy_advertiser
-- id: gatt_configuration
-- id: gatt_service_device_information
-- id: bluetooth_stack
-- id: bluetooth_feature_gatt
-- id: bluetooth_feature_connection
-- id: bluetooth_feature_system
-
+  - id: sl_system
+  - id: device_init
+  - id: simple_led
+    instance: [led0, led1]
+  - id: bluetooth_feature_gatt_server
+  - id: bluetooth_feature_sm
+  - id: bluetooth_feature_legacy_advertiser
+  - id: gatt_configuration
+  - id: gatt_service_device_information
+  - id: bluetooth_stack
+  - id: bluetooth_feature_gatt
+  - id: bluetooth_feature_connection
+  - id: bluetooth_feature_system
+  - id: services_lin_bus_slave
+    from: third_party_hw_drivers
 
 config_file:
-- path: "config/btconf/gatt_configuration1.btconf"
-  override:
-    component: gatt_configuration
-    file_id: gatt_configuration_file_id
-  directory: "btconf"
+  - path: "config/btconf/gatt_configuration1.btconf"
+    override:
+      component: gatt_configuration
+      file_id: gatt_configuration_file_id
+    directory: "btconf"
 
 configuration:
-- name: LIN_DMA_ACT_PORT
-  value: gpioPortC
-- name: LIN_DMA_ACT_PIN
-  value: 6
-- name: LIN_TIMEOUT_ACT_PORT
-  value: gpioPortA
-- name: LIN_TIMEOUT_ACT_PIN
-  value: 8
-- name: LIN_UART_ACT_PORT
-  value: gpioPortA
-- name: LIN_UART_ACT_PIN
-  value: 0
-- name: LIN_WAKEUP_ACT_PORT
-  value: gpioPortA
-- name: LIN_WAKEUP_ACT_PIN
-  value: 7
-- name: LIN_CHECKSUM_ERR_PORT
-  value: gpioPortC
-- name: LIN_CHECKSUM_ERR_PIN
-  value: 1
-- name: LIN_CONFLICT_ERR_PORT
-  value: gpioPortC
-- name: LIN_CONFLICT_ERR_PIN
-  value: 3
-- name: LIN_GENERIC_ERR_PORT
-  value: gpioPortA
-- name: LIN_GENERIC_ERR_PIN
-  value: 5
-  
+  - name: LIN_DMA_ACT_PORT
+    value: SL_GPIO_PORT_C
+  - name: LIN_DMA_ACT_PIN
+    value: 6
+  - name: LIN_TIMEOUT_ACT_PORT
+    value: SL_GPIO_PORT_A
+  - name: LIN_TIMEOUT_ACT_PIN
+    value: 8
+  - name: LIN_UART_ACT_PORT
+    value: SL_GPIO_PORT_A
+  - name: LIN_UART_ACT_PIN
+    value: 0
+  - name: LIN_WAKEUP_ACT_PORT
+    value: SL_GPIO_PORT_A
+  - name: LIN_WAKEUP_ACT_PIN
+    value: 7
+  - name: LIN_CHECKSUM_ERR_PORT
+    value: SL_GPIO_PORT_C
+  - name: LIN_CHECKSUM_ERR_PIN
+    value: 1
+  - name: LIN_CONFLICT_ERR_PORT
+    value: SL_GPIO_PORT_C
+  - name: LIN_CONFLICT_ERR_PIN
+    value: 3
+  - name: LIN_GENERIC_ERR_PORT
+    value: SL_GPIO_PORT_A
+  - name: LIN_GENERIC_ERR_PIN
+    value: 5
+  - name: SL_INTERRUPT_MANAGER_S2_INTERRUPTS_IN_RAM
+    value: 1
+
 define:
-- name: SL_LIN_SLAVE1
+  - name: SL_LIN_SLAVE1
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../../documentation/example/silabs_lin_bus/README.md
 
 other_file:
   - path: ../../../documentation/example/silabs_lin_bus/images/hardware_connection.jpg

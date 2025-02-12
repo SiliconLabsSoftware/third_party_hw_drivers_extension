@@ -38,7 +38,6 @@
  ******************************************************************************/
 #include "mikroe_scd41.h"
 #include "mikroe_scd41_config.h"
-#include "hvac.h"
 
 static hvac_t scd41;
 static hvac_cfg_t scd41_cfg;

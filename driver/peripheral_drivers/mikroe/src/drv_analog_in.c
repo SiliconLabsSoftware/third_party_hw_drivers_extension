@@ -273,42 +273,42 @@ static ADC_PosSel_TypeDef get_adc_aportx(analog_in_t *obj)
   pin_index = hal_gpio_pin_index(obj->config.input_pin);
 
   switch (port_index) {
-    case gpioPortA:
+    case SL_GPIO_PORT_A:
       if (pin_index <= 7) {
         return aportx_possel_table_A[pin_index];
       } else {
         return adcPosSelVSS;
       }
 
-    case gpioPortB:
+    case SL_GPIO_PORT_B:
       if ((pin_index >= 6) && (pin_index <= 15)) {
         return aportx_possel_table_B[pin_index - 6];
       } else {
         return adcPosSelVSS;
       }
 
-    case gpioPortC:
+    case SL_GPIO_PORT_C:
       if (pin_index <= 11) {
         return aportx_possel_table_C[pin_index];
       } else {
         return adcPosSelVSS;
       }
 
-    case gpioPortD:
+    case SL_GPIO_PORT_D:
       if ((pin_index >= 8) && (pin_index <= 15)) {
         return aportx_possel_table_D[pin_index - 8];
       } else {
         return adcPosSelVSS;
       }
 
-    case gpioPortF:
+    case SL_GPIO_PORT_F:
       if (pin_index <= 15) {
         return aportx_possel_table_F[pin_index];
       } else {
         return adcPosSelVSS;
       }
 
-    case gpioPortI:
+    case SL_GPIO_PORT_I:
       if (pin_index <= 3) {
         return aportx_possel_table_I[pin_index];
       } else {
@@ -335,16 +335,16 @@ static IADC_PosInput_t get_adc_aportx(analog_in_t *obj)
   }
 
   switch (port_index) {
-    case gpioPortA:
+    case SL_GPIO_PORT_A:
       return (IADC_PosInput_t)calc_adc_pos(0, pin_index);
 
-    case gpioPortB:
+    case SL_GPIO_PORT_B:
       return (IADC_PosInput_t)calc_adc_pos(1, pin_index);
 
-    case gpioPortC:
+    case SL_GPIO_PORT_C:
       return (IADC_PosInput_t)calc_adc_pos(2, pin_index);
 
-    case gpioPortD:
+    case SL_GPIO_PORT_D:
       return (IADC_PosInput_t)calc_adc_pos(3, pin_index);
 
     default:
@@ -446,7 +446,7 @@ uint16_t hal_adc_read(analog_in_t *obj)
 static err_t allocate_analog_bus_even0(analog_in_t *obj)
 {
   switch ((GPIO_Port_TypeDef)hal_gpio_port_index(obj->config.input_pin)) {
-    case gpioPortA:
+    case SL_GPIO_PORT_A:
 #if (IADC_COUNT == 1)
       if (obj->handle == IADC0) {
         adc_mux_even(obj->handle, ADC0, A, 0);
@@ -460,7 +460,7 @@ static err_t allocate_analog_bus_even0(analog_in_t *obj)
         return ADC_ERROR;
       }
 
-    case gpioPortB:
+    case SL_GPIO_PORT_B:
 #if (IADC_COUNT == 1)
       if (obj->handle == IADC0) {
         adc_mux_even(obj->handle, ADC0, B, 0);
@@ -474,8 +474,8 @@ static err_t allocate_analog_bus_even0(analog_in_t *obj)
         return ADC_ERROR;
       }
 
-    case gpioPortC:
-    case gpioPortD:
+    case SL_GPIO_PORT_C:
+    case SL_GPIO_PORT_D:
 #if (IADC_COUNT == 1)
       if (obj->handle == IADC0) {
         adc_mux_even(obj->handle, ADC0, CD, 0);

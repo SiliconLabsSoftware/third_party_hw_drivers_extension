@@ -35,6 +35,7 @@
 #include "sensirion_common.h"
 #include "drv_uart.h"
 #include "sl_status.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

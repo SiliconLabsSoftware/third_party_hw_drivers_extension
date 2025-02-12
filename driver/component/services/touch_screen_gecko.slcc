@@ -14,9 +14,6 @@ requires:
     condition:
       - device_series_2
   - name: emlib_gpio
-provides:
-  - name: touch_screen_analog_interface
-    allow_multiple: false
 config_file:
   - path: public/silabs/services_touch_screen/config/brd2601b/touch_screen_config.h
     file_id: touch_screen_config
@@ -39,6 +36,9 @@ config_file:
 template_contribution:
   - name: component_catalog
     value: touch_screen_analog_gecko
+provides:
+  - name: touch_screen_analog_interface
+    allow_multiple: false
 include:
   - path: public/silabs/services_touch_screen/inc
     file_list:

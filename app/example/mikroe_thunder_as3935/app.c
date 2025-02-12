@@ -39,21 +39,21 @@
 #include "sl_sleeptimer.h"
 #include "mikroe_thunder_as3935.h"
 
-#define READING_INTERVAL_MSEC 1000
-
 #if (defined(SLI_SI917))
 #include "rsi_debug.h"
 #include "sl_si91x_ssi.h"
 
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
 
-static sl_ssi_instance_t ssi_instance = SL_SSI_MASTER_ACTIVE;
+static sl_ssi_instance_t ssi_instance = SL_SSI_PRIMARY_ACTIVE;
 #else /* None Si91x device */
 #include "app_log.h"
 #include "sl_spidrv_instances.h"
 
-#define app_printf(...) app_log(__VA_ARGS__)
+#define app_printf(...)              app_log(__VA_ARGS__)
 #endif
+
+#define READING_INTERVAL_MSEC        1000
 
 static volatile bool flag = false;
 static sl_sleeptimer_timer_handle_t app_timer_handle;

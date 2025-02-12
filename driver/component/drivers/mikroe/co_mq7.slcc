@@ -22,7 +22,7 @@ config_file:
   - path: public/mikroe/co_mq7/config/brd4314a/mikroe_mq7_config.h
     file_id: driver_config_co
     condition: [brd4314a]
-  - path: public/mikroe/co_mq7/config/brd4338a/mikroe_mq7_config.h
+  - path: public/mikroe/co_mq7/config/device_si91x/mikroe_mq7_config.h
     file_id: driver_config_co
     condition: [device_si91x]
   - path: public/mikroe/co_mq7/config/other/mikroe_mq7_config.h
@@ -31,6 +31,9 @@ config_file:
 template_contribution:
   - name: component_catalog
     value: mikroe_co
+provides:
+  - name: mikroe_co
+    allow_multiple: false
 include:
   - path: inc
     file_list:

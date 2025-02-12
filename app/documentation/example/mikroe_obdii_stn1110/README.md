@@ -8,13 +8,13 @@ The OBDII Click can be used for the communication with the Electronic Control Un
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [**OBDII Click** board](https://www.mikroe.com/obdii-click)
+- 1x [OBDII Click board](https://www.mikroe.com/obdii-click)
 
-- [OBDII cable](https://www.mikroe.com/obd-ii-to-db9-cable)
+- 1x [OBDII cable](https://www.mikroe.com/obd-ii-to-db9-cable)
 
 ## Hardware Connection ##
 
@@ -26,14 +26,14 @@ The OBDII Click can be used for the communication with the Electronic Control Un
 
     ![board](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description       | BRD4338A GPIO            | BRD4002 Breakout Pad | OBDII Click |
-  | ----------------- | ------------------------ | -------------------- | ----------- |
-  | UART1_RX_PIN      | GPIO_6                   | P19                  | TX          |
-  | UART1_TX_PIN      | GPIO_7                   | P20                  | RX          |
-  | RESET             | GPIO_46                  | P24                  | RST         |
-  | INTERRUPT         | GPIO_47                  | P27                  | INT         |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | OBDII Click |
+  | ----------------- | -------------- | ------------ | ----------- |
+  | UART1_RX_PIN      | GPIO_6 [P19]   | GPIO_6       | TX          |
+  | UART1_TX_PIN      | GPIO_7 [P20]   | GPIO_7       | RX          |
+  | RESET             | GPIO_46 [P24]  | GPIO_10      | RST         |
+  | INTERRUPT         | GPIO_47 [P26]  | GPIO_11      | INT         |
 
 ## Setup ##
 
@@ -72,7 +72,7 @@ You can either create a project based on an example project or start with an emp
         - [Application] → [Utility] → [Assert]
         - [Application] → [Utility] → [Log]
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [Application] → [Utility] → [Assert]
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
@@ -85,7 +85,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "STN1110 - OBDII Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "STN1110 - OBDII Click (Mikroe)" component.
 
 ## How It Works ##
 

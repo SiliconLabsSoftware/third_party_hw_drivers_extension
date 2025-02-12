@@ -10,9 +10,9 @@ The PH 2 Click is a compact add-on board used to determine the alkalinity or aci
 
 ## Required Hardware ##
 
-- [EFR32xG24-EK2703A - EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [PH 2 Click board](https://www.mikroe.com/ph-2-click?srsltid=AfmBOopFxaAypm1QlxPr7ruNB82Cmh6q9HFOFmqI4PDr2ZD2F683cKg3)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [PH 2 Click board](https://www.mikroe.com/ph-2-click?srsltid=AfmBOopFxaAypm1QlxPr7ruNB82Cmh6q9HFOFmqI4PDr2ZD2F683cKg3)
 
 ## Hardware Connection ##
 
@@ -22,17 +22,17 @@ The PH 2 Click is a compact add-on board used to determine the alkalinity or aci
 
   ![board](image/hardware_connection.png)
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+- **If the Wi-Fi Development Kit is used**:
 
   The hardware connection is shown in the table below:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | PH 2 Click board   |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | PH 2 Click board   |
   | -------------| ------------- | ------------------ | ------------------ |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
-  | Status Signal 1  | GPIO_46   | P24        | ST1                |
-  | Status Signal 2  | GPIO_47   | P26        | ST2                |
-  | Thermometer Data | GPIO_48   | P28        | DQ                 |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16]  | ULP_GPIO_6  | SDA                |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15]  | ULP_GPIO_7  | SCL                |
+  | Status Signal 1  | GPIO_46 [P24]   | GPIO_10        | ST1                |
+  | Status Signal 2  | GPIO_47 [P26]   | GPIO_11        | ST2                |
+  | Thermometer Data | GPIO_48 [P28]   | GPIO_12        | DQ                 |
 
 ## Setup ##
 
@@ -69,17 +69,17 @@ You can either create a project based on an example project or start with an emp
           - [Application] → [Utility] → [Assert]
           - [Third Party Hardware Drivers] → [Sensors] → [PH 2 Click (Mikroe)]
 
-        - **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+        - **If the Wi-Fi Development Kit is used:**
           - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
           - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
           - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [ADC] → [channel_1] → use default configuration
           - [Application] → [Utility] → [Assert]
           - [Third Party Hardware Drivers] → [Sensors] → [PH 2 Click (Mikroe)]
 
-4. Install "Printf float"
+4. Enable **Printf float**
 
-   - Open Properties of the project
-   - Select C/C++ Build > Settings > Tool Settings > GNU ARM C Linker > General > Check "Printf float"
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
 5. Build and flash this example to the board.
 
@@ -87,13 +87,13 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide)
 
-- Third-party Drivers Extension must be enabled for the project to install "PH 2 Click (Mikroe)" component
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "PH 2 Click (Mikroe)" component
 
 ## How It Works ##
 
 After you flash the code to your board and power the connected boards, the application starts running automatically. Use Putty/Tera Term (or another program) to read the values of the serial output. Note that your board uses the default baud rate of 115200.
 
-The main program first performs an offset calibration. It requires the user to disconnect the BNC connector, and then "short-circuit" it. After that, the user must adjust the offset potentiometer until the  STAT LEDs stop blinking. If the STAT1 LED blinks, the user must turn clockwise otherwise if the STAT2 LED blinks, turn counter-clockwise.  
+The main program first performs an offset calibration. It requires the user to disconnect the BNC connector, and then "short-circuit" it. After that, the user must adjust the offset potentiometer until the  STAT LEDs stop blinking. If the STAT1 LED blinks, the user must turn clockwise otherwise if the STAT2 LED blinks, turn counter-clockwise.
 
 Next, the main program will perform a PH calibration. It requires the user to connect the BNC connector back to the PH 2 Click board. After that, the user must place the probe into PH neutral substance for mid-point calibration (pure water). When the calibration process is done, the program will continue to read the PH value and display it to the console.
 

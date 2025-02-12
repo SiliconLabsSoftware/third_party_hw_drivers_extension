@@ -7,37 +7,43 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/mikroe_heartrate4_max30101/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: gpiointerrupt
-- id: mikroe_heartrate4
-  from: third_party_hw_drivers
-- id: iostream_usart
-  instance: [vcom]
-- id: i2cspm
-  instance: [mikroe]
-- id: sleeptimer
-- id: app_log
+  - id: sl_system
+  - id: device_init
+  - id: iostream_usart
+    instance: [vcom]
+  - id: i2cspm
+    instance: [mikroe]
+  - id: sleeptimer
+  - id: app_log
+  - id: mikroe_heartrate4
+    from: third_party_hw_drivers
+
+define:
+  - name: DEBUG_EFM
+
+sdk_extension:
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/mikroe_heartrate4_max30101/README.md
 
 other_file:
   - path: ../../documentation/example/mikroe_heartrate4_max30101/image/create_example.png
@@ -48,13 +54,6 @@ other_file:
     directory: "image"
   - path: ../../documentation/example/mikroe_heartrate4_max30101/image/hardware_connection.png
     directory: "image"
-
-define:
-- name: DEBUG_EFM
-
-sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
 
 ui_hints:
   highlight:

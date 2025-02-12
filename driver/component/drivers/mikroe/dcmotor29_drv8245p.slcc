@@ -1,0 +1,54 @@
+id: dcmotor29_drv8245p
+package: third_party_hw_drivers
+label: DRV8245P - DC Motor 29 Click (Mikroe)
+description: >
+  Driver for the DC Motor 29 Click board.
+category: Motor Control
+quality: evaluation
+ui_hints:
+  visibility: basic
+root_path: driver
+requires:
+  - name: status
+  - name: sleeptimer
+  - name: mikroe_peripheral_driver_i2c
+  - name: mikroe_peripheral_driver_spi
+    condition: [device_efx]
+  - name: mikroe_peripheral_driver_ssi
+    condition: [device_si91x]
+config_file:
+  - path: public/mikroe/dcmotor29_drv8245p/config/brd2605a/mikroe_dcmotor29_config.h
+    file_id: driver_config_dcmotor29
+    condition: [brd2605a]
+  - path: public/mikroe/dcmotor29_drv8245p/config/brd4314a/mikroe_dcmotor29_config.h
+    file_id: driver_config_dcmotor29
+    condition: [brd4314a]
+  - path: public/mikroe/dcmotor29_drv8245p/config/brd4108a/mikroe_dcmotor29_config.h
+    file_id: driver_config_dcmotor29
+    condition: [brd4108a]
+  - path: public/mikroe/dcmotor29_drv8245p/config/brd2703a/mikroe_dcmotor29_config.h
+    file_id: driver_config_dcmotor29
+    condition: [brd2703a]
+  - path: public/mikroe/dcmotor29_drv8245p/config/brd4338a/mikroe_dcmotor29_config.h
+    file_id: driver_config_dcmotor29
+    condition: [brd4338a]
+  - path: public/mikroe/dcmotor29_drv8245p/config/other/mikroe_dcmotor29_config.h
+    file_id: driver_config_dcmotor29
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
+template_contribution:
+  - name: component_catalog
+    value: dcmotor29_drv8245p
+include:
+  - path: inc
+    file_list:
+      - path: third_party_hw_drivers_helpers.h
+  - path: thirdparty/mikrosdk_click_v2/clicks/dcmotor29/lib_dcmotor29/include
+    file_list:
+      - path: dcmotor29.h
+      - path: spi_specifics.h
+  - path: public/mikroe/dcmotor29_drv8245p/inc
+    file_list:
+      - path: mikroe_drv8245p.h
+source:
+  - path: thirdparty/mikrosdk_click_v2/clicks/dcmotor29/lib_dcmotor29/src/dcmotor29.c
+  - path: public/mikroe/dcmotor29_drv8245p/src/mikroe_drv8245p.c

@@ -7,81 +7,81 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: main.c
-- path: gecko/app.c
-- path: app_ui/ui.c
-- path: app_ui/ui_events.c
-- path: app_ui/ui_helpers.c
-- path: app_ui/components/ui_comp_hook.c
-- path: app_ui/images/ui_img_1258193662.c
-- path: app_ui/images/ui_img_1258194689.c
-- path: app_ui/images/ui_img_1802009198.c
-- path: app_ui/screens/ui_screenmain.c
+  - path: main.c
+  - path: gecko/app.c
+  - path: app_ui/ui.c
+  - path: app_ui/ui_events.c
+  - path: app_ui/ui_helpers.c
+  - path: app_ui/components/ui_comp_hook.c
+  - path: app_ui/images/ui_img_1258193662.c
+  - path: app_ui/images/ui_img_1258194689.c
+  - path: app_ui/images/ui_img_1802009198.c
+  - path: app_ui/screens/ui_screenmain.c
 
 include:
-- path: 'gecko'
-  file_list:
-  - path: app.h
-- path: ''
-  file_list:
-  - path: app_ui/ui.h
-  - path: app_ui/ui_helpers.h
-  - path: app_ui/ui_events.h
+  - path: 'gecko'
+    file_list:
+    - path: app.h
+  - path: ''
+    file_list:
+    - path: app_ui/ui.h
+    - path: app_ui/ui_helpers.h
+    - path: app_ui/ui_events.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: iostream_eusart
-  instance: [vcom]
-- id: app_assert
-- id: sleeptimer
-- id: app_log
-- id: tft_lcd_st7789_dma
-  from: third_party_hw_drivers
-- id: services_lvgl
-  from: third_party_hw_drivers
-- instance: [btn0, btn1]
-  id: simple_button
-- instance: [led0, led1]
-  id: simple_led
+  - id: sl_system
+  - id: device_init
+  - id: iostream_eusart
+    instance: [vcom]
+  - id: app_assert
+  - id: sleeptimer
+  - id: app_log
+  - id: simple_button
+    instance: [btn0, btn1]
+  - id: simple_led
+    instance: [led0, led1]
+  - id: tft_lcd_st7789_dma
+    from: third_party_hw_drivers
+  - id: services_lvgl
+    from: third_party_hw_drivers
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/README.md
 
 other_file:
-- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/create_example.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/demo.gif
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/hw.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/intro.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/log.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/lvgl_config.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/st7789_display.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/gspi.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/gspi_dma.png
-  directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/create_example.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/demo.gif
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/hw.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/intro.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/log.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/lvgl_config.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/st7789_display.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/gspi.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789_lvgl_dma/image/gspi_dma.png
+    directory: image
 
 ui_hints:
   highlight:

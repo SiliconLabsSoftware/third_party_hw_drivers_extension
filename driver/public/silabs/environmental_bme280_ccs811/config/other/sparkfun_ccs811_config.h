@@ -36,10 +36,6 @@
 #ifndef SPARKFUN_CCS811_CONFIG_H
 #define SPARKFUN_CCS811_CONFIG_H
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 // <<< Use Configuration Wizard in Context Menu >>>
 
 // <h> SPARKFUN CCS811 I2C Configuration
@@ -73,7 +69,7 @@
 // <gpio> SPARKFUN_CCS811_WAKE
 // $[GPIO_SPARKFUN_CCS811_WAKE]
 #warning "WAKE pin for CCS811 is not configured"
-// #define SPARKFUN_CCS811_WAKE_PORT            gpioPortB
+// #define SPARKFUN_CCS811_WAKE_PORT            0
 // #define SPARKFUN_CCS811_WAKE_PIN             0
 // [GPIO_SPARKFUN_CCS811_WAKE]$
 

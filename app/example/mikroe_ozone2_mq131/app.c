@@ -27,11 +27,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has not been formally tested and is provided as-is. It is not
- * suitable for production environments. In addition, this code will not be
- * maintained and there may be no bug maintenance planned for these resources.
- * Silicon Labs may update projects from time to time.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #include "sl_sleeptimer.h"
@@ -41,27 +43,23 @@
 #include "sl_adc_instances.h"
 #include "sl_si91x_gspi.h"
 #include "rsi_debug.h"
-#else
-#include "em_iadc.h"
-#include "sl_spidrv_instances.h"
-#include "app_log.h"
-#endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
 
-#define READING_INTERVAL_MSEC 1000
-
-#if (defined(SLI_SI917))
 #if MIKROE_OZONE2_ADC_SEL == 0
 static uint8_t channel = SL_ADC_CHANNEL_1;
 #else
 static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #endif
+#else
+#include "em_iadc.h"
+#include "sl_spidrv_instances.h"
+#include "app_log.h"
+
+#define app_printf(...)              app_log(__VA_ARGS__)
 #endif
+
+#define READING_INTERVAL_MSEC        1000
 
 static mikroe_adc_handle_t app_adc_instance = NULL;
 static mikroe_spi_handle_t app_spi_instance = NULL;

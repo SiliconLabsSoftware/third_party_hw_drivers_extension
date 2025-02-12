@@ -40,8 +40,6 @@
 #include "sl_sleeptimer.h"
 #include "mikroe_nt3h2111.h"
 #include "mikroe_nt3h2111_config.h"
-#include "drv_i2c_master.h"
-#include "drv_digital_in.h"
 
 #if !defined (min)
 #define min(a, b) (((a) < (b)) ? (a) : (b))

@@ -37,8 +37,7 @@
 #define TOUCH_SCREEN_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
@@ -100,40 +99,40 @@ extern "C"
 // <<< sl:start pin_tool >>>
 // <gpio optional=true> TOUCHSCREEN_XP
 // $[GPIO_TOUCHSCREEN_XP]
-#ifndef TOUCHSCREEN_XP_PORT                                 
-#define TOUCHSCREEN_XP_PORT                                  gpioPortD
+#ifndef TOUCHSCREEN_XP_PORT
+#define TOUCHSCREEN_XP_PORT                                  SL_GPIO_PORT_D
 #endif
-#ifndef TOUCHSCREEN_XP_PIN                                  
+#ifndef TOUCHSCREEN_XP_PIN
 #define TOUCHSCREEN_XP_PIN                                   5
 #endif
 // [GPIO_TOUCHSCREEN_XP]$
 
 // <gpio optional=true> TOUCHSCREEN_YP
 // $[GPIO_TOUCHSCREEN_YP]
-#ifndef TOUCHSCREEN_YP_PORT                                 
-#define TOUCHSCREEN_YP_PORT                                  gpioPortD
+#ifndef TOUCHSCREEN_YP_PORT
+#define TOUCHSCREEN_YP_PORT                                  SL_GPIO_PORT_D
 #endif
-#ifndef TOUCHSCREEN_YP_PIN                                  
+#ifndef TOUCHSCREEN_YP_PIN
 #define TOUCHSCREEN_YP_PIN                                   4
 #endif
 // [GPIO_TOUCHSCREEN_YP]$
 
 // <gpio optional=true> TOUCHSCREEN_XM
 // $[GPIO_TOUCHSCREEN_XM]
-#ifndef TOUCHSCREEN_XM_PORT                                 
-#define TOUCHSCREEN_XM_PORT                                  gpioPortA
+#ifndef TOUCHSCREEN_XM_PORT
+#define TOUCHSCREEN_XM_PORT                                  SL_GPIO_PORT_A
 #endif
-#ifndef TOUCHSCREEN_XM_PIN                                  
+#ifndef TOUCHSCREEN_XM_PIN
 #define TOUCHSCREEN_XM_PIN                                   0
 #endif
 // [GPIO_TOUCHSCREEN_XM]$
 
 // <gpio optional=true> TOUCHSCREEN_YM
 // $[GPIO_TOUCHSCREEN_YM]
-#ifndef TOUCHSCREEN_YM_PORT                                 
-#define TOUCHSCREEN_YM_PORT                                  gpioPortB
+#ifndef TOUCHSCREEN_YM_PORT
+#define TOUCHSCREEN_YM_PORT                                  SL_GPIO_PORT_B
 #endif
-#ifndef TOUCHSCREEN_YM_PIN                                  
+#ifndef TOUCHSCREEN_YM_PIN
 #define TOUCHSCREEN_YM_PIN                                   1
 #endif
 // [GPIO_TOUCHSCREEN_YM]$

@@ -40,10 +40,6 @@
 #ifndef MIKROE_MAX30101_CONFIG_H_
 #define MIKROE_MAX30101_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -53,8 +49,8 @@ extern "C" {
 // <gpio optional=true> MAX30101_INT
 // $[GPIO_MAX30101_INT]
 #warning "Interrupt pin for MAX30101 is not configured"
-// #define MAX30101_INT_PORT                       gpioPortB
-// #define MAX30101_INT_PIN                        3
+// #define MAX30101_INT_PORT                       0
+// #define MAX30101_INT_PIN                        0
 // [GPIO_MAX30101_INT]$
 
 // <<< sl:end pin_tool >>>
@@ -63,4 +59,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_MAX30101_CONFIG_H_ */
+#endif // MIKROE_MAX30101_CONFIG_H_

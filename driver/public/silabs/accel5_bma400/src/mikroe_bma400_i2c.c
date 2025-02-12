@@ -33,8 +33,8 @@
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 
+#include "sl_sleeptimer.h"
 #include "mikroe_bma400_i2c.h"
-#include "mikroe_bma400_i2c_config.h"
 
 // Read write length varies based on user requirement
 #define READ_WRITE_LENGTH  UINT8_C(46)

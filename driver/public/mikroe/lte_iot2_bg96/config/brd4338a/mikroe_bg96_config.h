@@ -45,7 +45,7 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu
 
-// <h>LTE IOT2 BG96 Settings
+// <h> LTE IOT2 BG96 Settings
 
 // <o CMD_MAX_SIZE> Maximum AT Command Length
 // <i> Default: 256
@@ -66,13 +66,13 @@ extern "C" {
 
 // <gpio optional=true> BG96_STA
 // $[GPIO_BG96_STA]
-#define BG96_STA_PORT                            0
+#define BG96_STA_PORT                            HP
 #define BG96_STA_PIN                             46
 // [GPIO_BG96_STA]$
 
 // <gpio optional=true> BG96_PWK
 // $[GPIO_BG96_PWK]
-#define BG96_PWK_PORT                            0
+#define BG96_PWK_PORT                            HP
 #define BG96_PWK_PIN                             47
 // [GPIO_BG96_PWK]$
 

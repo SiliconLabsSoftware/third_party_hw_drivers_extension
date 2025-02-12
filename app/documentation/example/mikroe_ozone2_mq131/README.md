@@ -10,11 +10,11 @@ The analog output of the sensor is sampled by a high-resolution 22-bit A/D conve
 
 ## Required Hardware ##
 
-- [BGM220 Bluetooth Module Explorer Kit - BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit?tab=overview)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [**Mikroe Ozone 2 click** board based on MQ131 gas sensor](https://www.mikroe.com/ozone-2-click)
+- 1x [Ozone 2 click board](https://www.mikroe.com/ozone-2-click) based on MQ131 gas sensor
 
 ## Hardware Connection ##
 
@@ -26,14 +26,14 @@ The analog output of the sensor is sampled by a high-resolution 22-bit A/D conve
 
     ![hardware_connection](images/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description           | BRD4338A GPIO  | BRD4002 EXP/ Breakout Pad | Ozone 2 Click Board |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | Ozone 2 Click Board |
   | ----------------------| ---------------| --------------------------| --------------------|
-  | Positive analog input | ULP_GPIO_1     | P16                       | AN                  |
-  | CS                    | GPIO_46        | P24                       | CS                  |
-  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                 |
-  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27                  | SDO                 |
+  | Positive analog input | ULP_GPIO_1 [P16]    | ULP_GPIO_1           | AN                  |
+  | CS                    | GPIO_46 [P24]       | GPIO_10              | CS                  |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25]    | GPIO_25              | SCK                 |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26 [P27]    | GPIO_26              | SDO                 |
 
 ## Setup ##
 
@@ -72,7 +72,7 @@ You can either create a project based on an example project or start with an emp
            ![spidrv_config](images/spidrv_config.png)
         - [Third Party Hardware Drivers] → [Sensors] → [MQ131 - Ozone 2 Click (Mikroe)] → use default configuration
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [ADC] → [channel_1] → use default configuration
@@ -84,7 +84,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "MQ131 - Ozone 2 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "MQ131 - Ozone 2 Click (Mikroe)" component.
 
 ## How It Works ##
 

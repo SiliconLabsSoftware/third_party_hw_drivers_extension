@@ -1,4 +1,4 @@
-project_name: adafruit_tft_lcd_ili9341_dma_si91x
+project_name: adafruit_tft_lcd_ili9341_dma
 package: platform
 label: Third Party Hardware Drivers - ILI9341 - TFT LCD with Touchscreen (Adafruit) - SPI
 description: |
@@ -7,67 +7,63 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/adafruit_tft_lcd_ili9341/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: si91x/app.c
-- path: app_main_screen.c
-- path: app_calib_screen.c
-- path: main.c
+  - path: si91x/app.c
+  - path: app_main_screen.c
+  - path: app_calib_screen.c
+  - path: main.c
 
 include:
-- path: 'si91x'
-  file_list:
-  - path: app.h
+  - path: 'si91x'
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: syscalls
-  from: wiseconnect3_sdk
-- id: si917_memory_default_config
-  from: wiseconnect3_sdk
-- id: app_assert
-- id: sleeptimer_si91x
-  from: wiseconnect3_sdk
-- id: adafruit_tft_lcd_ili9341_dma
-  from: third_party_hw_drivers
-- id: services_oled_glib
-  from: third_party_hw_drivers
-- id: touch_screen_analog
-  from: third_party_hw_drivers
-- id: touch_screen_analog_si91x
-  from: third_party_hw_drivers
-
-define:
-- name: DEBUG_EFM
+  - id: sl_system
+  - id: syscalls
+    from: wiseconnect3_sdk
+  - id: si917_memory_default_config
+    from: wiseconnect3_sdk
+  - id: app_assert
+  - id: sleeptimer
+  - id: adafruit_tft_lcd_ili9341_dma
+    from: third_party_hw_drivers
+  - id: services_oled_glib
+    from: third_party_hw_drivers
+  - id: touch_screen_analog
+    from: third_party_hw_drivers
+  - id: touch_screen_analog_si91x
+    from: third_party_hw_drivers
 
 configuration:
-- name: SL_GSPI_DMA_CONFIG_ENABLE
-  value: "1"
-- name: TOUCHSCREEN_X_MIN
-  value: '598'
-- name: TOUCHSCREEN_X_MAX
-  value: '3618'
-- name: TOUCHSCREEN_Y_MIN
-  value: '420'
-- name: TOUCHSCREEN_Y_MAX
-  value: '3402'
-- name: "GSPI_UC"
-  value: "0"
+  - name: SL_GSPI_DMA_CONFIG_ENABLE
+    value: "1"
+  - name: TOUCHSCREEN_X_MIN
+    value: '598'
+  - name: TOUCHSCREEN_X_MAX
+    value: '3618'
+  - name: TOUCHSCREEN_Y_MIN
+    value: '420'
+  - name: TOUCHSCREEN_Y_MAX
+    value: '3402'
+  - name: "GSPI_UC"
+    value: "0"
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
-- id: wiseconnect3_sdk
-  version: 3.3.4
+  - id: third_party_hw_drivers
+    version: 4.1.0
+  - id: wiseconnect3_sdk
+    version: 3.4.0
+
+readme:
+  - path: ../../documentation/example/adafruit_tft_lcd_ili9341/README.md
 
 other_file:
   - path: ../../documentation/example/adafruit_tft_lcd_ili9341/image/create_example.png

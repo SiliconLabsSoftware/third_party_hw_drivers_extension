@@ -43,12 +43,12 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>SPARKFUN AMG88XX I2C Configuration
+// <h> SPARKFUN AMG88XX I2C Configuration
 
-//  <e>SPARKFUN AMG88XX I2C UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> SPARKFUN AMG88XX I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define SPARKFUN_AMG88XX_I2C_UC                  0
 
 // <o SPARKFUN_AMG88XX_I2C_SPEED_MODE> Speed mode
@@ -62,10 +62,8 @@ extern "C" {
 // </h>
 // <<< end of configuration section >>>
 
-// <<< sl:start pin_tool >>>
-// <<< sl:end pin_tool >>>
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* SPARKFUN_AMG88XX_CONFIG_H_ */
+#endif // SPARKFUN_AMG88XX_CONFIG_H_

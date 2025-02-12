@@ -39,10 +39,6 @@
 #ifndef MIKROE_GPS_LEA6S_CONFIG_H_
 #define MIKROE_GPS_LEA6S_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -52,15 +48,15 @@ extern "C" {
 // <gpio optional=true> MIKROE_LEAS6_RESET
 // $[GPIO_MIKROE_LEAS6_RESET]
 #warning "MIKROE_LEAS6_RESET is not configured"
-// #define MIKROE_LEAS6_RESET_PORT                              gpioPortC
-// #define MIKROE_LEAS6_RESET_PIN                               6
+// #define MIKROE_LEAS6_RESET_PORT                              0
+// #define MIKROE_LEAS6_RESET_PIN                               0
 // [GPIO_MIKROE_LEAS6_RESET]$
 
 // <gpio optional=true> MIKROE_LEAS6_TIMEPULSE
 // $[GPIO_MIKROE_LEAS6_TIMEPULSE]
 #warning "MIKROE_LEAS6_TIMEPULSE is not configured"
-// #define MIKROE_LEAS6_TIMEPULSE_PORT                          gpioPortB
-// #define MIKROE_LEAS6_TIMEPULSE_PIN                           3
+// #define MIKROE_LEAS6_TIMEPULSE_PORT                          0
+// #define MIKROE_LEAS6_TIMEPULSE_PIN                           0
 // [GPIO_MIKROE_LEAS6_TIMEPULSE]$
 
 // <<< sl:end pin_tool >>>

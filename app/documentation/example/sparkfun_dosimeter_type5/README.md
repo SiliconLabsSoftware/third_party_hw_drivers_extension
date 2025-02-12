@@ -10,37 +10,26 @@ The Type 5 Pocket Geiger Radiation Sensor from Radiation Watch is a highly sensi
 
 ## Hardware Required ##
 
-- [A BGM220 Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [Pocket Geiger Radiation Sensor - Type 5](https://www.sparkfun.com/products/14209)
+- 1x Pocket Geiger Radiation Sensor - Type 5
 
 ## Connections Required ##
 
-- If the BGM220P Explorer Kit is used:
-
-  Connect the Pocket Geiger Type 5 board to the BGM220 Explorer Kit through GPIO.
+  Connect the Pocket Geiger Type 5 board to the Silicon Labs Kit through GPIO.
 
   ![connection](image/connection.png)
 
   By default, the binding used is as the table below:
 
-  | Description                   | BGM220 Explorer Kit pin | Pocket Geiger pin |
-  | ----------------------------- | ----------------------- | ----------------- |
-  | DC 3V~9V                      | 5V                      | +V                |
-  | GND                           | GND                     | GND               |
-  | Radiation-detection pulse pin | PB2                     | SIG               |
-  | Noise-detection pulse pin     | PB3                     | NS                |
-
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
-
-  | Description                   | BRD4338A GPIO  | BRD4002 Breakout Pad | Pocket Geiger pin   |
-  | ----------------------------- | -------------- | -------------------- | ------------------- |
-  | DC 3V~9V                      | 5V             | 5V                   | +V                  |
-  | GND                           | GND            | GND                  | GND                 |
-  | Radiation-detection pulse pin | GPIO_46        | P24                  | SIG                 |
-  | Noise-detection pulse pin     | GPIO_47        | P26                  | NS                  |
+  | Description                   | BGM220 Explorer Kit pin | BRD4338A + BRD4002A | BRD2605A | Pocket Geiger Radiation Sensor - Type 5 |
+  | ----------------------------- | ----------------------- | -------------- | -------------------- | ----------------- |
+  | DC 3V~9V                      | 5V                      | 5V             | 5V                   | +V                |
+  | GND                           | GND                     | GND            | GND                  | GND               |
+  | Radiation-detection pulse pin | PB2                     | GPIO_46 [P24]  | GPIO_10              | SIG               |
+  | Noise-detection pulse pin     | PB3                     | GPIO_47 [P26]  | GPIO_11              | NS                |
 
 ## Setup ##
 
@@ -74,16 +63,15 @@ You can either create a project based on an example project or start with an emp
         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
         - [Application] → [Utility] → [Log]
         - [Third Party Hardware Drivers] → [Sensors] → [Pocket Geiger Radiation - Type 5 (Sparkfun)] → use default configuration
-      - **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      - **If the Wi-Fi Development Kit is used:**
         - [Third Party Hardware Drivers] → [Sensors] → [Pocket Geiger Radiation - Type 5 (Sparkfun)] → use default configuration
 
-4. Install printf float
+4. Enable **Printf float**
 
-    - Open Properties of the project.
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
-    - Select C/C++ Build > Settings > Tool Settings >GNU ARM C Linker > General. Check Printf float.
-
-        ![float](image/float.png)
+      ![float](image/float.png)
 
 5. Build and flash this example to the board.
 
@@ -91,7 +79,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install **Pocket Geiger Radiation - Type 5 (Sparkfun)** component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install **Pocket Geiger Radiation - Type 5 (Sparkfun)** component.
 
 ## How It Works ##
 

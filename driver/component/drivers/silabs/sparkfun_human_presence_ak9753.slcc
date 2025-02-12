@@ -10,11 +10,8 @@ ui_hints:
 root_path: driver
 requires:
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
   - name: mikroe_peripheral_driver_digital_io
-
 config_file:
   - path: public/silabs/human_presence_ak9753/config/sparkfun_ak9753_config.h
     file_id: driver_config_ak9753

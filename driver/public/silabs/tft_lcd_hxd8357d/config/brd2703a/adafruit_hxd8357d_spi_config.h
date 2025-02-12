@@ -37,8 +37,7 @@
 #define ADAFRUIT_HXD8357D_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
@@ -71,34 +70,33 @@ extern "C"
 #define ADAFRUIT_HXD8357D_PERIPHERAL_NO           0
 
 // USART0 TX on PC00
-#define ADAFRUIT_HXD8357D_TX_PORT                 gpioPortC
+#define ADAFRUIT_HXD8357D_TX_PORT                 SL_GPIO_PORT_C
 #define ADAFRUIT_HXD8357D_TX_PIN                  3
 
 // USART0 RX on PC01
-#define ADAFRUIT_HXD8357D_RX_PORT                 gpioPortC
+#define ADAFRUIT_HXD8357D_RX_PORT                 SL_GPIO_PORT_C
 #define ADAFRUIT_HXD8357D_RX_PIN                  2
 
 // USART0 CLK on PC02
-#define ADAFRUIT_HXD8357D_CLK_PORT                gpioPortC
+#define ADAFRUIT_HXD8357D_CLK_PORT                SL_GPIO_PORT_C
 #define ADAFRUIT_HXD8357D_CLK_PIN                 1
 
 // USART0 CS on PC03
-#define ADAFRUIT_HXD8357D_CS_PORT                 gpioPortC
+#define ADAFRUIT_HXD8357D_CS_PORT                 SL_GPIO_PORT_C
 #define ADAFRUIT_HXD8357D_CS_PIN                  0
 
 // [USART_ADAFRUIT_HXD8357D]$
 
 // <gpio optional=false> ADAFRUIT_HXD8357D_DC
 // $[GPIO_ADAFRUIT_HXD8357D_DC]
-#define ADAFRUIT_HXD8357D_DC_PORT                 gpioPortC
+#define ADAFRUIT_HXD8357D_DC_PORT                 SL_GPIO_PORT_C
 #define ADAFRUIT_HXD8357D_DC_PIN                  8
 // [GPIO_ADAFRUIT_HXD8357D_DC]$
 
 // <<< sl:end pin_tool >>>
 
 #ifdef __cplusplus
-extern "C"
 }
 #endif
 
-#endif /* ADAFRUIT_HXD8357D_CONFIG_H_ */
+#endif // ADAFRUIT_HXD8357D_CONFIG_H_

@@ -6,13 +6,10 @@ description: >
 category: Services
 quality: evaluation
 root_path: driver
-provides:
-  - name: services_bthome_v2_server
-    allow_multiple: false
 requires:
   - name: status
   - name: bluetooth_stack
-  - name: bluetooth_feature_legacy_scanner  
+  - name: bluetooth_feature_legacy_scanner
   - name: mbedtls_ccm
   - name: nvm3_default
 config_file:
@@ -25,6 +22,9 @@ template_contribution:
     value:
       include: bthome_v2_server.h
       function: bthome_v2_server_on_event
+provides:
+  - name: services_bthome_v2_server
+    allow_multiple: false
 include:
   - path: public/silabs/bthome_v2_server/inc
     file_list:

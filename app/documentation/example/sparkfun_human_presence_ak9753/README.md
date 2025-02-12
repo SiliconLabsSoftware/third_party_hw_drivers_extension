@@ -2,6 +2,8 @@
 
 ## Summary ##
 
+This example project shows an example for Sparkfun Human Presence Sensor Breakout (AK9753) driver integration.
+
 The AK9753 is a low-power and compact infrared-ray (IR) sensor module. It is composed of four quantum IR sensors and an integrated circuit (IC) for characteristic compensation. The four IR sensors' offset and gain variations are calibrated at shipment. An integral analog-to-digital converter provides
 16-bit data outputs. The AK9753 is suitable for several-foot human detectors by using the external lens.
 
@@ -9,29 +11,29 @@ The goal is to provide a hardware driver that supports the basic IR measurement 
 
 ## Required Hardware ##
 
-- [A BGM220P Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [SparkFun Human Presence AK9753 Board (Qwiic)](https://www.sparkfun.com/products/14349)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [SparkFun Human Presence Sensor Breakout - AK9753 (Qwiic)](https://www.sparkfun.com/products/14349)
 
 ## Hardware Connection ##
 
 - **If the BGM220P Explorer Kit is used**:
-  
+
   An AK9753 sensor board can be easily connected with two I2C wires (SDA and SCL) along with 3v3 and GND. For the designated boards, SparkFun Qwiic compatible STEMMA QT connectors can be used. The hardware connection is shown in the image below:
-  
+
   ![hardware_connection](image/hardware_connection.png)
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
-  
+- **If the Wi-Fi Development Kit is used**:
+
   The hardware connection is shown in the table below:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | Sparkfun AK9753 sensor board |
-  | -------------| ------------- | ------------------ | ------------------ |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | Sparkfun AK9753 sensor board |
+  | -------------| ------------------- | ------------ | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | Qwiic cable  | SDA                |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | Qwiic cable  | SCL                |
 
 - **Note:** Normal Mode / Switch Mode selection is controlled by the CAD1 pin and CAD0 pin. When CAD1 pin and CAD0 pin are set as CAD1 pin= CAD0 pin= “H”, the digital output can be used through the I2C interface. When CAD1 pin and CAD0 pin are set as CAD1 pin= CAD0 pin= “H”, Switch Mode is selected. When Switch Mode is selected, SCL pin and SDA pin should be tied to “H”. (Do not access the AK9753 through the I2C interface in Switch Mode.)
-  
+
   | CAD1      | CAD0 | I2C output | Slave address |Mode        |
   | --------- | ---- | ---------- | ------------- | ---------- |
   | L         | L    | Enable     | 64H           | Normal Mode|
@@ -68,24 +70,23 @@ You can either create a project based on an example project or start with an emp
    - Open the .slcp file in the project.
    - Select the SOFTWARE COMPONENTS tab.
    - Install the following components:
-  
+
      - **If the BGM220P Explorer Kit is used:**
-  
+
        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
        - [Application] → [Utility] → [Log]
-       - [Platform] → [Driver] → [I2C] → [I2CSPM] → qwiic instance
+       - [Platform] → [Driver] → [I2C] → [I2CSPM] → default instance name: qwiic
        - [Third Party Hardware Drivers] → [Sensors] → [AK9753 - Human Presence Sensor (Sparkfun) - I2C] → use default configuration
 
-     - **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
-  
+     - **If the Wi-Fi Development Kit is used:**
+
        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
        - [Third Party Hardware Drivers] → [Sensors] → [AK9753 - Human Presence Sensor (Sparkfun) - I2C] → use default configuration
 
-4. Install "printf float"
+4. Enable **Printf float**
 
-    - Open Properties of the project.
-
-    - Select C/C++ Build > Settings > Tool Settings >GNU ARM C Linker > General. Check Printf float.
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
       ![float](image/float.png)
 
@@ -95,7 +96,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install **AK9753 - Human Presence Sensor (Sparkfun) - I2C** component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install **AK9753 - Human Presence Sensor (Sparkfun) - I2C** component.
 
 ## How It Works ##
 

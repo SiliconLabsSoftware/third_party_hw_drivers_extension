@@ -40,8 +40,6 @@
 #ifndef MIKORE_EMG_CONFIG_H_
 #define MIKORE_EMG_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -50,7 +48,7 @@ extern "C" {
 
 // <gpio optional=true> EMG_ANALOG_OUTPUT
 // $[GPIO_EMG_ANALOG_OUTPUT]
-#define EMG_ANALOG_OUTPUT_PORT                   gpioPortB
+#define EMG_ANALOG_OUTPUT_PORT                   SL_GPIO_PORT_B
 #define EMG_ANALOG_OUTPUT_PIN                    0
 // [GPIO_EMG_ANALOG_OUTPUT]$
 
@@ -58,6 +56,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-
 #endif
-#endif /* MIKORE_EMG_CONFIG_H_ */
+
+#endif // MIKORE_EMG_CONFIG_H_

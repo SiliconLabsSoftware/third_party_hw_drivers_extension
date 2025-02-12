@@ -37,6 +37,7 @@
 #define SPARKFUN_TYPE5_H_
 
 #include <stdint.h>
+#include "drv_digital_in.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -71,7 +71,7 @@ extern "C" {
 #define SPARKFUN_MLX90640_CONFIG_ENABLE_LOG       0
 
 // </h>
-  
+
 // <<< end of configuration section >>>
 
 #ifdef __cplusplus

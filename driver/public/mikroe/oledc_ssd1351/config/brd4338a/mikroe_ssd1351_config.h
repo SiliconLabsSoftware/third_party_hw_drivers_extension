@@ -47,7 +47,7 @@
 
 // <h> MIKROE SSD1351 SPI Configuration
 
-// <e>MIKROE SSD1351 SPI UC Configuration
+// <e> MIKROE SSD1351 SPI UC Configuration
 // <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
 // <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
 // <i> Default: 0
@@ -62,12 +62,6 @@
 // <<< end of configuration section >>>
 
 // <<< sl:start pin_tool >>>
-
-// <gpio optional=true> SSD1351_CS
-// $[GPIO_SSD1351_CS]
-// #define SSD1351_CS_PORT                        0
-// #define SSD1351_CS_PIN                         0
-// [GPIO_SSD1351_CS]$
 
 // <gpio optional=true> SSD1351_DC
 // $[GPIO_SSD1351_DC]
@@ -94,7 +88,5 @@
 // [GPIO_SSD1351_RW]$
 
 // <<< sl:end pin_tool >>>
-
-// <<< Use Configuration Wizard in Context Menu >>>
 
 #endif // MIKROE_SSD1351_CONFIG_H_

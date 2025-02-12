@@ -41,49 +41,49 @@
 #define MIKROE_CMT_8540S_SMT_H_
 
 #include "sl_status.h"
-#include "drv_pwm.h"
+#include "buzz2.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**************************************************************************//**
-* @addtogroup cmt_8540s_smt CMT-8540S-SMT - magnetic buzzer transducer
-* @brief  Driver for the the CMT-8540S-SMT magnetic buzzer transducer.
-*    @n @section cmt_8540s_smt_example CMT-8540S-SMT example
-*
-*      Basic example @n @n
-*      @code{.c}
-*
-* #include "sl_pwm_instances.h"
-* #include "mikroe_cmt_8540s_smt.h"
-*    int main(void)
-*    {
-*      ...
-*
-*      // Initialize buzzer and set mode
-*      mikroe_cmt_8540s_smt_init(&sl_pwm_mikroe);
-*      mikroe_cmt_8540s_smt_set_duty_cycle(0.0);
-*      mikroe_cmt_8540s_smt_pwm_start();
-*
-*      mikroe_cmt_8540s_smt_play_sound(MIKROE_BUZZ2_NOTE_A6, VOLUME, Q);
-*
-*      while (true) {
-*
-*        ...
-*
-*      }
-*
-*    } @endcode
-*
-* @{
-******************************************************************************/
+ * @addtogroup cmt_8540s_smt CMT-8540S-SMT - magnetic buzzer transducer
+ * @brief  Driver for the the CMT-8540S-SMT magnetic buzzer transducer.
+ *    @n @section cmt_8540s_smt_example CMT-8540S-SMT example
+ *
+ *      Basic example @n @n
+ *      @code{.c}
+ *
+ * #include "sl_pwm_instances.h"
+ * #include "mikroe_cmt_8540s_smt.h"
+ *    int main(void)
+ *    {
+ *      ...
+ *
+ *      // Initialize buzzer and set mode
+ *      mikroe_cmt_8540s_smt_init(&sl_pwm_mikroe);
+ *      mikroe_cmt_8540s_smt_set_duty_cycle(0.0);
+ *      mikroe_cmt_8540s_smt_pwm_start();
+ *
+ *      mikroe_cmt_8540s_smt_play_sound(MIKROE_BUZZ2_NOTE_A6, VOLUME, Q);
+ *
+ *      while (true) {
+ *
+ *        ...
+ *
+ *      }
+ *
+ *    } @endcode
+ *
+ * @{
+ ******************************************************************************/
 
 /**************************************************************************//**
-* @addtogroup mikroe_buzz2_freq Mikroe Buzz2 Freq
-* @brief Freq definitions
-* @{
-******************************************************************************/
+ * @addtogroup mikroe_buzz2_freq Mikroe Buzz2 Freq
+ * @brief Freq definitions
+ * @{
+ ******************************************************************************/
 #define MIKROE_BUZZ2_NOTE_C2                65
 #define MIKROE_BUZZ2_NOTE_Db2               69
 #define MIKROE_BUZZ2_NOTE_D2                73

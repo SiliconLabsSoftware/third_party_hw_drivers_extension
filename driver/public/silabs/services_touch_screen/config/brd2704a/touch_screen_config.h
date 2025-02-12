@@ -37,8 +37,7 @@
 #define TOUCH_SCREEN_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
@@ -96,25 +95,25 @@ extern "C"
 // <<< sl:start pin_tool >>>
 // <gpio optional=true> TOUCHSCREEN_XP
 // $[GPIO_TOUCHSCREEN_XP]
-#define TOUCHSCREEN_XP_PORT                            gpioPortD
+#define TOUCHSCREEN_XP_PORT                            SL_GPIO_PORT_D
 #define TOUCHSCREEN_XP_PIN                             2
 // [GPIO_TOUCHSCREEN_XP]$
 
 // <gpio optional=true> TOUCHSCREEN_YP
 // $[GPIO_TOUCHSCREEN_YP]
-#define TOUCHSCREEN_YP_PORT                            gpioPortA
+#define TOUCHSCREEN_YP_PORT                            SL_GPIO_PORT_A
 #define TOUCHSCREEN_YP_PIN                             0
 // [GPIO_TOUCHSCREEN_YP]$
 
 // <gpio optional=true> TOUCHSCREEN_XM
 // $[GPIO_TOUCHSCREEN_XM]
-#define TOUCHSCREEN_XM_PORT                            gpioPortD
+#define TOUCHSCREEN_XM_PORT                            SL_GPIO_PORT_D
 #define TOUCHSCREEN_XM_PIN                             0
 // [GPIO_TOUCHSCREEN_XM]$
 
 // <gpio optional=true> TOUCHSCREEN_YM
 // $[GPIO_TOUCHSCREEN_YM]
-#define TOUCHSCREEN_YM_PORT                            gpioPortD
+#define TOUCHSCREEN_YM_PORT                            SL_GPIO_PORT_D
 #define TOUCHSCREEN_YM_PIN                             1
 // [GPIO_TOUCHSCREEN_YM]$
 

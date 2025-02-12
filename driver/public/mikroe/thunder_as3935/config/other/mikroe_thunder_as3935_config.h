@@ -39,8 +39,6 @@
 #ifndef MIKROE_THUNDER_AS3935_CONFIG_H_
 #define MIKROE_THUNDER_AS3935_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -68,58 +68,58 @@ extern "C" {
 // <<< sl:start pin_tool >>>
 
 // <usart signal=TX,RX> LIN
-// $[USART_LIN]                         
-#define LIN_PERIPHERAL                            USART1                      
+// $[USART_LIN]
+#define LIN_PERIPHERAL                            USART1
 #define LIN_PERIPHERAL_NO                         1
 
-// USART1 TX on PB02                            
-#define LIN_TX_PORT                               gpioPortB                              
+// USART1 TX on PB02
+#define LIN_TX_PORT                               SL_GPIO_PORT_B
 #define LIN_TX_PIN                                2
 
-// USART1 RX on PB03                           
-#define LIN_RX_PORT                               gpioPortB                             
+// USART1 RX on PB03
+#define LIN_RX_PORT                               SL_GPIO_PORT_B
 #define LIN_RX_PIN                                3
 // [USART_LIN]$
 
 // <gpio optional=true> LIN_DMA_ACT
 // $[GPIO_LIN_DMA_ACT]
-#define LIN_DMA_ACT_PORT                          gpioPortC
+#define LIN_DMA_ACT_PORT                          SL_GPIO_PORT_C
 #define LIN_DMA_ACT_PIN                           6
 // [GPIO_LIN_DMA_ACT]$
 
 // <gpio optional=true> LIN_TIMEOUT_ACT
 // $[GPIO_LIN_TIMEOUT_ACT]
-#define LIN_TIMEOUT_ACT_PORT                      gpioPortA
+#define LIN_TIMEOUT_ACT_PORT                      SL_GPIO_PORT_A
 #define LIN_TIMEOUT_ACT_PIN                       8
 // [GPIO_LIN_TIMEOUT_ACT]$
 
 // <gpio optional=true> LIN_UART_ACT
 // $[GPIO_LIN_UART_ACT]
-#define LIN_UART_ACT_PORT                         gpioPortA
+#define LIN_UART_ACT_PORT                         SL_GPIO_PORT_A
 #define LIN_UART_ACT_PIN                          0
 // [GPIO_LIN_UART_ACT]$
 
 // <gpio optional=true> LIN_WAKEUP_ACT
 // $[GPIO_LIN_WAKEUP_ACT]
-#define LIN_WAKEUP_ACT_PORT                       gpioPortA
+#define LIN_WAKEUP_ACT_PORT                       SL_GPIO_PORT_A
 #define LIN_WAKEUP_ACT_PIN                        7
 // [GPIO_LIN_WAKEUP_ACT]$
 
 // <gpio optional=true> LIN_CHECKSUM_ERR
 // $[GPIO_LIN_CHECKSUM_ERR]
-#define LIN_CHECKSUM_ERR_PORT                     gpioPortC
+#define LIN_CHECKSUM_ERR_PORT                     SL_GPIO_PORT_C
 #define LIN_CHECKSUM_ERR_PIN                      1
 // [GPIO_LIN_CHECKSUM_ERR]$
 
 // <gpio optional=true> LIN_CONFLICT_ERR
 // $[GPIO_LIN_CONFLICT_ERR]
-#define LIN_CONFLICT_ERR_PORT                     gpioPortC
+#define LIN_CONFLICT_ERR_PORT                     SL_GPIO_PORT_C
 #define LIN_CONFLICT_ERR_PIN                      3
 // [GPIO_LIN_CONFLICT_ERR]$
 
 // <gpio optional=true> LIN_GENERIC_ERR
 // $[GPIO_LIN_GENERIC_ERR]
-#define LIN_GENERIC_ERR_PORT                      gpioPortA
+#define LIN_GENERIC_ERR_PORT                      SL_GPIO_PORT_A
 #define LIN_GENERIC_ERR_PIN                       5
 // [GPIO_LIN_GENERIC_ERR]$
 

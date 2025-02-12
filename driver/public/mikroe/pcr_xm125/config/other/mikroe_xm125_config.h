@@ -39,10 +39,6 @@
 #ifndef MIKROE_XM125_CONFIG_H_
 #define MIKROE_XM125_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -73,22 +69,22 @@ extern "C" {
 // <gpio> CONFIG_XM125_RST
 // $[GPIO_CONFIG_XM125_RST]
 #warning "CONFIG_XM125_RST is not configured"
-// #define CONFIG_XM125_RST_PORT                       gpioPortC
-// #define CONFIG_XM125_RST_PIN                        6
+// #define CONFIG_XM125_RST_PORT                       0
+// #define CONFIG_XM125_RST_PIN                        0
 // [GPIO_CONFIG_XM125_RST]$
 
 // <gpio> CONFIG_XM125_WUP
 // $[GPIO_CONFIG_XM125_WUP]
 #warning "CONFIG_XM125_WUP is not configured"
-// #define CONFIG_XM125_WUP_PORT                       gpioPortB
-// #define CONFIG_XM125_WUP_PIN                        4
+// #define CONFIG_XM125_WUP_PORT                       0
+// #define CONFIG_XM125_WUP_PIN                        0
 // [GPIO_CONFIG_XM125_WUP]$
 
 // <gpio> CONFIG_XM125_INT
 // $[GPIO_CONFIG_XM125_INT]
 #warning "CONFIG_XM125_INT is not configured"
-// #define CONFIG_XM125_INT_PORT                       gpioPortB
-// #define CONFIG_XM125_INT_PIN                        3
+// #define CONFIG_XM125_INT_PORT                       0
+// #define CONFIG_XM125_INT_PIN                        0
 // [GPIO_CONFIG_XM125_INT]$
 
 // <<< sl:end pin_tool >>>

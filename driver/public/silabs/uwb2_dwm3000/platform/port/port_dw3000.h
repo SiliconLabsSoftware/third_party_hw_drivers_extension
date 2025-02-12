@@ -21,11 +21,8 @@ extern "C" {
 #include <stdbool.h>
 #include "error.h"
 #include "deca_device_api.h"
-#include "drv_spi_master.h"
 
 /* spi functions prototypes */
-int uwb2_dwm3000_spi_init(mikroe_spi_handle_t spidrv);
-int uwb2_dwm3000_spi_close(void);
 int writetospi(uint16_t headerLength,
                const uint8_t *headerBuffer,
                uint16_t bodyLength,
@@ -43,7 +40,14 @@ void set_dw_spi_fast_rate(void);
 void set_dw_spi_slow_rate(void);
 
 /* port functions prototypes */
+#if (defined(SLI_SI917))
+#include "drv_spi_master.h"
 error_e port_init_dw_chip(mikroe_spi_handle_t spidrv);
+
+#else
+error_e port_init_dw_chip(void);
+
+#endif
 error_e port_wakeup_dw3000_fast(void);
 error_e port_wakeup_dw3000(void);
 void wakeup_device_with_io(void);

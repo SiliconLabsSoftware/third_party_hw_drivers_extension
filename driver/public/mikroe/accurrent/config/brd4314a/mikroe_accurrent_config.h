@@ -41,11 +41,8 @@
 #define MIKROE_ACCURRENT_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
-
-#include "em_gpio.h"
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
@@ -54,28 +51,18 @@ extern "C"
 // <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
 // <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
 // <i> Default: 0
-#define MIKROE_MCP3201_SPI_UC                  1
+#define MIKROE_ACCURRENT_SPI_UC                1
 
 // <o MIKROE_ACCURRENT_SPI_BITRATE> Bit Rate (Bits/Second) <1-1600000>
 // <i> Default: 800000
-#define MIKROE_MCP3201_SPI_BITRATE             800000
+#define MIKROE_ACCURRENT_SPI_BITRATE             800000
 
 // </e>
 // </h>
 // <<< end of configuration section >>>
 
-// <<< sl:start pin_tool >>>
-
-// <gpio optional=true> ACCURRENT_CS
-// $[GPIO_ACCURRENT_CS]
-// #define ACCURRENT_CS_PORT                        0
-// #define ACCURRENT_CS_PIN                         0
-// [GPIO_ACCURRENT_CS]$
-
-// <<< sl:end pin_tool >>>
-
 #ifdef __cplusplus
 }
-
 #endif
+
 #endif // MIKROE_ACCURRENT_CONFIG_H_

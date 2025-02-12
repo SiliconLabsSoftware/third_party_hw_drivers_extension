@@ -9,8 +9,6 @@ root_path: driver
 requires:
   - name: status
   - name: mikroe_peripheral_driver_spi
-provides:
-  - name: oled_display
 config_file:
   - path: public/mikroe/oledc_ssd1351/config/brd2703a/mikroe_ssd1351_config.h
     file_id: driver_config_oledc
@@ -21,17 +19,23 @@ config_file:
   - path: public/mikroe/oledc_ssd1351/config/brd4314a/mikroe_ssd1351_config.h
     file_id: driver_config_oledc
     condition: [brd4314a]
+  - path: public/mikroe/oledc_ssd1351/config/brd2605a/mikroe_ssd1351_config.h
+    file_id: driver_config_oledc
+    condition: [brd2605a]
   - path: public/mikroe/oledc_ssd1351/config/brd4338a/mikroe_ssd1351_config.h
     file_id: driver_config_oledc
     condition: [brd4338a]
   - path: public/mikroe/oledc_ssd1351/config/other/mikroe_ssd1351_config.h
     file_id: driver_config_oledc
-    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
 
 template_contribution:
   - name: component_catalog
     value: oledc_ssd1351
-    
+provides:
+  - name: oledc_ssd1351
+  - name: oled_display
+
 include:
   - path: inc
     file_list:
@@ -44,7 +48,7 @@ include:
   - path: public/mikroe/oledc_ssd1351/inc
     file_list:
       - path: mikroe_ssd1351.h
-      - path: mikroe_ssd1351_image.h     
+      - path: mikroe_ssd1351_image.h
       - path: oled_display.h
 source:
   - path: thirdparty/mikrosdk_click_v2/clicks/oledc/lib/src/oledc.c

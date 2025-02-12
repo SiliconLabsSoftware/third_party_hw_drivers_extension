@@ -37,11 +37,8 @@
  *
  ******************************************************************************/
 
-#include "drv_digital_out.h"
-#include "drv_digital_in.h"
 #include "mikroe_ra_08.h"
 #include "mikroe_ra_08_config.h"
-#include "lr9.h"
 
 static lr9_t lr;
 static lr9_cfg_t lr_cfg;

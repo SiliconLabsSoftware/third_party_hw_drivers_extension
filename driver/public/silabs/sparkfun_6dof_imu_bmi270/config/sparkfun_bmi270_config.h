@@ -1,4 +1,3 @@
-
 /***************************************************************************/ /**
  * @file sparkfun_bmi270_config.h
  * @brief sparkfun bmi270 configuration
@@ -68,4 +67,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // SPARKFUN_BMI270_CONFIG_H

@@ -1,4 +1,4 @@
-project_name: sparkfun_ir_array_amg88xx_si91x
+project_name: sparkfun_ir_array_amg88xx
 package: platform
 label: Third Party Hardware Drivers - AMG88XX - Grid-EYE Infrared Array Breakout (Sparkfun)
 description: |
@@ -7,47 +7,45 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
-readme:
-- path: ../../documentation/example/sparkfun_ir_array_amg88xx/README.md
 source:
-- path: app_cli_command_table.c
-- path: app_ir_array_cli_cmds.c
-- path: app.c
-- path: main.c
+  - path: app_cli_command_table.c
+  - path: app_ir_array_cli_cmds.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: atomic
-- id: syscalls
-  from: wiseconnect3_sdk
-- id: si917_memory_default_config
-  from: wiseconnect3_sdk
-- id: iostream_si91x
-  from: wiseconnect3_sdk
-- instance: [i2c2]
-  from: wiseconnect3_sdk
-  id: i2c_instance
-- id: sparkfun_ir_array_amg88xx
-  from: third_party_hw_drivers
-- id: iostream_uart_core_si91x
-- id: iostream_retarget_stdio
-- instance: [vcom]
-  id: iostream_uart_si91x
-- instance: [vcom]
-  id: cli
-- id: printf
+  - id: sl_system
+  - id: syscalls
+    from: wiseconnect3_sdk
+  - id: si91x_memory_default_config
+    from: wiseconnect3_sdk
+  - id: i2c_instance
+    instance: [i2c2]
+    from: wiseconnect3_sdk
+  - id: atomic
+  - id: iostream_si91x
+    from: wiseconnect3_sdk
+  - id: iostream_uart_core_si91x
+  - id: iostream_retarget_stdio
+  - id: iostream_uart_si91x
+    instance: [vcom]
+  - id: cli
+    instance: [vcom]
+  - id: printf
+  - id: sparkfun_ir_array_amg88xx
+    from: third_party_hw_drivers
 
 config_file:
   - override:
@@ -63,10 +61,13 @@ configuration:
     value: "6144"
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
-- id: wiseconnect3_sdk
-  version: 3.3.4
+  - id: third_party_hw_drivers
+    version: 4.1.0
+  - id: wiseconnect3_sdk
+    version: 3.4.0
+
+readme:
+  - path: ../../documentation/example/sparkfun_ir_array_amg88xx/README.md
 
 other_file:
   - path: ../../documentation/example/sparkfun_ir_array_amg88xx/image/create_example.png

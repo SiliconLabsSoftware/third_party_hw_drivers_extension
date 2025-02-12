@@ -41,8 +41,7 @@
 #define MIKROE_ACCURRENT_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
@@ -62,18 +61,8 @@ extern "C"
 // </h>
 // <<< end of configuration section >>>
 
-// <<< sl:start pin_tool >>>
-
-// <gpio optional=true> ACCURRENT_CS
-// $[GPIO_ACCURRENT_CS]
-// #define ACCURRENT_CS_PORT                        0
-// #define ACCURRENT_CS_PIN                         0
-// [GPIO_ACCURRENT_CS]$
-
-// <<< sl:end pin_tool >>>
-
 #ifdef __cplusplus
 }
-
 #endif
+
 #endif // MIKROE_ACCURRENT_CONFIG_H_

@@ -37,11 +37,8 @@
  *
  ******************************************************************************/
 
-#include "drv_digital_out.h"
-#include "drv_digital_in.h"
 #include "mikroe_dps310_i2c.h"
 #include "mikroe_dps310_i2c_config.h"
-#include "pressure3.h"
 
 /********************************************************************************
  * static variables

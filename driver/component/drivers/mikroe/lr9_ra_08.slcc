@@ -3,21 +3,20 @@ package: third_party_hw_drivers
 label: RA-08 - LR 9 Click (Mikroe)
 description: >
   Driver for the Mikroe LR 9 Click board.
-
 category: Wireless Connectivity
 quality: evaluation
-
 ui_hints:
   visibility: basic
 root_path: driver
-
 requires:
   - name: status
   - name: sleeptimer
   - name: mikroe_peripheral_driver_uart
   - name: mikroe_peripheral_driver_digital_io
-
 config_file:
+  - path: public/mikroe/lr9_ra_08/config/brd2605a/mikroe_ra_08_config.h
+    file_id: driver_config_ra_08
+    condition: [brd2605a]
   - path: public/mikroe/lr9_ra_08/config/brd2703a/mikroe_ra_08_config.h
     file_id: driver_config_ra_08
     condition: [brd2703a]
@@ -27,18 +26,18 @@ config_file:
   - path: public/mikroe/lr9_ra_08/config/brd4314a/mikroe_ra_08_config.h
     file_id: driver_config_ra_08
     condition: [brd4314a]
+  - path: public/mikroe/lr9_ra_08/config/brd4338a/mikroe_ra_08_config.h
+    file_id: driver_config_ra_08
+    condition: [brd4338a]
   - path: public/mikroe/lr9_ra_08/config/other/mikroe_ra_08_config.h
     file_id: driver_config_ra_08
-    unless: [brd2703a, brd4108a, brd4314a]
-
+    unless: [brd2605a, brd2703a, brd4108a, brd4314a, brd4338a]
 provides:
   - name: mikroe_lr9
     allow_multiple: false
-
 template_contribution:
   - name: component_catalog
     value: mikroe_lr9
-
 include:
   - path: inc
     file_list:
@@ -49,7 +48,6 @@ include:
   - path: public/mikroe/lr9_ra_08/inc
     file_list:
       - path: mikroe_ra_08.h
-
 source:
   - path: thirdparty/mikrosdk_click_v2/clicks/lr9/lib_lr9/src/lr9.c
   - path: public/mikroe/lr9_ra_08/src/mikroe_ra_08.c

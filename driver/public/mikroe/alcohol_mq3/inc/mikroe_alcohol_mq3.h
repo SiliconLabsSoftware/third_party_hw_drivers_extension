@@ -40,7 +40,7 @@
 #define MIKROE_ALCOHOL_MQ3_H_
 
 #include "sl_status.h"
-#include "drv_analog_in.h"
+#include "alcohol.h"
 
 #ifdef __cplusplus
 extern "C" {

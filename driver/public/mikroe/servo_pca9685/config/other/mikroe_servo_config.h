@@ -40,10 +40,6 @@
 #ifndef MIKORE_SERVO_CONFIG_H_
 #define MIKORE_SERVO_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -102,7 +98,7 @@ extern "C" {
 // <gpio optional=true> SERVO_OUTPUT_ENABLE
 // $[GPIO_SERVO_OUTPUT_ENABLE]
 #warning "OE pin for Servo Click is not configured"
-// #define SERVO_OUTPUT_ENABLE_PORT               gpioPortB
+// #define SERVO_OUTPUT_ENABLE_PORT               0
 // #define SERVO_OUTPUT_ENABLE_PIN                0
 // [GPIO_SERVO_OUTPUT_ENABLE]$
 
@@ -110,6 +106,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-
 #endif
-#endif /* MIKORE_SERVO_CONFIG_H_ */
+
+#endif // MIKORE_SERVO_CONFIG_H_

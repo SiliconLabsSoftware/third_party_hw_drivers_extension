@@ -33,9 +33,9 @@
  * as a demonstration for evaluation purposes only. This code will be maintained
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
+#include <stdlib.h>
 #include "sl_sleeptimer.h"
 #include "adafruit_seesaw.h"
-#include "stdlib.h"
 
 sl_status_t adafruit_seesaw_i2c_register_read(seesaw_t *seesaw_dev,
                                               uint8_t reg_high,

@@ -59,29 +59,26 @@ extern "C" {
  ******************************************************************************/
 
 /***************************************************************************//**
-* @name    SOFTWARE VERSION DEFINITION
-*******************************************************************************/
+ * @name    SOFTWARE VERSION DEFINITION
+ *******************************************************************************/
 #define MMA8452Q_MAJOR_VERSION                0
 #define MMA8452Q_MINOR_VERSION                1
 #define MMA8452Q_BUILD_VERSION                0
 #define MMA8452Q_REVISION_VERSION             0
 
 /***************************************************************************//**
-* @name    CHIP ID DEFINITION
-*******************************************************************************/
-#define SL_MMA8452Q_DEVICE_ID                 0x2A    /**< Device ID of the
-                                                       *   MMA8452Q chip
-                                                       *          */
+ * @name    CHIP ID DEFINITION
+ *******************************************************************************/
+// Device ID of the MMA8452Q chip
+#define SL_MMA8452Q_DEVICE_ID                 0x2A
 
 /***************************************************************************//**
-* @name    I2C ADDRESS DEFINITION
-*******************************************************************************/
-#define SL_MMA8452Q_I2C_BUS_ADDRESS1          0x1C    /**< I2C address of the
-                                                       *   MMA8452Q chip: SA0
-                                                       *   low-logic */
-#define SL_MMA8452Q_I2C_BUS_ADDRESS2          0x1D   /**< I2C address of the
-                                                      *   MMA8452Q chip: SA0
-                                                      *   hi-logic  */
+ * @name    I2C ADDRESS DEFINITION
+ *******************************************************************************/
+// I2C address of the MMA8452Q chip: SA0 low-logic
+#define SL_MMA8452Q_I2C_BUS_ADDRESS1          0x1C
+// I2C address of the MMA8452Q chip: SA0 hi-logic
+#define SL_MMA8452Q_I2C_BUS_ADDRESS2          0x1D
 
 /***************************************************************************//**
  * @brief
@@ -127,8 +124,8 @@ typedef enum
 } mma8452q_mods_t; // mode power scheme
 
 /***************************************************************************//**
-* @name    MMA8452Q portrait/landscape & back/front settings
-*******************************************************************************/
+ * @name    MMA8452Q portrait/landscape & back/front settings
+ *******************************************************************************/
 #define MMA8452Q_BAFRO_FRONT 0
 #define MMA8452Q_BAFRO_BACK  1
 #define MMA8452Q_PORTRAIT_U  0
@@ -179,8 +176,7 @@ typedef struct {
   bool en_x_trans;          // enable X event when gt X threshold
   bool en_hpf_bypass;       // bypass high pass filter
   bool db_cnt_mode;         // debounce counter mode [0:inc/dec, 1:inc/clr]
-  uint8_t threshold;        // transient threshold (one threshold for all 3
-                            //   axes)
+  uint8_t threshold;        // transient threshold (one threshold for all 3 axes)
   uint8_t debounce_cnt;     // min debounce counts
 } mma8452q_trans_config_t;
 
@@ -226,8 +222,7 @@ typedef struct {
   bool en_y_trans;          // enable Y event when gt Y threshold
   bool en_x_trans;          // enable X event when gt X threshold
   bool db_cnt_mode;         // debounce counter mode [0:inc/dec, 1:inc/clr]
-  uint8_t threshold;        // transient threshold (one threshold for all 3
-                            //   axes)
+  uint8_t threshold;        // transient threshold (one threshold for all 3 axes)
   uint8_t debounce_cnt;     // min debounce counts
 } mma8452q_ff_mt_config_t;
 
@@ -261,21 +256,14 @@ typedef struct {
  *    Structure to store the sensor configuration
  ******************************************************************************/
 typedef struct {
-  uint8_t                       dev_addr;           // configured device
-                                                    //   I2C address
+  uint8_t                       dev_addr;           // configured device I2C address
   mma8452q_scale_t              scale;              // accelerometer scale
-  mma8452q_odr_t                odr;                // output data rate
-                                                    //   when awake
-  mma8452q_aslp_odr_t           alsp_rate;          // output data rate
-                                                    //   when asleep
-  bool                          en_low_noise;       // enable reduced
-                                                    //   noise mode
-  bool                          en_fast_read;       // enable fast-read
-                                                    //   mode
-  mma8452q_mods_t               active_mode_pwr;    // active mode power
-                                                    //   scheme
-  mma8452q_mods_t               slp_mode_pwr;       // sleep mode power
-                                                    //   scheme
+  mma8452q_odr_t                odr;                // output data rate when awake
+  mma8452q_aslp_odr_t           alsp_rate;          // output data rate when asleep
+  bool                          en_low_noise;       // enable reduced noise mode
+  bool                          en_fast_read;       // enable fast-read mode
+  mma8452q_mods_t               active_mode_pwr;    // active mode power scheme
+  mma8452q_mods_t               slp_mode_pwr;       // sleep mode power scheme
   mma8452q_aslp_config_t        aslp_cfg;
   mma8452q_trans_config_t       trans_cfg;
   mma8452q_orientation_config_t orient_cfg;

@@ -40,7 +40,6 @@
 #define MIKROE_LEA6S_H_
 
 #include "sl_status.h"
-#include "drv_uart.h"
 #include "gps.h"
 
 #ifdef __cplusplus

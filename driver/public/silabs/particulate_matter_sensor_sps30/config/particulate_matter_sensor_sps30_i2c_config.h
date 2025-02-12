@@ -68,4 +68,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // PM_SENSOR_SPS30_CONFIG_H

@@ -21,12 +21,15 @@ config_file:
   - path: public/mikroe/barcode2_em3080w/config/brd4314a/mikroe_em3080w_config.h
     file_id: driver_config_barcode2
     condition: [brd4314a]
+  - path: public/mikroe/barcode2_em3080w/config/brd2605a/mikroe_em3080w_config.h
+    file_id: driver_config_barcode2
+    condition: [brd2605a]
   - path: public/mikroe/barcode2_em3080w/config/brd4338a/mikroe_em3080w_config.h
     file_id: driver_config_barcode2
     condition: [brd4338a]
   - path: public/mikroe/barcode2_em3080w/config/other/mikroe_em3080w_config.h
     file_id: driver_config_barcode2
-    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
 provides:
   - name: mikroe_barcode2
     allow_multiple: false

@@ -41,7 +41,7 @@
 #define MIKROE_TB6549FG_H_
 
 #include "sl_status.h"
-#include "drv_pwm.h"
+#include "dcmotor3.h"
 
 #ifdef __cplusplus
 extern "C" {

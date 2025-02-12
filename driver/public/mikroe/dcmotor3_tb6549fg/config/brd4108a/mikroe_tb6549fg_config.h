@@ -40,28 +40,26 @@
 #ifndef MIKROE_TB6549FG_CONFIG_H_
 #define MIKROE_TB6549FG_CONFIG_H_
 
-#include "em_gpio.h"
-
 // <<< sl:start pin_tool >>>
 
 // <gpio optional=true> DCMOTOR3_IN1
 // $[GPIO_DCMOTOR3_IN1]
-#define DCMOTOR3_IN1_PORT                    gpioPortB
+#define DCMOTOR3_IN1_PORT                    SL_GPIO_PORT_B
 #define DCMOTOR3_IN1_PIN                     0
 // [GPIO_DCMOTOR3_IN1]$
 
 // <gpio optional=true> DCMOTOR3_IN2
 // $[GPIO_DCMOTOR3_IN2]
-#define DCMOTOR3_IN2_PORT                    gpioPortC
+#define DCMOTOR3_IN2_PORT                    SL_GPIO_PORT_C
 #define DCMOTOR3_IN2_PIN                     6
 // [GPIO_DCMOTOR3_IN2]$
 
 // <gpio optional=true> DCMOTOR3_SLP
 // $[GPIO_DCMOTOR3_SLP]
-#define DCMOTOR3_SLP_PORT                    gpioPortC
+#define DCMOTOR3_SLP_PORT                    SL_GPIO_PORT_C
 #define DCMOTOR3_SLP_PIN                     3
 // [GPIO_DCMOTOR3_SLP]$
 
 // <<< sl:end pin_tool >>>
 
-#endif /* MIKROE_TB6549FG_CONFIG_H_ */
+#endif // MIKROE_TB6549FG_CONFIG_H_

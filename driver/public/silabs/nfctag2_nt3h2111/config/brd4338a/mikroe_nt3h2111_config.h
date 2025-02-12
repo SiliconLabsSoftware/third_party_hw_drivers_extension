@@ -80,4 +80,4 @@
 
 // <<< sl:end pin_tool >>>
 
-#endif /* MIKROE_NT3H211_CONFIG_H_ */
+#endif // MIKROE_NT3H211_CONFIG_H_

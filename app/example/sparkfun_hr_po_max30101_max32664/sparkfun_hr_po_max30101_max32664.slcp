@@ -7,42 +7,42 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/sparkfun_hr_po_max30101_max32664/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: sparkfun_hr_po_max30101_max32664
-  from: third_party_hw_drivers
-- id: iostream_usart
-  instance: [vcom]
-- id: i2cspm
-  instance: [qwiic]
-- id: app_log
+  - id: sl_system
+  - id: device_init
+  - id: iostream_usart
+    instance: [vcom]
+  - id: i2cspm
+    instance: [qwiic]
+  - id: app_log
+  - id: sparkfun_hr_po_max30101_max32664
+    from: third_party_hw_drivers
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/sparkfun_hr_po_max30101_max32664/README.md
 
 other_file:
   - path: ../../documentation/example/sparkfun_hr_po_max30101_max32664/image/create_example.png

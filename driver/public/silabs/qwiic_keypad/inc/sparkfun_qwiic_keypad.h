@@ -45,7 +45,7 @@ extern "C" {
 #include "drv_digital_in.h"
 #include "sl_sleeptimer.h"
 
-typedef void (*buttonEvent_callback)(const uint8_t);
+typedef void (*buttonEvent_callback)(void);
 
 enum sparkfun_keypad_registers {
   SPARKFUN_KEYPAD_ID = 0x00,       // Reg: 0x00 - Default I2C Address

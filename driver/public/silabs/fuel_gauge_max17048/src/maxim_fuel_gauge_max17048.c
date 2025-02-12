@@ -1,37 +1,37 @@
 /***************************************************************************//**
-* @file max17048.c
-* @brief Driver for the MAX17048/9 Fuel Gauge
-********************************************************************************
-* # License
-* <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
-********************************************************************************
-*
-* SPDX-License-Identifier: Zlib
-*
-* The licensor of this software is Silicon Laboratories Inc.
-*
-* This software is provided \'as-is\', without any express or implied
-* warranty. In no event will the authors be held liable for any damages
-* arising from the use of this software.
-*
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute it
-* freely, subject to the following restrictions:
-*
-* 1. The origin of this software must not be misrepresented; you must not
-*    claim that you wrote the original software. If you use this software
-*    in a product, an acknowledgment in the product documentation would be
-*    appreciated but is not required.
-* 2. Altered source versions must be plainly marked as such, and must not be
-*    misrepresented as being the original software.
-* 3. This notice may not be removed or altered from any source distribution.
-*
-*******************************************************************************
-* # Evaluation Quality
-* This code has been minimally tested to ensure that it builds and is suitable
-* as a demonstration for evaluation purposes only. This code will be maintained
-* at the sole discretion of Silicon Labs.
-*******************************************************************************/
+ * @file max17048.c
+ * @brief Driver for the MAX17048/9 Fuel Gauge
+ ********************************************************************************
+ * # License
+ * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ ********************************************************************************
+ *
+ * SPDX-License-Identifier: Zlib
+ *
+ * The licensor of this software is Silicon Laboratories Inc.
+ *
+ * This software is provided \'as-is\', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ *
+ *******************************************************************************
+ * # Evaluation Quality
+ * This code has been minimally tested to ensure that it builds and is suitable
+ * as a demonstration for evaluation purposes only. This code will be maintained
+ * at the sole discretion of Silicon Labs.
+ *******************************************************************************/
 #include "maxim_fuel_gauge_max17048.h"
 
 typedef struct
@@ -54,9 +54,9 @@ typedef struct
 #if MAX17048_ENABLE_HW_QSTRT
 #if defined(MAX17048_ENABLE_QSTRT_PORT) && defined(MAX17048_ENABLE_QSTRT_PIN)
   digital_out_t qstrt_pin;
-#endif
+#endif // MAX17048_ENABLE_QSTRT_PORT & MAX17048_ENABLE_QSTRT_PIN
   sl_sleeptimer_timer_handle_t quick_start_timer_handle;
-#endif
+#endif // MAX17048_ENABLE_HW_QSTRT
   sl_sleeptimer_timer_handle_t temp_timer_handle;
   interrupt_callback_t         interrupt_callback[5];
   void *callback_data[5];
@@ -71,7 +71,7 @@ typedef struct
 #if (defined(SLI_SI917))
 extern adc_config_t sl_bjt_config;
 extern adc_ch_config_t sl_bjt_channel_config;
-#endif
+#endif // SLI_SI917
 
 bool update_rcom = false;
 static fuel_gauge_t fuel_gauge = {
@@ -100,7 +100,14 @@ static void max17048_quick_start_callback(sl_sleeptimer_timer_handle_t *handle,
                                           void *data);
 
 #endif
-static void max17048_alrt_pin_callback(uint8_t pin);
+
+#if (defined(SLI_SI917))
+static void max17048_alrt_pin_callback(uint32_t int_no);
+
+#else // SLI_SI917
+static void max17048_alrt_pin_callback(uint8_t int_no, void *ctx);
+
+#endif
 static sl_status_t max17048_set_rcomp(uint8_t rcomp);
 static sl_status_t max17048_get_alert_condition(uint8_t *alert_condition);
 static sl_status_t max17048_clear_alert_condition(uint8_t alert_condition,
@@ -138,10 +145,10 @@ static sl_status_t max17048_read_register(uint8_t reg_addr,
 #if (MAX17048_ENABLE_POWER_MANAGER == 1)
 #if (defined(SLI_SI917))
   sl_si91x_power_manager_add_ps_requirement(SL_SI91X_POWER_MANAGER_PS1);
-#else
+#else // SLI_SI917
   sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
-#endif
-#endif
+#endif // SLI_SI917
+#endif // MAX17048_ENABLE_POWER_MANAGER
   if (I2C_MASTER_SUCCESS != i2c_master_write_then_read(&fuel_gauge.i2c,
                                                        &reg_addr,
                                                        1,
@@ -159,10 +166,10 @@ static sl_status_t max17048_read_register(uint8_t reg_addr,
 #if (MAX17048_ENABLE_POWER_MANAGER == 1)
 #if (defined(SLI_SI917))
   sl_si91x_power_manager_remove_ps_requirement(SL_SI91X_POWER_MANAGER_PS1);
-#else
+#else // SLI_SI917
   sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1);
-#endif
-#endif
+#endif // SLI_SI917
+#endif // MAX17048_ENABLE_POWER_MANAGER
 }
 
 /***************************************************************************//**
@@ -202,10 +209,10 @@ static sl_status_t max17048_write_register(uint8_t reg_addr,
 #if (MAX17048_ENABLE_POWER_MANAGER == 1)
 #if (defined(SLI_SI917))
   sl_si91x_power_manager_add_ps_requirement(SL_SI91X_POWER_MANAGER_PS1);
-#else
+#else // SLI_SI917
   sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
-#endif
-#endif
+#endif // SLI_SI917
+#endif // MAX17048_ENABLE_POWER_MANAGER
   if (I2C_MASTER_SUCCESS != i2c_master_write(&fuel_gauge.i2c,
                                              i2c_write_data,
                                              sizeof(i2c_write_data))) {
@@ -221,10 +228,10 @@ static sl_status_t max17048_write_register(uint8_t reg_addr,
 #if (MAX17048_ENABLE_POWER_MANAGER == 1)
 #if (defined(SLI_SI917))
   sl_si91x_power_manager_remove_ps_requirement(SL_SI91X_POWER_MANAGER_PS1);
-#else
+#else // SLI_SI917
   sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1);
-#endif
-#endif
+#endif // SLI_SI917
+#endif // MAX17048_ENABLE_POWER_MANAGER
 }
 
 /***************************************************************************//**
@@ -274,10 +281,10 @@ static void max17048_quick_start_callback(sl_sleeptimer_timer_handle_t *handle,
   (void)data;
 #if defined(MAX17048_ENABLE_QSTRT_PORT) && defined(MAX17048_ENABLE_QSTRT_PIN)
   digital_out_low(&fuel_gauge.qstrt_pin);
-#endif
+#endif // MAX17048_ENABLE_QSTRT_PORT & MAX17048_ENABLE_QSTRT_PIN
 }
 
-#endif
+#endif // MAX17048_ENABLE_HW_QSTRT
 
 /***************************************************************************//**
  * This is a callback function that is invoked each time a GPIO interrupt
@@ -288,9 +295,16 @@ static void max17048_quick_start_callback(sl_sleeptimer_timer_handle_t *handle,
  * @note This function is called from ISR context and therefore it is
  *       not possible to call any API functions directly.
  ******************************************************************************/
-static void max17048_alrt_pin_callback(uint8_t pin)
+#if (defined(SLI_SI917))
+static void max17048_alrt_pin_callback(uint32_t int_no)
 {
-  (void)pin;
+#else // SLI_SI917
+static void max17048_alrt_pin_callback(uint8_t int_no, void *ctx)
+{
+  (void)ctx;
+#endif
+  (void)int_no;
+
   interrupt_callback_t callback;
   uint8_t alert_condition = 0;
 
@@ -481,13 +495,7 @@ sl_status_t max17048_init(mikroe_i2c_handle_t i2cspm)
 
 #if (MAX17048_I2C_UC == 1)
   fuel_gauge_cfg.speed = MAX17048_I2C_SPEED_MODE;
-#endif
-
-#if defined(MAX17048_ALRT_PORT) && defined(MAX17048_ALRT_PIN)
-  digital_in_pullup_init(&fuel_gauge.alrt_pin,
-                         hal_gpio_pin_name(MAX17048_ALRT_PORT,
-                                           MAX17048_ALRT_PIN));
-#endif
+#endif // MAX17048_I2C_UC
 
   if (i2c_master_open(&fuel_gauge.i2c, &fuel_gauge_cfg) == I2C_MASTER_ERROR) {
     return SL_STATUS_INITIALIZATION;
@@ -497,40 +505,35 @@ sl_status_t max17048_init(mikroe_i2c_handle_t i2cspm)
   i2c_master_set_timeout(&fuel_gauge.i2c, 0);
 
 #if defined(MAX17048_ALRT_PORT) && defined(MAX17048_ALRT_PIN)
+  int32_t int_no;
+  digital_in_pullup_init(&fuel_gauge.alrt_pin,
+                         hal_gpio_pin_name(MAX17048_ALRT_PORT,
+                                           MAX17048_ALRT_PIN));
 #if (defined(SLI_SI917))
-  sl_gpio_t gpio_port_pin = { MAX17048_ALRT_PIN / 16,
-                              MAX17048_ALRT_PIN % 16 };
-  sl_gpio_driver_configure_interrupt(&gpio_port_pin,
-                                     GPIO_M4_INTR,
+  int_no = PIN_INTR_NO;
+  sl_gpio_driver_configure_interrupt((sl_gpio_t *)&fuel_gauge.alrt_pin.pin,
+                                     int_no,
                                      SL_GPIO_INTERRUPT_FALLING_EDGE,
-                                     (void *)max17048_alrt_pin_callback,
+                                     max17048_alrt_pin_callback,
                                      AVL_INTR_NO);
-#else
-  GPIOINT_Init();
-  GPIO_PinModeSet(MAX17048_ALRT_PORT,
-                  MAX17048_ALRT_PIN,
-                  gpioModeInputPullFilter,
-                  1);
-  GPIO_ExtIntConfig(MAX17048_ALRT_PORT,
-                    MAX17048_ALRT_PIN,
-                    MAX17048_ALRT_PIN,
-                    false,
-                    true,
-                    true);
-
-  // Register the callback function that is invoked when interrupt occurs
-  GPIOINT_CallbackRegister(MAX17048_ALRT_PIN,
-                           max17048_alrt_pin_callback);
-#endif
-#endif
+#else // SLI_SI917
+  int_no = MAX17048_ALRT_PIN;
+  sl_gpio_configure_external_interrupt(
+    (const sl_gpio_t *)&fuel_gauge.alrt_pin.pin,
+    &int_no,
+    SL_GPIO_INTERRUPT_FALLING_EDGE,
+    max17048_alrt_pin_callback,
+    NULL);
+#endif // SLI_SI917
+#endif // MAX17048_ALRT_PORT & MAX17048_ALRT_PIN
 
 #if MAX17048_ENABLE_HW_QSTRT
 #if defined(MAX17048_ENABLE_QSTRT_PORT) && defined(MAX17048_ENABLE_QSTRT_PIN)
   digital_out_init(&fuel_gauge.qstrt_pin,
                    hal_gpio_pin_name(MAX17048_ENABLE_QSTRT_PORT,
                                      MAX17048_ENABLE_QSTRT_PIN));
-#endif
-#endif
+#endif // MAX17048_ENABLE_QSTRT_PORT & MAX17048_ENABLE_QSTRT_PIN
+#endif // MAX17048_ENABLE_HW_QSTRT
 
   /* The driver calculates and updates the RCOMP factor at a rate of
    * 1000 ms <= MAX17048_RCOMP_UPDATE_INTERVAL_MS <= 60000 ms
@@ -547,9 +550,9 @@ sl_status_t max17048_init(mikroe_i2c_handle_t i2cspm)
   if (status != SL_STATUS_OK) {
     return status;
   }
-#else
+#else // SLI_SI917
   TEMPDRV_Init();
-#endif
+#endif // SLI_SI917
 
   // Read and clear RI bit if it is set
   status = max17048_clear_reset_indicator_bit();
@@ -563,7 +566,7 @@ sl_status_t max17048_init(mikroe_i2c_handle_t i2cspm)
 // User-specified stabilization delay
 #if MAX17048_STABILIZATION_DELAY > 0
   sl_sleeptimer_delay_millisecond(MAX17048_STABILIZATION_DELAY);
-#endif
+#endif // MAX17048_STABILIZATION_DELAY
 
   return SL_STATUS_OK;
 }
@@ -582,35 +585,29 @@ sl_status_t max17048_deinit(void)
   // De-initialization tasks
 #if defined(MAX17048_ALRT_PORT) && defined(MAX17048_ALRT_PIN)
 #if (defined(SLI_SI917))
-  sl_gpio_t alert_port_pin = { MAX17048_ALRT_PIN / 16,
-                               MAX17048_ALRT_PIN % 16 };
-  sl_gpio_driver_set_pin_mode(&alert_port_pin,
+  sl_gpio_driver_set_pin_mode((sl_gpio_t *)&fuel_gauge.alrt_pin.pin,
                               SL_GPIO_MODE_DISABLED,
                               0);
-#else
-  GPIO_PinModeSet(MAX17048_ALRT_PORT,
-                  MAX17048_ALRT_PIN,
-                  gpioModeDisabled,
-                  1);
-#endif
-#endif
+#else // SLI_SI917
+  sl_gpio_set_pin_mode((const sl_gpio_t *)&fuel_gauge.alrt_pin.pin,
+                       SL_GPIO_MODE_DISABLED,
+                       0);
+#endif // SLI_SI917
+#endif // MAX17048_ALRT_PORT & MAX17048_ALRT_PIN
 
 #if MAX17048_ENABLE_HW_QSTRT
 #if defined(MAX17048_ENABLE_QSTRT_PORT) && defined(MAX17048_ENABLE_QSTRT_PIN)
 #if (defined(SLI_SI917))
-  sl_gpio_t qstrt_port_pin = { MAX17048_ENABLE_QSTRT_PORT / 16,
-                               MAX17048_ENABLE_QSTRT_PIN % 16 };
-  sl_gpio_driver_set_pin_mode(&qstrt_port_pin,
+  sl_gpio_driver_set_pin_mode((sl_gpio_t *)&fuel_gauge.qstrt_pin.pin,
                               SL_GPIO_MODE_DISABLED,
                               0);
-#else
-  GPIO_PinModeSet(MAX17048_ENABLE_QSTRT_PORT,
-                  MAX17048_ENABLE_QSTRT_PIN,
-                  gpioModeDisabled,
-                  0);
-#endif
-#endif
-#endif
+#else // SLI_SI917
+  sl_gpio_set_pin_mode((const sl_gpio_t *)&fuel_gauge.qstrt_pin.pin,
+                       SL_GPIO_MODE_DISABLED,
+                       0);
+#endif // SLI_SI917
+#endif // MAX17048_ENABLE_QSTRT_PORT & MAX17048_ENABLE_QSTRT_PIN
+#endif // MAX17048_ENABLE_HW_QSTRT
 
   status = max17048_disable_soc_interrupt();
   if (status != SL_STATUS_OK) {
@@ -658,9 +655,9 @@ sl_status_t max17048_update_rcom(void)
 {
 #if (defined(SLI_SI917))
   double temp;
-#else
+#else // SLI_SI917
   uint8_t temp;
-#endif
+#endif // SLI_SI917
   uint8_t rcomp;
 
   /*
@@ -671,16 +668,16 @@ sl_status_t max17048_update_rcom(void)
 #if (MAX17048_ENABLE_POWER_MANAGER == 1)
 #if (defined(SLI_SI917))
   sl_si91x_power_manager_add_ps_requirement(SL_SI91X_POWER_MANAGER_PS1);
-#else
+#else // SLI_SI917
   sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
-#endif
-#endif
+#endif // SLI_SI917
+#endif // MAX17048_ENABLE_POWER_MANAGER
 
 #if (defined(SLI_SI917))
   sl_si91x_bjt_temperature_sensor_read_data(&temp);
-#else
+#else // SLI_SI917
   temp = TEMPDRV_GetTemp();
-#endif
+#endif // SLI_SI917
 
   if (temp > 20) {
     rcomp = RCOMP0 + (temp - 20) * TEMP_CO_UP;
@@ -698,10 +695,10 @@ sl_status_t max17048_update_rcom(void)
 #if (MAX17048_ENABLE_POWER_MANAGER == 1)
 #if (defined(SLI_SI917))
   sl_si91x_power_manager_remove_ps_requirement(SL_SI91X_POWER_MANAGER_PS1);
-#else
+#else // SLI_SI917
   sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1);
-#endif
-#endif
+#endif // SLI_SI917
+#endif // MAX17048_ENABLE_POWER_MANAGER
 
   if (status != SL_STATUS_OK) {
     return SL_STATUS_FAIL;
@@ -814,12 +811,13 @@ uint32_t max17048_get_update_interval(void)
 void max17048_mask_interrupts(void)
 {
 #if (defined(SLI_SI917))
-  sl_gpio_driver_clear_interrupts(GPIO_M4_INTR);
-  sl_gpio_driver_disable_interrupts(
-    (GPIO_M4_INTR << 16) | SL_GPIO_INTERRUPT_FALL_EDGE);
-#else
-  GPIO_IntDisable(1 << MAX17048_ALRT_PIN);
-#endif
+  sl_gpio_clear_interrupts(PIN_INTR_NO);
+  sl_gpio_disable_interrupts((PIN_INTR_NO << 16)
+                             | SL_GPIO_INTERRUPT_FALL_EDGE);
+#else // SLI_SI917
+  sl_hal_gpio_clear_interrupts(1 << MAX17048_ALRT_PIN);
+  sl_gpio_disable_interrupts(1 << MAX17048_ALRT_PIN);
+#endif // SLI_SI917
 }
 
 /***************************************************************************//**
@@ -832,12 +830,13 @@ void max17048_unmask_interrupts(void)
    * the interrupt was disabled.
    */
 #if (defined(SLI_SI917))
-  sl_gpio_driver_enable_interrupts(
-    (GPIO_M4_INTR << 16) | SL_GPIO_INTERRUPT_FALL_EDGE);
-#else
-  GPIO_IntClear(1 << MAX17048_ALRT_PIN);
-  GPIO_IntEnable(1 << MAX17048_ALRT_PIN);
-#endif
+  sl_gpio_clear_interrupts(PIN_INTR_NO);
+  sl_gpio_enable_interrupts((PIN_INTR_NO << 16)
+                            | SL_GPIO_INTERRUPT_FALL_EDGE);
+#else // SLI_SI917
+  sl_hal_gpio_clear_interrupts(1 << MAX17048_ALRT_PIN);
+  sl_gpio_enable_interrupts(1 << MAX17048_ALRT_PIN);
+#endif // SLI_SI917
 }
 
 /***************************************************************************//**
@@ -1571,12 +1570,12 @@ sl_status_t max17048_force_quick_start(void)
    */
   buffer[0] = MAX17048_MODE_QUICK_START;
   status = max17048_write_register(MAX17048_MODE, buffer);
-#else
+#else // MAX17048_ENABLE_HW_QSTRT
 
 #if defined(MAX17048_ENABLE_QSTRT_PORT) && defined(MAX17048_ENABLE_QSTRT_PIN)
   // Assert GPIO pin connected to QSTRT and delay 1 ms.
   digital_out_high(&fuel_gauge.qstrt_pin);
-#endif
+#endif // MAX17048_ENABLE_QSTRT_PORT & MAX17048_ENABLE_QSTRT_PIN
 
   status = sl_sleeptimer_start_timer_ms(&fuel_gauge.quick_start_timer_handle,
                                         1,
@@ -1584,7 +1583,7 @@ sl_status_t max17048_force_quick_start(void)
                                         (void *)NULL,
                                         0,
                                         0);
-#endif /* MAX17048_ENABLE_HW_QSTRT */
+#endif // MAX17048_ENABLE_HW_QSTRT
 
   return status;
 }
@@ -1626,10 +1625,10 @@ sl_status_t max17048_load_model(const uint8_t *model)
 #if (MAX17048_ENABLE_POWER_MANAGER == 1)
 #if (defined(SLI_SI917))
   sl_si91x_power_manager_add_ps_requirement(SL_SI91X_POWER_MANAGER_PS1);
-#else
+#else // SLI_SI917
   sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
-#endif
-#endif
+#endif // SLI_SI917
+#endif // MAX17048_ENABLE_POWER_MANAGER
 
   if (I2C_MASTER_SUCCESS != i2c_master_write(&fuel_gauge.i2c,
                                              i2c_write_data,
@@ -1646,10 +1645,10 @@ sl_status_t max17048_load_model(const uint8_t *model)
 #if (MAX17048_ENABLE_POWER_MANAGER == 1)
 #if (defined(SLI_SI917))
   sl_si91x_power_manager_remove_ps_requirement(SL_SI91X_POWER_MANAGER_PS1);
-#else
+#else // SLI_SI917
   sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1);
-#endif
-#endif
+#endif // SLI_SI917
+#endif // MAX17048_ENABLE_POWER_MANAGER
 
   // Lock and load the new model
   buffer[0] = 0x0;

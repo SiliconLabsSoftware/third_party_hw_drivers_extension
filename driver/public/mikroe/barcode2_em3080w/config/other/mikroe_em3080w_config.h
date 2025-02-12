@@ -39,10 +39,6 @@
 #ifndef MIKROE_EM3080W_CONFIG_H_
 #define MIKROE_EM3080W_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -52,15 +48,15 @@ extern "C" {
 // <gpio> CONFIG_EM3080W_RST
 // $[GPIO_CONFIG_EM3080W_RST]
 #warning "EM3080W_RST is not configured"
-// #define CONFIG_EM3080W_RST_PORT                       gpioPortC
-// #define CONFIG_EM3080W_RST_PIN                        6
+// #define CONFIG_EM3080W_RST_PORT                       0
+// #define CONFIG_EM3080W_RST_PIN                        0
 // [GPIO_CONFIG_EM3080W_RST]$
 
 // <gpio> CONFIG_EM3080W_TRG
 // $[GPIO_CONFIG_EM3080W_TRG]
 #warning "EM3080W_TRG is not configured"
-// #define CONFIG_EM3080W_TRG_PORT                       gpioPortB
-// #define CONFIG_EM3080W_TRG_PIN                        4
+// #define CONFIG_EM3080W_TRG_PORT                       0
+// #define CONFIG_EM3080W_TRG_PIN                        0
 // [GPIO_CONFIG_EM3080W_TRG]$
 
 // <<< sl:end pin_tool >>>
@@ -69,4 +65,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_EM3080W_CONFIG_H_ */
+#endif // MIKROE_EM3080W_CONFIG_H_

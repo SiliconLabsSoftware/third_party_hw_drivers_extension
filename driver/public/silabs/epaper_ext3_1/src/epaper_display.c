@@ -57,7 +57,7 @@ static void send_command_data(uint8_t index, uint8_t data);
 static void soft_start_format1(uint8_t offset, uint8_t iREPEAT);
 static void soft_start_format2(uint8_t offset, uint8_t iREPEAT);
 
-void epd_init()
+void epd_init(void)
 {
   // Actually for 1 color, BWR requires 2 pages.
   image_data_size = (uint32_t)EPD_VERTICAL * (uint32_t)(EPD_HORIZONTAL / 8);
@@ -71,7 +71,6 @@ void cog_initial(uint8_t *image1, uint8_t *image2)
 
   cog_power_on();
 
-  epd.drv->sspi_init();
   cog_get_data_otp();
 
   epd.drv->spi_init();
@@ -125,7 +124,7 @@ void cog_initial(uint8_t *image1, uint8_t *image2)
   cog_power_off();
 }
 
-void cog_power_on()
+void cog_power_on(void)
 {
   epd.drv->set_reset_pin(false);
   sl_sleeptimer_delay_millisecond(2);
@@ -137,7 +136,7 @@ void cog_power_on()
   sl_sleeptimer_delay_millisecond(20);
 }
 
-void cog_power_off()
+void cog_power_off(void)
 {
   while (epd.drv->get_busy_pin()) {
     // wait busy high
@@ -185,7 +184,7 @@ void cog_send_image(uint8_t *dram1, uint8_t *dram2)
   send_index_data(0x11, dram2, image_data_size); // Second frame
 }
 
-void cog_soft_start()
+void cog_soft_start(void)
 {
   // Application note § 3.3 DC/DC soft-start
   uint8_t offsetFrame = 0x28;
@@ -205,7 +204,7 @@ void cog_soft_start()
 }
 
 // EPD Screen refresh function
-void cog_display_refresh()
+void cog_display_refresh(void)
 {
   while (epd.drv->get_busy_pin()) {
     sl_sleeptimer_delay_millisecond(32);

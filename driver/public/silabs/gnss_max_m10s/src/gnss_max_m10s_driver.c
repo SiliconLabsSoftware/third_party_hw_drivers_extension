@@ -33,13 +33,19 @@
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 #include <stdlib.h>
-#include "sl_sleeptimer.h"
+#include "sl_component_catalog.h"
 #include "gnss_max_m10s_driver.h"
 #include "gnss_max_m10s_ubx.h"
 #include "gnss_max_m10s_nmea.h"
+#if defined(SL_CATALOG_FREERTOS_KERNEL_PRESENT)
+#include <FreeRTOS.h>
+#include <task.h>
+#else // SL_CATALOG_FREERTOS_KERNEL_PRESENT
+#include "sl_sleeptimer.h"
+#endif // SL_CATALOG_FREERTOS_KERNEL_PRESENT
 #ifdef SLI_SI917
 #include "si91x_device.h"
-#endif
+#endif // SLI_SI917
 
 typedef i2c_master_t max_m10s_i2c_t;
 
@@ -1603,8 +1609,13 @@ static void gnss_max_m10s_process(sl_max_m10s_cfg_data_t *gnss_cfg_data,
 
 uint32_t gnss_max_m10s_milli_sec()
 {
+#if defined(SL_CATALOG_FREERTOS_KERNEL_PRESENT)
+  TickType_t tickcount = xTaskGetTickCount();
+  return tickcount;
+#else // SL_CATALOG_FREERTOS_KERNEL_PRESENT
   uint32_t tickcount = sl_sleeptimer_get_tick_count();
   return sl_sleeptimer_tick_to_ms(tickcount);
+#endif // SL_CATALOG_FREERTOS_KERNEL_PRESENT
 }
 
 static uint16_t gnss_max_m10s_file_buffer_space_available(

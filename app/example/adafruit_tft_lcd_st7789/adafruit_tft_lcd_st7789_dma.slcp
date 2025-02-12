@@ -7,67 +7,66 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/adafruit_tft_lcd_st7789/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: gecko/app.c
-- path: main.c
-- path: bird_image.c
-- path: cactus_plants_image.c
-- path: cat_image.c
-- path: cute_image.c
-- path: nature_image.c
+  - path: gecko/app.c
+  - path: main.c
+  - path: bird_image.c
+  - path: cactus_plants_image.c
+  - path: cat_image.c
+  - path: cute_image.c
+  - path: nature_image.c
 
 include:
-- path: 'gecko'
-  file_list:
-  - path: app.h
+  - path: 'gecko'
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: iostream_eusart
-  instance: [vcom]
-- id: app_assert
-- id: sleeptimer
-- id: app_log
-- id: tft_lcd_st7789_dma
-  from: third_party_hw_drivers
-- id: services_oled_glib
-  from: third_party_hw_drivers
-
+  - id: sl_system
+  - id: device_init
+  - id: iostream_eusart
+    instance: [vcom]
+  - id: app_assert
+  - id: sleeptimer
+  - id: app_log
+  - id: tft_lcd_st7789_dma
+    from: third_party_hw_drivers
+  - id: services_oled_glib
+    from: third_party_hw_drivers
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789/README.md
 
 other_file:
-- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/create_example.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/demo.gif
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/intro.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/st7789_display.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/log.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/gspi.png
-  directory: image
-- path: ../../documentation/example/adafruit_tft_lcd_st7789/image/gspi_dma.png
-  directory: image
-    
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/create_example.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/demo.gif
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/intro.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/st7789_display.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/log.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/gspi.png
+    directory: image
+  - path: ../../documentation/example/adafruit_tft_lcd_st7789/image/gspi_dma.png
+    directory: image
+
 ui_hints:
   highlight:
     - path: README.md

@@ -31,6 +31,7 @@
 
 #ifndef SENSIRION_COMMON_H
 #define SENSIRION_COMMON_H
+
 #include "stdint.h"
 #include "stddef.h"
 

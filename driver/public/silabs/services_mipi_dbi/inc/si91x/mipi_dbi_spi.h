@@ -45,6 +45,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "sl_si91x_peripheral_gpio.h"
+#include "gpio_helper_si91x.h"
 #include "sl_si91x_gspi.h"
 #include "sl_status.h"
 #include "sl_component_catalog.h"
@@ -56,7 +57,8 @@ extern "C" {
 #define MIPI_DBI_SPI_4WIRE_DMA_BUFFER_SIZE_MAX (4096)
 
 struct mipi_dbi_gspi_gpio {
-  uint16_t num;
+  uint16_t port;
+  uint16_t pin;
   sl_gpio_mode_t mode;
 };
 
@@ -107,11 +109,11 @@ struct mipi_dbi_gspi_config {
   const struct mipi_dbi_gspi_config name = {                        \
     .clock_config = &name ## _clock_config,                         \
     .control_config = &name ## _control_config,                     \
-    .clk = { .num = clk_pin, .mode = clk_mode },                    \
-    .tx = { .num = tx_pin, .mode = tx_mode },                       \
-    .rx = { .num = rx_pin, .mode = rx_mode },                       \
-    .cs = { .num = cs_pin, .mode = cs_mode },                       \
-    .dc = { .num = dc_pin, .mode = dc_mode },                       \
+    .clk = { .port = clk_port, .pin = clk_pin, .mode = clk_mode },  \
+    .tx = { .port = tx_port, .pin = tx_pin, .mode = tx_mode },      \
+    .rx = { .port = rx_port, .pin = rx_pin, .mode = rx_mode },      \
+    .cs = { .port = cs_port, .pin = cs_pin, .mode = cs_mode },      \
+    .dc = { .port = dc_port, .pin = dc_pin, .mode = dc_mode },      \
   }
 
 #ifdef __cplusplus

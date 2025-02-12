@@ -65,14 +65,14 @@ extern "C" {
 
 // <gpio optional=true> CONFIG_BIO_HUB_RESET
 // $[GPIO_CONFIG_BIO_HUB_RESET]
-// #define CONFIG_BIO_HUB_RESET_PORT          gpioPortB
+// #define CONFIG_BIO_HUB_RESET_PORT          0
 // #define CONFIG_BIO_HUB_RESET_PIN           0
 // [GPIO_CONFIG_BIO_HUB_RESET]$
 
 // <gpio optional=true> CONFIG_BIO_HUB_MFIO
 // $[GPIO_CONFIG_BIO_HUB_MFIO]
-// #define CONFIG_BIO_HUB_MFIO_PORT           gpioPortB
-// #define CONFIG_BIO_HUB_MFIO_PIN            1
+// #define CONFIG_BIO_HUB_MFIO_PORT           0
+// #define CONFIG_BIO_HUB_MFIO_PIN            0
 // [GPIO_CONFIG_BIO_HUB_MFIO]$
 
 // <<< sl:end pin_tool >>>

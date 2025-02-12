@@ -1,0 +1,66 @@
+project_name: mikroe_dcmotor29_drv8245p
+package: platform
+label: Third Party Hardware Drivers - DRV8245P - DC Motor 29 Click (Mikroe)
+description: |
+  This example project shows an example for Mikroe DC Motor 29 Click board driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
+
+source:
+  - path: app.c
+  - path: main.c
+
+include:
+  - path: ''
+    file_list:
+    - path: app.h
+
+component:
+  - id: sl_system
+  - id: device_init
+  - id: sleeptimer
+  - id: iostream_eusart
+    instance: [vcom]
+  - id: app_log
+  - id: app_assert
+  - id: dcmotor29_drv8245p
+    from: third_party_hw_drivers
+
+configuration:
+  - name: SL_SPIDRV_MIKROE_CS_CONTROL
+    value: spidrvCsControlApplication
+
+toolchain_settings:
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+
+define:
+  - name: DEBUG_EFM
+
+sdk_extension:
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/mikroe_dcmotor29_drv8245p/README.md
+
+other_file:
+  - path: ../../documentation/example/mikroe_dcmotor29_drv8245p/image/create_project.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_dcmotor29_drv8245p/image/console_log.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_dcmotor29_drv8245p/image/hardware_connection.png
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true

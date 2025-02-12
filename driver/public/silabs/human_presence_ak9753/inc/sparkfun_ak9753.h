@@ -42,6 +42,7 @@
 
 #include "sl_status.h"
 #include "drv_i2c_master.h"
+#include "drv_digital_out.h"
 #include "sparkfun_ak9753_config.h"
 
 #if (defined(SL_CATALOG_POWER_MANAGER_PRESENT))
@@ -62,8 +63,8 @@ extern "C" {
  ******************************************************************************/
 
 /***************************************************************************//**
-* @name    SOFTWARE VERSION DEFINITION
-*******************************************************************************/
+ * @name    SOFTWARE VERSION DEFINITION
+ *******************************************************************************/
 #define SPARKFUN_AK9753_MAJOR_VERSION                0
 #define SPARKFUN_AK9753_MINOR_VERSION                1
 #define SPARKFUN_AK9753_BUILD_VERSION                0

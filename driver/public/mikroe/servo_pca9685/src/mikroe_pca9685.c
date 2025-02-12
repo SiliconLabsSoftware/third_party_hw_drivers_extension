@@ -37,9 +37,8 @@
  *
  ******************************************************************************/
 
-#include "stddef.h"
+#include <stddef.h>
 #include "mikroe_pca9685.h"
-#include "servo.h"
 
 static servo_t servo_ctx;
 static servo_cfg_t servo_cfg;

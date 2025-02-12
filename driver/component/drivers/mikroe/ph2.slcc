@@ -24,12 +24,15 @@ config_file:
   - path: public/mikroe/ph2/config/brd4314a/mikroe_ph2_config.h
     file_id: mikroe_ph2_config_id
     condition: [brd4314a]
+  - path: public/mikroe/ph2/config/brd2605a/mikroe_ph2_config.h
+    file_id: mikroe_ph2_config_id
+    condition: [brd2605a]
   - path: public/mikroe/ph2/config/brd4338a/mikroe_ph2_config.h
     file_id: mikroe_ph2_config_id
     condition: [brd4338a]
   - path: public/mikroe/ph2/config/other/mikroe_ph2_config.h
     file_id: mikroe_ph2_config_id
-    unless: [brd2703a, brd4108a, brd4314a, brd4338a]
+    unless: [brd2703a, brd4108a, brd4314a, brd2605a, brd4338a]
 provides:
   - name: ph2
     allow_multiple: false

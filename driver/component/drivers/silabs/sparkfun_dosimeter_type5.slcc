@@ -10,12 +10,6 @@ ui_hints:
 root_path: driver
 requires:
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
-  - name: gpiointerrupt
-    condition: [device_series_1]
-  - name: gpiointerrupt
-    condition: [device_series_2]
   - name: mikroe_peripheral_driver_digital_io
 config_file:
   - path: public/silabs/dosimeter_type5/config/brd2601b/sparkfun_type5_config.h
@@ -33,12 +27,15 @@ config_file:
   - path: public/silabs/dosimeter_type5/config/brd4108a/sparkfun_type5_config.h
     file_id: sparkfun_dosimeter_type5_config
     condition: [brd4108a]
+  - path: public/silabs/dosimeter_type5/config/brd2605a/sparkfun_type5_config.h
+    file_id: sparkfun_dosimeter_type5_config
+    condition: [brd2605a]
   - path: public/silabs/dosimeter_type5/config/brd4338a/sparkfun_type5_config.h
     file_id: sparkfun_dosimeter_type5_config
     condition: [brd4338a]
   - path: public/silabs/dosimeter_type5/config/other/sparkfun_type5_config.h
     file_id: sparkfun_dosimeter_type5_config
-    unless: [brd2601b, brd2703a, brd2704a, brd4108a, brd4314a, brd4338a]
+    unless: [brd2601b, brd2703a, brd2704a, brd4108a, brd4314a, brd2605a, brd4338a]
 provides:
   - name: sparkfun_dosimeter_type5
     allow_multiple: false

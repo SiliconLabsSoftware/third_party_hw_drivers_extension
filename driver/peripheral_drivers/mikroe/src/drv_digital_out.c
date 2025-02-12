@@ -38,61 +38,49 @@
  ******************************************************************************/
 
 #include "drv_digital_out.h"
-#include "em_gpio.h"
+#include "sl_gpio.h"
 
 err_t digital_out_init(digital_out_t *out, pin_name_t name)
 {
-  GPIO_Port_TypeDef port_index;
-  unsigned int pin_index;
-
-  out->pin.base = (uint32_t) -1;
-  out->pin.mask = 0;
   if (HAL_PIN_NC == name) {
     return DIGITAL_OUT_UNSUPPORTED_PIN;
   }
 
-  port_index = (GPIO_Port_TypeDef) hal_gpio_port_index(name);
-  pin_index = hal_gpio_pin_index(name);
-  if (!GPIO_PORT_PIN_VALID(port_index, pin_index)) {
+  out->pin.base = hal_gpio_port_index(name);
+  out->pin.mask = hal_gpio_pin_index(name);
+
+  if (sl_gpio_set_pin_mode((const sl_gpio_t *)out,
+                           SL_GPIO_MODE_PUSH_PULL,
+                           0) != SL_STATUS_OK) {
+    out->pin.base = (uint8_t) -1;
+    out->pin.mask = 0;
     return DIGITAL_OUT_UNSUPPORTED_PIN;
   }
-  GPIO_PinModeSet(port_index, pin_index, gpioModePushPull, 0);
-  out->pin.base = port_index;
-  out->pin.mask = 1 << pin_index;
+
   return DIGITAL_OUT_SUCCESS;
 }
 
 void digital_out_high(digital_out_t *out)
 {
-  if (GPIO_PORT_VALID(out->pin.base)) {
-    GPIO_PortOutSetVal((GPIO_Port_TypeDef) out->pin.base, out->pin.mask,
-                       out->pin.mask);
-  }
+  sl_gpio_set_pin((const sl_gpio_t *)out);
 }
 
 void digital_out_low(digital_out_t *out)
 {
-  if (GPIO_PORT_VALID(out->pin.base)) {
-    GPIO_PortOutSetVal((GPIO_Port_TypeDef) out->pin.base, 0, out->pin.mask);
-  }
+  sl_gpio_clear_pin((const sl_gpio_t *)out);
 }
 
 void digital_out_toggle(digital_out_t *out)
 {
-  if (GPIO_PORT_VALID(out->pin.base)) {
-    GPIO_PortOutToggle((GPIO_Port_TypeDef) out->pin.base, out->pin.mask);
-  }
+  sl_gpio_toggle_pin((const sl_gpio_t *)out);
 }
 
 void digital_out_write(digital_out_t *out, uint8_t value)
 {
-  if (GPIO_PORT_VALID(out->pin.base)) {
-    if (value) {
-      GPIO_PortOutSetVal((GPIO_Port_TypeDef) out->pin.base, out->pin.mask,
-                         out->pin.mask);
-    } else {
-      GPIO_PortOutSetVal((GPIO_Port_TypeDef) out->pin.base, 0, out->pin.mask);
-    }
+  if (value) {
+    sl_gpio_set_pin((const sl_gpio_t *)out);
+  } else {
+    sl_gpio_clear_pin((const sl_gpio_t *)out);
   }
 }
 

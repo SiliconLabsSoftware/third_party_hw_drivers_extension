@@ -44,13 +44,15 @@
 #if (defined(SLI_SI917))
 #include "rsi_debug.h"
 #include "sl_si91x_gspi.h"
-static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
 
+#define app_printf(...)               DEBUGOUT(__VA_ARGS__)
+
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #else /* None Si91x device */
 #include "sl_spidrv_instances.h"
 #include "app_log.h"
-#define app_printf(...) app_log(__VA_ARGS__)
+
+#define app_printf(...)               app_log(__VA_ARGS__)
 #endif
 
 #define APP_STATE_DISPLAY_RECTANGLE   0

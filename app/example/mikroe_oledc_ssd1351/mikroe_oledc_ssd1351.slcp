@@ -5,40 +5,47 @@ description: |
   This example project shows an example for Mikroe OLEDC Click driver integration.
 category: Example|Platform
 quality: evaluation
+
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-readme:
-- path: ../../documentation/example/mikroe_oledc_ssd1351/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
+
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
+
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
+
 component:
-- id: sl_system
-- id: sleeptimer
-- id: device_init
-- id: iostream_eusart
-  instance: [vcom]
-- id: oledc_ssd1351
-  from: third_party_hw_drivers
-- id: services_oled_glib
-  from: third_party_hw_drivers  
-- id: app_log
-- id: app_assert
+  - id: sl_system
+  - id: sleeptimer
+  - id: device_init
+  - id: iostream_eusart
+    instance: [vcom]
+  - id: app_log
+  - id: app_assert
+  - id: oledc_ssd1351
+    from: third_party_hw_drivers
+  - id: services_oled_glib
+    from: third_party_hw_drivers
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
+
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/mikroe_oledc_ssd1351/README.md
+
 other_file:
   - path: ../../documentation/example/mikroe_oledc_ssd1351/image/hardware_connection.png
     directory: "image"
@@ -46,6 +53,7 @@ other_file:
     directory: "image"
   - path: ../../documentation/example/mikroe_oledc_ssd1351/image/test.gif
     directory: "image"
+
 ui_hints:
   highlight:
     - path: README.md

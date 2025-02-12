@@ -7,29 +7,31 @@ category: Services
 quality: evaluation
 root_path: driver
 requires:
-- name: component_catalog
-- name: emlib_ldma
-- name: emlib_letimer
-- name: emlib_usart
-- name: emlib_prs
-- name: hfxo_manager
-- name: power_manager
-- name: ram_interrupt_vector_init
-- name: device_init_dpll
+  - name: component_catalog
+  - name: emlib_ldma
+  - name: emlib_letimer
+  - name: emlib_usart
+  - name: emlib_prs
+  - name: hfxo_manager
+  - name: power_manager
+  - name: device_init_dpll
+template_contribution:
+  - name: component_catalog
+    value: services_lin_bus_slave
 provides:
-- name: services_lin_bus_slave
-  allow_multiple: false
+  - name: services_lin_bus_slave
+    allow_multiple: false
 config_file:
-- path: public/silabs/services_lin_bus_slave/config/sl_lin_slave_config.h
-  file_id: sl_lin_slave_config
+  - path: public/silabs/services_lin_bus_slave/config/sl_lin_slave_config.h
+    file_id: sl_lin_slave_config
 include:
-- path: public/silabs/services_lin_bus_slave/inc
-  file_list:
-    - path: dma_master.h
-    - path: sl_lin.h
-    - path: system.h
+  - path: public/silabs/services_lin_bus_slave/inc
+    file_list:
+      - path: dma_master.h
+      - path: sl_lin.h
+      - path: system.h
 source:
-- path: public/silabs/services_lin_bus_slave/src/dma_master_s2.c
-  condition: [device_series_2]
-- path: public/silabs/services_lin_bus_slave/src/sl_lin_s2.c
-  condition: [device_series_2]
+  - path: public/silabs/services_lin_bus_slave/src/dma_master_s2.c
+    condition: [device_series_2]
+  - path: public/silabs/services_lin_bus_slave/src/sl_lin_s2.c
+    condition: [device_series_2]

@@ -73,12 +73,12 @@ const oled_display_t *oled_display = NULL;
 static glib_shift_string_data_t shift_data;
 
 /***************************************************************************//**
-*     @brief
-*       Initialization function for the glib.
-*
-*     @return
-*      Returns GLIB_OK on success, or else error code
-*******************************************************************************/
+ *     @brief
+ *       Initialization function for the glib.
+ *
+ *     @return
+ *      Returns GLIB_OK on success, or else error code
+ *******************************************************************************/
 glib_status_t glib_init(glib_context_t *g_context)
 {
   sl_status_t sc;
@@ -555,7 +555,11 @@ glib_status_t glib_fill_circle(glib_context_t *g_context,
 {
   glib_status_t status = GLIB_OK;
 
-  status |= draw_vline(g_context, x0, y0 - r, 2 * r + 1, color);
+  status |= draw_vline(g_context,
+                       x0,
+                       y0 > r ? (y0 - r) : 0,
+                       2 * r + 1,
+                       color);
   status |= glib_fill_circle_helper(g_context, x0, y0, r, 3, 0, color);
   return status;
 }

@@ -40,6 +40,7 @@
 #define MIKROE_LB11685AV_H_
 
 #include "sl_status.h"
+#include "brushless16.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,40 +74,40 @@ extern "C" {
  ******************************************************************************/
 
 /**************************************************************************//**
-*  @brief
-*   Brushless 16 initialization function.
-*
-*  @return
-*   SL_STATUS_OK if success.
-*   SL_STATUS_FAIL if fail.
-******************************************************************************/
+ *  @brief
+ *   Brushless 16 initialization function.
+ *
+ *  @return
+ *   SL_STATUS_OK if success.
+ *   SL_STATUS_FAIL if fail.
+ ******************************************************************************/
 sl_status_t mikroe_lb11685av_init(void);
 
 /**************************************************************************//**
-*  @brief
-*   Set en pin state.
-*
-*  @param[in] state
-*   State of en pin .
-******************************************************************************/
+ *  @brief
+ *   Set en pin state.
+ *
+ *  @param[in] state
+ *   State of en pin .
+ ******************************************************************************/
 void mikroe_lb11685av_set_en(uint8_t state);
 
 /**************************************************************************//**
-*  @brief
-*   Get rd pin state.
-*
-*  @return
-*   The state of the rd pin 1 for high and 0 for low.
-******************************************************************************/
+ *  @brief
+ *   Get rd pin state.
+ *
+ *  @return
+ *   The state of the rd pin 1 for high and 0 for low.
+ ******************************************************************************/
 uint8_t mikroe_lb11685av_get_rd(void);
 
 /**************************************************************************//**
-*  @brief
-*   Get fg pin state.
-*
-*  @return
-*   The state of the fg pin 1 for high and 0 for low.
-******************************************************************************/
+ *  @brief
+ *   Get fg pin state.
+ *
+ *  @return
+ *   The state of the fg pin 1 for high and 0 for low.
+ ******************************************************************************/
 uint8_t mikroe_lb11685av_get_fg(void);
 
 /** @} (end addtogroup mikroe_lb11685) */

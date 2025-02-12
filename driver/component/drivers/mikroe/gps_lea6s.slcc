@@ -10,8 +10,6 @@ ui_hints:
 root_path: driver
 requires:
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_uart
 config_file:
@@ -24,12 +22,15 @@ config_file:
   - path: public/mikroe/gps_lea6s/config/brd4314a/mikroe_gps_lea6s_config.h
     file_id: driver_config_gps_lea6s
     condition: [brd4314a]
+  - path: public/mikroe/gps_lea6s/config/brd2605a/mikroe_gps_lea6s_config.h
+    file_id: driver_config_gps_lea6s
+    condition: [brd2605a]
   - path: public/mikroe/gps_lea6s/config/brd4338a/mikroe_gps_lea6s_config.h
     file_id: driver_config_gps_lea6s
     condition: [brd4338a]
   - path: public/mikroe/gps_lea6s/config/other/mikroe_gps_lea6s_config.h
     file_id: driver_config_gps_lea6s
-    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
 provides:
   - name: mikroe_gps
     allow_multiple: false
@@ -40,12 +41,12 @@ include:
   - path: inc
     file_list:
       - path: third_party_hw_drivers_helpers.h
-  - path: thirdparty/mikrosdk_click_v2/clicks/gps_lea6s/lib/include
+  - path: thirdparty/mikrosdk_click_v2/clicks/gps/lib/include
     file_list:
       - path: gps.h
   - path: public/mikroe/gps_lea6s/inc
     file_list:
       - path: mikroe_lea6s.h
 source:
-  - path: thirdparty/mikrosdk_click_v2/clicks/gps_lea6s/lib/src/gps.c
+  - path: thirdparty/mikrosdk_click_v2/clicks/gps/lib/src/gps.c
   - path: public/mikroe/gps_lea6s/src/mikroe_lea6s.c

@@ -6,9 +6,6 @@ description: >
 category: Services
 quality: evaluation
 root_path: driver
-provides:
-  - name: services_oled_glib
-    allow_multiple: false
 requires:
   - name: status
   - name: sleeptimer
@@ -16,6 +13,9 @@ requires:
 template_contribution:
   - name: component_catalog
     value: services_oled_glib
+provides:
+  - name: services_oled_glib
+    allow_multiple: false
 include:
   - path: public/silabs/services_tphd_glib/inc
     file_list:

@@ -114,14 +114,14 @@
 // <o LV_COLOR_CHROMA_KEY_ARGB32> Images pixels with this color will not be drawn if they are chroma keyed). <f.h>
 // <i> Default: 0x00ff00
 #define LV_COLOR_CHROMA_KEY_ARGB32 0x00ff00
-#define LV_COLOR_CHROMA_KEY lv_color_hex(LV_COLOR_CHROMA_KEY_ARGB32)         
+#define LV_COLOR_CHROMA_KEY lv_color_hex(LV_COLOR_CHROMA_KEY_ARGB32)
 
 // </h>
 
 /*=========================
    MEMORY SETTINGS
  *=========================*/
- 
+
 // <h> Memory Settings
 
 // Custom memory allocation.
@@ -353,7 +353,7 @@
 // <Trace=> LV_LOG_LEVEL_TRACE
 // <Info=> LV_LOG_LEVEL_INFO
 // <Warn=> LV_LOG_LEVEL_WARN
-// <Error=> LV_LOG_LEVEL_ERROR  
+// <Error=> LV_LOG_LEVEL_ERROR
 // <User=> LV_LOG_LEVEL_USER
 // <None=> LV_LOG_LEVEL_NONE
 #define LV_LOG_LEVEL LV_LOG_LEVEL_WARN

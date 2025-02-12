@@ -9,22 +9,40 @@ root_path: driver
 requires:
   - name: status
   - name: gpiointerrupt
+    condition:
+      - device_efx
+  - name: sl_gpio
+    condition:
+      - device_si91x
 provides:
   - name: sparkfun_weather_station_rainfall
     allow_multiple: false
 template_contribution:
   - name: component_catalog
-    value: sparkfun_weather_station_rainfall 
-config_file:    
+    value: sparkfun_weather_station_rainfall
+  - name: event_handler
+    value:
+      event: driver_init
+      include: sl_si91x_driver_gpio.h
+      handler: sl_gpio_driver_init
+    condition: 
+      - device_si91x
+config_file:
+  - path: public/silabs/weather_station_rainfall/config/brd2605a/sparkfun_weather_station_rainfall_config.h
+    file_id: sparkfun_weather_station_rainfall_config
+    condition: [brd2605a]
   - path: public/silabs/weather_station_rainfall/config/brd2703a/sparkfun_weather_station_rainfall_config.h
     file_id: sparkfun_weather_station_rainfall_config
     condition: [brd2703a]
+  - path: public/silabs/weather_station_rainfall/config/brd4338a/sparkfun_weather_station_rainfall_config.h
+    file_id: sparkfun_weather_station_rainfall_config
+    condition: [brd4338a]
   - path: public/silabs/weather_station_rainfall/config/other/sparkfun_weather_station_rainfall_config.h
     file_id: sparkfun_weather_station_rainfall_config
-    unless: [brd2703a]
+    unless: [brd2605a, brd2703a, brd4338a]
 include:
   - path: public/silabs/weather_station_rainfall/inc
     file_list:
-      - path: sparkfun_weather_station_rainfall.h   
+      - path: sparkfun_weather_station_rainfall.h
 source:
   - path: public/silabs/weather_station_rainfall/src/sparkfun_weather_station_rainfall.c

@@ -8,9 +8,9 @@ The SparkFun Pulse Oximeter and Heart Rate Sensor is an I2C based biometric sens
 
 ## Required Hardware ##
 
-- [A EFR32xG24 Explorer Kit board](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [SparkFun Pulse Oximeter and Heart Rate Sensor - MAX30101 & MAX32664 (Qwiic)](https://www.sparkfun.com/products/15219)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [SparkFun Pulse Oximeter and Heart Rate Sensor - MAX30101 & MAX32664 (Qwiic)](https://www.sparkfun.com/products/15219)
 
 ## Hardware Connection ##
 
@@ -22,14 +22,14 @@ The SparkFun Pulse Oximeter and Heart Rate Sensor is an I2C based biometric sens
 
   **Note:** This board has two additional pins on its header: the RESET and MFIO pin. These pins are required for the board to function because they determine if the board enters data collection mode or not.
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+- **If the Wi-Fi Development Kit is used**:
 
    The hardware connection is shown in the table below:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | MAX30101 & MAX32664 sensor board |
-  | -------------| ------------- | ------------------ | -------------------------------- |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                              |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                              |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | MAX30101 & MAX32664 sensor board |
+  | -------------| ------------------- | ------------ | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | Qwiic cable  | SDA                |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | Qwiic cable  | SCL                |
 
 ## Setup ##
 
@@ -63,12 +63,12 @@ You can either create a project based on an example project or start with an emp
 
       **If the EFR32xG24 Explorer Kit is used:**
 
-      - [Services] → [IO Stream] → [IO Stream: USART] with the default instance name: vcom
+      - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
       - [Application] → [Utility] → [Log]
-      - [Platform] → [Driver] → [I2C] → [I2CSPM] → qwiic instance
+      - [Platform] → [Driver] → [I2C] → [I2CSPM] → default instance name: qwiic
       - [Third Party Hardware Drivers] → [Sensors] → [MAX30101 & MAX32664 - Pulse Oximeter and Heart Rate Sensor (Sparkfun)] → use default configuration
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
       - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
       - [Third Party Hardware Drivers] → [Sensors] → [MAX30101 & MAX32664 - Pulse Oximeter and Heart Rate Sensor (Sparkfun)] → use default configuration
@@ -79,7 +79,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide)
 
-- Third-party Hardware Drivers Extension must be enabled for the project to install "MAX30101 & MAX32664 - Pulse Oximeter and Heart Rate Sensor (Sparkfun)" component
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "MAX30101 & MAX32664 - Pulse Oximeter and Heart Rate Sensor (Sparkfun)" component
 
 ## How It Works ##
 

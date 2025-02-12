@@ -10,7 +10,7 @@ Devices can run over a year on a single battery. It allows data encryption and i
 
 For more information, please visit [BThome](https://bthome.io/).
 
-The project aims to implement a Server/Gateway library that facilitates the scanning and discovery of BTHome devices.
+This project aims to implement a Server/Gateway library that facilitates the scanning and discovery of BTHome devices.
 
 The vision of this development effort is to create a Server/Gateway library that simplifies the process of integrating BTHome devices into IoT setups. By enabling users to easily discover, add, and visualize BTHome devices' measured values, we aim to enhance the accessibility and usability of BTHome technology in various IoT projects.
 
@@ -18,7 +18,7 @@ The vision of this development effort is to create a Server/Gateway library that
 
 ## Required Hardware
 
-- [**BGM220-EK4314A** BGM220 Bluetooth Module Explorer Kit (BRD4314A BGM220 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
 ## Hardware Connection
 
@@ -57,18 +57,26 @@ To test this application, you can either create a project based on an example pr
       - [Services] → [Command Line Interface] → [CLI Instance(s)] → default instance name: inst
       - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
       - [Application] → [Utility] → [Log]
-4. Build and flash the project to your device.
+
+    - Unistall the following components:
+
+      - [Bluetooth] → [Application] → [Firmware Update] → [In-Place OTA DFU]
+      - [Platform] → [Bootloader] → [Utils] → [Bootloader Application Interface]
+
+4. Enable **Printf float**
+
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
+
+      ![enable_printf_floating_point](image/enable_printf_floating_point.png)
+
+5. Build and flash the project to your device.
 
 **Note:**
 
-- Make sure that the SDK extension is already installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "BTHome v2 - Server" component.
-
-- Enable floating-point support for printf
-    - Right clicking on your project in the **[Project Explorer]** window and select properties and then select **[C/C++ Build] > [Settings]**, then under **[GNU ARM C Linker] > [General]**, check the **[Printf float]** checkbox
-    
-      ![enable_printf_floating_point](image/enable_printf_floating_point.png)
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "BTHome v2 - Server" component.
 
 ## How It Works
 
@@ -107,7 +115,7 @@ The example implements a CLI Interface that provide some features:
 
     ![interested_list](image/interested_list.png)
 
-6. Now you can be able to observe the data of device in the interested list 
+6. Now you can be able to observe the data of device in the interested list
 
     ![monitor](image/monitor.png)
 

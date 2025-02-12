@@ -7,40 +7,37 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/sparkfun_ir_array_amg88xx/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app_cli_command_table.c
-- path: app_ir_array_cli_cmds.c
-- path: app.c
-- path: main.c
+  - path: app_cli_command_table.c
+  - path: app_ir_array_cli_cmds.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: iostream_retarget_stdio
-- id: iostream_usart
-  instance: [vcom]
-- id: i2cspm
-  instance: [qwiic]
-- id: cli
-  instance: [vcom]
-- id: sparkfun_ir_array_amg88xx
-  from: third_party_hw_drivers
-- id: printf
+  - id: sl_system
+  - id: device_init
+  - id: iostream_retarget_stdio
+  - id: iostream_usart
+    instance: [vcom]
+  - id: i2cspm
+    instance: [qwiic]
+  - id: cli
+    instance: [vcom]
+  - id: sparkfun_ir_array_amg88xx
+    from: third_party_hw_drivers
+  - id: printf
 
 config_file:
   - override:
@@ -55,9 +52,15 @@ configuration:
   - name: SL_HEAP_SIZE
     value: "6144"
 
+define:
+  - name: DEBUG_EFM
+
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/sparkfun_ir_array_amg88xx/README.md
 
 other_file:
   - path: ../../documentation/example/sparkfun_ir_array_amg88xx/image/create_example.png
@@ -69,7 +72,7 @@ other_file:
   - path: ../../documentation/example/sparkfun_ir_array_amg88xx/image/thermal_image.png
     directory: image
   - path: ../../documentation/example/sparkfun_ir_array_amg88xx/temperatue_array_visualiser.py
-  
+
 ui_hints:
   highlight:
     - path: README.md

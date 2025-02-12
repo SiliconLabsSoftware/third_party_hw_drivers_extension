@@ -40,8 +40,6 @@
 #define MIKROE_PH2_INC_H_
 
 #include "sl_status.h"
-#include "drv_i2c_master.h"
-#include "drv_one_wire.h"
 #include "ph2.h"
 
 #ifdef __cplusplus

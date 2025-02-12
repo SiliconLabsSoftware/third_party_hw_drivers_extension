@@ -39,8 +39,6 @@
 #ifndef MIKROE_MICROSD_CONFIG_H_
 #define MIKROE_MICROSD_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -65,7 +63,7 @@ extern "C" {
 
 // <gpio optional=true> MIKROE_MICROSD_MMC_CD
 // $[GPIO_MIKROE_MICROSD_MMC_CD]
-#define MIKROE_MICROSD_MMC_CD_PORT            gpioPortB
+#define MIKROE_MICROSD_MMC_CD_PORT            SL_GPIO_PORT_B
 #define MIKROE_MICROSD_MMC_CD_PIN             0
 // [GPIO_MIKROE_MICROSD_MMC_CD]$
 

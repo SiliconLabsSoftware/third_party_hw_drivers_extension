@@ -187,7 +187,8 @@ void eink154inch_set_mem_area ( eink154inch_t *ctx, eink154inch_xy_t *xy )
 
 void eink154inch_update_display ( eink154inch_t *ctx )
 {
-    Delay_100ms( );
+    // Silicon Labs fixed: 23/1/2025
+    // Delay_100ms( );
     eink154inch_send_cmd( ctx, EINK154INCH_CMD_DISPLAY_UPDATE_CONTROL_2 );
     eink154inch_send_data( ctx, 0xC4 );
     eink154inch_send_cmd( ctx, EINK154INCH_CMD_MASTER_ACTIVATION );
@@ -300,7 +301,8 @@ static void wait_until_idle ( eink154inch_t *ctx )
     do
     {
         state = digital_in_read( &ctx->bsy );
-        Delay_100ms( );
+        // Silicon Labs fixed: 23/1/2025
+        // Delay_100ms( );
     } 
     while ( state == 1 );
 }
@@ -426,4 +428,3 @@ static void display_delay ( )
 }
 
 // ------------------------------------------------------------------------- END
-

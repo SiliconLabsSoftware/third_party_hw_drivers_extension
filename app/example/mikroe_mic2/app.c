@@ -46,6 +46,7 @@
 
 #define app_printf(...)          DEBUGOUT(__VA_ARGS__)
 #define I2C_INSTANCE_USED        SL_I2C2
+
 static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 static uint8_t channel = SL_ADC_CHANNEL_1;
 #else

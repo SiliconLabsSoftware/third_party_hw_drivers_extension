@@ -39,6 +39,7 @@
 #include "mikroe_bma400_spi_config.h"
 #include "bma400.h"
 #include "drv_spi_master.h"
+#include "drv_digital_in.h"
 
 #ifdef __cplusplus
 extern "C" {

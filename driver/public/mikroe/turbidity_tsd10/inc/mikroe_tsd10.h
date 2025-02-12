@@ -41,7 +41,7 @@
 #define MIKROE_TURBIDITY_H
 
 #include "sl_status.h"
-#include "drv_i2c_master.h"
+#include "turbidity.h"
 
 #ifdef __cplusplus
 extern "C" {

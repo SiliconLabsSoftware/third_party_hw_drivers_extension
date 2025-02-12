@@ -2,18 +2,19 @@
 
 ## Summary ##
 
-This project shows the implementation of a GPS Click driver using LEA-6S from Mikroe Integrated with BGM220P Explorer Kit based on UART communication.
+This project shows the implementation of a GPS Click driver using LEA-6S from Mikroe Integrated with Silicon Labs platform based on UART communication.
+
 GPS click is a compact solution for adding GPS functionality to your device. It carries the u-blox LEA-6S high-performance position engine. The click is designed to run on a 3.3V power supply and communicates with the target MCU through UART. GPS click can simultaneously track up to 16 satellites while searching for new ones. The LEA-6S module’s TTFF (time to first fix) is less than one second — this is the measure of time necessary for a GPS receiver to get satellite signals and navigation data, and based on this information, calculate a position (a fix).
 
 ## Required Hardware ##
 
-- [**BGM220-EK4314A** BGM220 Bluetooth Module Explorer Kit (BRD4314A BGM220 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [**GPS Click** board based on LEA-6S from Mikroe Integrated](https://www.mikroe.com/gps-click)
+- 1x [GPS Click board](https://www.mikroe.com/gps-click) based on LEA-6S
 
-- Option: [GPS/GNSS Magnetic Mount Antenna](https://www.sparkfun.com/products/14986)
+- Option: 1x [GPS/GNSS Magnetic Mount Antenna](https://www.sparkfun.com/products/14986)
 
 ## Hardware Connection ##
 
@@ -23,14 +24,14 @@ GPS click is a compact solution for adding GPS functionality to your device. It 
 
   ![board](image/hardware_connection.png "BGM220 Explorer Kit Board and GPS Click Board")
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description  | BRD4338A GPIO   | BRD4002 Breakout Pad | GPS click   |
-  | ------------ | --------------- | -------------------- | ----------- |
-  | UART1_RX_PIN | GPIO_6          | P19                  | TX          |
-  | UART1_TX_PIN | GPIO_7          | P20                  | RX          |
-  | RESET        | GPIO_46         | P24                  | RST         |
-  | Time Pulse   | GPIO_47         | P26                  | TP          |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | GPS Click |
+  | ----------------- | -------------- | ------------ | ----------- |
+  | UART1_RX_PIN      | GPIO_6 [P19]   | GPIO_6       | TX          |
+  | UART1_TX_PIN      | GPIO_7 [P20]   | GPIO_7       | RX          |
+  | RESET             | GPIO_46 [P24]  | GPIO_10      | RST         |
+  | Time Pulse        | GPIO_47 [P26]  | GPIO_11      | TP          |
 
 ## Setup ##
 
@@ -66,19 +67,18 @@ You can either create a project based on an example project or start with an emp
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: mikroe
         - [Application] → [Utility] → [Log]
-        - [Application] → [Utility] → [Application Queue]
         - [Third Party Hardware Drivers] → [Sensors] → [LEA-6S - GPS Click (Mikroe)]
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [Third Party Hardware Drivers] → [Sensors] → [LEA-6S - GPS Click (Mikroe)] → use default configuration
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [UART] → disable "UART1 DMA"
 
-4. Install printf float
+4. Enable **Printf float**
 
-    - Open Properties of the project.
-    - Select C/C++ Build > Settings > Tool Settings >GNU ARM C Linker > General. Check Printf float.
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
 5. Build and flash this example to the board.
 
@@ -86,7 +86,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "LEA-6S - GPS Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "LEA-6S - GPS Click (Mikroe)" component.
 
 ## How It Works ##
 

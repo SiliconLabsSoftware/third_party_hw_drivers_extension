@@ -38,19 +38,18 @@
  ******************************************************************************/
 #ifndef DWM1000_CONFIG_H_
 #define DWM1000_CONFIG_H_
-#include "em_gpio.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
-//<h>UWB_DWM1000 SPI Configuration
+// <h> UWB_DWM1000 SPI Configuration
 
-//  <e>UWB_DWM1000 SPI UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> UWB_DWM1000 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define UWB_DWM1000_SPI_UC                  0
 
 // <o UWB_DWM1000_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
@@ -65,13 +64,13 @@ extern "C" {
 
 // <gpio optional=true> DWM1000_RESET
 // $[GPIO_DWM1000_RESET]
-#define DWM1000_RESET_PORT                 gpioPortC
+#define DWM1000_RESET_PORT                 SL_GPIO_PORT_C
 #define DWM1000_RESET_PIN                  6
 // [GPIO_DWM1000_RESET]$
 
 // <gpio optional=true> DWM1000_INT
 // $[GPIO_DWM1000_INT]
-#define DWM1000_INT_PORT                   gpioPortB
+#define DWM1000_INT_PORT                   SL_GPIO_PORT_B
 #define DWM1000_INT_PIN                    3
 // [GPIO_DWM1000_INT]$
 
@@ -80,4 +79,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif /* DWM1000_CONFIG_H_ */
+
+#endif // DWM1000_CONFIG_H_

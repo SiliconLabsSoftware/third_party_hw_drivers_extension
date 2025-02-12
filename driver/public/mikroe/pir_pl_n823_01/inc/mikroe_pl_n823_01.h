@@ -41,7 +41,7 @@
 #define MIKROE_PL_N823_01_H_
 
 #include "sl_status.h"
-#include "drv_i2c_master.h"
+#include "pir.h"
 
 #ifdef __cplusplus
 extern "C" {

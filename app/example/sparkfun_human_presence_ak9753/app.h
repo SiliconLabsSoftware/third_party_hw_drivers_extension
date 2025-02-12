@@ -27,11 +27,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has not been formally tested and is provided as-is. It is not
- * suitable for production environments. In addition, this code will not be
- * maintained and there may be no bug maintenance planned for these resources.
- * Silicon Labs may update projects from time to time.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 
 #ifndef APP_H

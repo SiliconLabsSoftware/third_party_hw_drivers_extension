@@ -1,5 +1,4 @@
----
-project_name: mikroe_uwb_dwm1000_si91x
+project_name: mikroe_uwb_dwm1000
 label: Third Party Hardware Drivers - DWM1000 - UWB Click (Mikroe) - Si91x
 package: platform
 description: >
@@ -7,6 +6,7 @@ description: >
   Click board driver integration.
 category: Example|Platform
 quality: evaluation
+
 filter:
   - name: Device Type
     value:
@@ -17,51 +17,53 @@ filter:
   - name: Project Difficulty
     value:
       - Beginner
-readme:
-  - path: ../../documentation/example/mikroe_uwb_dwm1000/README.md
+
 source:
   - path: app.c
   - path: main.c
+
 include:
   - path: ""
     file_list:
       - path: app.h
+
 component:
-- id: app_assert
-- id: sl_system
-- id: syscalls
-  from: wiseconnect3_sdk
-- id: si917_memory_default_config
-  from: wiseconnect3_sdk
-- id: uwb_dwm1000
-  from: third_party_hw_drivers
-- instance: [btn0]
-  from: wiseconnect3_sdk
-  id: sl_si91x_button_917
+  - id: sl_system
+  - id: syscalls
+    from: wiseconnect3_sdk
+  - id: si917_memory_default_config
+    from: wiseconnect3_sdk
+  - id: sl_si91x_button_917
+    instance: [btn0]
+    from: wiseconnect3_sdk
+  - id: app_assert
+  - id: uwb_dwm1000
+    from: third_party_hw_drivers
 
 configuration:
   - name: SL_BUTTON_CONFIG_BTN0_INTR
     value: FALL_EDGE_INTERRUPT
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
-- id: wiseconnect3_sdk
-  version: 3.3.4
+  - id: third_party_hw_drivers
+    version: 4.1.0
+  - id: wiseconnect3_sdk
+    version: 3.4.0
 
-define:
-  - name: DEBUG_EFM
+readme:
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/README.md
+
 other_file:
-- path: ../../documentation/example/mikroe_uwb_dwm1000/image/hardware_connection.png
-  directory: image
-- path: ../../documentation/example/mikroe_uwb_dwm1000/image/sw_layer.png
-  directory: image
-- path: ../../documentation/example/mikroe_uwb_dwm1000/image/create_example.png
-  directory: image
-- path: ../../documentation/example/mikroe_uwb_dwm1000/image/receive_cli.png
-  directory: image
-- path: ../../documentation/example/mikroe_uwb_dwm1000/image/transmit_cli.png
-  directory: image
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/hardware_connection.png
+    directory: image
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/sw_layer.png
+    directory: image
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/create_example.png
+    directory: image
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/receive_cli.png
+    directory: image
+  - path: ../../documentation/example/mikroe_uwb_dwm1000/image/transmit_cli.png
+    directory: image
 
 ui_hints:
   highlight:

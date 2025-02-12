@@ -67,4 +67,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // MIKROE_DPS310_I2C_CONFIG_H

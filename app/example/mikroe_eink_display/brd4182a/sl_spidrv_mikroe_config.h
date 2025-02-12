@@ -86,7 +86,7 @@
 
 // USART0 TX on PC00
 #ifndef SL_SPIDRV_MIKROE_TX_PORT
-#define SL_SPIDRV_MIKROE_TX_PORT                    gpioPortC
+#define SL_SPIDRV_MIKROE_TX_PORT                    SL_GPIO_PORT_C
 #endif
 #ifndef SL_SPIDRV_MIKROE_TX_PIN
 #define SL_SPIDRV_MIKROE_TX_PIN                     0
@@ -94,7 +94,7 @@
 
 // USART0 RX on PC01
 #ifndef SL_SPIDRV_MIKROE_RX_PORT
-#define SL_SPIDRV_MIKROE_RX_PORT                    gpioPortC
+#define SL_SPIDRV_MIKROE_RX_PORT                    SL_GPIO_PORT_C
 #endif
 #ifndef SL_SPIDRV_MIKROE_RX_PIN
 #define SL_SPIDRV_MIKROE_RX_PIN                     1
@@ -102,7 +102,7 @@
 
 // USART0 CLK on PC02
 #ifndef SL_SPIDRV_MIKROE_CLK_PORT
-#define SL_SPIDRV_MIKROE_CLK_PORT                   gpioPortC
+#define SL_SPIDRV_MIKROE_CLK_PORT                   SL_GPIO_PORT_C
 #endif
 #ifndef SL_SPIDRV_MIKROE_CLK_PIN
 #define SL_SPIDRV_MIKROE_CLK_PIN                    2
@@ -110,7 +110,7 @@
 
 // USART0 CS on PC03
 #ifndef SL_SPIDRV_MIKROE_CS_PORT
-#define SL_SPIDRV_MIKROE_CS_PORT                    gpioPortC
+#define SL_SPIDRV_MIKROE_CS_PORT                    SL_GPIO_PORT_C
 #endif
 #ifndef SL_SPIDRV_MIKROE_CS_PIN
 #define SL_SPIDRV_MIKROE_CS_PIN                     3

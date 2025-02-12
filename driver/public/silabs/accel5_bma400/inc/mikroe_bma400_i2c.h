@@ -39,6 +39,7 @@
 #include "drv_i2c_master.h"
 #include "drv_digital_in.h"
 #include "bma400.h"
+#include "mikroe_bma400_i2c_config.h"
 
 #ifdef __cplusplus
 extern "C" {

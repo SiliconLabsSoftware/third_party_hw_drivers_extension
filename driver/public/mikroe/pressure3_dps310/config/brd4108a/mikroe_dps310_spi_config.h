@@ -39,8 +39,6 @@
 #ifndef MIKROE_DPS310_SPI_CONFIG_H
 #define MIKROE_DPS310_SPI_CONFIG_H
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -67,7 +65,7 @@ extern "C" {
 
 // <gpio optional=true> DPS310_CS
 // $[GPIO_DPS310_CS]
-#define DPS310_CS_PORT                        gpioPortC
+#define DPS310_CS_PORT                        SL_GPIO_PORT_C
 #define DPS310_CS_PIN                         3
 // [GPIO_DPS310_CS]$
 

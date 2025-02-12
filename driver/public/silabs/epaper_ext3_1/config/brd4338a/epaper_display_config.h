@@ -41,8 +41,7 @@
 #define EPD_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #define EPD_TYPE                    0x580B
@@ -55,56 +54,36 @@ extern "C"
 
 // <<< sl:start pin_tool >>>
 
-// <gpio> SPI_EPD_CS
-// $[GPIO_SPI_EPD_CS]
-#ifndef SPI_EPD_CS_PORT                         
-#define SPI_EPD_CS_PORT                          HP
-#endif
-#ifndef SPI_EPD_CS_PIN                          
-#define SPI_EPD_CS_PIN                           49
-#endif
-// [GPIO_SPI_EPD_CS]$
-
 // <gpio> EPD_DC
 // $[GPIO_EPD_DC]
-#ifndef EPD_DC_PORT                             
+#ifndef EPD_DC_PORT
 #define EPD_DC_PORT                              HP
 #endif
-#ifndef EPD_DC_PIN                              
-#define EPD_DC_PIN                               50
+#ifndef EPD_DC_PIN
+#define EPD_DC_PIN                               46
 #endif
 // [GPIO_EPD_DC]$
 
 // <gpio> EPD_RST
 // $[GPIO_EPD_RST]
-#ifndef EPD_RST_PORT                            
+#ifndef EPD_RST_PORT
 #define EPD_RST_PORT                             HP
 #endif
-#ifndef EPD_RST_PIN                             
-#define EPD_RST_PIN                              52
+#ifndef EPD_RST_PIN
+#define EPD_RST_PIN                              48
 #endif
 // [GPIO_EPD_RST]$
 
 // <gpio> EPD_BUSY
 // $[GPIO_EPD_BUSY]
-#ifndef EPD_BUSY_PORT                           
+#ifndef EPD_BUSY_PORT
 #define EPD_BUSY_PORT                            HP
 #endif
-#ifndef EPD_BUSY_PIN                            
-#define EPD_BUSY_PIN                             51
+#ifndef EPD_BUSY_PIN
+#define EPD_BUSY_PIN                             47
 #endif
 // [GPIO_EPD_BUSY]$
-
 // <<< sl:end pin_tool >>>
-
-#define SPI_EPD_CLK_PORT                         HP
-#define SPI_EPD_CLK_PIN                          46
-
-#define SPI_EPD_TX_PORT                          HP
-#define SPI_EPD_TX_PIN                           48
-
-#define SPI_EPD_RX_PORT                          HP
-#define SPI_EPD_RX_PIN                           47
 
 #ifdef __cplusplus
 }

@@ -21,12 +21,15 @@ config_file:
   - path: public/mikroe/water_detect/config/brd4108a/mikroe_water_detect_config.h
     file_id: driver_config_waterdetect
     condition: [brd4108a]
+  - path: public/mikroe/water_detect/config/brd2605a/mikroe_water_detect_config.h
+    file_id: driver_config_waterdetect
+    condition: [brd2605a]
   - path: public/mikroe/water_detect/config/brd4338a/mikroe_water_detect_config.h
     file_id: driver_config_waterdetect
     condition: [brd4338a]
   - path: public/mikroe/water_detect/config/other/mikroe_water_detect_config.h
     file_id: driver_config_waterdetect
-    unless: [brd4314a, brd2703a, brd4108a, brd4338a]
+    unless: [brd4314a, brd2703a, brd4108a, brd2605a, brd4338a]
 provides:
   - name: mikroe_water_detect
     allow_multiple: false

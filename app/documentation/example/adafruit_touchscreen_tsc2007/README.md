@@ -7,10 +7,10 @@ This project aims to implement a hardware driver for Adafruit TSC2007 Touch Scre
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [Adafruit ILI9341 - 2.4" TFT LCD with Touchscreen](https://www.adafruit.com/product/2478)
-- [Adafruit TSC2007 I2C Resistive Touch Screen Controller - STEMMA QT](https://www.adafruit.com/product/5423)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [Adafruit ILI9341 - 2.4" TFT LCD with Touchscreen](https://www.adafruit.com/product/2478)
+- 1x [Adafruit TSC2007 I2C Resistive Touch Screen Controller - STEMMA QT](https://www.adafruit.com/product/5423)
 
 ## Hardware Connection ##
 
@@ -18,20 +18,20 @@ To test this example, you should connect the Adafruit TSC2007 Touch Screen Contr
 
 ![hardware_connection](image/hardware_connection.png)
 
-| EFR32xG24 Explorer Kit | SiWx917-RB4338A Radio Board | Adafruit TSC2007 | Adafruit ILI9341 | Pin function |
-| --- | --- | --- | --- | --- |
-| PC4 | ULP_GPIO_7 | QWIIC SCL | - | I2C SCL |
-| PC5 | ULP_GPIO_6 | QWIIC SDA | - | I2C SDA |
-| PB0 | - | PENIRQ |-| GPIO IRQ |
-| - | - | X+ | XP(X+) | Analog |
-| - | - | Y+ | YP(Y+) | Analog |
-| - | - | Y- | YM(Y-) | Analog |
-| - | - | Y+ | XM(Y+) | Analog |
-| PC8 | GPIO_47 (P26) | - | D/C | GPIO |
-| PC0 | GPIO_28 (P31) | - | CS | SPI CS |
-| PC1 | GPIO_25 (P25) | - | CLK | SPI SCK |
-| PC2 | GPIO_26 (P27) | - | MISO | SPI MISO |
-| PC3 | GPIO_27 (P29) | - | MOSI | SPI MOSI |
+| EFR32xG24 Explorer Kit | BRD4338A + BRD4002A | BRD2605A | Adafruit TSC2007 | Adafruit ILI9341 | Pin function |
+| --- | --- | --- | --- | --- | --- |
+| PC4 | ULP_GPIO_7 | ULP_GPIO_7 | QWIIC SCL | - | I2C SCL |
+| PC5 | ULP_GPIO_6 | ULP_GPIO_6 | QWIIC SDA | - | I2C SDA |
+| PB0 | - | - | PENIRQ |-| GPIO IRQ |
+| - | - | - | X+ | XP(X+) | Analog |
+| - | - | - | Y+ | YP(Y+) | Analog |
+| - | - | - | Y- | YM(Y-) | Analog |
+| - | - | - | Y+ | XM(Y+) | Analog |
+| PC8 | GPIO_47 (P26) | GPIO_10 | - | D/C | GPIO |
+| PC0 | GPIO_28 (P31) | GPIO_28 | - | CS | SPI CS |
+| PC1 | GPIO_25 (P25) | GPIO_25 | - | CLK | SPI SCK |
+| PC2 | GPIO_26 (P27) | GPIO_26 | - | MISO | SPI MISO |
+| PC3 | GPIO_27 (P29) | GPIO_27 | - | MOSI | SPI MOSI |
 
 ## Setup ##
 
@@ -73,7 +73,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install **TSC2007 - Resistive Touch Screen Controller (Adafruit)** component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install **TSC2007 - Resistive Touch Screen Controller (Adafruit)** component.
 
 ## Touch screen calibration ##
 

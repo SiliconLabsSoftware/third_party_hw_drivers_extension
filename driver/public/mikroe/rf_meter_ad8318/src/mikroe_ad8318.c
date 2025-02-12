@@ -37,7 +37,6 @@
  *
  ******************************************************************************/
 #include "mikroe_ad8318.h"
-#include "rfmeter.h"
 #include "mikroe_ad8318_config.h"
 
 static rfmeter_t rf_meter;
@@ -72,11 +71,6 @@ sl_status_t mikroe_ad8318_init(mikroe_spi_handle_t spi_instance)
 #endif
 
   rf_meter.spi.handle = spi_instance;
-
-#if defined(MIKROE_AD8318_CS_PORT) && defined(MIKROE_AD8318_CS_PIN)
-  rf_meter_cfg.cs = hal_gpio_pin_name(MIKROE_AD8318_CS_PORT,
-                                      MIKROE_AD8318_CS_PIN);
-#endif
 
   if (rfmeter_init(&rf_meter, &rf_meter_cfg) == RFMETER_OK) {
     return SL_STATUS_OK;

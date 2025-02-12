@@ -40,8 +40,6 @@
 #ifndef MIKORE_MIC2_CONFIG_H_
 #define MIKORE_MIC2_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -78,7 +76,7 @@ extern "C" {
 
 // <gpio optional=true> MIC2_ANALOG_OUTPUT
 // $[GPIO_MIC2_ANALOG_OUTPUT]
-#define MIC2_ANALOG_OUTPUT_PORT                   gpioPortB
+#define MIC2_ANALOG_OUTPUT_PORT                   SL_GPIO_PORT_B
 #define MIC2_ANALOG_OUTPUT_PIN                    0
 // [GPIO_MIC2_ANALOG_OUTPUT]$
 
@@ -86,6 +84,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-
 #endif
+
 #endif // MIKORE_MIC2_CONFIG_H_

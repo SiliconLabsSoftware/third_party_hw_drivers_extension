@@ -41,7 +41,7 @@
 #define _MIKROE_PN7150_H_
 
 #include "sl_status.h"
-#include "drv_i2c_master.h"
+#include "nfc2.h"
 
 #ifdef __cplusplus
 extern "C" {

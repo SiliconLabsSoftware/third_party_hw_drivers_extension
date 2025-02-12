@@ -78,6 +78,7 @@
 #include <inttypes.h>
 #include <string.h>
 
+#include "sl_gpio.h"
 #include "sl_component_catalog.h"
 #include "sl_sleeptimer.h"
 #include "sl_power_manager.h"
@@ -156,25 +157,25 @@ static volatile sl_lin_endpoint_t sl_lin_endpoints[SL_LIN_MAX_ENDPOINT + 1];
 #endif
 
 // PB3, the LIN_RX GPIO is the wakeup signal GPIO_EM4WU
-#if LIN_RX_PORT == gpioPortA && LIN_RX_PIN == 5
+#if LIN_RX_PORT == SL_GPIO_PORT_A && LIN_RX_PIN == 5
 #define WAKEUP_SIGNAL                        0U
 #define WAKEUP_PRS_ASYNC_GPIO_PIN            PRS_ASYNC_GPIO_PIN0
-#elif LIN_RX_PORT == gpioPortB && LIN_RX_PIN == 1
+#elif LIN_RX_PORT == SL_GPIO_PORT_B && LIN_RX_PIN == 1
 #define WAKEUP_SIGNAL                        3U
 #define WAKEUP_PRS_ASYNC_GPIO_PIN            PRS_ASYNC_GPIO_PIN1
-#elif LIN_RX_PORT == gpioPortB && LIN_RX_PIN == 3
+#elif LIN_RX_PORT == SL_GPIO_PORT_B && LIN_RX_PIN == 3
 #define WAKEUP_SIGNAL                        4U
 #define WAKEUP_PRS_ASYNC_GPIO_PIN            PRS_ASYNC_GPIO_PIN3
-#elif LIN_RX_PORT == gpioPortC && LIN_RX_PIN == 0
+#elif LIN_RX_PORT == SL_GPIO_PORT_C && LIN_RX_PIN == 0
 #define WAKEUP_SIGNAL                        6U
 #define WAKEUP_PRS_ASYNC_GPIO_PIN            PRS_ASYNC_GPIO_PIN0
-#elif LIN_RX_PORT == gpioPortC && LIN_RX_PIN == 5
+#elif LIN_RX_PORT == SL_GPIO_PORT_C && LIN_RX_PIN == 5
 #define WAKEUP_SIGNAL                        7U
 #define WAKEUP_PRS_ASYNC_GPIO_PIN            PRS_ASYNC_GPIO_PIN5
-#elif LIN_RX_PORT == gpioPortC && LIN_RX_PIN == 7
+#elif LIN_RX_PORT == SL_GPIO_PORT_C && LIN_RX_PIN == 7
 #define WAKEUP_SIGNAL                        8U
 #define WAKEUP_PRS_ASYNC_GPIO_PIN            PRS_ASYNC_GPIO_PIN7
-#elif LIN_RX_PORT == gpioPortD && LIN_RX_PIN == 2
+#elif LIN_RX_PORT == SL_GPIO_PORT_D && LIN_RX_PIN == 2
 #define WAKEUP_SIGNAL                        9U
 #define WAKEUP_PRS_ASYNC_GPIO_PIN            PRS_ASYNC_GPIO_PIN2
 #else
@@ -343,6 +344,13 @@ static void dma_start_tx(int frame_id)
 
   LDMA_StartTransfer(LIN_DMA_CH_USART_TX, &tx_transfer, &tx_desc);
 }
+
+SL_RAMFUNC_DEFINITION_BEGIN
+__attribute__((__flatten__))
+__attribute__((__noinline__))
+static void gpio_int_cb(uint8_t int_no, void *ctx);
+
+SL_RAMFUNC_DEFINITION_END
 
 SL_RAMFUNC_DEFINITION_BEGIN
 __attribute__((__flatten__))
@@ -579,12 +587,17 @@ void sl_lin_slave_init(void)
   // RX is pin 3, route to EXTI 3 (0 and 1 are the buttons of the WSTK)
   // "PRS output is not affected by the interrupt edge detection logic or gated
   // by the IEN bits"
-  GPIO_ExtIntConfig(LIN_RX_PORT,
-                    LIN_RX_PIN,
-                    LIN_RX_PIN,
-                    true,
-                    true,
-                    false);
+  sl_gpio_t gpio_port_pin;
+  int32_t int_no;
+  gpio_port_pin.port = LIN_RX_PORT;
+  gpio_port_pin.pin = LIN_RX_PIN;
+  int_no = LIN_RX_PIN;
+  sl_gpio_configure_external_interrupt(&gpio_port_pin,
+                                       &int_no,
+                                       SL_GPIO_INTERRUPT_RISING_FALLING_EDGE,
+                                       gpio_int_cb,
+                                       NULL);
+  sl_gpio_disable_interrupts(1 << int_no);
   PRS_ConnectSignal(PRS_USART_RX, prsTypeAsync, WAKEUP_PRS_ASYNC_GPIO_PIN);
 
   PRS_ConnectConsumer(PRS_USART_RX, prsTypeAsync, prsConsumerLETIMER0_START);
@@ -877,8 +890,10 @@ SL_RAMFUNC_DEFINITION_END
 // it is assumed that no other GPIO interrupts are present!
 SL_RAMFUNC_DEFINITION_BEGIN
 __attribute__((__flatten__))
-void WAKEUP_IRQ_HANDLER(void)
+static void gpio_int_cb(uint8_t int_no, void *ctx)
 {
+  (void)ctx;
+  (void)int_no;
 #if defined(LIN_WAKEUP_ACT_PORT) && defined(LIN_WAKEUP_ACT_PIN)
   GPIO_PinOutToggle(LIN_WAKEUP_ACT_PORT, LIN_WAKEUP_ACT_PIN);
 #endif

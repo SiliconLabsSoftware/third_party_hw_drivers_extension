@@ -40,10 +40,6 @@
 #ifndef MIKROE_DCMOTOR26_CONFIG_H_
 #define MIKROE_DCMOTOR26_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -99,35 +95,35 @@ extern "C" {
 
 // <gpio optional=true> DCMOTOR26_CS
 // $[GPIO_DCMOTOR26_CS]
-// #define DCMOTOR26_CS_PORT                        0
-// #define DCMOTOR26_CS_PIN                         0
+// #define DCMOTOR26_CS_PORT                      0
+// #define DCMOTOR26_CS_PIN                       0
 // [GPIO_DCMOTOR26_CS]$
 
 // <gpio optional=true> DCMOTOR26_CHANNEL_MONITOR
 // $[GPIO_DCMOTOR26_CHANNEL_MONITOR]
 #warning "GPIO_DCMOTOR26_CHANNEL_MONITOR is not configured"
-// #define DCMOTOR26_CHANNEL_MONITOR_PORT         gpioPortB
+// #define DCMOTOR26_CHANNEL_MONITOR_PORT         0
 // #define DCMOTOR26_CHANNEL_MONITOR_PIN          0
 // [GPIO_DCMOTOR26_CHANNEL_MONITOR]$
 
 // <gpio optional=true> DCMOTOR26_SLEEP
 // $[GPIO_DCMOTOR26_SLEEP]
 #warning "GPIO_DCMOTOR26_SLEEP is not configured"
-// #define DCMOTOR26_SLEEP_PORT                   gpioPortC
-// #define DCMOTOR26_SLEEP_PIN                    8
+// #define DCMOTOR26_SLEEP_PORT                   0
+// #define DCMOTOR26_SLEEP_PIN                    0
 // [GPIO_DCMOTOR26_SLEEP]$
 
 // <gpio optional=true> DCMOTOR26_INT
 // $[GPIO_DCMOTOR26_INT]
 #warning "GPIO_DCMOTOR26_INT is not configured"
-// #define DCMOTOR26_INT_PORT                     gpioPortB
-// #define DCMOTOR26_INT_PIN                      1
+// #define DCMOTOR26_INT_PORT                     0
+// #define DCMOTOR26_INT_PIN                      0
 // [GPIO_DCMOTOR26_INT]$
 
 // <gpio optional=true> DCMOTOR26_PWM
 // $[GPIO_DCMOTOR26_PWM]
 #warning "GPIO_DCMOTOR26_PWM is not configured"
-// #define DCMOTOR26_PWM_PORT                     gpioPortA
+// #define DCMOTOR26_PWM_PORT                     0
 // #define DCMOTOR26_PWM_PIN                      0
 // [GPIO_DCMOTOR26_PWM]$
 
@@ -135,6 +131,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-
 #endif
+
 #endif // MIKROE_DCMOTOR26_CONFIG_H_

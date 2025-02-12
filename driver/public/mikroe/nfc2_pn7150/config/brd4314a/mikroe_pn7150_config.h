@@ -40,8 +40,6 @@
 #ifndef MIKROE_PN7150_CONFIG_H_
 #define MIKROE_PN7150_CONFIG_H_
 
-#include "em_gpio.h"
-
 // A CMSIS annotation block starts with the following line:
 // <<< Use Configuration Wizard in Context Menu >>>
 
@@ -78,13 +76,13 @@
 
 // <gpio optional=true> MIKROE_PN7150_INT
 // $[GPIO_MIKROE_PN7150_INT]
-#define MIKROE_PN7150_INT_PORT                        gpioPortB
+#define MIKROE_PN7150_INT_PORT                        SL_GPIO_PORT_B
 #define MIKROE_PN7150_INT_PIN                         3
 // [GPIO_MIKROE_PN7150_INT]$
 
 // <gpio optional=true> MIKROE_PN7150_RESET
 // $[GPIO_MIKROE_PN7150_RESET]
-#define MIKROE_PN7150_RESET_PORT                      gpioPortC
+#define MIKROE_PN7150_RESET_PORT                      SL_GPIO_PORT_C
 #define MIKROE_PN7150_RESET_PIN                       6
 // [GPIO_MIKROE_PN7150_RESET]$
 

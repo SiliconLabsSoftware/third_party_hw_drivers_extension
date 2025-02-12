@@ -44,8 +44,6 @@
 extern "C" {
 #endif
 
-#include "em_gpio.h"
-
 // <<< Use Configuration Wizard in Context Menu >>>
 
 // <h> MIKROE DCMOTOR26 SPI Configuration
@@ -103,25 +101,25 @@ extern "C" {
 
 // <gpio optional=true> DCMOTOR26_CHANNEL_MONITOR
 // $[GPIO_DCMOTOR26_CHANNEL_MONITOR]
-#define DCMOTOR26_CHANNEL_MONITOR_PORT                   gpioPortB
+#define DCMOTOR26_CHANNEL_MONITOR_PORT                   SL_GPIO_PORT_B
 #define DCMOTOR26_CHANNEL_MONITOR_PIN                    0
 // [GPIO_DCMOTOR26_CHANNEL_MONITOR]$
 
 // <gpio optional=true> DCMOTOR26_SLEEP
 // $[GPIO_DCMOTOR26_SLEEP]
-#define DCMOTOR26_SLEEP_PORT                             gpioPortC
+#define DCMOTOR26_SLEEP_PORT                             SL_GPIO_PORT_C
 #define DCMOTOR26_SLEEP_PIN                              6
 // [GPIO_DCMOTOR26_SLEEP]$
 
 // <gpio optional=true> DCMOTOR26_INT
 // $[GPIO_DCMOTOR26_INT]
-#define DCMOTOR26_INT_PORT                               gpioPortB
+#define DCMOTOR26_INT_PORT                               SL_GPIO_PORT_B
 #define DCMOTOR26_INT_PIN                                3
 // [GPIO_DCMOTOR26_INT]$
 
 // <gpio optional=true> DCMOTOR26_PWM
 // $[GPIO_DCMOTOR26_PWM]
-#define DCMOTOR26_PWM_PORT                               gpioPortB
+#define DCMOTOR26_PWM_PORT                               SL_GPIO_PORT_B
 #define DCMOTOR26_PWM_PIN                                4
 // [GPIO_DCMOTOR26_PWM]$
 
@@ -129,6 +127,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-
 #endif
+
 #endif // MIKROE_DCMOTOR26_CONFIG_H_

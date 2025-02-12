@@ -1,13 +1,8 @@
 #ifndef SCL_STN1110_CONFIG_H_
 #define SCL_STN1110_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< sl:start pin_tool >>>
@@ -32,4 +27,4 @@ extern "C"
 }
 #endif
 
-#endif /* SCL_STN1110_CONFIG_H_ */
+#endif // SCL_STN1110_CONFIG_H_

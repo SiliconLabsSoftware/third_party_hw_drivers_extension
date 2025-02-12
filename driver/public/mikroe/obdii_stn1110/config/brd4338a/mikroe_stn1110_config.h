@@ -2,8 +2,7 @@
 #define SCL_STN1110_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< sl:start pin_tool >>>
@@ -26,4 +25,4 @@ extern "C"
 }
 #endif
 
-#endif /* SCL_STN1110_CONFIG_H_ */
+#endif // SCL_STN1110_CONFIG_H_

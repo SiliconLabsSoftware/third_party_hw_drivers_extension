@@ -42,18 +42,10 @@
 #include "mikroe_bg96.h"
 #include "app_iostream_cli.h"
 
-#if (defined(SLI_SI917))
-#include "rsi_debug.h"
-#else
 #include "app_log.h"
 #include "sl_iostream.h"
-#endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...)                DEBUGOUT(__VA_ARGS__)
-#else
 #define app_printf(...)                app_log(__VA_ARGS__)
-#endif
 
 /*******************************************************************************
  *******************************   MACROS   ************************************
@@ -244,8 +236,8 @@ static void app_parser(uint8_t *buf)
 }
 
 /**************************************************************************//**
-*  Command handler functions
-******************************************************************************/
+ *  Command handler functions
+ ******************************************************************************/
 
 /***************************************************************************//**
  * @brief

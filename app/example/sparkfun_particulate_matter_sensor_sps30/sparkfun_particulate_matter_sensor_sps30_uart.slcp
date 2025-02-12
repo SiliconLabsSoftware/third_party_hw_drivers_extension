@@ -7,49 +7,50 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: app_log
-- id: iostream_usart
-  instance: [mikroe]
-- id: iostream_eusart
-  instance: [vcom]
-- id: pm_sps30_uart
-  from: third_party_hw_drivers
+  - id: sl_system
+  - id: device_init
+  - id: app_log
+  - id: iostream_usart
+    instance: [mikroe]
+  - id: iostream_eusart
+    instance: [vcom]
+  - id: pm_sps30_uart
+    from: third_party_hw_drivers
 
 configuration:
- - name: SL_IOSTREAM_USART_MIKROE_RX_BUFFER_SIZE
-   value: "256"
+  - name: SL_IOSTREAM_USART_MIKROE_RX_BUFFER_SIZE
+    value: "256"
 
 toolchain_settings:
   - option: gcc_linker_option
     value: "-u _printf_float"
+
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/README.md
 
 other_file:
   - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/image/hw_connection_1.png
@@ -65,7 +66,8 @@ other_file:
   - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/image/driver_layer.png
     directory: "image"
   - path: ../../documentation/example/sparkfun_particulate_matter_sensor_sps30/image/install_float.png
-    directory: "image"  
+    directory: "image"
+
 ui_hints:
   highlight:
     - path: README.md

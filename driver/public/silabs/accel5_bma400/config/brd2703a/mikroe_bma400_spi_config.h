@@ -44,16 +44,14 @@
 extern "C" {
 #endif
 
-#include "em_gpio.h"
-
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>MIKROE BMA400 SPI Configuration
+// <h> MIKROE BMA400 SPI Configuration
 
-//  <e>MIKROE BMA400 SPI UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> MIKROE BMA400 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define MIKROE_BMA400_SPI_UC                  0
 
 // <o MIKROE_BMA400_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
@@ -68,13 +66,13 @@ extern "C" {
 
 // <gpio optional=true> MIKROE_BMA400_INT1
 // $[GPIO_MIKROE_BMA400_INT1]
-#define MIKROE_BMA400_INT1_PORT                  gpioPortA
+#define MIKROE_BMA400_INT1_PORT                  SL_GPIO_PORT_A
 #define MIKROE_BMA400_INT1_PIN                   0
 // [GPIO_MIKROE_BMA400_INT1]$
 
 // <gpio optional=true> MIKROE_BMA400_INT2
 // $[GPIO_MIKROE_BMA400_INT2]
-#define MIKROE_BMA400_INT2_PORT                  gpioPortB
+#define MIKROE_BMA400_INT2_PORT                  SL_GPIO_PORT_B
 #define MIKROE_BMA400_INT2_PIN                   1
 // [GPIO_MIKROE_BMA400_INT2]$
 
@@ -84,4 +82,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_BMA400_CONFIG_H_ */
+#endif // MIKROE_BMA400_CONFIG_H_

@@ -32,12 +32,12 @@
 #ifndef SPS30_H
 #define SPS30_H
 
+#include "sensirion_common.h"
+#include "sensirion_i2c.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "sensirion_common.h"
-#include "sensirion_i2c.h"
 
 #define SPS30_I2C_ADDRESS                     (0x69)
 #define SPS30_MAX_SERIAL_LEN                  (32)

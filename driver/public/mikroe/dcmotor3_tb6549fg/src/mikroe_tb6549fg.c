@@ -38,7 +38,6 @@
  ******************************************************************************/
 
 #include <stddef.h>
-#include "dcmotor3.h"
 #include "mikroe_tb6549fg_config.h"
 #include "mikroe_tb6549fg.h"
 

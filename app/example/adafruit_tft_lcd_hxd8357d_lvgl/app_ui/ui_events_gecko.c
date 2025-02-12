@@ -12,15 +12,15 @@ void led0_switch(lv_event_t *e)
   // Your code here
   sl_led_toggle(&sl_led_led0);
   if (sl_led_get_state(&sl_led_led0)) {
-    lv_obj_add_flag(ui_led0OffSymbol, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(ui_led0OffLabel, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(ui_led0ONSymbol, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(ui_led0OnLabel, LV_OBJ_FLAG_HIDDEN);
-  } else {
     lv_obj_add_flag(ui_led0ONSymbol, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_led0OnLabel, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(ui_led0OffSymbol, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(ui_led0OffLabel, LV_OBJ_FLAG_HIDDEN);
+  } else {
+    lv_obj_add_flag(ui_led0OffSymbol, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_led0OffLabel, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_led0ONSymbol, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_led0OnLabel, LV_OBJ_FLAG_HIDDEN);
   }
 }
 
@@ -30,14 +30,14 @@ void led1_switch(lv_event_t *e)
   // Your code here
   sl_led_toggle(&sl_led_led1);
   if (sl_led_get_state(&sl_led_led1)) {
-    lv_obj_add_flag(ui_led1OffSymbol, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(ui_led1OffLabel, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(ui_led1ONSymbol, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(ui_led1OnLabel, LV_OBJ_FLAG_HIDDEN);
-  } else {
     lv_obj_add_flag(ui_led1ONSymbol, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_led1OnLabel, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(ui_led1OffSymbol, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(ui_led1OffLabel, LV_OBJ_FLAG_HIDDEN);
+  } else {
+    lv_obj_add_flag(ui_led1OffSymbol, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_led1OffLabel, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_led1ONSymbol, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_led1OnLabel, LV_OBJ_FLAG_HIDDEN);
   }
 }

@@ -37,7 +37,6 @@
  *
  ******************************************************************************/
 
-#include "accurrent.h"
 #include "mikroe_accurrent.h"
 #include "mikroe_accurrent_config.h"
 
@@ -58,11 +57,6 @@ sl_status_t mikroe_accurrent_init(mikroe_spi_handle_t spi_instance)
 
   // Configure default spi instance
   ctx.spi.handle = spi_instance;
-
-#if defined(ACCURRENT_CS_PORT) && defined(ACCURRENT_CS_PIN)
-  ctx_cfg.cs = hal_gpio_pin_name(ACCURRENT_CS_PORT,
-                                 ACCURRENT_CS_PIN);
-#endif
 
 #if (MIKROE_ACCURRENT_SPI_UC == 1)
   ctx_cfg.spi_speed = MIKROE_ACCURRENT_SPI_BITRATE;

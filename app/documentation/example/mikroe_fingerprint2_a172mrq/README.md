@@ -10,9 +10,9 @@ The board also includes some features such as the ability to store and match up 
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit (BRD2703A xG24 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [**Fingerprint 2 Click** board based on A-172-MRQ](https://www.mikroe.com/fingerprint-2-click)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [Fingerprint 2 Click board](https://www.mikroe.com/fingerprint-2-click) based on A-172-MRQ
 
 ## Hardware Connection ##
 
@@ -24,17 +24,17 @@ The board also includes some features such as the ability to store and match up 
 
   ![board](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description       | BRD4338A GPIO            | BRD4002 Breakout Pad | Fingerprint 2 click |
-  | ----------------- | ------------------------ | -------------------- | ----------- |
-  | UART1_RX_PIN      | GPIO_6                   | P19                  | TX          |
-  | UART1_TX_PIN      | GPIO_7                   | P20                  | RX          |
-  | RESET             | GPIO_46                  | P24                  | RST         |
-  | Compare indicator | GPIO_47                  | P26                  | LD1         |
-  | Compare indicator | GPIO_48                  | P28                  | LD2         |
-  | General Purpose   | GPIO_49                  | P30                  | GP1         |
-  | General Purpose   | GPIO_50                  | P32                  | GP2         |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | Fingerprint 2 click |
+  | ----------------- | -------------- | ------------ | ----------- |
+  | UART1_RX_PIN      | GPIO_6 [P19]   | GPIO_6       | TX          |
+  | UART1_TX_PIN      | GPIO_7 [P20]   | GPIO_7       | RX          |
+  | RESET             | GPIO_46 [P24]  | GPIO_10      | RST         |
+  | Compare indicator | GPIO_47 [P26]  | GPIO_11      | LD1         |
+  | Compare indicator | GPIO_48 [P28]  | GPIO_12      | LD2         |
+  | General Purpose   | GPIO_49 [P30]  | GPIO_29      | GP1         |
+  | General Purpose   | GPIO_50 [P32]  | GPIO_30      | GP2         |
 
 ## Setup ##
 
@@ -68,12 +68,12 @@ You can either create a project based on an example project or start with an emp
 
         - [Services] → [Timers] → [Sleep Timer]
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: **vcom**
-        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: **mikroe**
+        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: **mikroe** → Set "Receive buffer size" to 800
         - [Third Party Hardware Drivers] → [Human Machine Interface] → [A-172-MRQ - Fingerprint 2 Click (Mikroe)] → use default configuration
         - [Application] → [Utility] → [Assert]
         - [Application] → [Utility] → [Log]
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [Third Party Hardware Drivers] → [Sensors] → [MM5D91-00 - Radar Click (Mikroe)] → use default configuration
@@ -85,7 +85,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "A-172-MRQ - Fingerprint 2 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "A-172-MRQ - Fingerprint 2 Click (Mikroe)" component.
 
 ## How It Works ##
 

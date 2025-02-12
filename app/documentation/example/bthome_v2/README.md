@@ -10,13 +10,13 @@ Devices can run over a year on a single battery. It allows data encryption and i
 
 For more information, please visit [BThome](https://bthome.io/).
 
-The project aims to implement a library to provide a one-click solution to create a BTHome v2 compatible device.
+This project aims to implement a library to provide a one-click solution to create a BTHome v2 compatible device.
 
 ![overview](image/overview.png)
 
 ## Required Hardware
 
-- [**BGM220-EK4314A** BGM220 Bluetooth Module Explorer Kit (BRD4314A BGM220 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
 ## Hardware Connection
 
@@ -41,7 +41,7 @@ To test this application, you can either create a project based on an example pr
 
 1. Create a **Bluetooth - SoC Empty** project for your hardware using Simplicity Studio 5.
 
-2. Copy the file `app/example/bluetooth_bthome_v2/app.c` into the project root folder (overwriting the existing file).
+2. Copy the file `app/example/bthome_v2/app.c` into the project root folder (overwriting the existing file).
 
 3. Install the software components:
 
@@ -50,17 +50,22 @@ To test this application, you can either create a project based on an example pr
     - Select the SOFTWARE COMPONENTS tab
 
     - Install the following components:
-    
+
       - [Platform] → [Driver] → [Button] → [Simple Button] → default instance name: btn0
       - [Third-Party Hardware Drivers] → [Services] → [BTHome v2]
+
+    - Unistall the following components:
+
+      - [Bluetooth] → [Application] → [Firmware Update] → [In-Place OTA DFU]
+      - [Platform] → [Bootloader] → [Utils] → [Bootloader Application Interface]
 
 4. Build and flash the project to your device.
 
 **Note:**
 
-- Make sure that the SDK extension is already installed. If not please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "BTHome v2" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "BTHome v2" component.
 
 ## How It Works
 

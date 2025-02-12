@@ -39,10 +39,6 @@
 #ifndef MIKROE_MICROSD_CONFIG_H_
 #define MIKROE_MICROSD_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -67,7 +63,6 @@ extern "C" {
 
 // <gpio optional=true> MIKROE_MICROSD_MMC_CD
 // $[GPIO_MIKROE_MICROSD_MMC_CD]
-#warning "CD pin for SD card is not configured"
 // #define MIKROE_MICROSD_MMC_CD_PORT            0
 // #define MIKROE_MICROSD_MMC_CD_PIN             0
 // [GPIO_MIKROE_MICROSD_MMC_CD]$

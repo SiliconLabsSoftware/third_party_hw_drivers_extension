@@ -21,7 +21,7 @@ template_contribution:
 include:
   - path: public/silabs/proximity_vcnl4040/inc
     file_list:
-      - path: sparkfun_vcnl4040.h   
+      - path: sparkfun_vcnl4040.h
       - path: sparkfun_vcnl4040_platform.h
 source:
   - path: public/silabs/proximity_vcnl4040/src/sparkfun_vcnl4040.c

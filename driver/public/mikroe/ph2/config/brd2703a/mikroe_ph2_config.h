@@ -39,7 +39,6 @@
 
 #ifndef MIKROE_PH2_CONFIG_H
 #define MIKROE_PH2_CONFIG_H
-#include "em_gpio.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -70,30 +69,30 @@ extern "C" {
 
 // <gpio optional=true> MIKROE_PH2_ST1
 // $[GPIO_MIKROE_PH2_ST1]
-#ifndef MIKROE_PH2_ST1_PORT                        
-#define MIKROE_PH2_ST1_PORT                         gpioPortC
+#ifndef MIKROE_PH2_ST1_PORT
+#define MIKROE_PH2_ST1_PORT                         SL_GPIO_PORT_C
 #endif
-#ifndef MIKROE_PH2_ST1_PIN                         
+#ifndef MIKROE_PH2_ST1_PIN
 #define MIKROE_PH2_ST1_PIN                          8
 #endif
 // [GPIO_MIKROE_PH2_ST1]$
 
 // <gpio optional=true> MIKROE_PH2_ST2
 // $[GPIO_MIKROE_PH2_ST2]
-#ifndef MIKROE_PH2_ST2_PORT                   
-#define MIKROE_PH2_ST2_PORT                         gpioPortB
+#ifndef MIKROE_PH2_ST2_PORT
+#define MIKROE_PH2_ST2_PORT                         SL_GPIO_PORT_B
 #endif
-#ifndef MIKROE_PH2_ST2_PIN                    
+#ifndef MIKROE_PH2_ST2_PIN
 #define MIKROE_PH2_ST2_PIN                          1
 #endif
 // [GPIO_MIKROE_PH2_ST2]$
 
 // <gpio optional=true> MIKROE_DS18B20_DQ
 // $[GPIO_MIKROE_DS18B20_DQ]
-#ifndef MIKROE_DS18B20_DQ_PORT                        
-#define MIKROE_DS18B20_DQ_PORT                      gpioPortA
+#ifndef MIKROE_DS18B20_DQ_PORT
+#define MIKROE_DS18B20_DQ_PORT                      SL_GPIO_PORT_A
 #endif
-#ifndef MIKROE_DS18B20_DQ_PIN                         
+#ifndef MIKROE_DS18B20_DQ_PIN
 #define MIKROE_DS18B20_DQ_PIN                       0
 #endif
 // [GPIO_MIKROE_DS18B20_DQ]$
@@ -103,4 +102,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // MIKROE_PH2_CONFIG_H

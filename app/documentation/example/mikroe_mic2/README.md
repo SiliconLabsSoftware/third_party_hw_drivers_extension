@@ -10,11 +10,11 @@ This example can be used to determine the sound intensity of your location. The 
 
 ## Required Hardware ##
 
-- [**EFR32xG24-EK2703A** EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [Mikroe MIC 2 Click](https://www.mikroe.com/mic-2-click)
+- 1x [MIC 2 Click](https://www.mikroe.com/mic-2-click)
 
 ## Hardware Connection ##
 
@@ -26,13 +26,13 @@ This example can be used to determine the sound intensity of your location. The 
 
   ![board](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description           | BRD4338A GPIO | BRD4002 EXP/Breakout Header | MIC 2 Click        |
-  | --------------------- | ------------- | --------------------------- | ------------------ |
-  | I2C_SDA               | ULP_GPIO_6    | EXP_16                      | SDA                |
-  | I2C_SCL               | ULP_GPIO_7    | EXP_15                      | SCL                |
-  | Positive analog input | ULP_GPIO_1    | P16                         | AN                 |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | MIC 2 Click  |
+  | -------------| -----------| -------------| ------------------------|
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | ULP_GPIO_6   | SDA            |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | ULP_GPIO_7   | SCL            |
+  | Positive analog input | ULP_GPIO_1 [P16]    | ULP_GPIO_1   | AN    |
 
 ## Setup ##
 
@@ -65,17 +65,17 @@ You can either create a project based on an example project or start with an emp
         - [Services] → [Timers] → [Sleep Timer]
         - [Third Party Hardware Drivers] → [Audio & Voice] → [MIC 2 Click (Mikroe)] → use the default configuration
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [ADC] → [channel_1] → use default configuration
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
         - [Third Party Hardware Drivers] → [Audio & Voice] → [MIC 2 Click (Mikroe)] → use the default configuration
 
-4. Install printf float
+4. Enable **Printf float**
 
-    - Open Properties of the Project.
-    - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General. Check Printf float.
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
 5. Build and flash this example to the board.
 
@@ -83,7 +83,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install the "MIC 2 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install the "MIC 2 Click (Mikroe)" component.
 
 ## How It Works ##
 

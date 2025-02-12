@@ -10,13 +10,13 @@ NFC 2 Click board can be used for the detection of NFC Tag and can be used for r
 
 ## Required Hardware ##
 
-- [A BGM220P Explorer Kit board](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [An NFC 2 Click](https://www.mikroe.com/nfc-2-click)
+- 1x [NFC 2 Click](https://www.mikroe.com/nfc-2-click)
 
-- A T2T tag
+- 1x T2T tag
 
 ## Hardware Connection ##
 
@@ -28,12 +28,14 @@ NFC 2 Click board can be used for the detection of NFC Tag and can be used for r
 
   ![board](image/hardware_connection.png)
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description           | BRD4338A GPIO | BRD4002 EXP/Breakout Header | MIC 2 Click        |
-  | --------------------- | ------------- | --------------------------- | ------------------ |
-  | I2C_SDA               | ULP_GPIO_6    | EXP_16                      | SDA                |
-  | I2C_SCL               | ULP_GPIO_7    | EXP_15                      | SCL                |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | NFC 2 Click  |
+  | -------------| -----------| -------------| ------------------------|
+  | Interrupt    | GPIO_46 [P24]       | GPIO_10      | INT            |
+  | Reset        | GPIO_47 [P26]       | GPIO_11      | RST            |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | ULP_GPIO_6   | SDA            |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | ULP_GPIO_7   | SCL            |
 
 ## Setup ##
 
@@ -70,7 +72,7 @@ You can either create a project based on an example project or start with an emp
         - [Services] → [Timers] → [Sleep Timer]
         - [Third Party Hardware Drivers] → [Wireless Connectivity] → [PN7150 - NFC 2 Click (Mikroe) - I2C] → use default configuration
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
@@ -82,7 +84,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Hardware Drivers Extension must be enabled for the project to install "PN7150 - NFC 2 Click (Mikroe) - I2C" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "PN7150 - NFC 2 Click (Mikroe) - I2C" component.
 
 ## How It Works ##
 

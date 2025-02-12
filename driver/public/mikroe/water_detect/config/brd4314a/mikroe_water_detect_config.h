@@ -40,8 +40,6 @@
 #ifndef MIKROE_WATER_DETECT_CONFIG_H_
 #define MIKROE_WATER_DETECT_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -50,7 +48,7 @@ extern "C" {
 
 // <gpio optional=true> WATER_DETECT_INT
 // $[GPIO_WATER_DETECT_INT]
-#define WATER_DETECT_INT_PORT                        gpioPortB
+#define WATER_DETECT_INT_PORT                        SL_GPIO_PORT_B
 #define WATER_DETECT_INT_PIN                         3
 // [GPIO_WATER_DETECT_INT]$
 

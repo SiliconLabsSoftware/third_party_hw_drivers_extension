@@ -35,28 +35,46 @@
  * This code will be maintained at the sole discretion of Silicon Labs.
  *
  ******************************************************************************/
-#include "app.h"
+#include "sl_sleeptimer.h"
+#include "sparkfun_qwiic_keypad.h"
+#include "sparkfun_keypad_config.h"
 
 #if (defined(SLI_SI917))
-#define I2C_INSTANCE_USED            SL_I2C2
+#include "sl_i2c_instances.h"
+#include "rsi_debug.h"
+
+#define app_printf(...)                  DEBUGOUT(__VA_ARGS__)
+#define I2C_INSTANCE_USED                SL_I2C2
+
 static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
+#else
+#include "sl_i2cspm_instances.h"
+#include "app_log.h"
+
+#define app_printf(...)                  app_log(__VA_ARGS__)
 #endif
+
+#define SAPRKFUN_KEYPAD_INT_PIN_EN
+
+#define BUTTON_EVENT_CHECK_FREQUENCY_MS  300
 
 static volatile bool new_keypad_event = false;
 static mikroe_i2c_handle_t app_i2c_instance = NULL;
+
+static void app_handle_new_button(void);
+void app_init_keypad(void);
 
 #ifdef SAPRKFUN_KEYPAD_INT_PIN_EN
 
 /***************************************************************************//**
  * Callback for the interrupt.
  ******************************************************************************/
-void app_sparkfun_buttonEvent_callback(const uint8_t pin)
+static void app_sparkfun_buttonEvent_callback(void)
 {
-  (void)pin;
   new_keypad_event = true;
 }
 
-#else //SAPRKFUN_KEYPAD_INT_PIN_EN
+#else // SAPRKFUN_KEYPAD_INT_PIN_EN
 
 static sl_sleeptimer_timer_handle_t button_read_timer;
 
@@ -70,31 +88,7 @@ static void app_timer_callback(sl_sleeptimer_timer_handle_t *handle, void *data)
   new_keypad_event = true;
 }
 
-/***************************************************************************//**
- * Initialize the sleep timer.
- ******************************************************************************/
-void app_init_sleeptimer(void)
-{
-  sl_status_t error_code;
-
-  error_code = sl_sleeptimer_start_periodic_timer_ms(&button_read_timer,
-                                                     BUTTON_EVENT_CHECK_FREQUENCY_MS,
-                                                     app_timer_callback,
-                                                     (void *)NULL,
-                                                     0,
-                                                     0);
-  if (error_code == SL_STATUS_OK) {
-    app_printf("Sleep timer initialized successfully.\r\n");
-  } else if (error_code == SL_STATUS_NULL_POINTER) {
-    app_printf("Error, invslid sleeptimer handle.\r\n");
-  } else if (error_code == SL_STATUS_INVALID_STATE) {
-    app_printf("Error, sleeptimer already running.\r\n");
-  } else if (error_code == SL_STATUS_INVALID_PARAMETER) {
-    app_printf("Error, invalid sleeptimer time_out parameter.\r\n");
-  }
-}
-
-#endif //SAPRKFUN_KEYPAD_INT_PIN_EN
+#endif // SAPRKFUN_KEYPAD_INT_PIN_EN
 
 /***************************************************************************//**
  * Initialize application.
@@ -102,10 +96,6 @@ void app_init_sleeptimer(void)
 void app_init(void)
 {
   app_init_keypad();
-
-#ifndef SAPRKFUN_KEYPAD_INT_PIN_EN
-  app_init_sleeptimer();
-#endif //SAPRKFUN_KEYPAD_INT_PIN_EN
 }
 
 /***************************************************************************//**
@@ -131,18 +121,19 @@ void app_init_keypad(void)
 
 #if (defined(SLI_SI917))
   app_i2c_instance = &i2c_instance;
-#else
+#else // SLI_SI917
   app_i2c_instance = sl_i2cspm_qwiic;
-#endif
+#endif // SLI_SI917
 
 #ifdef SAPRKFUN_KEYPAD_INT_PIN_EN
-  status = sparkfun_keypad_init(app_i2c_instance, SPARKFUN_KEYPAD_DEFAULT_ADDR,
-                                &app_sparkfun_buttonEvent_callback);
-#else
+  status = sparkfun_keypad_init(app_i2c_instance,
+                                SPARKFUN_KEYPAD_DEFAULT_ADDR,
+                                app_sparkfun_buttonEvent_callback);
+#else // SAPRKFUN_KEYPAD_INT_PIN_EN
   status = sparkfun_keypad_init(app_i2c_instance,
                                 SPARKFUN_KEYPAD_DEFAULT_ADDR,
                                 NULL);
-#endif
+#endif // SAPRKFUN_KEYPAD_INT_PIN_EN
 
   if (status == SL_STATUS_NOT_AVAILABLE) {
     app_printf("Keypad not found on the specified address.\r\r\n");
@@ -170,12 +161,21 @@ void app_init_keypad(void)
   if (SL_STATUS_OK == sparkfun_keypad_get_firmware_version(&fw)) {
     app_printf("Keypad FW: %02d.%02d\r\n", fw.major, fw.minor);
   }
+
+#ifndef SAPRKFUN_KEYPAD_INT_PIN_EN
+  sl_sleeptimer_start_periodic_timer_ms(&button_read_timer,
+                                        BUTTON_EVENT_CHECK_FREQUENCY_MS,
+                                        app_timer_callback,
+                                        (void *)NULL,
+                                        0,
+                                        0);
+#endif
 }
 
 /***************************************************************************//**
  * This function handles the interfacing with the keypad.
  ******************************************************************************/
-void app_handle_new_button(void)
+static void app_handle_new_button(void)
 {
   uint8_t new_btn = 0;
   sparkfun_keypad_update_fifo();

@@ -31,6 +31,7 @@
 
 #ifndef SENSIRION_I2C_H
 #define SENSIRION_I2C_H
+
 #include "sl_status.h"
 #include "drv_i2c_master.h"
 

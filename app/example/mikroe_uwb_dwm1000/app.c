@@ -27,29 +27,30 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has been minimally tested to ensure that it builds and is suitable
- * as a demonstration for evaluation purposes only. This code will be maintained
- * at the sole discretion of Silicon Labs.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
-
-/***************************************************************************//**
- * Initialize application.
- ******************************************************************************/
-
-// ------------------------------------------------------------------- INCLUDES
 #include "mikroe_uwb_dwm1000.h"
 #include "app_assert.h"
+
 #if (defined(SLI_SI917))
 #include "rsi_debug.h"
 #include "sl_si91x_gspi.h"
 #include "sl_si91x_button_instances.h"
-static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
+
 #define app_printf(...) DEBUGOUT(__VA_ARGS__)
+
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #else /* None Si91x device */
 #include "app_log.h"
 #include "sl_spidrv_instances.h"
 #include "sl_simple_button_instances.h"
+
 #define app_printf(...) app_log(__VA_ARGS__)
 #endif
 

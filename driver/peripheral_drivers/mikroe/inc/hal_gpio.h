@@ -40,6 +40,13 @@
 #ifndef _HAL_GPIO_H_
 #define _HAL_GPIO_H_
 
+#include <stdint.h>
+
+#ifndef SLI_SI917
+// Defines the macros for GPIO
+#include "sl_device_gpio.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -55,6 +62,10 @@ extern "C" {
 
 #ifndef ULP
 #define ULP                                  4
+#endif
+
+#ifndef UULP_VBAT
+#define UULP_VBAT                            5
 #endif
 
 #define hal_gpio_pin_index(pin_name) \
@@ -73,8 +84,8 @@ extern "C" {
   ((port_name_t)(port_index) * PORT_SIZE)
 
 typedef struct {
-  uint32_t base;
-  uint32_t mask;
+  uint8_t base;
+  uint8_t mask;
 } hal_gpio_t;
 
 typedef hal_gpio_t hal_gpio_port_t;

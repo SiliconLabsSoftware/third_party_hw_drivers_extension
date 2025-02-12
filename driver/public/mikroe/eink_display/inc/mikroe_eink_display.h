@@ -363,7 +363,7 @@ sl_status_t mikroe_eink_display_fill_screen(uint8_t color);
  *    SL_STATUS_OK if Succeed .
  *    SL_STATUS_FAIL if failed.
  ******************************************************************************/
-sl_status_t mikroe_eink_display_display_image(const uint8_t *image_buffer);
+sl_status_t mikroe_eink_display_image(const uint8_t *image_buffer);
 
 /***************************************************************************//**
  * @brief

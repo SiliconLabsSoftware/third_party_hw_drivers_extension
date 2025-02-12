@@ -12,9 +12,6 @@ requires:
   - name: mikroe_peripheral_driver_i2c
   - name: mikroe_peripheral_driver_spi
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
-
 provides:
   - name: mikroe_pressure3_spi
     allow_multiple: false
@@ -31,12 +28,15 @@ config_file:
   - path: public/mikroe/pressure3_dps310/config/brd4314a/mikroe_dps310_spi_config.h
     file_id: mikroe_dps310_spi_config
     condition: [brd4314a]
+  - path: public/mikroe/pressure3_dps310/config/brd2605a/mikroe_dps310_spi_config.h
+    file_id: mikroe_dps310_spi_config
+    condition: [brd2605a]
   - path: public/mikroe/pressure3_dps310/config/brd4338a/mikroe_dps310_spi_config.h
     file_id: mikroe_dps310_spi_config
     condition: [brd4338a]
   - path: public/mikroe/pressure3_dps310/config/other/mikroe_dps310_spi_config.h
     file_id: mikroe_dps310_spi_config
-    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
 include:
   - path: inc
     file_list:

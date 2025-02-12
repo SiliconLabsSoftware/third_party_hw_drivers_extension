@@ -38,7 +38,6 @@
  ******************************************************************************/
 #include "mikroe_ph2.h"
 #include "mikroe_ph2_config.h"
-#include "ph2.h"
 
 static ph2_t mikroe_ph2;
 static ph2_cfg_t mikroe_ph2_cfg;

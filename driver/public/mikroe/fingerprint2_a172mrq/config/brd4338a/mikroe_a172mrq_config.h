@@ -40,8 +40,7 @@
 #define SCL_A172MRQ_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< sl:start pin_tool >>>

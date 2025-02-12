@@ -41,55 +41,56 @@
 #define MIKROE_WATER_DETECT_H_
 
 #include "sl_status.h"
+#include "waterdetect.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**************************************************************************//**
-* @addtogroup  water_detect - Water Detect Click
-* @brief  Driver for the Mikroe Water Detect Click
-*    @n @section water_detect_example example
-*
-*      Basic example @n @n
-*      @code{.c}
-*
-* #include "mikroe_water_detect.h"
-* #include "app_log.h"
-*
-* uint8_t wd_state = 0;
-* uint8_t wd_state_old = 0;
-*
-*    int main(void)
-*    {
-*      ...
-*
-*      mikroe_water_detect_init();
-*
-*      while (true) {
-*
-*        ...
-*
-*        wd_state = mikroe_water_detect_get_status( );
-*
-*        if ( wd_state > wd_state_old ) {
-*          app_log(" >  Water is detected  < \r\n" );
-*          app_log("------------------------- \r\n" );
-*          wd_state_old = 1;
-*        }
-*
-*      if ( wd_state < wd_state_old ) {
-*          app_log(" There is no water \r\n" );
-*          app_log("------------------- \r\n" );
-*          wd_state_old = 0;
-*      }
-*
-*      }
-*
-*    } @endcode
-*
-* @{
-******************************************************************************/
+ * @addtogroup  water_detect - Water Detect Click
+ * @brief  Driver for the Mikroe Water Detect Click
+ *    @n @section water_detect_example example
+ *
+ *      Basic example @n @n
+ *      @code{.c}
+ *
+ * #include "mikroe_water_detect.h"
+ * #include "app_log.h"
+ *
+ * uint8_t wd_state = 0;
+ * uint8_t wd_state_old = 0;
+ *
+ *    int main(void)
+ *    {
+ *      ...
+ *
+ *      mikroe_water_detect_init();
+ *
+ *      while (true) {
+ *
+ *        ...
+ *
+ *        wd_state = mikroe_water_detect_get_status( );
+ *
+ *        if ( wd_state > wd_state_old ) {
+ *          app_log(" >  Water is detected  < \r\n" );
+ *          app_log("------------------------- \r\n" );
+ *          wd_state_old = 1;
+ *        }
+ *
+ *      if ( wd_state < wd_state_old ) {
+ *          app_log(" There is no water \r\n" );
+ *          app_log("------------------- \r\n" );
+ *          wd_state_old = 0;
+ *      }
+ *
+ *      }
+ *
+ *    } @endcode
+ *
+ * @{
+ ******************************************************************************/
 
 /***************************************************************************//**
  * @brief

@@ -41,7 +41,7 @@
 #define MIKROE_ACCURRENT_H_
 
 #include "sl_status.h"
-#include "drv_spi_master.h"
+#include "accurrent.h"
 
 #ifdef __cplusplus
 extern "C" {

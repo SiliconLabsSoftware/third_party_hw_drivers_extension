@@ -40,15 +40,11 @@
 #ifndef MIKROE_SMOKE2_ADPD188BI_I2C_CONFIG_H_
 #define MIKROE_SMOKE2_ADPD188BI_I2C_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 // <<< Use Configuration Wizard in Context Menu >>>
 
 // <h> MIKROE SMOKE2 I2C Configuration
 
-// <e> MIKROE SMOKE2 I2C UC Configuration 
+// <e> MIKROE SMOKE2 I2C UC Configuration
 // <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
 // <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
 // <i> Default: 0
@@ -70,8 +66,8 @@
 // <gpio optional=true> MIKROE_SMOKE2_INT
 // $[GPIO_MIKROE_SMOKE2_INT]
 #warning "MIKROE_SMOKE2_INT is not configured"
-// #define MIKROE_SMOKE2_PORT            gpioPortB
-// #define MIKROE_SMOKE2_PIN             3
+// #define MIKROE_SMOKE2_PORT            0
+// #define MIKROE_SMOKE2_PIN             0
 // [GPIO_MIKROE_SMOKE2_INT]$
 
 // <<< sl:end pin_tool >>>

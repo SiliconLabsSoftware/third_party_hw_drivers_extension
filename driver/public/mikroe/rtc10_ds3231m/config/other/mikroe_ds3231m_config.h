@@ -40,18 +40,14 @@
 #ifndef MIKROE_DS3231M_CONFIG_H_
 #define MIKROE_DS3231M_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>MIKROE DS3231M I2C Configuration
+// <h> MIKROE DS3231M I2C Configuration
 
-//  <e>MIKROE DS3231M I2C UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> MIKROE DS3231M I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define MIKROE_DS3231M_I2C_UC                            0
 
 // <o MIKROE_DS3231M_I2C_SPEED_MODE> Speed mode
@@ -70,22 +66,22 @@
 // <gpio optional=true> MIKROE_DS3231M_INT
 // $[GPIO_MIKROE_DS3231M_INT]
 #warning "MIKROE_DS3231M_INT is not configured"
-// #define MIKROE_DS3231M_INT_PORT                       gpioPortB
-// #define MIKROE_DS3231M_INT_PIN                        3
+// #define MIKROE_DS3231M_INT_PORT                       0
+// #define MIKROE_DS3231M_INT_PIN                        0
 // [GPIO_MIKROE_DS3231M_INT]$
 
 // <gpio optional=true> MIKROE_DS3231M_AN
 // $[GPIO_MIKROE_DS3231M_AN]
 #warning "MIKROE_DS3231M_AN is not configured"
-// #define MIKROE_DS3231M_AN                             gpioPortB
-// #define MIKROE_DS3231M_AN                             3
+// #define MIKROE_DS3231M_AN                             0
+// #define MIKROE_DS3231M_AN                             0
 // [GPIO_MIKROE_DS3231M_AN]$
 
 // <gpio optional=true> MIKROE_DS3231M_RST
 // $[GPIO_MIKROE_DS3231M_RST]
 #warning "MIKROE_DS3231M_RST is not configured"
-// #define MIKROE_DS3231M_RST_PORT                       gpioPortB
-// #define MIKROE_DS3231M_RST_PIN                        3
+// #define MIKROE_DS3231M_RST_PORT                       0
+// #define MIKROE_DS3231M_RST_PIN                        0
 // [GPIO_MIKROE_DS3231M_RST]$
 
 // <<< sl:end pin_tool >>>

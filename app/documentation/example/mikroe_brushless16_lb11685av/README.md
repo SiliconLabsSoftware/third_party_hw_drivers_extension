@@ -8,11 +8,11 @@ Brushless 16 Click as its foundation uses the LB11685AV, a three-phase full-wave
 
 ## Required Hardware ##
 
-- [**BGM220-EK4314A** BGM220 Bluetooth Module Explorer Kit (BRD4314A BGM220 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [**Brushless 16 Click** board based on LB11685AV IC](https://www.mikroe.com/brushless-16-click)
+- 1x [Brushless 16 Click board](https://www.mikroe.com/brushless-16-click) based on LB11685AV
 
 ## Hardware Connection ##
 
@@ -24,13 +24,13 @@ Brushless 16 Click as its foundation uses the LB11685AV, a three-phase full-wave
 
   ![board](image/hardware_connection.png "Hardware connection")
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description               | BRD4338A GPIO | BRD4002 Breakout | Brushless 16 Click |
+  | Description  | BRD4338A + BRD4002A | BRD2605A    | Brushless 16 Click |
   | ------------------------- | ------------- | ---------------- | ------------------ |
-  | Enable                    | GPIO_48       | P28              | EN                 |
-  | Rotation Speed Indication | GPIO_47       | P26              | FG                 |
-  | Motor Lock Detection      | GPIO_46       | P24              | RD                 |
+  | Enable                    | GPIO_48 [P28]      | GPIO_12     | EN                 |
+  | Rotation Speed Indication | GPIO_47 [P26]      | GPIO_11     | FG                 |
+  | Motor Lock Detection      | GPIO_46 [P24]      | GPIO_10     | RD                 |
 
 ## Setup ##
 
@@ -67,7 +67,7 @@ You can either create a project based on an example project or start with an emp
         - [Application] → [Utility] → [Assert]
         - [Third Party Hardware Drivers] → [Motor Control] → [LB11685AV - Brushless 16 Click (Mikroe)] → use default configuration
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
         - [Application] → [Utility] → [Assert]
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [Third Party Hardware Drivers] → [Motor Control] → [LB11685AV - Brushless 16 Click (Mikroe)] → use default configuration
@@ -78,7 +78,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "LB11685AV - Brushless 16 Click (Mikroe)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "LB11685AV - Brushless 16 Click (Mikroe)" component.
 
 ## How It Works ##
 

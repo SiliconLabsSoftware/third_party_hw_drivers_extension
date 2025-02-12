@@ -84,4 +84,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_A3967_CONFIG_H_ */
+#endif // MIKROE_A3967_CONFIG_H_

@@ -41,9 +41,7 @@
 #define _MIKROE_TB9053FTG_H_
 
 #include "sl_status.h"
-#include "drv_analog_in.h"
-#include "drv_i2c_master.h"
-#include "drv_spi_master.h"
+#include "dcmotor26.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -276,7 +274,7 @@ sl_status_t mikroe_tb9053ftg_write_register(uint8_t reg, uint32_t data_in);
  *         SL_STATUS_FAIL - Error.
  * @note None.
  */
-sl_status_t mikroe_tb9053ftg_read_register(uint8_t reg, uint8_t *data_out);
+sl_status_t mikroe_tb9053ftg_read_register(uint8_t reg, uint32_t *data_out);
 
 /**
  * @brief DC Motor 26 pca9538a write register function.

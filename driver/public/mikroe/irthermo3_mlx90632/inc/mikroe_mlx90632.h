@@ -41,7 +41,7 @@
 #define MIKROE_MLX90632_H_
 
 #include "sl_status.h"
-#include "drv_i2c_master.h"
+#include "irthermo3.h"
 
 #ifdef __cplusplus
 extern "C" {

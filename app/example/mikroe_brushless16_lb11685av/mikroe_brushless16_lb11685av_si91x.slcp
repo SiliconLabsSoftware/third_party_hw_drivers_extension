@@ -1,4 +1,4 @@
-project_name: mikroe_brushless16_lv11685av_si91x
+project_name: mikroe_brushless16_lv11685av
 package: platform
 label: Third Party Hardware Drivers - LB11685AV - Brushless 16 Click (Mikroe)
 description: |
@@ -7,42 +7,41 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/mikroe_brushless16_lb11685av/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: app.c
-- path: main.c
+  - path: app.c
+  - path: main.c
 
 include:
-- path: ''
-  file_list:
-  - path: app.h
+  - path: ''
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: app_assert
-- id: sleeptimer_si91x
-  from: wiseconnect3_sdk
-- id: mikroe_brushless16
-  from: third_party_hw_drivers
-- id: syscalls
-  from: wiseconnect3_sdk
-- id: si917_memory_default_config
-  from: wiseconnect3_sdk
+  - id: sl_system
+  - id: syscalls
+    from: wiseconnect3_sdk
+  - id: si917_memory_default_config
+    from: wiseconnect3_sdk
+  - id: app_assert
+  - id: sleeptimer
+  - id: mikroe_brushless16
+    from: third_party_hw_drivers
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
-- id: wiseconnect3_sdk
-  version: 3.3.4
+  - id: third_party_hw_drivers
+    version: 4.1.0
+  - id: wiseconnect3_sdk
+    version: 3.4.0
+
+readme:
+  - path: ../../documentation/example/mikroe_brushless16_lb11685av/README.md
 
 other_file:
   - path: ../../documentation/example/mikroe_brushless16_lb11685av/image/create_example.png

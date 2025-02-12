@@ -121,6 +121,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-
 #endif
+
 #endif // MIKROE_DCMOTOR26_CONFIG_H_

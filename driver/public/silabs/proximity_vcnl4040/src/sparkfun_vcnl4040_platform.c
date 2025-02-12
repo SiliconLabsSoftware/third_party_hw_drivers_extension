@@ -39,7 +39,6 @@
 #include <stdio.h>
 #include "sl_status.h"
 #include "sparkfun_vcnl4040_platform.h"
-#include "drv_i2c_master.h"
 
 // -----------------------------------------------------------------------------
 //                          Public functions

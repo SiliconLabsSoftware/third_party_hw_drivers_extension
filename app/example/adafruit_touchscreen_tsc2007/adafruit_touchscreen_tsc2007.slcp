@@ -7,47 +7,47 @@ category: Example|Platform
 quality: evaluation
 
 filter:
-- name: Device Type
-  value: [SoC]
-- name: MCU
-  value: [32-bit MCU]
-- name: Project Difficulty
-  value: [Beginner]
-
-readme:
-- path: ../../documentation/example/adafruit_touchscreen_tsc2007/README.md
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
 
 source:
-- path: gecko/app.c
-- path: main.c
+  - path: gecko/app.c
+  - path: main.c
 
 include:
-- path: 'gecko'
-  file_list:
-  - path: app.h
+  - path: 'gecko'
+    file_list:
+    - path: app.h
 
 component:
-- id: sl_system
-- id: device_init
-- id: iostream_eusart
-  instance: [vcom]
-- id: app_assert
-- id: app_log
-- id: i2cspm
-  instance: [qwiic]
-- id: adafruit_touchscreen_tsc2007
-  from: third_party_hw_drivers
-- id: services_oled_glib
-  from: third_party_hw_drivers
-- id: adafruit_tft_lcd_ili9341
-  from: third_party_hw_drivers
+  - id: sl_system
+  - id: device_init
+  - id: iostream_eusart
+    instance: [vcom]
+  - id: app_assert
+  - id: app_log
+  - id: i2cspm
+    instance: [qwiic]
+  - id: adafruit_touchscreen_tsc2007
+    from: third_party_hw_drivers
+  - id: services_oled_glib
+    from: third_party_hw_drivers
+  - id: adafruit_tft_lcd_ili9341
+    from: third_party_hw_drivers
 
 define:
-- name: DEBUG_EFM
+  - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.0.0
+  - id: third_party_hw_drivers
+    version: 4.1.0
+
+readme:
+  - path: ../../documentation/example/adafruit_touchscreen_tsc2007/README.md
 
 other_file:
   - path: ../../documentation/example/adafruit_touchscreen_tsc2007/image/calib.png
@@ -65,4 +65,3 @@ ui_hints:
   highlight:
     - path: README.md
       focus: true
-

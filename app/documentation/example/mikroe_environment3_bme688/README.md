@@ -9,39 +9,39 @@ For more information, see [Gas Sensor BME688](https://www.bosch-sensortec.com/pr
 
 ## Required Hardware ##
 
-- [**BRD2703A-EFR32xG24** EFR32xG24 Bluetooth Module Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [**Environment 3 Click** board based on BME688 from Mikroe Integrated](https://www.mikroe.com/environment-3-click)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [Environment 3 Click board](https://www.mikroe.com/environment-3-click) based on BME688
 
 ## Hardware Connection ##
 
 - **If the EFR32xG24 Explorer Kit is used**:
-  
-    The Environment 3 Click board supports MikroBus; therefore, it can connect easily to the MikroBus header of the EFR32xG24 Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit.
 
-    The hardware connection is shown in the image below:
+  The Environment 3 Click board supports MikroBus; therefore, it can connect easily to the MikroBus header of the EFR32xG24 Explorer Kit. Be sure that the 45-degree corner of the board matches the 45-degree white line of the Explorer Kit.
 
-    ![board](image/hardware_connection.png "BGM220 Explorer Kit Board and Environment 3 Click Board")
+  The hardware connection is shown in the image below:
 
-- **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used**:
+  ![board](image/hardware_connection.png "BGM220 Explorer Kit Board and Environment 3 Click Board")
 
-    The hardware connection is shown in the table below:
+- **If the Wi-Fi Development Kit is used**:
 
-    **- If using I2C interface:**
+  The hardware connection is shown in the table below:
 
-    | Description  | BRD4338A GPIO | BRD4002 EXP Header | Environment 3 Click Board |
-    | -------------| ------------- | ------------------ | ------------------- |
-    | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                 |
-    | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                 |
+  **- If using I2C interface:**
 
-   **- If using SPI interface:**
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | Environment 3 Click |
+  | ----------- | -------------  | ------------------ | ------------- |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | ULP_GPIO_6   | SDA            |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | ULP_GPIO_7   | SCL            |
 
-    | Description              | BRD4338A GPIO | BRD4002 Breakout Pad | Environment 3 Click Board |
-    | -------------------------| ------------- | -------------------- | ------------------------- |
-    | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25       | P25                  | SCK                       |
-    | RTE_GSPI_MASTER_MISO_PIN | GPIO_26       | P27                  | SDO                       |
-    | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27       | P29                  | SDI                       |
-    | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28       | P31                  | CS                        |
+  **- If using SPI interface:**
+
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | Environment 3 Click |
+  | -------------------------| ------------- | -------------- | ----------- |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25] | GPIO_25        | SCK         |
+  | RTE_GSPI_MASTER_MISO_PIN | GPIO_26 [P27] | GPIO_26        | SDO         |
+  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27 [P29] | GPIO_27        | SDI         |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28 [P31] | GPIO_28        | CS          |
 
 ## Setup ##
 
@@ -53,7 +53,7 @@ You can either create a project based on an example project or start with an emp
 
 2. Click **Create** button on the example:
 
-    - **Third Party Hardware Drivers - BME688 - Environment 3 Click (Mikroe) - I2C** if using the I2C interface.  
+    - **Third Party Hardware Drivers - BME688 - Environment 3 Click (Mikroe) - I2C** if using the I2C interface.
 
     - **Third Party Hardware Drivers - BME688 - Environment 3 Click (Mikroe) - SPI** if using the SPI interface.
 
@@ -90,7 +90,7 @@ You can either create a project based on an example project or start with an emp
             - [Platform] → [Driver] → [SPI] → [SPIDRV] → [mikroe instance]
             - [Third Party Hardware Drivers] → [Sensors] → [BME688 - Environment 3 Click (Mikroe) - SPI] → use default configuration
 
-        - **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+        - **If the Wi-Fi Development Kit is used:**
 
             If using I2C interface:
             - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
@@ -99,19 +99,20 @@ You can either create a project based on an example project or start with an emp
             If using I2C interface:
             - [Third Party Hardware Drivers] → [Sensors] → [BME688 - Environment 3 Click (Mikroe) - SPI] → use the default configuration
 
-4. Install printf float
+4. Enable **Printf float**
 
-    - Open Properties of the Project.
-    - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General. Check Printf float.
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
+
       ![float](image/float.png)
 
 5. Build and flash this example to the board.
 
 **Note:**
 
-- Make sure that the **Third Party Hardware Drivers** extension has already be installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party drivers extension must be enabled for the project to install "BME688 - Environment 3 Click (Mikroe)" component
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "BME688 - Environment 3 Click (Mikroe)" component
 
 ## How It Works ##
 

@@ -39,7 +39,6 @@
 
 #include "mikroe_shtc3_config.h"
 #include "mikroe_shtc3.h"
-#include "temphum9.h"
 
 static temphum9_t temphum9;
 static temphum9_cfg_t temphum9_cfg;

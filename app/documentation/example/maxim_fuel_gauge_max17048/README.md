@@ -10,43 +10,33 @@ The block diagram of this example is shown in the image below:
 
 ## Hardware Required ##
 
-- [MAX17048XEVKIT Evalue Kit](https://www.maximintegrated.com/en/products/power/battery-management/MAX17048XEVKIT.html)
+- 1x [MAX17048XEVKIT Evalue Kit](https://www.maximintegrated.com/en/products/power/battery-management/MAX17048XEVKIT.html)
 
-- [Wireless Starter Kit Mainboard](https://www.silabs.com/development-tools/wireless/wireless-starter-kit-mainboard) and [10dBm EFR32xG21 Radio Board](https://www.silabs.com/development-tools/wireless/slwrb4181b-efr32xg21-wireless-gecko-radio-board)
+- 1x [10dBm EFR32xG21 Radio Board](https://www.silabs.com/development-tools/wireless/slwrb4181b-efr32xg21-wireless-gecko-radio-board) with [Wireless Starter Kit Mainboard](https://www.silabs.com/development-tools/wireless/wireless-starter-kit-mainboard)
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit?tab=overview) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [Lithium Ion Battery](https://www.sparkfun.com/products/13851)
+- 1x [Lithium Ion Battery](https://www.sparkfun.com/products/13851)
 
 - A high power resistor (e.g. 220Ω/5W) is as the load of the battery.
 
 ## Hardware Connection ##
 
-- If the EFR32xG21 Radio Board is used:
+We can use some [Wire Jumpers Female to Female](https://www.mikroe.com/wire-jumpers-female-to-female-30cm-10pcs) to connect between Silicon Labs board and the MAX17048XEVKIT Evalue Kit, and between the MAX17048XEVKIT Evalue Kit to the Lithium Ion Battery and the load as shown below.
 
-  We can use some [Wire Jumpers Female to Female](https://www.mikroe.com/wire-jumpers-female-to-female-30cm-10pcs) to connect between the EFR32xG21 Wireless Starter Kit and the MAX17048XEVKIT Evalue Kit, and between the MAX17048XEVKIT Evalue Kit to the Lithium Ion Battery and the load as shown below.
+![connection](image/connection.png)
 
-    ![connection](image/connection.png)
+| Description  | BRD4181B + BRD4002A | BRD4338A + BRD4002A | BRD2605A     | MAX17048XEVKIT Evalue Kit |
+| -------------|---------------------| ------------------- | ------------ |:-------------------------:|
+| GND          | GND [EXP_1]         | GND [EXP_1]         | GND          |  J2-4: GND                |
+| I2C_SDA      | PB1 [EXP_9]         | ULP_GPIO_6 [EXP_16] | ULP_GPIO_6   |  J2-5: SDA                |
+| I2C_SCL      | PB0 [EXP_7]         | ULP_GPIO_7 [EXP_15] | ULP_GPIO_7   |  J2-3: SCL                |
+| ALRT         | PC0 [EXP_4]         | GPIO_46 [P24]       | GPIO_10      |  J2-6: ALRT               |
 
-  | WSTK markings             |  MAX17048XEVKIT Evalue Kit markings |
-  |---------------------------|:-----------------------------------:|
-  | Extension PIN 1  - GND    |  J2-4: GND                          |
-  | Extension PIN 9 - PD03    |  J2-5: SDA                          |
-  | Extension PIN 7 - PD02    |  J2-3: SCL                          |
-  | Extension PIN 6 - PC00    |  J2-6: ALRT                         |
-  
-  | MAX17048XEVKIT Evalue Kit markings |  Lithium Ion Battery |
-  |:----------------------------------:|:--------------------:|
-  | PK+                                |  BAT+                |
-  | PK-                                |  BAT-                |
-
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
-
-  | Description  | BRD4338A GPIO | BRD4002 EXP/Breakout Header | Maxim Battery Fuel Gauge MAX17048 |
-  | -------------| ------------- | ------------------ | ---------------------------- |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | J2-5: SDA                    |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | J2-3: SCL                    |
-  | ALRT         | GPIO_46       | P24                | J2-6: ALRT                   |
+| MAX17048XEVKIT Evalue Kit markings |  Lithium Ion Battery |
+|:----------------------------------:|:--------------------:|
+| PK+                                |  BAT+                |
+| PK-                                |  BAT-                |
 
 **Note:** The MAX17048 EV kit is set by default to evaluate 1-cell Li+ batteries. LDO U2 is provided so that only a single supply is needed to power the EV kit in the case a 2-cell battery is used. When evaluating the MAX17048, set jumper JU1 to pins 1-2 and remove any shunt installed on JU2 to bypass the LDO.
 
@@ -77,7 +67,7 @@ You can either create a project based on an example project or start with an emp
    - Select the SOFTWARE COMPONENTS tab.
    - Install the following components:
 
-     **If the BGM220P Explorer Kit is used:**
+     **If the EFR32xG21 Kit is used:**
 
        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
        - Set **Enable Virtual COM UART** in **[Platform] > [Board Control]** component.
@@ -87,17 +77,12 @@ You can either create a project based on an example project or start with an emp
        - [Application] → [Utility] → [Log]
        - [Application] → [Utility] → [Assert]
        - [Third Party Hardware Drivers] → [Power Management] → [MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)] → use default configuaration
-
-         ![max17048_config](image/max17048_config.png)
-
        - [Third Party] → [Tiny printf]
 
-     **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+     **If the Wi-Fi Development Kit is used:**
 
        - [Application] → [Utility] → [Assert]
        - [Third Party Hardware Drivers] → [Power Management] → [MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)] → use default configuaration
-
-         ![max17048_config](image/max17048_config.png)
        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
        - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [BJT Temperature Sensor]
@@ -108,7 +93,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- Third-party Drivers Extension must be enabled for the project to install "MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)" component.
 
 ## How It Works ##
 
@@ -119,7 +104,7 @@ You can either create a project based on an example project or start with an emp
 The APIs of the driver can be grouped into as follows:
 
 1. Initialization:
-  
+
      The driver is using an I2C module that is connected to the MAX17048. This function does not write to any of the MAX17048 registers.
 
      For initialization, it assigns the I2C used to communicate with the device, configures the GPIO(s) used for the ALRTn and optional QSTRT pin(s), and starts a software timer to trigger temperature (RCOMP) updates at the user-specified rate.

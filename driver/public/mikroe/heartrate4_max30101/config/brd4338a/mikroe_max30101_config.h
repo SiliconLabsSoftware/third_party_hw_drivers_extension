@@ -58,4 +58,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_MAX30101_CONFIG_H_ */
+#endif // MIKROE_MAX30101_CONFIG_H_

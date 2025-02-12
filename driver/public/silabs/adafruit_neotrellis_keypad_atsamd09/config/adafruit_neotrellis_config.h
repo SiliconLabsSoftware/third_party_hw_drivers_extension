@@ -37,17 +37,16 @@
 #define ADAFRUIT_NEO_TRELLIS_CONFIG_H
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
-//<h>ADAFRUIT NEO TRELLIS I2C Configuration
+// <h> ADAFRUIT NEO TRELLIS I2C Configuration
 
-//  <e>ADAFRUIT NEO TRELLIS I2C UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> ADAFRUIT NEO TRELLIS I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define ADAFRUIT_NEO_TRELLIS_I2C_UC                  0
 
 // <o ADAFRUIT_NEO_TRELLIS_I2C_SPEED_MODE> Speed mode
@@ -71,7 +70,6 @@ extern "C"
 // <<< end of configuration section >>>
 
 #ifdef __cplusplus
-extern "C"
 }
 #endif
 

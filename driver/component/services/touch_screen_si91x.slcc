@@ -13,26 +13,32 @@ requires:
   - name: gpio_helper_si91x
     condition:
       - device_si91x
-provides:
-  - name: touch_screen_analog_interface
-    allow_multiple: false
 config_file:
   - path: public/silabs/services_touch_screen/config/brd4338a/touch_screen_config.h
     file_id: touch_screen_config
     condition:
       - device_si91x
       - brd4338a
+  - path: public/silabs/services_touch_screen/config/brd2605a/touch_screen_config.h
+    file_id: touch_screen_config
+    condition:
+      - device_si91x
+      - brd2605a
   - path: public/silabs/services_touch_screen/config/other/touch_screen_config.h
     file_id: touch_screen_config
-    unless: [brd4338a]
+    unless: [brd4338a, brd2605a]
+
 template_contribution:
   - name: component_catalog
     value: touch_screen_analog_si91x
+provides:
+  - name: touch_screen_analog_interface
+    allow_multiple: false
 include:
   - path: public/silabs/services_touch_screen/inc
     file_list:
       - path: touch_screen.h
 source:
   - path: public/silabs/services_touch_screen/src/touch_screen_si91x.c
-    condition: 
+    condition:
       - device_si91x

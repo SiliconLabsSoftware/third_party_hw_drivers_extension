@@ -8,11 +8,11 @@ MikroE OLED W Click is based on the MI9639BO-W OLED module which has a size of 1
 
 ## Required Hardware ##
 
-- [**BGM220-EK4314A** BGM220 Bluetooth Module Explorer Kit (BRD4314A BGM220 Explorer Kit Board)](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit)
+- 1x [BGM220-EK4314A](https://www.silabs.com/development-tools/wireless/bluetooth/bgm220-explorer-kit) BGM220 Bluetooth Module Explorer Kit
 
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- [**OLED W Click** board based on SSD1306 IC](https://www.mikroe.com/oled-w-click)
+- 1x [OLED W Click board](https://www.mikroe.com/oled-w-click) based on SSD1306
 
 ## Hardware Connection ##
 
@@ -24,15 +24,15 @@ MikroE OLED W Click is based on the MI9639BO-W OLED module which has a size of 1
 
   ![board](image/hardware_connection.png "Hardware connection")
 
-- If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:
+- If the Wi-Fi Development Kit is used:
 
-  | Description  | BRD4338A GPIO            | BRD4002 Breakout Pad | OLED W click       |
-  | -------------| ------------------------ | -------------------- | ------------------ |
-  | RESET        | GPIO_46                  | P24                  | RST                |
-  | DATA/COMMAND | GPIO_47                  | P26                  | D/C                |
-  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25      | P25                  | SCK                |
-  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27      | P29                  | SDI                |
-  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28      | P31                  | CS                 |
+  | Description  | BRD4338A + BRD4002A | BRD2605A     | OLED W click       |
+  | -------------------------| ------------- | -------------------- | ------------------ |
+  | DATA/COMMAND             | GPIO_47 [P26]       | GPIO_11        | D/C                |
+  | RESET                    | GPIO_46 [P24]       | GPIO_10        | RST                |
+  | RTE_GSPI_MASTER_CLK_PIN  | GPIO_25 [P25]       | GPIO_25        | SCK                |
+  | RTE_GSPI_MASTER_MOSI_PIN | GPIO_27 [P29]       | GPIO_27        | SDI                |
+  | RTE_GSPI_MASTER_CS0_PIN  | GPIO_28 [P31]       | GPIO_28        | CS                 |
 
 ## Setup ##
 
@@ -68,7 +68,7 @@ You can either create a project based on an example project or start with an emp
         - [Application] → [Utility] → [Assert]
         - [Third Party Hardware Drivers] → [Display & LED] → [SSD1306 - OLED W Click (Mikroe) - SPI] → use default configuration
 
-      **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+      **If the Wi-Fi Development Kit is used:**
 
         - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
         - [Application] → [Utility] → [Assert]
@@ -80,7 +80,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install "SSD1306 - OLED W Click (Mikroe) - SPI" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install "SSD1306 - OLED W Click (Mikroe) - SPI" component.
 
 ## How It Works ##
 

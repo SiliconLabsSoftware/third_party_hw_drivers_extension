@@ -44,14 +44,12 @@
 #if (defined(SLI_SI917))
 #include "sl_i2c_instances.h"
 #include "sl_si91x_button_instances.h"
+
+#define I2C_INSTANCE_USED            SL_I2C2
+static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #else
 #include "sl_simple_button_instances.h"
 #include "sl_i2cspm_instances.h"
-#endif
-
-#if (defined(SLI_SI917))
-#define I2C_INSTANCE_USED            SL_I2C2
-static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #endif
 
 #define DISPLAY_MODE_COUNT           (12)

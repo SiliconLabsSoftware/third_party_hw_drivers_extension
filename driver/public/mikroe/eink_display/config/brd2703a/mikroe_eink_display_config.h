@@ -39,8 +39,6 @@
 #ifndef MIKROE_EINK_DISPLAY_CONFIG_H_
 #define MIKROE_EINK_DISPLAY_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -92,27 +90,21 @@ extern "C" {
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> EINK_DISPLAY_CS
-// $[GPIO_EINK_DISPLAY_CS]
-// #define EINK_DISPLAY_CS_PORT                       0
-// #define EINK_DISPLAY_CS_PIN                        0
-// [GPIO_EINK_DISPLAY_CS]$
-
 // <gpio optional=true> EINK_DISPLAY_DC
 // $[GPIO_EINK_DISPLAY_DC]
-#define EINK_DISPLAY_DC_PORT                        gpioPortA
+#define EINK_DISPLAY_DC_PORT                        SL_GPIO_PORT_A
 #define EINK_DISPLAY_DC_PIN                         0
 // [GPIO_EINK_DISPLAY_DC]$
 
 // <gpio optional=true> EINK_DISPLAY_RST
 // $[GPIO_EINK_DISPLAY_RST]
-#define EINK_DISPLAY_RST_PORT                       gpioPortC
+#define EINK_DISPLAY_RST_PORT                       SL_GPIO_PORT_C
 #define EINK_DISPLAY_RST_PIN                        8
 // [GPIO_EINK_DISPLAY_RST]$
 
 // <gpio optional=true> EINK_DISPLAY_BSY
 // $[GPIO_EINK_DISPLAY_BSY]
-#define EINK_DISPLAY_BSY_PORT                       gpioPortB
+#define EINK_DISPLAY_BSY_PORT                       SL_GPIO_PORT_B
 #define EINK_DISPLAY_BSY_PIN                        1
 // [GPIO_EINK_DISPLAY_BSY]$
 
@@ -122,11 +114,11 @@ extern "C" {
 #define MIKROE_EINK_DISPLAY_WIDTH                   200
 #define MIKROE_EINK_DISPLAY_HEIGHT                  200
 #elif (CONFIG_EINK_DISPLAY_RESOLUTION == EINK_DISPLAY_2_13_INCH)
-#define MIKROE_EINK_DISPLAY_WIDTH                   122
+#define MIKROE_EINK_DISPLAY_WIDTH                   128
 #define MIKROE_EINK_DISPLAY_HEIGHT                  250
 #elif (CONFIG_EINK_DISPLAY_RESOLUTION == EINK_DISPLAY_2_90_INCH)
-#define MIKROE_EINK_DISPLAY_WIDTH                   296
-#define MIKROE_EINK_DISPLAY_HEIGHT                  128
+#define MIKROE_EINK_DISPLAY_WIDTH                   128
+#define MIKROE_EINK_DISPLAY_HEIGHT                  296
 #endif
 
 #ifdef __cplusplus

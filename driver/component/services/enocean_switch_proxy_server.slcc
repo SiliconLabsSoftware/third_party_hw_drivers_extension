@@ -10,7 +10,7 @@ quality: evaluation
 root_path: driver
 conflicts:
   - name: "device_series_1"
-    
+
 source:
   - path: "public/silabs/services_enocean_switch_proxy_server/src/enocean_proxy.c"
   - path: "public/silabs/services_enocean_switch_proxy_server/src/press_length_timer_callbacks.c"
@@ -47,6 +47,9 @@ template_contribution:
     value:
       include: "enocean_proxy.h"
       function: "enocean_proxy_btmesh_on_event"
+
+provides:
+  - name: services_enocean_switch_proxy_server
 
 config_file:
   - path: public/silabs/services_enocean_switch_proxy_server/config/btmeshconf/enocean_proxy.dcd

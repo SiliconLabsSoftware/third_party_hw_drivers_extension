@@ -39,8 +39,6 @@
 #ifndef MIKROE_THUNDER_AS3935_CONFIG_H_
 #define MIKROE_THUNDER_AS3935_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -66,13 +64,13 @@ extern "C" {
 
 // <gpio optional=true> AS3935_CS
 // $[GPIO_AS3935_CS]
-#define AS3935_CS_PORT                            gpioPortC
+#define AS3935_CS_PORT                            SL_GPIO_PORT_C
 #define AS3935_CS_PIN                             3
 // [GPIO_AS3935_CS]$
 
 // <gpio optional=true> THUNDER_IRQ
 // $[GPIO_THUNDER_IRQ]
-#define THUNDER_IRQ_PORT                          gpioPortB
+#define THUNDER_IRQ_PORT                          SL_GPIO_PORT_B
 #define THUNDER_IRQ_PIN                           3
 // [GPIO_THUNDER_IRQ]$
 

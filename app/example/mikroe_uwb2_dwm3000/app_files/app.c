@@ -18,22 +18,9 @@
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
-#include "app.h"
+#include <string.h>
 #include "sl_component_catalog.h"
 #include "sl_sleeptimer.h"
-#include "string.h"
-
-#if (defined(SLI_SI917))
-#include "rsi_debug.h"
-#include "sl_si91x_gspi.h"
-
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
-#else
-#include "app_log.h"
-#include "sl_spidrv_instances.h"
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
 
 #include "deca_probe_interface.h"
 #include "port_dw3000.h"
@@ -41,9 +28,22 @@ static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #include "shared_defines.h"
 #include "config_options.h"
 
+#if (defined(SLI_SI917))
+#include "rsi_debug.h"
+#include "sl_si91x_gspi.h"
+
+#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+
+static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
+#else
+#include "app_log.h"
+
+#define app_printf(...) app_log(__VA_ARGS__)
+#endif
+
 // Comment out the line below in order to switch the application mode to
 //   receiver
-#define DEMO_APP_TRANSMITTER
+// #define DEMO_APP_TRANSMITTER
 
 /* Default communication configuration. We use default non-STS DW mode. */
 static dwt_config_t config = {
@@ -112,8 +112,6 @@ static uint16_t frame_len;
 
 #endif
 
-mikroe_spi_handle_t app_spi_instance = NULL;
-
 void app_init(void)
 {
   app_printf("DWM3000 - UWB 2 Click Driver\r\n");
@@ -125,12 +123,11 @@ void app_init(void)
 #endif
 
 #if (defined(SLI_SI917))
-  app_spi_instance = &gspi_instance;
+  port_init_dw_chip(&gspi_instance);
 #else
-  app_spi_instance = sl_spidrv_mikroe_handle;
+  port_init_dw_chip();
 #endif
 
-  port_init_dw_chip(app_spi_instance);
   reset_DW3000();
 
   if (dwt_probe((struct dwt_probe_s *)&dw3000_probe_interf)) {
@@ -201,9 +198,7 @@ void app_process_action(void)
 #ifdef DEMO_APP_TRANSMITTER /* TX Side */
   if (tx_trigger_process) {
     /* Write frame data to DW IC and prepare transmission. See NOTE 3 below.*/
-    dwt_writetxdata(FRAME_LENGTH - FCS_LEN, tx_msg, 0);         /* Zero offset
-                                                                *   in TX
-                                                                *   buffer. */
+    dwt_writetxdata(FRAME_LENGTH - FCS_LEN, tx_msg, 0); // Zero offset in TX buffer.
 
     /* In this example since the length of the transmitted frame does not
      *   change,

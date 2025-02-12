@@ -57,4 +57,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #endif // MIKORE_STRETCH_CONFIG_H_

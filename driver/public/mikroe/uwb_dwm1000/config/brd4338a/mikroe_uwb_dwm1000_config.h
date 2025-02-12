@@ -40,17 +40,16 @@
 #define DWM1000_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
-//<h>UWB_DWM1000 SPI Configuration
+// <h> UWB_DWM1000 SPI Configuration
 
-//  <e>UWB_DWM1000 SPI UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> UWB_DWM1000 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define UWB_DWM1000_SPI_UC                  0
 
 // <o UWB_DWM1000_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
@@ -65,30 +64,30 @@ extern "C"
 
 // <gpio optional=true> DWM1000_RESET
 // $[GPIO_DWM1000_RESET]
-#ifndef DWM1000_RESET_PORT                      
+#ifndef DWM1000_RESET_PORT
 #define DWM1000_RESET_PORT                       HP
 #endif
-#ifndef DWM1000_RESET_PIN                       
+#ifndef DWM1000_RESET_PIN
 #define DWM1000_RESET_PIN                        46
 #endif
 // [GPIO_DWM1000_RESET]$
 
 // <gpio optional=true> DWM1000_INT
 // $[GPIO_DWM1000_INT]
-#ifndef DWM1000_INT_PORT                        
+#ifndef DWM1000_INT_PORT
 #define DWM1000_INT_PORT                         HP
 #endif
-#ifndef DWM1000_INT_PIN                         
+#ifndef DWM1000_INT_PIN
 #define DWM1000_INT_PIN                          47
 #endif
 // [GPIO_DWM1000_INT]$
 
 // <gpio optional=true> DWM1000_SPI_CS
 // $[GPIO_DWM1000_SPI_CS]
-#ifndef DWM1000_SPI_CS_PORT                     
+#ifndef DWM1000_SPI_CS_PORT
 #define DWM1000_SPI_CS_PORT                      HP
 #endif
-#ifndef DWM1000_SPI_CS_PIN                      
+#ifndef DWM1000_SPI_CS_PIN
 #define DWM1000_SPI_CS_PIN                       48
 #endif
 // [GPIO_DWM1000_SPI_CS]$
@@ -98,5 +97,6 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-#endif /* DWM1000_CONFIG_H_ */
+
+#endif // DWM1000_CONFIG_H_
 

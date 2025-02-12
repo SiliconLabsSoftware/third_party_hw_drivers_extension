@@ -7,24 +7,26 @@ This project aims to implement a hardware driver interacting with the EXT3-1 Kit
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [EPD Extension Kit Generation 3 revision 1](https://www.pervasivedisplays.com/product/epd-extension-kit-gen-3-ext3/#tab-3)
-- [5.81″ E-ink displays](https://www.pervasivedisplays.com/product/5-81-e-ink-displays/)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [EPD Extension Kit Generation 3 revision 1](https://www.pervasivedisplays.com/product/epd-extension-kit-gen-3-ext3/#tab-3)
+- 1x [5.81″ E-ink displays](https://www.pervasivedisplays.com/product/5-81-e-ink-displays/)
 
 ## Hardware Connection ##
 
 To connect the EPD Extension Kit to the EFR32xG24 Explorer Kit, you can see the pins mapping table below.
 
-| EFR32xG24 Explorer Kit | SiWx917-RB4338A Radio Board | EXT3-1 Kit | Pin function |
-| --- | --- | --- | --- |
-| PC0 | GPIO_49 (P30)| CS | SPI CS |
-| PC1 | GPIO_46 (P24) | CLK | SPI SCK |
-| PC2 | GPIO_47 (P26) | MISO | SPI MISO |
-| PC3 | GPIO_48 (P28) | MOSI | SPI MOSI |
-| PA0 | GPIO_50 (P32) | D/C | GPIO |
-| PD5 | GPIO_52 (P40) | RST | GPIO |
-| PB1 | GPIO_51 (P34) | BUSY | GPIO |
+| BGM220P Explorer Kit | EFR32xG24 Explorer Kit | BRB4338A + BRD4002A | BRB2605A | EXT3-1 Kit | Pin function |
+| --- | --- | --- | --- | --- | --- |
+| 3V3 | 3V3 | 3V3 | VCC | 3V3 [1] | VCC 3.3V |
+| GND | GND | GND | GND | GND [10] |Ground |
+| PC3 | PC0 | GPIO_28 [P31]| GPIO_28 | ECSM [9] | Master chip select pin of EPD |
+| PC2 | PC1 | GPIO_25 [P25] | GPIO_25 | SCK [2] | SPI SCK |
+| PC1 | PC2 | GPIO_26 [P27] | GPIO_26 | MISO [6] | SPI MISO |
+| PC0 | PC3 | GPIO_27 [P29] | GPIO_27 | MOSI [7] | SPI MOSI |
+| PB4 | PA0 | GPIO_46 [P24] | GPIO_10 | D/C [4] | Serial bus for controlling data or command |
+| PB2 | PD5 | GPIO_48 [P28] | GPIO_12 | RST [5] | Reset signal input |
+| PB3 | PB1 | GPIO_47 [P26] | GPIO_11 | BUSY [3] |  Busy state output pin |
 
 ## Setup ##
 
@@ -62,7 +64,7 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install **E-Paper EXT3-1 (Pervasive Displays)** component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install **E-Paper EXT3-1 (Pervasive Displays)** component.
 
 ## How It Works ##
 

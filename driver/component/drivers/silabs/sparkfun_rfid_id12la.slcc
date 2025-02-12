@@ -9,22 +9,18 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
-
 config_file:
   - path: public/silabs/rfid_id12la/config/sparkfun_rfid_id12la_config.h
     file_id: sparkfun_rfid_id12la_config
-
 provides:
   - name: sparkfun_rfid_id12la
 template_contribution:
   - name: component_catalog
-    value: sparkfun_rfid_id12la 
+    value: sparkfun_rfid_id12la
 include:
   - path: public/silabs/rfid_id12la/inc
     file_list:
-      - path: sparkfun_rfid_id12la.h   
+      - path: sparkfun_rfid_id12la.h
 source:
   - path: public/silabs/rfid_id12la/src/sparkfun_rfid_id12la.c

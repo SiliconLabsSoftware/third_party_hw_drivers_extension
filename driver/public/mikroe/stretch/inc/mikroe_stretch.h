@@ -40,7 +40,7 @@
 #define MIKROE_STRETCH_H_
 
 #include "sl_status.h"
-#include "drv_analog_in.h"
+#include "stretch.h"
 
 #ifdef __cplusplus
 extern "C" {

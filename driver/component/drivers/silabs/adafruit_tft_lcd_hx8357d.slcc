@@ -9,16 +9,8 @@ quality: evaluation
 root_path: driver
 requires:
   - name: status
-  - name: sleeptimer_si91x
-    condition: 
-      - device_si91x
   - name: sleeptimer
-    condition: 
-      - device # Enable for gecko device
   - name: mipi_dbi_spi
-provides:
-  - name: oled_display
-  - name: lvgl_display
 config_file:
   - path: public/silabs/tft_lcd_hxd8357d/config/brd2601b/adafruit_hxd8357d_spi_config.h
     file_id: adafruit_hxd8357d_config
@@ -40,17 +32,24 @@ config_file:
     file_id: adafruit_hxd8357d_config
     condition: [brd4108a]
 
+  - path: public/silabs/tft_lcd_hxd8357d/config/brd2605a/adafruit_hxd8357d_spi_config.h
+    file_id: adafruit_hxd8357d_config
+    condition: [brd2605a]
+
   - path: public/silabs/tft_lcd_hxd8357d/config/brd4338a/adafruit_hxd8357d_spi_config.h
     file_id: adafruit_hxd8357d_config
     condition: [brd4338a]
 
   - path: public/silabs/tft_lcd_hxd8357d/config/other/adafruit_hxd8357d_spi_config.h
     file_id: adafruit_hxd8357d_config
-    unless: [brd2601b, brd2703a, brd2704a, brd4314a, brd4108a, brd4338a]
+    unless: [brd2601b, brd2703a, brd2704a, brd4314a, brd4108a, brd2605a, brd4338a]
 
 template_contribution:
   - name: component_catalog
     value: adafruit_tft_lcd_hxd8357d
+provides:
+  - name: oled_display
+  - name: lvgl_display
 include:
   - path: public/silabs/tft_lcd_hxd8357d/inc
     file_list:

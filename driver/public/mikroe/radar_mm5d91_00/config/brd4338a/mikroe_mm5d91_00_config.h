@@ -40,8 +40,7 @@
 #define MM5D91_00_CONFIG_H
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< sl:start pin_tool >>>

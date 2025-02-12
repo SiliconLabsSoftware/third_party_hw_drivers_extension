@@ -9,8 +9,6 @@ root_path: driver
 requires:
   - name: status
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_i2c
 provides:
   - name: sparkfun_air_quality_sgp40_qwiic
@@ -24,6 +22,6 @@ config_file:
 include:
   - path: public/silabs/air_quality_sgp40/inc
     file_list:
-      - path: sparkfun_sgp40.h   
+      - path: sparkfun_sgp40.h
 source:
   - path: public/silabs/air_quality_sgp40/src/sparkfun_sgp40.c

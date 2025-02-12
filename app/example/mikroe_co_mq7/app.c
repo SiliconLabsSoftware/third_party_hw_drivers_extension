@@ -42,19 +42,18 @@
 #if (defined(SLI_SI917))
 #include "sl_adc_instances.h"
 #include "rsi_debug.h"
+
+#define app_printf(...)          DEBUGOUT(__VA_ARGS__)
+
+static uint8_t channel = SL_ADC_CHANNEL_1;
 #else
 #include "em_iadc.h"
 #include "app_log.h"
+
+#define app_printf(...)          app_log(__VA_ARGS__)
 #endif
 
-#if (defined(SLI_SI917))
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
-static uint8_t channel = SL_ADC_CHANNEL_1;
-#else
-#define app_printf(...) app_log(__VA_ARGS__)
-#endif
-
-#define READING_INTERVAL_MSEC 3000
+#define READING_INTERVAL_MSEC    3000
 
 static volatile bool timer_is_expire = false;
 static sl_sleeptimer_timer_handle_t app_timer_handle;

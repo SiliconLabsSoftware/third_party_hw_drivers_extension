@@ -40,10 +40,6 @@
 #ifndef MIKORE_EMG_CONFIG_H_
 #define MIKORE_EMG_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -53,7 +49,7 @@ extern "C" {
 // <gpio optional=true> EMG_ANALOG_OUTPUT
 // $[GPIO_EMG_ANALOG_OUTPUT]
 #warning "AN pin for EMG is not configured"
-// #define EMG_ANALOG_OUTPUT_PORT                   gpioPortB
+// #define EMG_ANALOG_OUTPUT_PORT                   0
 // #define EMG_ANALOG_OUTPUT_PIN                    0
 // [GPIO_EMG_ANALOG_OUTPUT]$
 
@@ -61,6 +57,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
-
 #endif
-#endif /* MIKORE_EMG_CONFIG_H_ */
+
+#endif // MIKORE_EMG_CONFIG_H_

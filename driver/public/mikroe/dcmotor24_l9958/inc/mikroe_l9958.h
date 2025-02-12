@@ -40,10 +40,9 @@
 #ifndef _MIKROE_L9958_H_
 #define _MIKROE_L9958_H_
 
+#include <stdint.h>
 #include "sl_status.h"
-#include "drv_pwm.h"
-#include "drv_spi_master.h"
-#include "stdint.h"
+#include "dcmotor24.h"
 
 #ifdef __cplusplus
 extern "C" {

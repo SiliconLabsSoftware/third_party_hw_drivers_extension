@@ -35,8 +35,6 @@
 #ifndef MAXIM_FUEL_GAUGE_MAX17048_CONFIG_H_
 #define MAXIM_FUEL_GAUGE_MAX17048_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -90,15 +88,15 @@ extern "C" {
 // <gpio optional=true> MAX17048_ALRT
 // $[GPIO_MAX17048_ALRT]
 #warning "ALR pin for MAX17048 is not configured"
-// #define MAX17048_ALRT_PORT                   gpioPortC
-// #define MAX17048_ALRT_PIN                    1
+// #define MAX17048_ALRT_PORT                   0
+// #define MAX17048_ALRT_PIN                    0
 // [GPIO_MAX17048_ALRT]$
 
 // <gpio> MAX17048_ENABLE_QSTRT
 // $[GPIO_MAX17048_ENABLE_QSTRT]
 #warning "QSTRT pin for MAX17048 is not configured"
-// #define MAX17048_ENABLE_QSTRT_PORT           gpioPortC
-// #define MAX17048_ENABLE_QSTRT_PIN            2
+// #define MAX17048_ENABLE_QSTRT_PORT           0
+// #define MAX17048_ENABLE_QSTRT_PIN            0
 // [GPIO_MAX17048_ENABLE_QSTRT]$
 
 // <<< sl:end pin_tool >>>
@@ -107,4 +105,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MAXIM_FUEL_GAUGE_MAX17048_CONFIG_H_ */
+#endif // MAXIM_FUEL_GAUGE_MAX17048_CONFIG_H_

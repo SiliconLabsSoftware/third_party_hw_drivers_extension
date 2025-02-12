@@ -8,26 +8,26 @@ The SparkFun BMI270 6DoF IMU Breakout is a Qwiic-enabled breakout board based on
 
 ## Required Hardware ##
 
-- [EFR32xG24 Explorer Kit](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit?tab=overview)
-- Or [SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-pk6031a-wifi-6-bluetooth-le-soc-pro-kit) (BRD4002 + BRD4338A)
-- [SparkFun 6DoF IMU Breakout - BMI270 (Qwiic)](https://www.sparkfun.com/products/22397)
+- 1x [XG24-EK2703A](https://www.silabs.com/development-tools/wireless/efr32xg24-explorer-kit) EFR32xG24 Explorer Kit
+- Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
+- 1x [SparkFun 6DoF IMU Breakout - BMI270 (Qwiic)](https://www.sparkfun.com/products/22397)
 
 ## Hardware Connection ##
 
-- **If the "EFR32xG24 Explorer Kit" is used**:
-  
+- **If the EFR32xG24 Explorer Kit is used**:
+
   The SparkFun 6DoF IMU Breakout - BMI270 supports Qwiic, so it can connect easily to the Qwiic header of the EFR32xG24 Explorer Kit. The hardware connection is shown in the image below:
 
   ![board](image/hardware_connection.png)
 
-- **If the "SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit" is used**:
-  
+- **If the Wi-Fi Development Kit is used**:
+
   The hardware connection is shown in the table below:
 
-  | Description  | BRD4338A GPIO | BRD4002 EXP Header | BMI270 - 6DoF IMU Breakout|
-  | -------------| ------------- | ------------------ | ------------------------- |
-  | I2C_SDA      | ULP_GPIO_6    | EXP_16             | SDA                       |
-  | I2C_SCL      | ULP_GPIO_7    | EXP_15             | SCL                       |
+  | Description  | BRD4338A + BRD4002A | BRD2605A | BMI270 - 6DoF IMU Breakout |
+  | -------------| ------------------- | ------------ | ------------------ |
+  | I2C_SDA      | ULP_GPIO_6 [EXP_16] | Qwiic cable  | SDA                |
+  | I2C_SCL      | ULP_GPIO_7 [EXP_15] | Qwiic cable  | SCL                |
 
 ## Setup ##
 
@@ -47,7 +47,7 @@ You can either create a project based on an example project or start with an emp
 
 1. Create an "Empty C Project" for your board using Simplicity Studio v5. Use the default project settings.
 
-2. Copy all of the files in the `app/example/silabs_6dof_imu_bmi270/app.c` folder into the project root folder (overwriting the existing file).
+2. Copy the file `app/example/silabs_6dof_imu_bmi270/app.c` into the project root folder (overwriting the existing file).
 
 3. Install the software components:
 
@@ -57,23 +57,22 @@ You can either create a project based on an example project or start with an emp
 
     - Install the following components:
 
-        - **If the "EFR32xG24 Explorer Kit" is used:**
+        - **If the EFR32xG24 Explorer Kit is used:**
             - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
             - [Application] → [Utility] → [Log]
             - [Application] → [Utility] → [Assert]
-            - [Platform] → [Driver] → [I2C] → [I2CSPM] → qwiic instance
+            - [Platform] → [Driver] → [I2C] → [I2CSPM] → default instance name: qwiic
             - [Third Party Hardware Drivers] → [Sensor] → [BMI270 - 6DOF IMU Breakout (Sparkfun)] → use default configuration
 
-        - **If the "SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit" is used**
+        - **If the Wi-Fi Development Kit is used**
             - [Application] → [Utility] → [Assert]
             - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Peripheral] → [I2C] → [i2c2]
             - [Third Party Hardware Drivers] → [Sensor] → [BMI270 - 6DOF IMU Breakout (Sparkfun)] → use default configuration
 
-4. Install "Printf float"
+4. Enable **Printf float**
 
-    - Open Properties of the project.
-
-    - Select C/C++ Build > Settings > Tool Settings > GNU ARM C Linker > General > Check "Printf float".
+   - Open Properties of the project.
+   - Select C/C++ Build → Settings → Tool Settings → GNU ARM C Linker → General → Check **Printf float**.
 
 5. Build and flash this example to the board.
 
@@ -81,11 +80,11 @@ You can either create a project based on an example project or start with an emp
 
 - Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
 
-- SDK Extension must be enabled for the project to install the "BMI270 - 6DOF IMU Breakout (Sparkfun)" component.
+- **Third Party Hardware Drivers** extension must be enabled for the project to install the "BMI270 - 6DOF IMU Breakout (Sparkfun)" component.
 
 ## How It Works #
 
-After you flash the code and power the connected boards, the application starts running automatically. Use Putty/Tera Term (or another program) to read the values of the serial output. Note that the "EFR32xG24 Explorer Kit" or the "SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit" uses the default baud rate of 115200.
+After you flash the code and power the connected boards, the application starts running automatically. Use Putty/Tera Term (or another program) to read the values of the serial output. Note that the Kit uses the default baud rate of 115200.
 
 First, the main program initializes the driver, configs some parameters and checks communication with the bmi270 device. After that, it read the accelerometer, gyroscope and temperature data periodically. There is a periodic timer in the code, which determines the sampling intervals; the default sampling interval rate is 500 ms. If you need more frequent sampling, it is possible to change the value of the macro "READING_INTERVAL_MSEC" in the "app.c" file. The screenshot of the console is shown in the image below:
 

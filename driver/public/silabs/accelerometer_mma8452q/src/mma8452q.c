@@ -36,8 +36,8 @@
  *
  ******************************************************************************/
 
-#include <mma8452q.h>
 #include "sl_sleeptimer.h"
+#include "mma8452q.h"
 #include "mma8452q_config.h"
 
 /***************************************************************************//**
@@ -176,8 +176,8 @@ static mma8452q_handle_t mma8452q_handle;
 static bool mma8452q_is_initialized = false;
 
 /***************************************************************************//**
-* Return the version information of the MMA8452Q.
-*******************************************************************************/
+ * Return the version information of the MMA8452Q.
+ *******************************************************************************/
 void mma8452q_get_core_version(mma8542q_core_version_t *core_version)
 {
   core_version->major = MMA8452Q_MAJOR_VERSION;
@@ -187,8 +187,8 @@ void mma8452q_get_core_version(mma8542q_core_version_t *core_version)
 }
 
 /***************************************************************************//**
-* Initialize the MMA8452Q.
-*******************************************************************************/
+ * Initialize the MMA8452Q.
+ *******************************************************************************/
 sl_status_t mma8452q_init(mikroe_i2c_handle_t inst)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -241,8 +241,8 @@ sl_status_t mma8452q_init(mikroe_i2c_handle_t inst)
 }
 
 /***************************************************************************//**
-* De-initialize the MMAQ8452Q.
-*******************************************************************************/
+ * De-initialize the MMAQ8452Q.
+ *******************************************************************************/
 sl_status_t mma8452q_deinit(void)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -267,8 +267,8 @@ sl_status_t mma8452q_deinit(void)
 }
 
 /***************************************************************************//**
-* Set i2cspm instance
-*******************************************************************************/
+ * Set i2cspm instance
+ *******************************************************************************/
 sl_status_t mma8452q_set_address(uint8_t i2c_address)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -311,8 +311,8 @@ sl_status_t mma8452q_set_address(uint8_t i2c_address)
 }
 
 /***************************************************************************//**
-* Set active or standby mode
-*******************************************************************************/
+ * Set active or standby mode
+ *******************************************************************************/
 sl_status_t mma8452q_active(bool enable)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -338,8 +338,8 @@ sl_status_t mma8452q_active(bool enable)
 }
 
 /***************************************************************************//**
-* Auto calibration method
-*******************************************************************************/
+ * Auto calibration method
+ *******************************************************************************/
 sl_status_t mma8452q_auto_calibrate(void)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -385,8 +385,8 @@ sl_status_t mma8452q_auto_calibrate(void)
 }
 
 /***************************************************************************//**
-* Return raw acceleration data computed using MMA8452Q OUT_X,Y,Z
-*******************************************************************************/
+ * Return raw acceleration data computed using MMA8452Q OUT_X,Y,Z
+ *******************************************************************************/
 sl_status_t sl_mma8452q_get_acceleration(int16_t avec[3])
 {
   sl_status_t status = SL_STATUS_OK;
@@ -412,8 +412,8 @@ sl_status_t sl_mma8452q_get_acceleration(int16_t avec[3])
 }
 
 /***************************************************************************//**
-* Return Calculated acceleration data computed using MMA8452Q OUT_X,Y,Z
-*******************************************************************************/
+ * Return Calculated acceleration data computed using MMA8452Q OUT_X,Y,Z
+ *******************************************************************************/
 sl_status_t sl_mma8452q_get_calculated_acceleration(float avec[3])
 {
   sl_status_t status = SL_STATUS_OK;
@@ -453,8 +453,8 @@ sl_status_t sl_mma8452q_get_calculated_acceleration(float avec[3])
 }
 
 /***************************************************************************//**
-* Get the data STATUS register
-*******************************************************************************/
+ * Get the data STATUS register
+ *******************************************************************************/
 sl_status_t mma8452q_get_data_status(uint8_t *data_status)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -473,8 +473,8 @@ sl_status_t mma8452q_get_data_status(uint8_t *data_status)
 }
 
 /***************************************************************************//**
-* Check the available status of the data
-*******************************************************************************/
+ * Check the available status of the data
+ *******************************************************************************/
 sl_status_t mma8452q_check_for_data_ready(uint8_t *is_data_ready)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -495,8 +495,8 @@ sl_status_t mma8452q_check_for_data_ready(uint8_t *is_data_ready)
 }
 
 /***************************************************************************//**
-* Check the SYSMODE register
-*******************************************************************************/
+ * Check the SYSMODE register
+ *******************************************************************************/
 sl_status_t mma8452q_get_sysmode(uint8_t *reg_sysmode)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -516,8 +516,8 @@ sl_status_t mma8452q_get_sysmode(uint8_t *reg_sysmode)
 }
 
 /***************************************************************************//**
-* Checks the interrupt source register
-*******************************************************************************/
+ * Checks the interrupt source register
+ *******************************************************************************/
 sl_status_t mma8452q_get_int_source(uint8_t *int_source)
 {
   // Check for Null pointer
@@ -529,8 +529,8 @@ sl_status_t mma8452q_get_int_source(uint8_t *int_source)
 }
 
 /***************************************************************************//**
-* Read the portrait/landscape status
-*******************************************************************************/
+ * Read the portrait/landscape status
+ *******************************************************************************/
 sl_status_t mma8452q_get_pl_status(uint8_t *pl_status)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -558,8 +558,8 @@ sl_status_t mma8452q_get_pl_status(uint8_t *pl_status)
 }
 
 /***************************************************************************//**
-* Read the freefall/ motion status register
-*******************************************************************************/
+ * Read the freefall/ motion status register
+ *******************************************************************************/
 sl_status_t mma8452q_get_ff_mt_status(uint8_t *ff_mt_status)
 {
   // Check for Null pointer
@@ -571,8 +571,8 @@ sl_status_t mma8452q_get_ff_mt_status(uint8_t *ff_mt_status)
 }
 
 /***************************************************************************//**
-* Read the transient status register
-*******************************************************************************/
+ * Read the transient status register
+ *******************************************************************************/
 sl_status_t mma8452q_get_transient_status(uint8_t *transient_status)
 {
   // Check for Null pointer
@@ -584,8 +584,8 @@ sl_status_t mma8452q_get_transient_status(uint8_t *transient_status)
 }
 
 /***************************************************************************//**
-* Read the pulse status register
-*******************************************************************************/
+ * Read the pulse status register
+ *******************************************************************************/
 sl_status_t mma8452q_get_pulse_status(uint8_t *pulse_status)
 {
   // Check for Null pointer
@@ -597,8 +597,8 @@ sl_status_t mma8452q_get_pulse_status(uint8_t *pulse_status)
 }
 
 /***************************************************************************//**
-* Set full scale range of x, y and z axis accelerometers
-*******************************************************************************/
+ * Set full scale range of x, y and z axis accelerometers
+ *******************************************************************************/
 sl_status_t mma8452q_set_scale(mma8452q_scale_t scale)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -632,8 +632,8 @@ sl_status_t mma8452q_set_scale(mma8452q_scale_t scale)
 }
 
 /***************************************************************************//**
-* Set the output data rate
-*******************************************************************************/
+ * Set the output data rate
+ *******************************************************************************/
 sl_status_t mma8452q_set_odr(mma8452q_odr_t odr)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -669,8 +669,8 @@ sl_status_t mma8452q_set_odr(mma8452q_odr_t odr)
 }
 
 /***************************************************************************//**
-* Set active power mode
-*******************************************************************************/
+ * Set active power mode
+ *******************************************************************************/
 sl_status_t mma8452q_set_mods(mma8452q_mods_t mods)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -703,8 +703,8 @@ sl_status_t mma8452q_set_mods(mma8452q_mods_t mods)
 }
 
 /***************************************************************************//**
-* Config autosleep mode
-*******************************************************************************/
+ * Config autosleep mode
+ *******************************************************************************/
 sl_status_t mma8452q_config_aslp(mma8452q_aslp_odr_t alsp_rate,
                                  mma8452q_mods_t slp_mode_pwr,
                                  mma8452q_aslp_config_t aslp_cfg)
@@ -757,8 +757,8 @@ sl_status_t mma8452q_config_aslp(mma8452q_aslp_odr_t alsp_rate,
 }
 
 /***************************************************************************//**
-* Configure the transient function settings
-*******************************************************************************/
+ * Configure the transient function settings
+ *******************************************************************************/
 sl_status_t mma8452q_config_trans(mma8452q_trans_config_t *trans_cfg)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -802,8 +802,8 @@ sl_status_t mma8452q_config_trans(mma8452q_trans_config_t *trans_cfg)
 }
 
 /***************************************************************************//**
-* Configure the orientation function settings
-*******************************************************************************/
+ * Configure the orientation function settings
+ *******************************************************************************/
 sl_status_t mma8452q_config_orientation(
   mma8452q_orientation_config_t orient_cfg)
 {
@@ -835,8 +835,8 @@ sl_status_t mma8452q_config_orientation(
 }
 
 /***************************************************************************//**
-* Configure the pulse function settings
-*******************************************************************************/
+ * Configure the pulse function settings
+ *******************************************************************************/
 sl_status_t mma8452q_config_pulse(mma8452q_pulse_config_t *pulse_cfg)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -885,8 +885,8 @@ sl_status_t mma8452q_config_pulse(mma8452q_pulse_config_t *pulse_cfg)
 }
 
 /***************************************************************************//**
-* Configure the freefall/motion function settings
-*******************************************************************************/
+ * Configure the freefall/motion function settings
+ *******************************************************************************/
 sl_status_t mma8452q_config_ff_mt(mma8452q_ff_mt_config_t *ff_mt_cfg)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -923,8 +923,8 @@ sl_status_t mma8452q_config_ff_mt(mma8452q_ff_mt_config_t *ff_mt_cfg)
 }
 
 /***************************************************************************//**
-* Configure the interrupt outputs
-*******************************************************************************/
+ * Configure the interrupt outputs
+ *******************************************************************************/
 sl_status_t mma8452q_config_interrupt(
   mma8452q_interrupt_config_t *interrupt_cfg)
 {
@@ -977,8 +977,8 @@ sl_status_t mma8452q_config_interrupt(
 }
 
 /***************************************************************************//**
-* Configure the reduced noise mode setting
-*******************************************************************************/
+ * Configure the reduced noise mode setting
+ *******************************************************************************/
 sl_status_t mma8452q_enable_low_noise(bool enable)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -1011,8 +1011,8 @@ sl_status_t mma8452q_enable_low_noise(bool enable)
 }
 
 /***************************************************************************//**
-* Configure the fast-read mode
-*******************************************************************************/
+ * Configure the fast-read mode
+ *******************************************************************************/
 sl_status_t mma8452q_enable_fast_read(bool enable)
 {
   sl_status_t status = SL_STATUS_OK;
@@ -1045,8 +1045,8 @@ sl_status_t mma8452q_enable_fast_read(bool enable)
 }
 
 /***************************************************************************//**
-* Read register value
-*******************************************************************************/
+ * Read register value
+ *******************************************************************************/
 sl_status_t mma8452q_read_register(uint8_t addr, uint8_t *data)
 {
   if (mma8452q_is_initialized == false) {
@@ -1069,8 +1069,8 @@ sl_status_t mma8452q_read_register(uint8_t addr, uint8_t *data)
 }
 
 /***************************************************************************//**
-* Write into register
-*******************************************************************************/
+ * Write into register
+ *******************************************************************************/
 sl_status_t mma8452q_write_register(uint8_t addr, uint8_t data)
 {
   if (mma8452q_is_initialized == false) {
@@ -1089,8 +1089,8 @@ sl_status_t mma8452q_write_register(uint8_t addr, uint8_t data)
 }
 
 /***************************************************************************//**
-* Read multiple bytes from sensor
-*******************************************************************************/
+ * Read multiple bytes from sensor
+ *******************************************************************************/
 sl_status_t mma8452q_read_block(uint8_t addr, uint8_t num_bytes, uint8_t *data)
 {
   if (mma8452q_is_initialized == false) {
@@ -1113,8 +1113,8 @@ sl_status_t mma8452q_read_block(uint8_t addr, uint8_t num_bytes, uint8_t *data)
 }
 
 /***************************************************************************//**
-* Write multiple bytes from sensor
-*******************************************************************************/
+ * Write multiple bytes from sensor
+ *******************************************************************************/
 sl_status_t mma8452q_write_block(uint8_t addr, uint8_t num_bytes, uint8_t *data)
 {
   if (mma8452q_is_initialized == false) {

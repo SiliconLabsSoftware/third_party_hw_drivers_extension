@@ -27,10 +27,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # Experimental Quality
- * This code has been minimally tested to ensure that it builds and is suitable
- * as a demonstration for evaluation purposes only. This code will be maintained
- * at the sole discretion of Silicon Labs.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 #include "sl_component_catalog.h"
 #include "sl_sleeptimer.h"
@@ -50,11 +53,11 @@ static sl_gspi_instance_t gspi_instance = SL_GSPI_MASTER;
 #include "mikroe_bme688_i2c.h"
 #include "mikroe_bme688_i2c_config.h"
 #include "sl_i2c_instances.h"
-#define I2C_INSTANCE_USED            SL_I2C2
+#define I2C_INSTANCE_USED        SL_I2C2
 static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #endif
 
-#define app_printf(...) DEBUGOUT(__VA_ARGS__)
+#define app_printf(...)          DEBUGOUT(__VA_ARGS__)
 #else /* None Si91x device */
 #include "app_log.h"
 
@@ -70,7 +73,7 @@ static sl_i2c_instance_t i2c_instance = I2C_INSTANCE_USED;
 #include "mikroe_bme688_i2c_config.h"
 #endif
 
-#define app_printf(...) app_log(__VA_ARGS__)
+#define app_printf(...)          app_log(__VA_ARGS__)
 #endif
 
 #define READING_INTERVAL_MSEC    2000

@@ -15,23 +15,31 @@
  *
  ******************************************************************************/
 
-#include "sl_pwm_instances.h"
+#include "mikroe_a4988.h"
+
+#if (defined(SLI_SI917))
+#include "sl_si91x_button_instances.h"
+#include "rsi_debug.h"
+
+#define app_printf(...)              DEBUGOUT(__VA_ARGS__)
+#else
 #include "sl_simple_button_instances.h"
 #include "app_log.h"
-#include "stepper2_a4988.h"
 
-#define APP_STEPPER_RPM (64)
+#define app_printf(...)              app_log(__VA_ARGS__)
+#endif
 
-static a4988_stepper_inst_t app_stepper_instance = A4988_STEPPER_INST_DEFAULT;
+// The 28BYJ-48 motor features a 1/64 reduction gear set.
+#define MOTOR_GEAR_RATIO             (64)
 
-static bool btn_press = false;
-static uint8_t *a4988_stepper_state_mgs[] = {
+static uint8_t *mikroe_a4988_state_mgs[] = {
   (uint8_t *)"DISABLED",
   (uint8_t *)"IDLE",
   (uint8_t *)"RUNNING",
   (uint8_t *)"SLEEP",
   (uint8_t *)"ERROR",
 };
+static bool btn_press = false;
 
 /***************************************************************************//**
  * Initialize application.
@@ -40,26 +48,22 @@ void app_init(void)
 {
   sl_status_t stt = SL_STATUS_FAIL;
 
-  app_log("Hello World Stepper2 Click demo app !!!\r\n");
+  app_printf("Stepper2 Click demo application !!!\r\n");
 
-  stt = a4988_stepper_init(&app_stepper_instance, &sl_pwm_mikroe);
-  app_log("a4988_stepper_init = 0x%lx\r\n", stt);
+  stt = mikroe_a4988_init();
+  app_printf("mikroe_a4988_init = 0x%lx\r\n", stt);
 
-  stt = a4988_stepper_set_dir(&app_stepper_instance, CW);
-  app_log("a4988_stepper_set_dir clockwise = 0x%lx\r\n", stt);
+  stt = mikroe_a4988_set_direction(CLOCKWISE);
+  app_printf("mikroe_a4988_set_dir clockwise = 0x%lx\r\n", stt);
 
-  stt = a4988_stepper_set_speed(&app_stepper_instance, APP_STEPPER_RPM * 4);
-  app_log("a4988_stepper_set_speed = 0x%lx\r\n", stt);
+  mikroe_a4988_reset();
+  app_printf("mikroe_a4988_reset\r\n");
 
-  a4988_stepper_reset(&app_stepper_instance);
-  app_log("a4988_stepper_reset\r\n");
+  mikroe_a4988_start();
+  app_printf("mikroe_a4988_start\r\n");
 
-  a4988_stepper_start(&app_stepper_instance);
-  app_log("a4988_stepper_start\r\n");
-
-  app_log("a4988_stepper_get_state = %s\r\n",
-          a4988_stepper_state_mgs[a4988_stepper_get_state(
-                                    &app_stepper_instance)]);
+  app_printf("mikroe_a4988_get_state = %s\r\n",
+             mikroe_a4988_state_mgs[mikroe_a4988_get_state()]);
 }
 
 /***************************************************************************//**
@@ -70,8 +74,9 @@ void app_process_action(void)
   static uint8_t state;
   if (btn_press) {
     btn_press = false;
-    state = a4988_stepper_get_state(&app_stepper_instance);
-    app_log("a4988_stepper_get_state = %s\r\n", a4988_stepper_state_mgs[state]);
+    state = mikroe_a4988_get_state();
+    app_printf("mikroe_a4988_get_state = %s\r\n",
+               mikroe_a4988_state_mgs[state]);
   }
 }
 
@@ -79,15 +84,34 @@ void app_process_action(void)
  * Emergency button: if the motor is enabled then a button press disables it.
  * The next button press will enable and start it again.
  ******************************************************************************/
+#if (defined(SLI_SI917))
+void sl_si91x_button_isr(uint8_t pin, int8_t state)
+{
+  if ((pin == button_btn0.pin) && (state == BUTTON_PRESSED)) {
+    btn_press = true;
+    if (mikroe_a4988_get_state() == DISABLED) {
+      mikroe_a4988_enable(true);
+      mikroe_a4988_start();
+    } else {
+      mikroe_a4988_stop();
+      mikroe_a4988_enable(false);
+    }
+  }
+}
+
+#else
 void sl_button_on_change(const sl_button_t *handle)
 {
   if (sl_button_get_state(handle) == SL_SIMPLE_BUTTON_PRESSED) {
     btn_press = true;
-    if (a4988_stepper_get_state(&app_stepper_instance) == DISABLED) {
-      a4988_stepper_enable(&app_stepper_instance, true);
-      a4988_stepper_start(&app_stepper_instance);
+    if (mikroe_a4988_get_state() == DISABLED) {
+      mikroe_a4988_enable(true);
+      mikroe_a4988_start();
     } else {
-      a4988_stepper_enable(&app_stepper_instance, false);
+      mikroe_a4988_stop();
+      mikroe_a4988_enable(false);
     }
   }
 }
+
+#endif

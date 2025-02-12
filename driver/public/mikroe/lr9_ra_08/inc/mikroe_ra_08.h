@@ -40,7 +40,7 @@
 #define MIKROE_RA_08_H_
 
 #include "sl_status.h"
-#include "drv_uart.h"
+#include "lr9.h"
 
 #ifdef __cplusplus
 extern "C" {

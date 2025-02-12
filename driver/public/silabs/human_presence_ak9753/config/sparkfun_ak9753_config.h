@@ -39,14 +39,9 @@
 #ifndef SPARKFUN_AK9753_CONFIG_H_
 #define SPARKFUN_AK9753_CONFIG_H_
 
-#ifndef SLI_SI917
-#include "em_gpio.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 /************************************************/
 /* Address is changeable via CAD0/CAD1          */
@@ -59,12 +54,12 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>SPARKFUN AK9753 I2C Configuration
+// <h> SPARKFUN AK9753 I2C Configuration
 
-//  <e>SPARKFUN AK9753 I2C UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> SPARKFUN AK9753 I2C UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define SPARKFUN_AK9753_I2C_UC                  0
 
 // <o SPARKFUN_AK9753_I2C_SPEED_MODE> Speed mode
@@ -99,7 +94,7 @@ extern "C" {
  */
 // <gpio optional=true> SPARKFUN_AK9753_CONFIG_INT
 // $[GPIO_SPARKFUN_AK9753_CONFIG_INT]
-// #define SPARKFUN_AK9753_CONFIG_INT_PORT   gpioPortB
+// #define SPARKFUN_AK9753_CONFIG_INT_PORT   0
 // #define SPARKFUN_AK9753_CONFIG_INT_PIN    0
 // [GPIO_SPARKFUN_AK9753_CONFIG_INT]$
 
@@ -108,8 +103,8 @@ extern "C" {
  */
 // <gpio optional=true> SPARKFUN_AK9753_CONFIG_PDN
 // $[GPIO_SPARKFUN_AK9753_CONFIG_PDN]
-// #define SPARKFUN_AK9753_CONFIG_PDN_PORT   gpioPortB
-// #define SPARKFUN_AK9753_CONFIG_PDN_PIN    1
+// #define SPARKFUN_AK9753_CONFIG_PDN_PORT   0
+// #define SPARKFUN_AK9753_CONFIG_PDN_PIN    0
 // [GPIO_SPARKFUN_AK9753_CONFIG_PDN]$
 
 // <<< sl:end pin_tool >>>

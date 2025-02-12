@@ -14,8 +14,6 @@ requires:
   - name: mikroe_peripheral_driver_digital_io
   - name: silabs_core_circular_queue
   - name: sleeptimer
-  - name: sleeptimer_si91x
-    condition: [device_si91x]
   - name: mikroe_peripheral_driver_uart
   - name: sl_string
 
@@ -33,12 +31,15 @@ config_file:
   - path: public/mikroe/lte_iot2_bg96/config/brd4314a/mikroe_bg96_config.h
     file_id: driver_config_lte_iot2
     condition: [brd4314a]
+  - path: public/mikroe/lte_iot2_bg96/config/brd2605a/mikroe_bg96_config.h
+    file_id: driver_config_lte_iot2
+    condition: [brd2605a]
   - path: public/mikroe/lte_iot2_bg96/config/brd4338a/mikroe_bg96_config.h
     file_id: driver_config_lte_iot2
     condition: [brd4338a]
   - path: public/mikroe/lte_iot2_bg96/config/other/mikroe_bg96_config.h
     file_id: driver_config_lte_iot2
-    unless: [brd4314a, brd4108a, brd2703a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
   - override:
       component: iostream_usart
       file_id: iostream_usart_config
@@ -62,8 +63,8 @@ config_file:
       file_id: iostream_usart_config
       instance: bg96
     path: public/mikroe/lte_iot2_bg96/config/other/sl_iostream_usart_bg96_config.h
-    unless: [brd4314a, brd4108a, brd2703a]  
-    
+    unless: [brd4314a, brd4108a, brd2703a]
+
 provides:
   - name: mikroe_lte_iot2
     allow_multiple: false

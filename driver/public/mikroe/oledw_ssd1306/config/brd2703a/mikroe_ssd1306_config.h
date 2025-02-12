@@ -43,8 +43,6 @@
 extern "C" {
 #endif
 
-#include "em_gpio.h"
-
 #define OLED_DISPLAY_64_48  0
 #define OLED_DISPLAY_96_39  1
 #define OLED_DISPLAY_128_32 2
@@ -104,21 +102,15 @@ extern "C" {
 
 // <<< sl:start pin_tool >>>
 
-// <gpio optional=true> SSD1306_CS
-// $[GPIO_SSD1306_CS]
-// #define SSD1306_CS_PORT                        0
-// #define SSD1306_CS_PIN                         0
-// [GPIO_SSD1306_CS]$
-
 // <gpio optional=true> SSD1306_DC
 // $[GPIO_SSD1306_DC]
-#define SSD1306_DC_PORT                        gpioPortA
+#define SSD1306_DC_PORT                        SL_GPIO_PORT_A
 #define SSD1306_DC_PIN                         0
 // [GPIO_SSD1306_DC]$
 
 // <gpio optional=true> SSD1306_RST
 // $[GPIO_SSD1306_RST]
-#define SSD1306_RST_PORT                       gpioPortC
+#define SSD1306_RST_PORT                       SL_GPIO_PORT_C
 #define SSD1306_RST_PIN                        8
 // [GPIO_SSD1306_RST]$
 

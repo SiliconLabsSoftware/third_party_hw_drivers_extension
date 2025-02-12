@@ -39,8 +39,6 @@
 #ifndef Wx500_CONFIG_H_
 #define Wx500_CONFIG_H_
 
-#include "em_gpio.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -87,20 +85,20 @@ extern "C" {
 
 // <gpio optional=true> W5500_RESET
 // $[GPIO_W5500_RESET]
-#ifndef W5500_RESET_PORT                        
-#define W5500_RESET_PORT                         gpioPortC
+#ifndef W5500_RESET_PORT
+#define W5500_RESET_PORT                         SL_GPIO_PORT_C
 #endif
-#ifndef W5500_RESET_PIN                         
+#ifndef W5500_RESET_PIN
 #define W5500_RESET_PIN                          8
 #endif
 // [GPIO_W5500_RESET]$
 
 // <gpio optional=true> MIKROE_W5500_CS
 // $[GPIO_MIKROE_W5500_CS]
-#ifndef MIKROE_W5500_CS_PORT                   
-#define MIKROE_W5500_CS_PORT                    gpioPortC
+#ifndef MIKROE_W5500_CS_PORT
+#define MIKROE_W5500_CS_PORT                    SL_GPIO_PORT_C
 #endif
-#ifndef MIKROE_W5500_CS_PIN                    
+#ifndef MIKROE_W5500_CS_PIN
 #define MIKROE_W5500_CS_PIN                     0
 #endif
 // [GPIO_MIKROE_W5500_CS]$
@@ -110,4 +108,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif /* Wx500_CONFIG_H_ */
+
+#endif // Wx500_CONFIG_H_

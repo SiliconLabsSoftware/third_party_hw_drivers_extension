@@ -29,23 +29,27 @@ include:
 component:
 - id: sl_system
 - id: device_init
+- id: iostream_eusart
+  instance: [vcom]
+- id: sleeptimer
+- id: app_log
 - id: sparkfun_weather_station_rainfall
   from: third_party_hw_drivers
 - id: sparkfun_weather_station_wind_direction
   from: third_party_hw_drivers
 - id: sparkfun_weather_station_wind_speed
   from: third_party_hw_drivers
-- id: iostream_eusart
-  instance: [vcom]
-- id: sleeptimer
-- id: printf
 
 define:
 - name: DEBUG_EFM
 
+toolchain_settings:
+  - option: gcc_linker_option
+    value: "-u _printf_float"
+
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 4.0.0
+  version: 4.1.0
 
 other_file:
   - path: ../../documentation/example/sparkfun_weatherstation/image/create_example.png
@@ -53,6 +57,8 @@ other_file:
   - path: ../../documentation/example/sparkfun_weatherstation/image/terminal.png
     directory: "image"
   - path: ../../documentation/example/sparkfun_weatherstation/image/connection.png
+    directory: "image"
+  - path: ../../documentation/example/sparkfun_weatherstation/image/sensor_out.png
     directory: "image"
 
 ui_hints:

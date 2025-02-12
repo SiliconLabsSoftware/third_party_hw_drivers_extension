@@ -46,12 +46,12 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-//<h>MIKROE BMA400 SPI Configuration
+// <h> MIKROE BMA400 SPI Configuration
 
-//  <e>MIKROE BMA400 SPI UC Configuration
-//  <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
-//  <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
-//  <i> Default: 0
+// <e> MIKROE BMA400 SPI UC Configuration
+// <i> Enable: Peripheral configuration is taken straight from the configuration set in the universal configuration (UC).
+// <i> Disable: If the application demands it to be modified during runtime, use the default API to modify the peripheral configuration.
+// <i> Default: 0
 #define MIKROE_BMA400_SPI_UC                  0
 
 // <o MIKROE_BMA400_SPI_BITRATE> Bit Rate (Bits/Second) <1-116000000>
@@ -82,4 +82,4 @@ extern "C" {
 }
 #endif
 
-#endif /* MIKROE_BMA400_CONFIG_H_ */
+#endif // MIKROE_BMA400_CONFIG_H_

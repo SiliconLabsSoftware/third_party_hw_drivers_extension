@@ -40,7 +40,6 @@
 #include <stddef.h>
 #include "mikroe_stretch.h"
 #include "mikroe_stretch_config.h"
-#include "stretch.h"
 
 static stretch_t stretch;
 static stretch_cfg_t stretch_cfg;

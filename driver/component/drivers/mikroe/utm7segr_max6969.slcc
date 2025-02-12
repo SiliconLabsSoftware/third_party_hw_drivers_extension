@@ -15,9 +15,11 @@ requires:
 template_contribution:
   - name: component_catalog
     value: mikroe_utm7segr
+provides:
+  - name: mikroe_utm7segr
 config_file:
   - path: public/mikroe/utm7segr_max6969/config/utm7segr_max6969_config.h
-    file_id: utm7segr_max6969_config_id   
+    file_id: utm7segr_max6969_config_id
 include:
   - path: inc
     file_list:

@@ -27,10 +27,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  *******************************************************************************
- * # EXPERIMENTAL QUALITY
- * This code has not been formally tested and is provided as-is.
- * It is not suitable for production environments.
- * This code will not be maintained.
+ *
+ * EVALUATION QUALITY
+ * This code has been minimally tested to ensure that it builds with the
+ * specified dependency versions and is suitable as a demonstration for
+ * evaluation purposes only.
+ * This code will be maintained at the sole discretion of Silicon Labs.
+ *
  ******************************************************************************/
 #include "sl_component_catalog.h"
 #include "sl_system_init.h"
@@ -44,6 +47,7 @@
 #endif // SL_CATALOG_KERNEL_PRESENT
 #include "app_assert.h"
 #include "sl_bluetooth.h"
+#include "em_device.h"
 
 #include "sl_simple_led_instances.h"
 
@@ -101,13 +105,13 @@ static void outgoing_packet(uint8_t frame_id,
 void app_init(void)
 {
   // DCDC_E302 – DCDC Interrupts Block EM2/3 Entry or Cause Unexpected Wake-up
-  NVIC_DisableIRQ(DCDC_IRQn);
+  sl_interrupt_manager_disable_irq(DCDC_IRQn);
 
   // assume enough time has passed, clear DC-DC and EMU interrupt flags
   // for detecting changes
   DCDC->IF_CLR = _DCDC_IF_MASK;
   EMU->IF_CLR = _EMU_IF_MASK;
-  NVIC_ClearPendingIRQ(DCDC_IRQn);
+  sl_interrupt_manager_clear_irq_pending(DCDC_IRQn);
 
   sl_lin_slave_register_writable_endpoint(BASE_ADDRESS + 1,
                                           8,
