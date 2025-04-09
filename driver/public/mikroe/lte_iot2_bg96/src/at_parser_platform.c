@@ -3,7 +3,7 @@
  * @brief AT command parser platform driver source
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -33,9 +33,6 @@
  * at the sole discretion of Silicon Labs.
  ******************************************************************************/
 
-#include <string.h>
-#include <sl_string.h>
-#include "sl_sleeptimer.h"
 #include "at_parser_platform.h"
 
 at_platform_status_t status = NOT_INITIALIZED;
@@ -131,26 +128,30 @@ sl_status_t at_platform_check_device_ready(void)
  * @return
  *   SL_STATUS_OK if there are no errors.
  *   SL_STATUS_ALLOCATION_FAILED if cmd == NULL.
+ *   SL_STATUS_COMMAND_TOO_LONG if cmd maximum length exceeded
  *****************************************************************************/
 sl_status_t at_platform_send_cmd(uint8_t *cmd, uint16_t timeout_ms)
 {
-  sl_status_t st;
-
-  if (NULL != cmd) {
-    size_t cmd_length = sl_strlen((char *) cmd);
-    if (cmd_length < CMD_MAX_SIZE - 1) {
-      sl_strcat_s((char *) cmd, CMD_MAX_SIZE, "\r");
-      uart_clear(&bg96_uart);
-      uart_write(&bg96_uart, cmd, sl_strlen((char *) cmd));
-
-      line_counter = 0;
-      status = TRANSMIT;
-      st = sl_sleeptimer_restart_timer_ms(&my_timer, timeout_ms, timer_cb,
-                                          (void *) NULL, 0, 0);
-      return st;
-    }
+  if (NULL == cmd) {
+    return SL_STATUS_INVALID_PARAMETER;
   }
-  return SL_STATUS_INVALID_PARAMETER;
+
+  size_t cmd_length = sl_strlen((char *) cmd);
+  if (cmd_length < CMD_MAX_SIZE - 1) {
+    sl_strcat_s((char *) cmd, CMD_MAX_SIZE, "\r");
+    uart_clear(&bg96_uart);
+    uart_write(&bg96_uart, cmd, sl_strlen((char *) cmd));
+
+    line_counter = 0;
+    status = TRANSMIT;
+    sl_status_t sc = sl_sleeptimer_restart_timer_ms(&my_timer,
+                                                    timeout_ms,
+                                                    timer_cb,
+                                                    (void *) NULL, 0, 0);
+    return sc;
+  }
+
+  return SL_STATUS_COMMAND_TOO_LONG;
 }
 
 /**************************************************************************//**
@@ -224,7 +225,7 @@ void at_platform_process(void)
 static void timer_cb(sl_sleeptimer_timer_handle_t *handle,
                      void *data)
 {
-  (void) (data);
+  (void) data;
   (void) handle;
   status = READY;
   if (NULL != global_cb) {

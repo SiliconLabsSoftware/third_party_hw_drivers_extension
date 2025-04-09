@@ -3,7 +3,7 @@
  * @brief header file for AT command parser utility functions
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -45,5 +45,8 @@
  *****************************************************************************/
 #define validate(error, \
                  fn_result) error = (SL_STATUS_OK == error)?(fn_result):(error)
+
+#define has_substring(container, substr) \
+  (NULL != strstr((const char *) new_line, (const char *)substr))
 
 #endif /* AT_PARSER_UTILITY_H_ */

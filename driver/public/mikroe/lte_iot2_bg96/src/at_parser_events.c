@@ -3,7 +3,7 @@
  * @brief source for AT parser event listener
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -79,6 +79,7 @@ sl_status_t at_listen_event(uint8_t *event_flag,
     event_handled = false;
     return SL_STATUS_OK;
   }
+
   return SL_STATUS_ALLOCATION_FAILED;
 }
 

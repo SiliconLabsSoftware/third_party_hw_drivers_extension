@@ -1,6 +1,6 @@
 # Third Party Hardware Drivers #
 
-[![Version Badge](https://img.shields.io/badge/v4.1.0-green)](https://github.com/SiliconLabs/third_party_hw_drivers_extension/releases)
+[![Version Badge](https://img.shields.io/badge/v4.1.1-green)](https://github.com/SiliconLabs/third_party_hw_drivers_extension/releases)
 [![SiSDK Badge](https://img.shields.io/badge/SiSDK-v2024.12.0-green)](https://github.com/SiliconLabs/simplicity_sdk/releases)
 [![WSDK Badge](https://img.shields.io/badge/WSDK-v3.4.0-green)](https://github.com/SiliconLabs/wiseconnect/releases)
 ![License badge](https://img.shields.io/badge/License-Zlib-green)

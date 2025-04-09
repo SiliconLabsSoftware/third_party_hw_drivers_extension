@@ -3,7 +3,7 @@
  * @brief Top level application functions
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -70,7 +70,7 @@ void app_init(void)
 #endif
 
   app_printf("Hello World LTE IoT 2 Click !!!\r\n");
-  bg96_nb_init(app_uart_instance);
+  bg96_init(app_uart_instance);
   app_printf("BG96 init done !!!\r\n");
   app_printf("Type your command to execute the function !!!\r\n");
 }

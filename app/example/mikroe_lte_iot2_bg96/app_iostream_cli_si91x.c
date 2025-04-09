@@ -3,7 +3,7 @@
  * @brief source of simple CLI
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -40,6 +40,7 @@
 #include "at_parser_core.h"
 #include "at_parser_events.h"
 #include "mikroe_bg96.h"
+#include "bg96_at_commands.h"
 #include "app_iostream_cli.h"
 #include "rsi_debug.h"
 
@@ -69,57 +70,62 @@ typedef enum {
   gpsloc_element_spkn_e,
   gpsloc_element_date_e,
   gpsloc_element_nsat_e,
-}bg96_gnssloc_response_elements_t;
+} bg96_gnssloc_response_elements_t;
 
 /*******************************************************************************
  ***************   STATIC FUNCTION DECLARATIONS   ******************************
  ******************************************************************************/
 static void app_parser(uint8_t *buf);
+static void sim_status(void);
+static void sim_status_handler(void *handler_data);
 static void wakeup(void);
-static void sleep(void);
-static void infor(void);
-static void imei(void);
-static void textmode(void);
-static void pdumode(void);
-static void set_gsm(void);
-static void set_service_domain(void);
-static void sms_text(void);
-static void sms_pdu(void);
-static void sim_apn(void);
-static void ip(void);
-static void net_reg(void);
-static void open(void);
-static void send(void);
-static void close(void);
-static void cops(void);
-static void receive(void);
-static void gps_start(void);
-static void gps_location(void);
-static void gps_stop(void);
-static void open_server(void);
-static void close_server(void);
-
 static void wakeup_handler(void *handler_data);
+static void sleep(void);
 static void sleep_handler(void *handler_data);
+static void infor(void);
 static void infor_handler(void *handler_data);
+static void imei(void);
 static void imei_handler(void *handler_data);
-static void settextmode_handler(void *handler_data);
-static void setpdumode_handler(void *handler_data);
+static void text_mode(void);
+static void set_text_mode_handler(void *handler_data);
+static void pdu_mode(void);
+static void set_pdu_mode_handler(void *handler_data);
+static void set_gsm(void);
 static void set_gsm_handler(void *handler_data);
+static void set_service_domain(void);
 static void set_service_domain_handler(void *handler_data);
+static void sms_text(void);
 static void sms_text_handler(void *handler_data);
+static void sms_pdu(void);
 static void sms_pdu_handler(void *handler_data);
+static void sim_apn(void);
 static void sim_apn_handler(void *handler_data);
+static void ip(void);
 static void ip_handler(void *handler_data);
-static void net_reg_handler(void *handler_data);
-static void open_handler(void *handler_data);
-static void close_handler(void *handler_data);
-static void send_handler(void *handler_data);
-static void recv_handler(void *handler_data);
+static void cops(void);
 static void cops_handler(void *handler_data);
-static void stop_gnss_handler(void *handler_data);
-static void get_position_handler(void *handler_data);
-static void start_gnss_handler(void *handler_data);
+static void net_config(void);
+static void net_config_handler(void *handler_data);
+static void net_gprs_status(void);
+static void net_gprs_status_handler(void *handler_data);
+static void net_lte_status(void);
+static void net_lte_status_handler(void *handler_data);
+static void act(void);
+static void act_handler(void *handler_data);
+static void deact(void);
+static void deact_handler(void *handler_data);
+static void tcp_open(void);
+static void tcp_open_handler(void *handler_data);
+static void tcp_send(void);
+static void tcp_send_handler(void *handler_data);
+static void tcp_close(void);
+static void tcp_close_handler(void *handler_data);
+static void gps_start(void);
+static void gps_start_handler(void *handler_data);
+static void gps_get_location(void);
+static void gps_get_location_handler(void *handler_data);
+static void gps_stop(void);
+static void gps_stop_handler(void *handler_data);
 static sl_status_t bg96_gpsloc_generic_parser(uint8_t *input_string,
                                               uint8_t *parser_buf,
                                               bg96_gnssloc_response_elements_t element);
@@ -140,25 +146,27 @@ static cli_cmd_t cli_cmds[] = {
   { "sleep", sleep },
   { "imei", imei },
   { "infor", infor },
+  { "simstatus", sim_status },
   { "gsm", set_gsm },
   { "service", set_service_domain },
-  { "textmode", textmode },
-  { "pdumode", pdumode },
+  { "textmode", text_mode },
+  { "pdumode", pdu_mode },
   { "smstext", sms_text },
   { "smspdu", sms_pdu },
-  { "simapn", sim_apn },
-  { "ip", ip },
-  { "netreg", net_reg },
-  { "open", open },
-  { "send", send },
-  { "close", close },
+  { "netconfig", net_config },
   { "cops", cops },
-  { "recv", receive },
+  { "netgprs", net_gprs_status },
+  { "netlte", net_lte_status },
+  { "simapn", sim_apn },
+  { "act", act },
+  { "deact", deact },
+  { "ip", ip },
+  { "tcpopen", tcp_open },
+  { "tcpsend", tcp_send },
+  { "tcpclose", tcp_close },
   { "gpsstart", gps_start },
-  { "location", gps_location },
+  { "location", gps_get_location },
   { "gpsstop", gps_stop },
-  { "opens", open_server },
-  { "closes", close_server },
 };
 static uint8_t cli_cmd_size = sizeof(cli_cmds) / sizeof(cli_cmds[0]);
 
@@ -183,7 +191,7 @@ void app_iostream_cli_process_action(void)
   c = DEBUGIN();
 #else
 
-  /* Retrieve characters, print local echo and full line back */
+  // Retrieve characters, print local echo and full line back
   sl_iostream_getchar(sl_iostream_vcom_handle, &c);
 #endif
 
@@ -206,7 +214,7 @@ void app_iostream_cli_process_action(void)
         app_printf("[>>>] ");
       }
 
-      /* Local echo */
+      // Local echo
       app_printf("%c", c);
     }
   }
@@ -504,13 +512,13 @@ static void set_service_domain_handler(void *handler_data)
  *    Result will be available in the global output_object.
  *
  ******************************************************************************/
-static void textmode(void)
+static void text_mode(void)
 {
   at_parser_init_output_object(&output_object);
   bg96_set_sms_mode(&output_object, set_sms_mode_text);
   at_listen_event((uint8_t *) &output_object.status,
                   SL_STATUS_OK,
-                  settextmode_handler,
+                  set_text_mode_handler,
                   (void *) &output_object);
   app_printf("Set BG96 to text mode command sent!\r\n");
   at_processing = true;
@@ -523,14 +531,14 @@ static void textmode(void)
 
 /***************************************************************************//**
  * @brief
- *    Set BG96 to Text Mode handler function.
+ *    Set BG96 to Text Mode handler.
  *
  * @param[in] handler_data
  *    Data sent by the event handler.
  *    Currently  handler_data is a pointer to an at_scheduler_status_t.
  *
  ******************************************************************************/
-static void settextmode_handler(void *handler_data)
+static void set_text_mode_handler(void *handler_data)
 {
   at_processing = false;
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
@@ -548,13 +556,13 @@ static void settextmode_handler(void *handler_data)
  *    Result will be available in the global output_object.
  *
  ******************************************************************************/
-static void pdumode(void)
+static void pdu_mode(void)
 {
   at_parser_init_output_object(&output_object);
   bg96_set_sms_mode(&output_object, set_sms_mode_pdu);
   at_listen_event((uint8_t *) &output_object.status,
                   SL_STATUS_OK,
-                  setpdumode_handler,
+                  set_pdu_mode_handler,
                   (void *) &output_object);
   app_printf("Set BG96 to pdu mode command sent!\r\n");
   at_processing = true;
@@ -574,7 +582,7 @@ static void pdumode(void)
  *    Currently  handler_data is a pointer to an at_scheduler_status_t.
  *
  ******************************************************************************/
-static void setpdumode_handler(void *handler_data)
+static void set_pdu_mode_handler(void *handler_data)
 {
   at_processing = false;
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
@@ -594,7 +602,8 @@ static void setpdumode_handler(void *handler_data)
  ******************************************************************************/
 static void sms_text(void)
 {
-  bg96_sms_text_t sms_text = { " *** ", \
+  /// TODO: Replace *** with the receiver's phone number
+  bg96_sms_text_t sms_text = { "***", \
                                "Hello World - LTE IoT 2 Click Board !!! - (sms text mode)" };
 
   at_parser_init_output_object(&output_object);
@@ -643,8 +652,8 @@ static void sms_text_handler(void *handler_data)
 static void sms_pdu(void)
 {
   bg96_sms_pdu_t sms_pdu = {
-    " *** ",
-    " *** ",
+    "***", /// TODO: Replace *** with the service center phone number.
+    "***", /// TODO: Replace *** with the receiver's phone number
     "Hello World - LTE IoT 2 Click Board !!! - (sms pdu mode)"
   };
 
@@ -693,7 +702,8 @@ static void sms_pdu_handler(void *handler_data)
  ******************************************************************************/
 static void sim_apn(void)
 {
-  uint8_t sim_apn[30] = "v-internet";
+/// TODO: Replace *** with the Access point name.
+  uint8_t sim_apn[30] = "***";
 
   at_parser_init_output_object(&output_object);
   bg96_set_sim_apn(&output_object, (uint8_t *)sim_apn);
@@ -739,7 +749,7 @@ static void sim_apn_handler(void *handler_data)
 static void ip(void)
 {
   at_parser_init_output_object(&output_object);
-  bg96_read_ip(&output_object);
+  bg96_read_ip_addr(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK, ip_handler,
                   (void *) &output_object);
   app_printf("Read IP command sent!\r\n");
@@ -775,17 +785,59 @@ static void ip_handler(void *handler_data)
 
 /***************************************************************************//**
  * @brief
- *    Network registration function.
+ *    Query SIM status.
  *    Result will be available in the global output_object.
  *
  ******************************************************************************/
-static void net_reg(void)
+static void sim_status(void)
+{
+  at_parser_init_output_object(&output_object);
+  bg96_sim_status(&output_object);
+  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
+                  sim_status_handler, (void *) &output_object);
+  at_processing = true;
+  while (at_processing) {
+    at_parser_process();
+    at_platform_process();
+    at_event_process();
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    Query SIM status handler.
+ *
+ * @param[in] handler_data
+ *    Data sent by the event handler.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
+ *
+ ******************************************************************************/
+static void sim_status_handler(void *handler_data)
+{
+  at_processing = false;
+  at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
+
+  if (l_output->error_code) {
+    app_printf("[E]: Query SIM status error: %d\r\n",
+               l_output->error_code);
+  } else {
+    app_printf("SIM card ready to use!\r\n");
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    Network configuration.
+ *    Result will be available in the global output_object.
+ *
+ ******************************************************************************/
+static void net_config(void)
 {
   at_parser_init_output_object(&output_object);
   bg96_network_registration(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
-                  net_reg_handler, (void *) &output_object);
-  app_printf("Network registration started!\r\n");
+                  net_config_handler, (void *) &output_object);
+  app_printf("\r\nNetwork configuring...\r\n");
   at_processing = true;
   while (at_processing) {
     at_parser_process();
@@ -796,46 +848,40 @@ static void net_reg(void)
 
 /***************************************************************************//**
  * @brief
- *    Network registration handler function.
+ *    Network configuration handler.
  *
  * @param[in] handler_data
  *    Data sent by the event handler.
- *    Currently  handler_data is a pointer to an at_scheduler_status_t.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
  *
  ******************************************************************************/
-static void net_reg_handler(void *handler_data)
+static void net_config_handler(void *handler_data)
 {
   at_processing = false;
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_printf("Network registration error: %d\r\n%s\r\n", l_output->error_code,
+    app_printf("[E]: Network configuration error: %d\r\n%s\r\n",
+               l_output->error_code,
                l_output->response_data);
   } else {
-    app_printf("Network registration done!\r\n");
+    app_printf("Network configuration done!\r\n");
   }
 }
 
 /***************************************************************************//**
  * @brief
- *    Open client connection function.
+ *    Query the status of GPRS service
  *    Result will be available in the global output_object.
  *
  ******************************************************************************/
-static void open(void)
+static void net_gprs_status(void)
 {
-  bg96_nb_connection_t connection = {
-    0,
-    9999,
-    "TCP",
-    (uint8_t *) "cloudsocket.hologram.io"
-  };
-
   at_parser_init_output_object(&output_object);
-  bg96_nb_open_connection(&connection, &output_object);
-  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK, open_handler,
-                  (void *) &output_object);
-  app_printf("Open command sent!\r\n");
+  bg96_query_gprs_service(&output_object);
+  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
+                  net_gprs_status_handler, (void *) &output_object);
+  app_printf("GPRS network querying...\r\n");
   at_processing = true;
   while (at_processing) {
     at_parser_process();
@@ -846,167 +892,158 @@ static void open(void)
 
 /***************************************************************************//**
  * @brief
- *    Open client connection handler function.
+ *    Query the status of GPRS service handler
  *
  * @param[in] handler_data
  *    Data sent by the event handler.
- *    Currently  handler_data is a pointer to an at_scheduler_status_t.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
  *
  ******************************************************************************/
-static void open_handler(void *handler_data)
+static void net_gprs_status_handler(void *handler_data)
 {
   at_processing = false;
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
-
   if (l_output->error_code) {
-    app_printf("Network open error: %d\r\n", (int) l_output->error_code);
-  } else {
-    app_printf("Network opened.\r\n");
-  }
-}
-
-/***************************************************************************//**
- * @brief
- *    Open server connection function.
- *    Result will be available in the global output_object.
- *
- ******************************************************************************/
-static void open_server(void)
-{
-  bg96_nb_connection_t connection = {
-    0,
-    2020,
-    "TCP LISTENER",
-    (uint8_t *) "127.0.0.1"
-  };
-
-  at_parser_init_output_object(&output_object);
-  bg96_nb_open_connection(&connection, &output_object);
-  app_printf("Open server command sent!\r\n");
-}
-
-/***************************************************************************//**
- * @brief
- *    Close server connection function.
- *    Result will be available in the global output_object.
- ******************************************************************************/
-static void close_server(void)
-{
-  bg96_nb_connection_t connection = {
-    11,
-    2020,
-    "TCP LISTENER",
-    (uint8_t *) "127.0.0.1"
-  };
-
-  at_parser_init_output_object(&output_object);
-  bg96_nb_close_connection(&connection, &output_object);
-  app_printf("Open server command sent!\r\n");
-}
-
-/***************************************************************************//**
- * @brief
- *    Send data on an opened channel.
- *    Result will be available in the global output_object.
- *
- ******************************************************************************/
-static void send(void)
-{
-  bg96_nb_connection_t connection = {
-    0,
-    9999,
-    "TCP",
-    (uint8_t *) "cloudsocket.hologram.io"
-  };
-  uint8_t data_to_send[] =
-    "{\"k\":\"Tm}hswZ8\",\"d\":\"Hello Silabs!\",\"t\":\"my_topic\"}";
-
-  at_parser_init_output_object(&output_object);
-  bg96_nb_send_data(&connection, data_to_send, &output_object);
-  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK, send_handler,
-                  (void *) &output_object);
-  app_printf("Data has been sent!\r\n");
-  at_processing = true;
-  while (at_processing) {
-    at_parser_process();
-    at_platform_process();
-    at_event_process();
-  }
-}
-
-/***************************************************************************//**
- * @brief
- *    Send data handler function.
- *
- * @param[in] handler_data
- *    Data sent by the event handler.
- *    Currently  handler_data is a pointer to an at_scheduler_status_t.
- *
- ******************************************************************************/
-static void send_handler(void *handler_data)
-{
-  at_processing = false;
-  at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
-  app_printf("Send response received! Error: %d Data: %s\r\n",
-             l_output->error_code,
-             l_output->response_data);
-}
-
-/***************************************************************************//**
- * @brief
- *    Close client connection function.
- *    Result will be available in the global output_object.
- *
- ******************************************************************************/
-static void close(void)
-{
-  bg96_nb_connection_t connection = {
-    0,
-    9999,
-    "TCP",
-    (uint8_t *) "cloudsocket.hologram.io"
-  };
-
-  at_parser_init_output_object(&output_object);
-  bg96_nb_close_connection(&connection, &output_object);
-  at_listen_event((uint8_t *) &output_object.status,
-                  SL_STATUS_OK,
-                  close_handler,
-                  (void *) &output_object);
-  app_printf("Close command sent!\r\n");
-  at_processing = true;
-  while (at_processing) {
-    at_parser_process();
-    at_platform_process();
-    at_event_process();
-  }
-}
-
-/***************************************************************************//**
- * @brief
- *    Close client connection handler function.
- *
- * @param[in] handler_data
- *    Data sent by the event handler.
- *    Currently  handler_data is a pointer to an at_scheduler_status_t.
- *
- ******************************************************************************/
-static void close_handler(void *handler_data)
-{
-  at_processing = false;
-  at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
-
-  if (l_output->error_code) {
-    app_printf("Network close error: %d\r\n %s\r\n", l_output->error_code,
+    app_printf("[E]: Registered GPRS network error: %d\r\n%s\r\n",
+               l_output->error_code,
                l_output->response_data);
   } else {
-    app_printf("Network closed\r\n");
+    app_printf("Registered to GPRS network!\r\n");
   }
 }
 
 /***************************************************************************//**
  * @brief
- *    Get actual operator function.
+ *    Query the status of LTE service
+ *    Result will be available in the global output_object.
+ *
+ ******************************************************************************/
+static void net_lte_status(void)
+{
+  at_parser_init_output_object(&output_object);
+  bg96_query_lte_service(&output_object);
+  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
+                  net_lte_status_handler, (void *) &output_object);
+  app_printf("LTE network querying...\r\n");
+  at_processing = true;
+  while (at_processing) {
+    at_parser_process();
+    at_platform_process();
+    at_event_process();
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    Query the status of LTE service handler
+ *
+ * @param[in] handler_data
+ *    Data sent by the event handler.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
+ *
+ ******************************************************************************/
+static void net_lte_status_handler(void *handler_data)
+{
+  at_processing = false;
+  at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
+  if (l_output->error_code) {
+    app_printf("[E]: Registered LTE network error: %d\r\n%s\r\n",
+               l_output->error_code,
+               l_output->response_data);
+  } else {
+    app_printf("Registered to LTE network!\r\n");
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    Activate a PDP Context.
+ *    Result will be available in the global output_object.
+ *
+ ******************************************************************************/
+static void act(void)
+{
+  at_parser_init_output_object(&output_object);
+  bg96_activate_pdp_context(&output_object);
+  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
+                  act_handler, (void *) &output_object);
+  app_printf("\r\nActivating a PDP Context...\r\n");
+  at_processing = true;
+  while (at_processing) {
+    at_parser_process();
+    at_platform_process();
+    at_event_process();
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    Activate a PDP context handler.
+ *
+ * @param[in] handler_data
+ *    Data sent by the event handler.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
+ *
+ ******************************************************************************/
+static void act_handler(void *handler_data)
+{
+  at_processing = false;
+  at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
+  if (l_output->error_code) {
+    app_printf("[E]: Activate a PDP Context error: %d\r\n%s\r\n",
+               l_output->error_code,
+               l_output->response_data);
+  } else {
+    app_printf("Activated a PDP Context successfully!\r\n");
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    Deactivate a PDP Context.
+ *    Result will be available in the global output_object.
+ *
+ ******************************************************************************/
+static void deact(void)
+{
+  at_parser_init_output_object(&output_object);
+  bg96_deactivate_pdp_context(&output_object);
+  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
+                  deact_handler, (void *) &output_object);
+  app_printf("\r\nDeactivating a PDP Context...\r\n");
+  at_processing = true;
+  while (at_processing) {
+    at_parser_process();
+    at_platform_process();
+    at_event_process();
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    Deactivate a PDP context handler.
+ *
+ * @param[in] handler_data
+ *    Data sent by the event handler.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
+ *
+ ******************************************************************************/
+static void deact_handler(void *handler_data)
+{
+  at_processing = false;
+  at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
+  if (l_output->error_code) {
+    app_printf("[E]: Deactivate a PDP Context error: %d\r\n%s\r\n",
+               l_output->error_code,
+               l_output->response_data);
+  } else {
+    app_printf("Deactivated a PDP Context successfully!\r\n");
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    Get actual operator.
  *    Result will be available in the global output_object.
  *
  ******************************************************************************/
@@ -1027,11 +1064,11 @@ static void cops(void)
 
 /***************************************************************************//**
  * @brief
- *    Get actual operator handler function.
+ *    Get actual operator handler.
  *
  * @param[in] handler_data
  *    Data sent by the event handler.
- *    Currently  handler_data is a pointer to an at_scheduler_status_t.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
  *
  ******************************************************************************/
 static void cops_handler(void *handler_data)
@@ -1050,17 +1087,24 @@ static void cops_handler(void *handler_data)
 
 /***************************************************************************//**
  * @brief
- *    Receive data function.
+ *    TCP: Open connection.
  *    Result will be available in the global output_object.
  *
  ******************************************************************************/
-static void receive(void)
+static void tcp_open(void)
 {
+  bg96_tcp_connection_t connection = {
+    0,
+    9999,
+    "TCP",
+    (uint8_t *) "cloudsocket.hologram.io"
+  };
+
   at_parser_init_output_object(&output_object);
-  bg96_nb_receive_data(&output_object);
-  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK, recv_handler,
-                  (void *) &output_object);
-  app_printf("Receiving data!\r\n");
+  bg96_tcp_open_connection(&connection, &output_object);
+  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
+                  tcp_open_handler, (void *) &output_object);
+  app_printf("TCP: Connection opening...\r\n");
   at_processing = true;
   while (at_processing) {
     at_parser_process();
@@ -1071,30 +1115,143 @@ static void receive(void)
 
 /***************************************************************************//**
  * @brief
- *    Receive data handler function.
+ *    TCP: Open connection handler.
  *
  * @param[in] handler_data
  *    Data sent by the event handler.
- *    Currently  handler_data is a pointer to an at_scheduler_status_t.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
  *
  ******************************************************************************/
-static void recv_handler(void *handler_data)
+static void tcp_open_handler(void *handler_data)
 {
   at_processing = false;
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_printf("Error while receiving data: %d\r\n %s\r\n",
+    app_printf("[E]: TCP open connection error: %d\r\n%s\r\n",
                l_output->error_code,
                l_output->response_data);
   } else {
-    app_printf("Received data: %s\r\n", l_output->response_data);
+    app_printf("TCP: Connection opened!\r\n");
   }
 }
 
 /***************************************************************************//**
  * @brief
- *    GNSS start function.
+ *    TCP: Send data on an opened channel.
+ *    Result will be available in the global output_object.
+ *
+ ******************************************************************************/
+static void tcp_send(void)
+{
+  bg96_tcp_connection_t connection = {
+    0,
+    9999,
+    "TCP",
+    (uint8_t *) "cloudsocket.hologram.io"
+  };
+
+/*
+ * TODO: Replace DEVICE_KEY with the Hologram device key found here:
+ * https://support.hologram.io/hc/en-us/articles/360035212714
+ * Please note that this is different than the device ID
+ * and must be manually generated.
+ */
+  uint8_t data_to_send[] =
+    "{\"k\":\"DEVICE_KEY\",\"d\":\"Hello Silabs!\",\"t\":\"my_topic\"}";
+
+  at_parser_init_output_object(&output_object);
+  bg96_tcp_send_data(&connection, data_to_send, &output_object);
+  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
+                  tcp_send_handler,
+                  (void *) &output_object);
+  app_printf("TCP: Data sending...\r\n");
+  at_processing = true;
+  while (at_processing) {
+    at_parser_process();
+    at_platform_process();
+    at_event_process();
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    TCP: Send data handler.
+ *
+ * @param[in] handler_data
+ *    Data sent by the event handler.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
+ *
+ ******************************************************************************/
+static void tcp_send_handler(void *handler_data)
+{
+  at_processing = false;
+  at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
+  if (l_output->error_code) {
+    app_printf("[E]: TCP send data error: %d\r\n%s\r\n",
+               l_output->error_code,
+               l_output->response_data);
+  } else {
+    app_printf("TCP: Data sent!\r\n");
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    TCP: Close connection.
+ *    Result will be available in the global output_object.
+ *
+ ******************************************************************************/
+static void tcp_close(void)
+{
+  bg96_tcp_connection_t connection = {
+    0,
+    9999,
+    "TCP",
+    (uint8_t *) "cloudsocket.hologram.io"
+  };
+
+  at_parser_init_output_object(&output_object);
+  bg96_tcp_close_connection(&connection, &output_object);
+  at_listen_event((uint8_t *) &output_object.status,
+                  SL_STATUS_OK,
+                  tcp_close_handler,
+                  (void *) &output_object);
+  app_printf("\r\nTCP: Connection closing...\r\n");
+  at_processing = true;
+  while (at_processing) {
+    at_parser_process();
+    at_platform_process();
+    at_event_process();
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    TCP: Close connection handler.
+ *
+ * @param[in] handler_data
+ *    Data sent by the event handler.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
+ *
+ ******************************************************************************/
+static void tcp_close_handler(void *handler_data)
+{
+  at_processing = false;
+  at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
+
+  if (l_output->error_code) {
+    app_printf("[E]: TCP close connection error: %d\r\n%s\r\n",
+               l_output->error_code,
+               l_output->response_data);
+  } else {
+    app_printf("TCP: Connection closed!\r\n");
+  }
+}
+
+/***************************************************************************//**
+ * @brief
+ *    GPS: Start session.
  *    Result will be available in the global output_object.
  *
  ******************************************************************************/
@@ -1103,8 +1260,8 @@ static void gps_start(void)
   at_parser_init_output_object(&output_object);
   bg96_gnss_start(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
-                  start_gnss_handler, (void *) &output_object);
-  app_printf("GNSS start command sent.\r\n");
+                  gps_start_handler, (void *) &output_object);
+  app_printf("\r\nGPS: Session starting...\r\n");
   at_processing = true;
   while (at_processing) {
     at_parser_process();
@@ -1115,38 +1272,40 @@ static void gps_start(void)
 
 /***************************************************************************//**
  * @brief
- *    Start GNSS handler function.
+ *    GPS: Start session handler.
  *
  * @param[in] handler_data
  *    Data sent by the event handler.
- *    Currently  handler_data is a pointer to an at_scheduler_status_t.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
  *
  ******************************************************************************/
-static void start_gnss_handler(void *handler_data)
+static void gps_start_handler(void *handler_data)
 {
   at_processing = false;
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_printf("Error while starting GNSS: %d\r\n", l_output->error_code);
+    app_printf("[E]: GPS start session error: %d\r\n%s\r\n",
+               l_output->error_code,
+               l_output->response_data);
   } else {
-    app_printf("GNSS started.\r\n");
+    app_printf("GPS: Session started!\r\n");
   }
 }
 
 /***************************************************************************//**
  * @brief
- *    GNSS get location function.
+ *    GPS: Get location.
  *    Result will be available in the global output_object.
  *
  ******************************************************************************/
-static void gps_location(void)
+static void gps_get_location(void)
 {
   at_parser_init_output_object(&output_object);
   bg96_gnss_get_position(&output_object);
   at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
-                  get_position_handler, (void *) &output_object);
-  app_printf("GNSS position command sent.\r\n");
+                  gps_get_location_handler, (void *) &output_object);
+  app_printf("\r\nGPS: Location getting...\r\n");
   at_processing = true;
   while (at_processing) {
     at_parser_process();
@@ -1157,25 +1316,25 @@ static void gps_location(void)
 
 /***************************************************************************//**
  * @brief
- *    Get GNSS location handler function.
+ *    GPS: Get location handler.
  *
  * @param[in] handler_data
  *    Data sent by the event handler.
- *    Currently  handler_data is a pointer to an at_scheduler_status_t.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
  *    +QGPSLOC: <UTC>,<latitude>,<longitude>,<hdop>,<altitude>,<fix>,<cog>,
  *    <spkm>,<spkn>,<date>,<nsat>
  ******************************************************************************/
-static void get_position_handler(void *handler_data)
+static void gps_get_location_handler(void *handler_data)
 {
   at_processing = false;
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_printf("Error while getting position: %d\r\n %s\r\n",
+    app_printf("[E]: GPS get location error: %d\r\n %s\r\n",
                l_output->error_code,
                l_output->response_data);
   } else {
-    app_printf("GPS location raw response data: %s\r\n",
+    app_printf("GPS: Location raw data: %s\r\n",
                l_output->response_data);
 
     uint8_t element_buf[200] = { 0 };
@@ -1229,13 +1388,13 @@ static void get_position_handler(void *handler_data)
       double longtitude = (atof((const char *)longitude_int)
                            + (atof((const char *)(longitude_decimal))
                               / 60.0));
-      app_printf("Longitude:  %.6f\r\n", longtitude);
+      app_printf("GPS: Longitude data:  %.6f\r\n", longtitude);
       memset(element_buf, 0, sizeof(element_buf));
 
       bg96_gpsloc_generic_parser(l_output->response_data,
                                  element_buf,
                                  gpsloc_element_altitude_e);
-      app_printf("Altitude: %sM\r\n", element_buf);
+      app_printf("GPS: Latitude data: %sM\r\n", element_buf);
 
       bg96_gpsloc_generic_parser(l_output->response_data,
                                  element_buf,
@@ -1247,7 +1406,7 @@ static void get_position_handler(void *handler_data)
       memcpy((void *)minuste, (const void *)element_buf + 2, 2);
       memcpy((void *)seconds, (const void *)element_buf + 4, 2);
 
-      app_printf("Time UTC: %sh:%sm:%ss\r\n", hour, minuste, seconds);
+      app_printf("GPS: Time UTC: %sh:%sm:%ss\r\n", hour, minuste, seconds);
 
       bg96_gpsloc_generic_parser(l_output->response_data,
                                  element_buf,
@@ -1259,7 +1418,7 @@ static void get_position_handler(void *handler_data)
       memcpy((void *)month, (const void *)element_buf + 2, 2);
       memcpy((void *)year, (const void *)element_buf + 4, 2);
 
-      app_printf("Date: %s/%s/20%s\r\n", day, month, year);
+      app_printf("GPS: Date: %s/%s/20%s\r\n", day, month, year);
     }
   }
 }
@@ -1311,17 +1470,17 @@ sl_status_t bg96_gpsloc_generic_parser(uint8_t *input_string,
 
 /***************************************************************************//**
  * @brief
- *    GNSS stop listening function.
+ *    GPS: Stop session.
  *    Result will be available in the global output_object.
  *
  ******************************************************************************/
 static void gps_stop(void)
 {
   at_parser_init_output_object(&output_object);
-  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
-                  stop_gnss_handler, (void *) &output_object);
   bg96_gnss_stop(&output_object);
-  app_printf("GNSS stop command sent.\r\n");
+  at_listen_event((uint8_t *) &output_object.status, SL_STATUS_OK,
+                  gps_stop_handler, (void *) &output_object);
+  app_printf("\r\nGPS: Session stopping... \r\n");
   at_processing = true;
   while (at_processing) {
     at_parser_process();
@@ -1332,21 +1491,23 @@ static void gps_stop(void)
 
 /***************************************************************************//**
  * @brief
- *    Stop GNSS handler function.
+ *    GPS: Stop session handler.
  *
  * @param[in] handler_data
  *    Data sent by the event handler.
- *    Currently  handler_data is a pointer to an at_scheduler_status_t.
+ *    Currently handler_data is a pointer to an at_scheduler_status_t.
  *
  ******************************************************************************/
-static void stop_gnss_handler(void *handler_data)
+static void gps_stop_handler(void *handler_data)
 {
   at_processing = false;
   at_scheduler_status_t *l_output = (at_scheduler_status_t *) handler_data;
 
   if (l_output->error_code) {
-    app_printf("Error while stopping GNSS: %d\r\n", l_output->error_code);
+    app_printf("[E]: GPS stop session error: %d\r\n%s\r\n",
+               l_output->error_code,
+               l_output->response_data);
   } else {
-    app_printf("GNSS stopped.\r\n");
+    app_printf("GPS: Session closed!\r\n");
   }
 }

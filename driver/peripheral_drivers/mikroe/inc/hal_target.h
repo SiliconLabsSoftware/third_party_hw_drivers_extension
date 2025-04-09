@@ -52,7 +52,9 @@ extern "C" {
 #define UDELAY_MUL_FACTOR 1
 #endif // SLI_SI917
 
-typedef int32_t err_t;
+#if !defined(LWIP_HDR_ERR_H)
+typedef int8_t err_t;
+#endif
 
 typedef enum {
   ACQUIRE_SUCCESS = 0, ACQUIRE_INIT,

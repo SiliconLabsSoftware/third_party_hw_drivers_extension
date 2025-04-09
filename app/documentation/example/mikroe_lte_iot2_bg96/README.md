@@ -12,7 +12,13 @@ LTE IoT 2 Click is a Click board™ that allows connection to the LTE networks, 
 
 - Or 1x [Wi-Fi Development Kit](https://www.silabs.com/development-tools/wireless/wi-fi) based on SiWG917 (e.g. [SIWX917-DK2605A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-dk2605a-wifi-6-bluetooth-le-soc-dev-kit) or [SIWX917-RB4338A](https://www.silabs.com/development-tools/wireless/wi-fi/siwx917-rb4338a-wifi-6-bluetooth-le-soc-radio-board))
 
-- 1x [LTE IoT 2 Click board](https://www.mikroe.com/lte-iot-2-click) based on Quectel BG96 LTE module
+- 1x [LTE IoT 2 Click board](https://www.mikroe.com/lte-iot-2-click) based on Quectel BG96 LTE module which running on the firmware version: **BG96MAR02A07M1G**
+
+- 1x [Hologram IoT sim card](https://www.hologram.io/products/global-iot-sim-card/)
+
+- 1x [GSM/GPRS Antenna](https://www.mikroe.com/gsm-gprs-right-angle-rubber)
+
+- 1x [Active GPS Antenna](https://www.mikroe.com/active-gps)
 
 ## Hardware Connection ##
 
@@ -33,6 +39,10 @@ LTE IoT 2 Click is a Click board™ that allows connection to the LTE networks, 
   | Module Power-Up   | GPIO_47 [P26]  | GPIO_11      | PWK             |
   | Module status     | GPIO_46 [P24]  | GPIO_10      | STA             |
 
+- Insert the SIM into the LTE IoT 2 Click. Ensure that the SIM is inserted properly.
+
+- You need to attach the GSM and GPS antenna to the proper connectors (CN1 is the GSM one, and CN2 is the GPS antenna). Place the GNSS antenna to be able detect GPS satellites. GSM service is also required in the area.
+
 ## Setup ##
 
 You can either create a project based on an example project or start with an empty example project.
@@ -52,6 +62,10 @@ You can either create a project based on an example project or start with an emp
     If you want to send pdu message replace the " *** " by the service center phone number and the receiver's phone number respectively.
 
     ![config_pdu_phone_number](image/config_pdu_phone_number.png)
+
+    If you want to send data via TCP connection, replace the DEVICE_KEY with your Hologram token found here: <https://support.hologram.io/hc/en-us/articles/360035212714>
+
+    ![device key](image/device_key.png)
 
 4. Build and flash this example to the board.
 
@@ -77,12 +91,10 @@ You can either create a project based on an example project or start with an emp
       **If the EFR32xG24 Explorer Kit is used:**
 
         - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
-        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: mikroe
+        - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: mikroe → Set the "Receive buffer size" to 256
         - [Application] → [Utility] → [Log]
         - [Third-Party Hardware Drivers] → [Sensors] → [BG96 - LTE IoT 2 Click (Mikroe)]
-        - [Platform] → [Utilities] → [Circular Queue] → set Max Queue Length to 256 as below:
-
-            ![queue_config](image/config_queue_size.png)
+        - [Platform] → [Utilities] → [Circular Queue] → set Max Queue Length to 20
 
       **If the Wi-Fi Development Kit is used:**
 
@@ -91,9 +103,7 @@ You can either create a project based on an example project or start with an emp
 
             ![uart_config](image/config_uart_si91x.png)
 
-        - [Platform] → [Utilities] → [Circular Queue] → set Max Queue Length to 256 as below:
-
-            ![queue_config](image/config_queue_size.png)
+        - [Platform] → [Utilities] → [Circular Queue] → set Max Queue Length to 20
 
 4. Configure receiver's phone number, refers to step 3 in [Create a project based on an example project](#create-a-project-based-on-an-example-project).
 
@@ -146,10 +156,14 @@ You can either create a project based on an example project or start with an emp
 
 ## Driver Extension Guide ##
 
+**NOTE:**
+
+- The **Third Party Hardware Drivers - BG96 - LTE IoT 2 CLick (Mikroe) driver** provides a limited set of APIs supporting AT commands for the BG96 module. To add other AT commands, users can follow the instructions below.
+
 ### Adding New AT Command ###
 
 To add new AT command to the parser you need to define an AT command line callback which depends on the required response of the command.
-The possible AT command responses are defined in the [User manual](https://docs.particle.io/assets/pdfs/Quectel_BG96_AT_Commands_Manual_V2.1.pdf) of the BG96 module. In some cases, one of the predefined line callbacks can be used. e.g.: *at_ok_error_cb()* if the command response is OK or ERROR.
+The possible AT command responses are found in the [Resources section](#resources). In some cases, one of the predefined line callbacks can be used. e.g.: *at_ok_error_cb()* if the command response is OK or ERROR.
 
 1. Define the appropriate line callback function in *at_parser_core.c*. You can find an example below.
 
@@ -290,18 +304,43 @@ Creating a high-level function means a single AT command or a list of AT command
 
 ### Testing ###
 
-- You can launch Console that's integrated into Simplicity Studio or use a third-party terminal tool like Tera Term to receive the data from the USB. In this example, we build a simple command line interface application. There are commonly used commands predefined in the `app_iostream_cli.h` file. When the user wants to test a feature, just call the corresponding commands.
-- First, after the chip has finished booting, the user needs to start the LTE IoT 2 module. Enter the command "wakeup" into Tera Term and end with an "Enter" key. A logline is printed confirming the command has been executed. The lower layer library will control the GPIO pin connected to the PWK pin to power the LTE IoT 2 module. After a few seconds the module boots up, and it will respond with a successful boot confirmation.
-- After the LTE IoT 2 module boots up successfully, users can check basic parameters such as getting imei code, and getting revision by "imei", "infor" commands. The user then calls the "service" command to configure the service domain type CS and PS. Next, the user calls the command "gsm" to select TE character set to GSM.
-- In this example, we send a text message from LTE IoT 2 Click module to a given phone number. There are two operating modes "textmode" and "pdumode" need to call these 2 commands first to put the module into operation mode respectively. The user can then invoke the "smstext" and "smspdu" commands to send the message. After confirming the successful message delivery, there will be a response, which contains the reference information of that sms.
-- In addition, we also provide an example using the GPS function. First, users need to turn on the GPS module with the "gpsstart" command. After the LTE IoT 2 Click module captures the satellite signal, the user can get the location coordinates with the "location" command. After getting the results, users can use the longitude and latitude values ​​entered into Google Maps to check the actual location. In addition, the command also returns information such as UTC, altitude, date, etc. After use, the user can turn off the GPS function with the command "gpsstop", this is to save energy for the system.
-- A screenshot of the console output is shown in the figure below:
+You can launch Console that's integrated into Simplicity Studio or use a third-party terminal tool like Tera Term to receive the data from the USB. In this example, we build a simple command line interface application. There are commonly used commands predefined in the `app_iostream_cli.c` file. When the user wants to test a feature, just call the corresponding commands.
 
+#### Using the general functions ####
+
+- After the chip has finished booting, the user needs to start the LTE IoT 2 module. Enter the command "wakeup" into Tera Term and end with an "Enter" key. A logline is printed confirming the command has been executed. The lower layer library will control the GPIO pin connected to the PWK pin to power the LTE IoT 2 module. After a few seconds the module boots up, and it will respond with a successful boot confirmation.
+- Users can check basic parameters such as getting imei code, and getting revision by "imei", "infor" commands. The user then calls the "service" command to configure the service domain type CS and PS. Next, the user calls the command "gsm" to select TE character set to GSM.
+- In this example, we send a text message from LTE IoT 2 Click module to a given phone number. There are two operating modes "textmode" and "pdumode" need to call these 2 commands first to put the module into operation mode respectively. The user can then invoke the "smstext" and "smspdu" commands to send the message. After confirming the successful message delivery, there will be a response, which contains the reference information of that sms.
   ![usb_debug](image/log.png "USB Debug Output Data")
+  ![sms_img](image/sms_receive.png "SMS Receive")
+
+#### Using the GPS functions ####
+
+- First, users need to turn on the GPS module with the "gpsstart" command. After the LTE IoT 2 Click module captures the satellite signal, the user can get the location coordinates with the "location" command. After getting the results, users can use the longitude and latitude values ​​entered into Google Maps to check the actual location. In addition, the command also returns information such as UTC, altitude, date, etc. After use, the user can turn off the GPS function with the command "gpsstop", this is to save energy for the system.
 
   ![usb_debug_gps](image/gps_log.png "USB Debug Output Data GPS")
 
-  ![sms_img](image/sms_receive.png "SMS Receive")
+#### Using the TCP functions ####
+
+- To test these functions a activated [Hologram IoT sim card](https://www.hologram.io/products/global-iot-sim-card/) needs to be inserted into the LTE IoT 2 Click.
+
+- Make sure that the Hologram SIM is activated on the Dashboard. Here is a [link](https://hologram.io/docs/guide/connect/connect-device/#sim-activation) that walks you through that process.
+
+- Follow the commands below to test the TCP functions:
+
+   ![tcp](image/tcp.png)
+
+- Navigate to the Hologram Dashboard and click All Activity at the bottom of the screen to expand the log. The message should appear, and that's it!
+
+   ![cloud](image/hologram_cloud.png)
+
+## Resources ##
+
+- [BG96 AT Commands Manual](https://github.com/wwxxyx/Quectel_BG96/blob/master/BG96/Software/Quectel_BG96_AT_Commands_Manual_V2.2.pdf)
+
+- [BG96 GNSS AT Commands Manual](https://github.com/wwxxyx/Quectel_BG96/blob/master/BG96/Software/Quectel_BG96_GNSS_AT_Commands_Manual_V1.1.pdf)
+
+- [BG96 TCP/IP AT Commands Manual](https://github.com/wwxxyx/Quectel_BG96/blob/master/BG96/Software/Quectel_BG96_TCP(IP)_AT_Commands_Manual_V1.0.pdf)
 
 ## Report Bugs & Get Support ##
 

@@ -42,7 +42,7 @@ configuration:
   - name: SL_IOSTREAM_USART_MIKROE_RX_BUFFER_SIZE
     value: 256
   - name: CIRCULAR_QUEUE_LEN_MAX
-    value: "256"
+    value: 20
 
 toolchain_settings:
   - option: gcc_linker_option
@@ -50,7 +50,7 @@ toolchain_settings:
 
 sdk_extension:
   - id: third_party_hw_drivers
-    version: 4.1.0
+    version: 4.1.1
 
 readme:
   - path: ../../documentation/example/mikroe_lte_iot2_bg96/README.md
@@ -75,6 +75,12 @@ other_file:
   - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/layer.drawio.png
     directory: "image"
   - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/gps_log.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/tcp.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/hologram_cloud.png
+    directory: "image"
+  - path: ../../documentation/example/mikroe_lte_iot2_bg96/image/device_key.png
     directory: "image"
 
 ui_hints:

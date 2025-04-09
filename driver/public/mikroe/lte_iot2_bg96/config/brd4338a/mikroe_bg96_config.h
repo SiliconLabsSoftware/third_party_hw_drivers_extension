@@ -1,10 +1,9 @@
 /***************************************************************************//**
  * @file mikroe_bg96_config.h
  * @brief mikroe_bg96_config.h
- * @version 1.0.0
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -58,7 +57,12 @@ extern "C" {
 // <o CMD_Q_SIZE> Size of queue to store at_cmd_desc_t
 // <i> Default: 20
 #define CMD_Q_SIZE     20
-// </h> end LTE IOT2 BG96 config
+
+// <q BG96_ENALBLE_DEBUGOUT> Enable Debug Out
+// <i> Default: 0
+#define BG96_ENALBLE_DEBUGOUT       0
+
+// </h>
 
 // <<< end of configuration section >>>
 

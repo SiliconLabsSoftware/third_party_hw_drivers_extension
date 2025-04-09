@@ -3,7 +3,7 @@
  * @brief header file for AT command parser core driver
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -35,16 +35,12 @@
 #ifndef AT_PARSER_CORE_H_
 #define AT_PARSER_CORE_H_
 
-#include "sl_status.h"
-#include "at_parser_platform.h"
+#include <string.h>
+#include <stdlib.h>
+#include <sl_string.h>
 
-/******************************************************************************
- ******************************   MACROS   ************************************
- *****************************************************************************/
-#define AT_DEFAULT_TIMEOUT  15000
-#define AT_OPEN_TIMEOUT     6000
-#define AT_SEND_TIMEOUT     20000
-#define AT_SMS_TEXT_TIMEOUT 120000
+#include "circular_queue.h"
+#include "at_parser_platform.h"
 
 /******************************************************************************
  **************************   TYPE DEFINITIONS   ******************************
@@ -152,32 +148,35 @@ sl_status_t at_parser_clear_cmd(at_cmd_desc_t *at_cmd_descriptor);
 
 /**************************************************************************//**
  * @brief
+ *    AT parser scheduler next cmd function.
+ *
+ *****************************************************************************/
+void at_parser_scheduler_next_cmd(void);
+
+/**************************************************************************//**
+ * @brief
+ *    AT parser scheduler error function.
+ * @param[in] error_code
+ *    Error code
+ *
+ *****************************************************************************/
+void at_parser_scheduler_error(uint8_t error_code);
+
+/**************************************************************************//**
+ * @brief
+ *    AT parser report data function.
+ * @param[in/out] data
+ *    Data to parse
+ *
+ *****************************************************************************/
+void at_parser_report_data(uint8_t *data);
+
+/**************************************************************************//**
+ * @brief
  *    AT parser process function.
  *    This function SHALL be called periodically in the main loop.
  *
  *****************************************************************************/
 void at_parser_process(void);
-
-/******************************************************************************
- *******************   LINE CALLBACK FUNCTIONS   ******************************
- *****************************************************************************/
-void at_imei_cb(uint8_t *new_line, uint8_t call_number);
-void at_infor_cb(uint8_t *new_line, uint8_t call_number);
-void at_te_gsm_cb(uint8_t *new_line, uint8_t call_number);
-void at_service_domain_cb(uint8_t *new_line, uint8_t call_number);
-void set_sms_mode_cb(uint8_t *new_line, uint8_t call_number);
-void at_sms_send_command_cb(uint8_t *new_line, uint8_t call_number);
-void at_sms_send_data_cb(uint8_t *new_line, uint8_t call_number);
-void at_set_sim_apn_cb(uint8_t *new_line, uint8_t call_number);
-void at_gps_start_stop_cb(uint8_t *new_line, uint8_t call_number);
-void at_ok_error_cb(uint8_t *new_line, uint8_t call_number);
-void at_cops_cb(uint8_t *new_line, uint8_t call_number);
-void at_recv_cb(uint8_t *new_line, uint8_t call_number);
-void at_send_cb(uint8_t *new_line, uint8_t call_number);
-void at_data_cb(uint8_t *new_line, uint8_t call_number);
-void at_ip_cb(uint8_t *new_line, uint8_t call_number);
-void at_qistate_cb(uint8_t *new_line, uint8_t call_number);
-void at_open_cb(uint8_t *new_line, uint8_t call_number);
-void at_gpsloc_cb(uint8_t *new_line, uint8_t call_number);
 
 #endif /* AT_PARSER_CORE_H_ */

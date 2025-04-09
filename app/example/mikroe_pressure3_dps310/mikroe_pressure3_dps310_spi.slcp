@@ -46,7 +46,7 @@ define:
 
 sdk_extension:
   - id: third_party_hw_drivers
-    version: 4.1.0
+    version: 4.1.1
 
 configuration:
   - name: SL_SPIDRV_MIKROE_CS_CONTROL

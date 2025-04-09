@@ -3,7 +3,7 @@
  * @brief header file for AT command parser platform driver
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -36,6 +36,10 @@
 #ifndef AT_PARSER_PLATFORM_H_
 #define AT_PARSER_PLATFORM_H_
 
+#include <string.h>
+#include <sl_string.h>
+
+#include "sl_sleeptimer.h"
 #include "sl_status.h"
 #include "drv_uart.h"
 #include "mikroe_bg96_config.h"
@@ -80,22 +84,22 @@ sl_status_t at_platform_init(mikroe_uart_handle_t handle,
 sl_status_t at_platform_check_device_ready(void);
 
 /**************************************************************************//**
-* @brief
-*   Platform driver send command function.
-*   This function adds \r to the command string.
-*   Command string SHALL be allocated until command is sent.
-*   This function uses UART TX and RX interrupt.
-*
-* @param[in] cmd
-*   Pointer to the command to send.
-*
-* @param[in] timeout_ms
-*    Timeout for the command in milliseconds.
-*
-* @return
-*   SL_STATUS_OK if there are no errors.
-*   SL_STATUS_INVALID_PARAMETER if cmd == NULL.
-******************************************************************************/
+ * @brief
+ *   Platform driver send command function.
+ *   This function adds \r to the command string.
+ *   Command string SHALL be allocated until command is sent.
+ *   This function uses UART TX and RX interrupt.
+ *
+ * @param[in] cmd
+ *   Pointer to the command to send.
+ *
+ * @param[in] timeout_ms
+ *    Timeout for the command in milliseconds.
+ *
+ * @return
+ *   SL_STATUS_OK if there are no errors.
+ *   SL_STATUS_INVALID_PARAMETER if cmd == NULL.
+ ******************************************************************************/
 sl_status_t at_platform_send_cmd(uint8_t *cmd, uint16_t timeout_ms);
 
 /**************************************************************************//**

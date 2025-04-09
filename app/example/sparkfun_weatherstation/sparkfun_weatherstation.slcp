@@ -49,7 +49,7 @@ toolchain_settings:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 4.1.0
+  version: 4.1.1
 
 other_file:
   - path: ../../documentation/example/sparkfun_weatherstation/image/create_example.png
