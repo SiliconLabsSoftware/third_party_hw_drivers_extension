@@ -6,8 +6,8 @@ This project aims to show the hardware driver that is used to interface with the
 
 This driver has the related drivers, which may be worth reading before. Find them here:
 
-- [SCD41 - HVAC Click (Mikroe)](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/app/documentation/example/mikroe_hvac_scd41)
-- [SPS30 - Particulate Matter Sensor (Sparkfun) - I2C](https://github.com/SiliconLabs/third_party_hw_drivers_extension/tree/master/app/documentation/example/sparkfun_particulate_matter_sensor_sps30)
+- [SCD41 - HVAC Click (Mikroe)](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/blob/master/app/documentation/example/mikroe_hvac_scd41)
+- [SPS30 - Particulate Matter Sensor (Sparkfun) - I2C](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/tree/master/app/documentation/example/sparkfun_particulate_matter_sensor_sps30)
 
 ## Required Hardware ##
 
@@ -41,6 +41,13 @@ This driver has the related drivers, which may be worth reading before. Find the
 ## Setup ##
 
 You can either create a project based on an example project or start with an empty example project.
+
+> [!IMPORTANT]
+> - Make sure that the [Third Party Hardware Drivers](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) extension is installed as part of the SiSDK. If not, follow [this documentation](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+> - **Third Party Hardware Drivers** extension must be enabled for the project to install the required components from this extension.
+
+> [!TIP]
+> To show all components in the **Third Party Hardware Drivers** extension, the **Evaluation** quality must be enabled in the Software Component view.
 
 ### Create a project based on an example project ###
 
@@ -88,12 +95,6 @@ You can either create a project based on an example project or start with an emp
 
 5. Build and flash this example to the board.
 
-**Note:**
-
-- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
-
-- **Third Party Hardware Drivers** extension must be enabled for the project to install the "SCD41 & SPS30 - HVAC Click Bundle (Mikroe)" component.
-
 ## How It Works ##
 
 After initializing, the program will measure the Carbon Dioxide concentration, temperature, relative humidity, and other particle concentrations such as (pm1.0, pm2.5, pm4.0, pm10.0 ...). Use Putty/Tera Term (or another program) to read the values of the serial output. You should expect a similar output to the one below.
@@ -104,6 +105,6 @@ There is a periodic timer in the code, which determines the sampling intervals; 
 
 ## Report Bugs & Get Support ##
 
-To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
+To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
 
-Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo.
+Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo.

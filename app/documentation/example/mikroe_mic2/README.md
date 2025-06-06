@@ -38,6 +38,13 @@ This example can be used to determine the sound intensity of your location. The 
 
 You can either create a project based on an example project or start with an empty example project.
 
+> [!IMPORTANT]
+> - Make sure that the [Third Party Hardware Drivers](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) extension is installed as part of the SiSDK. If not, follow [this documentation](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+> - **Third Party Hardware Drivers** extension must be enabled for the project to install the required components from this extension.
+
+> [!TIP]
+> To show all components in the **Third Party Hardware Drivers** extension, the **Evaluation** quality must be enabled in the Software Component view.
+
 1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **"mic 2"**.
 
 2. Click **Create** button on the **Third Party Hardware Drivers - MIC 2 Click (Mikroe)** example. Example project creation dialog pops up -> click Create and Finish and Project should be generated.
@@ -79,12 +86,6 @@ You can either create a project based on an example project or start with an emp
 
 5. Build and flash this example to the board.
 
-**Note:**
-
-- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
-
-- **Third Party Hardware Drivers** extension must be enabled for the project to install the "MIC 2 Click (Mikroe)" component.
-
 ## How It Works ##
 
 ### Driver Layer Diagram ###
@@ -105,6 +106,6 @@ You can launch Console that's integrated into Simplicity Studio or use a third-p
 
 ## Report Bugs & Get Support ##
 
-To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
+To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
 
-Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo.
+Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo.

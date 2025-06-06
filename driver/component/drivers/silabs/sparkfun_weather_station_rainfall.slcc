@@ -34,12 +34,15 @@ config_file:
   - path: public/silabs/weather_station_rainfall/config/brd2703a/sparkfun_weather_station_rainfall_config.h
     file_id: sparkfun_weather_station_rainfall_config
     condition: [brd2703a]
+  - path: public/silabs/weather_station_rainfall/config/brd2710a/sparkfun_weather_station_rainfall_config.h
+    file_id: sparkfun_weather_station_rainfall_config
+    condition: [brd2710a]
   - path: public/silabs/weather_station_rainfall/config/brd4338a/sparkfun_weather_station_rainfall_config.h
     file_id: sparkfun_weather_station_rainfall_config
     condition: [brd4338a]
   - path: public/silabs/weather_station_rainfall/config/other/sparkfun_weather_station_rainfall_config.h
     file_id: sparkfun_weather_station_rainfall_config
-    unless: [brd2605a, brd2703a, brd4338a]
+    unless: [brd2605a, brd2703a, brd4338a, brd2710a]
 include:
   - path: public/silabs/weather_station_rainfall/inc
     file_list:

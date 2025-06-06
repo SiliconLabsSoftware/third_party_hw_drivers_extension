@@ -56,6 +56,13 @@ For more information about the SparkFun Weather Meter Kit, see the [specificatio
 
 You can either create a project based on an example project or start with an empty example project.
 
+> [!IMPORTANT]
+> - Make sure that the [Third Party Hardware Drivers](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) extension is installed as part of the SiSDK. If not, follow [this documentation](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+> - **Third Party Hardware Drivers** extension must be enabled for the project to install the required components from this extension.
+
+> [!TIP]
+> To show all components in the **Third Party Hardware Drivers** extension, the **Evaluation** quality must be enabled in the Software Component view.
+
 ### Create a project based on an example project ###
 
 1. From the Launcher Home, add your board to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project with filter "weather".
@@ -73,37 +80,31 @@ You can either create a project based on an example project or start with an emp
 
 3. Install the software components:
 
-  - Open the .slcp file in the project.
+   - Open the .slcp file in the project.
 
-  - Select the SOFTWARE COMPONENTS tab.
+   - Select the SOFTWARE COMPONENTS tab.
 
-  - Select Third Party Hardware Drivers and click **Enable Extension**
+   - Select Third Party Hardware Drivers and click **Enable Extension**
 
-  - Install the following components:
+   - Install the following components:
 
-    **If the Explorer Kit is used:**
+     **If the Explorer Kit is used:**
 
-    - [Services] → [Timers] → [Sleep Timer]
-    - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
-    - [Third Party] → [Tiny printf]
-    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Rainfall (Sparkfun)]
-    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Direction (Sparkfun)]
-    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Speed (Sparkfun)]
-     
-    **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
+     - [Services] → [Timers] → [Sleep Timer]
+     - [Services] → [IO Stream] → [IO Stream: EUSART] → default instance name: vcom
+     - [Third Party] → [Tiny printf]
+     - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Rainfall (Sparkfun)]
+     - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Direction (Sparkfun)]
+     - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Speed (Sparkfun)]
 
-    - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
-    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Rainfall (Sparkfun)]
-    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Direction (Sparkfun)]
-    - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Speed (Sparkfun)]
+     **If the SiWx917 Wi-Fi 6 and Bluetooth LE 8 MB Flash SoC Pro Kit is used:**
 
-5. Build and flash the project to your device.
+     - [WiSeConnect 3 SDK] → [Device] → [Si91x] → [MCU] → [Service] → [Sleep Timer for Si91x]
+     - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Rainfall (Sparkfun)]
+     - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Direction (Sparkfun)]
+     - [Third Party Hardware Drivers] → [Sensors] → [Weather Meter Kit - Wind Speed (Sparkfun)]
 
-**Note:**
-
-- Make sure that the SDK extension has already been installed.. If not, please follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
-
-- SDK Extension must be enabled for the project to install "Qwiic Keypad (Sparkfun)" component.
+4. Build and flash the project to your device.
 
 ## How It Works ##
 
@@ -143,6 +144,6 @@ This example periodically reads the measured values from the sensors. Follow the
 
 ## Report Bugs & Get Support ##
 
-To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
+To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
 
-Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo.
+Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo.

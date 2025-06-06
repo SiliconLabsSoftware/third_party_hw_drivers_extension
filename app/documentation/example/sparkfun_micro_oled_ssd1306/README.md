@@ -8,7 +8,8 @@ The SparkFun Micro OLED Breakout (Qwiic) board carries a monochrome, 64 x 48px a
 
 For more information about the SSD1306 controller, see the [specification page](https://cdn.sparkfun.com/assets/learn_tutorials/3/0/8/SSD1306.pdf).
 
->Please note that this is a monochrome OLED driver.
+> [!NOTE]
+> This is a monochrome OLED driver.
 
 ## Quick Look Video ##
 
@@ -37,7 +38,8 @@ For more information about the SSD1306 controller, see the [specification page](
   | I2C_SDA      | ULP_GPIO_6 [EXP_16] | Qwiic cable  | SDA                |
   | I2C_SCL      | ULP_GPIO_7 [EXP_15] | Qwiic cable  | SCL                |
 
-**Note:** There are several jumpers on *SparkFun Micro OLED Breakout (Qwiic) board* that can be changed to facilitate several different functions. The first of which is the ADDR jumper. The ADDR jumper can be used to change the I2C address of the board. The default jumper is open by default, pulling the address pin high and giving us an I2C address of 0X3D. Closing this jumper will ground the address pin, giving us an I2C address of 0X3C.
+> [!TIP]
+> There are several jumpers on *SparkFun Micro OLED Breakout (Qwiic) board* that can be changed to facilitate several different functions. The first of which is the ADDR jumper. The ADDR jumper can be used to change the I2C address of the board. The default jumper is open by default, pulling the address pin high and giving us an I2C address of 0X3D. Closing this jumper will ground the address pin, giving us an I2C address of 0X3C.
 
 The second of which is the I2C pull-up jumper. If multiple boards are connected to the I2C bus, the equivalent resistance goes down, increasing your pull-up strength. If multiple boards are connected on the same bus, make sure only one board has the pull-up resistors connected.
 
@@ -45,7 +47,14 @@ The second of which is the I2C pull-up jumper. If multiple boards are connected 
 
 ## Setup ##
 
-To test this application, you should connect your board to the PC using a micro USB cable.
+You can either create a project based on an example project or start with an empty example project.
+
+> [!IMPORTANT]
+> - Make sure that the [Third Party Hardware Drivers](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) extension is installed as part of the SiSDK. If not, follow [this documentation](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+> - **Third Party Hardware Drivers** extension must be enabled for the project to install the required components from this extension.
+
+> [!TIP]
+> To show all components in the **Third Party Hardware Drivers** extension, the **Evaluation** quality must be enabled in the Software Component view.
 
 ### Create a project based on an example project ###
 
@@ -86,12 +95,6 @@ To test this application, you should connect your board to the PC using a micro 
 
 4. Build and flash the project to your device.
 
-**Note:**
-
-- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
-
-- **Third Party Hardware Drivers** extension must be enabled for the project to install "SSD1306 - Micro OLED Breakout (Sparkfun) - I2C" component.
-
 ## How It Works ##
 
 After initialization, the OLED displays the text with the font 6x8. If Button 0 is pressed the OLED will display an image with some graphic effects.
@@ -102,6 +105,6 @@ The OLED display will look something like the GIF below.
 
 ## Report Bugs & Get Support ##
 
-To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
+To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
 
-Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo.
+Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo.

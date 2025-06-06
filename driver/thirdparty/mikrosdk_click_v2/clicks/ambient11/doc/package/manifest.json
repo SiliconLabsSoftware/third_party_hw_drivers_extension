@@ -1,0 +1,22 @@
+{
+    "display_name": "Ambient 11 Click",
+    "name": "mikroe.click.ambient11",
+    "type": "click",
+    "version": "2.2.0",
+    "pid": "MIKROE-3990",
+    "package_changed": true,
+    "contents": {
+        "examples": [
+            {
+                "path": "Ambient 11 Click/examples/example"
+            }
+        ],
+        "libraries": [
+            {
+                "alias": "Click.Ambient11",
+                "subdir_name": "lib_ambient11",
+                "path": "Ambient 11 Click/data/lib_ambient11"
+            }
+        ]
+    }
+}

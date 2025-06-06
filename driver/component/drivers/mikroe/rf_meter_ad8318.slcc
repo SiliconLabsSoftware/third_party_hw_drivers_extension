@@ -5,23 +5,18 @@ description: >
   Driver for the Mikroe RF Meter Click board.
 category: Sensors
 quality: evaluation
-
 ui_hints:
   visibility: basic
 root_path: driver
-
 requires:
   - name: mikroe_peripheral_driver_spi
   - name: status
-
 provides:
   - name: mirkoe_rf_meter
     allow_multiple: false
-
 template_contribution:
   - name: component_catalog
     value: rf_meter_ad8318
-
 config_file:
   - path: public/mikroe/rf_meter_ad8318/config/mikroe_ad8318_config.h
     file_id: mikroe_ad8318_config_id
@@ -32,7 +27,6 @@ include:
   - path: public/mikroe/rf_meter_ad8318/inc
     file_list:
       - path: mikroe_ad8318.h
-
 source:
   - path: thirdparty/mikrosdk_click_v2/clicks/rfmeter/lib_rfmeter/src/rfmeter.c
   - path: public/mikroe/rf_meter_ad8318/src/mikroe_ad8318.c

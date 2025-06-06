@@ -56,7 +56,7 @@ define:
 
 sdk_extension:
   - id: third_party_hw_drivers
-    version: 4.1.1
+    version: 4.2.0
 
 ui_hints:
   highlight:

@@ -16,6 +16,9 @@ config_file:
   - path: public/mikroe/co_mq7/config/brd2703a/mikroe_mq7_config.h
     file_id: driver_config_co
     condition: [brd2703a]
+  - path: public/mikroe/co_mq7/config/brd2710a/mikroe_mq7_config.h
+    file_id: driver_config_co
+    condition: [brd2710a]
   - path: public/mikroe/co_mq7/config/brd4108a/mikroe_mq7_config.h
     file_id: driver_config_co
     condition: [brd4108a]
@@ -27,7 +30,7 @@ config_file:
     condition: [device_si91x]
   - path: public/mikroe/co_mq7/config/other/mikroe_mq7_config.h
     file_id: driver_config_co
-    unless: [brd4314a, brd4108a, brd2703a, device_si91x]
+    unless: [brd4314a, brd4108a, brd2703a, device_si91x, brd2710a]
 template_contribution:
   - name: component_catalog
     value: mikroe_co

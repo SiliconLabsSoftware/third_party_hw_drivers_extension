@@ -2,7 +2,7 @@
 
 ## Adding SDK Extensions for Hardware Drivers
 
-You can find the Third Party Hardware Drivers GSDK Extension at Github, as a first step you should clone the repository to your local computer.
+You can find the Third Party Hardware Drivers Extension at Github, as a first step you should clone the repository to your local computer.
 
 You can follow this step-by-step guide to install and use the extension or watch a guideline video showing the same steps.
 
@@ -12,7 +12,7 @@ You can follow this step-by-step guide to install and use the extension or watch
 
   It is up to you to choose a folder on your computer to clone the repository into.
 
-  > git clone https://github.com/SiliconLabs/third_party_hw_drivers_extension.git
+  > git clone https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension.git
 
 * **STEP 2** Open Simplicity Studio and go to Window/Preferences
 

@@ -88,7 +88,7 @@ extern "C"
 #define DCMOTOR29_CS_PORT                        SL_GPIO_PORT_C
 #endif
 #ifndef DCMOTOR29_CS_PIN
-#define DCMOTOR29_CS_PIN                         3
+#define DCMOTOR29_CS_PIN                         0
 #endif
 // [GPIO_DCMOTOR29_CS]$
 

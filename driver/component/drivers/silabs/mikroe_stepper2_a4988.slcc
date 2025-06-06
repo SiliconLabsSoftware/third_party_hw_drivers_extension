@@ -16,6 +16,9 @@ config_file:
   - path: public/silabs/stepper2_a4988/config/brd2703a/mikroe_a4988_config.h
     file_id: driver_config_stepper2
     condition: [brd2703a]
+  - path: public/silabs/stepper2_a4988/config/brd2710a/mikroe_a4988_config.h
+    file_id: driver_config_stepper2
+    condition: [brd2710a]
   - path: public/silabs/stepper2_a4988/config/brd4108a/mikroe_a4988_config.h
     file_id: driver_config_stepper2
     condition: [brd4108a]
@@ -30,7 +33,7 @@ config_file:
     condition: [brd2605a]
   - path: public/silabs/stepper2_a4988/config/other/mikroe_a4988_config.h
     file_id: driver_config_stepper2
-    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a, brd2710a]
 provides:
   - name: mikroe_stepper2_a4988
     allow_multiple: false

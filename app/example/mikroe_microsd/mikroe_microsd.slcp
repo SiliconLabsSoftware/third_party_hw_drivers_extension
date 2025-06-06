@@ -29,7 +29,7 @@ component:
   - id: app_log
   - id: app_assert
   - id: sleeptimer
-  - id: iostream_usart
+  - id: iostream_uesart
     instance: [vcom]
   - id: services_fatfs
     from: third_party_hw_drivers
@@ -41,7 +41,7 @@ define:
 
 sdk_extension:
   - id: third_party_hw_drivers
-    version: 4.1.1
+    version: 4.2.0
 
 readme:
   - path: ../../documentation/example/mikroe_microsd/README.md

@@ -5,21 +5,21 @@ description: >
   Driver for the Mikroe Servo Click board.
 category: Motor Control
 quality: evaluation
-
 ui_hints:
   visibility: basic
 root_path: driver
-
 requires:
   - name: mikroe_peripheral_driver_i2c
   - name: mikroe_peripheral_driver_digital_io
   - name: status
   - name: sleeptimer
-
 config_file:
   - path: public/mikroe/servo_pca9685/config/brd2703a/mikroe_servo_config.h
     file_id: driver_config_servo
     condition: [brd2703a]
+  - path: public/mikroe/servo_pca9685/config/brd2710a/mikroe_servo_config.h
+    file_id: driver_config_servo
+    condition: [brd2710a]
   - path: public/mikroe/servo_pca9685/config/brd4108a/mikroe_servo_config.h
     file_id: driver_config_servo
     condition: [brd4108a]
@@ -34,16 +34,13 @@ config_file:
     condition: [brd4338a]
   - path: public/mikroe/servo_pca9685/config/other/mikroe_servo_config.h
     file_id: driver_config_servo
-    unless: [brd2703a, brd4108a, brd4314a, brd2605a, brd4338a]
-
+    unless: [brd2703a, brd4108a, brd4314a, brd2605a, brd4338a, brd2710a]
 provides:
   - name: servo_pca9685
     allow_multiple: false
-
 template_contribution:
   - name: component_catalog
     value: servo_pca9685
-
 include:
   - path: inc
     file_list:
@@ -54,7 +51,6 @@ include:
   - path: public/mikroe/servo_pca9685/inc
     file_list:
       - path: mikroe_pca9685.h
-
 source:
   - path: thirdparty/mikrosdk_click_v2/clicks/servo/lib_servo/src/servo.c
   - path: public/mikroe/servo_pca9685/src/mikroe_pca9685.c

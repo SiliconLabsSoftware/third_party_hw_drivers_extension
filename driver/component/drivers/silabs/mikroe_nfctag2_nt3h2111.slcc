@@ -8,7 +8,6 @@ quality: evaluation
 ui_hints:
   visibility: basic
 root_path: driver
-
 requires:
   - name: status
   - name: sleeptimer
@@ -17,7 +16,6 @@ requires:
 recommends:
   - id: i2cspm
     instance: [mikroe]
-
 config_file:
   - path: public/silabs/nfctag2_nt3h2111/config/brd4314a/mikroe_nt3h2111_config.h
     file_id: driver_config_nt3h2111
@@ -25,6 +23,9 @@ config_file:
   - path: public/silabs/nfctag2_nt3h2111/config/brd4108a/mikroe_nt3h2111_config.h
     file_id: driver_config_nt3h2111
     condition: [brd4108a]
+  - path: public/silabs/nfctag2_nt3h2111/config/brd2710a/mikroe_nt3h2111_config.h
+    file_id: driver_config_nt3h2111
+    condition: [brd2710a]
   - path: public/silabs/nfctag2_nt3h2111/config/brd2703a/mikroe_nt3h2111_config.h
     file_id: driver_config_nt3h2111
     condition: [brd2703a]
@@ -36,19 +37,15 @@ config_file:
     condition: [brd4338a]
   - path: public/silabs/nfctag2_nt3h2111/config/other/mikroe_nt3h2111_config.h
     file_id: driver_config_nt3h2111
-    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
-
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a, brd2710a]
 provides:
   - name: mikroe_nfctag2
-
 template_contribution:
   - name: component_catalog
     value: mikroe_nfctag2
-
 include:
   - path: public/silabs/nfctag2_nt3h2111/inc
     file_list:
       - path: mikroe_nt3h2111.h
-
 source:
   - path: public/silabs/nfctag2_nt3h2111/src/mikroe_nt3h2111.c

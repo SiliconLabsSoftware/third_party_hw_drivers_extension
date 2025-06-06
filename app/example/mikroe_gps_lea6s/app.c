@@ -87,6 +87,8 @@ void app_process_action(void)
 {
   uint16_t len;
   static uint16_t index = 0;
+  char *ptr = NULL;
+  char *ptr2 = NULL;
 
   if (index == sizeof(uart_rx_buffer) - 1) {
     index = 0;
@@ -95,8 +97,10 @@ void app_process_action(void)
   if ((len > 0) && (stt == SL_STATUS_OK)) {
     index += len;
     uart_rx_buffer[index] = '\0';
-    char *ptr = strchr((char *)uart_rx_buffer, '$');
-    char *ptr2 = strchr((char *)ptr, '\n');
+    ptr = strchr((char *)uart_rx_buffer, '$');
+    if (ptr) {
+      ptr2 = strchr((char *)ptr, '\n');
+    }
     if (ptr && ptr2) {
       index = 0;
       parser_application((uint8_t *)ptr);

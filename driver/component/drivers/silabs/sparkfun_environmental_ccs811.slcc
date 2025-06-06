@@ -24,6 +24,9 @@ config_file:
   - path: public/silabs/environmental_bme280_ccs811/config/brd2703a/sparkfun_ccs811_config.h
     file_id: sparkfun_ccs811_config
     condition: [brd2703a]
+  - path: public/silabs/environmental_bme280_ccs811/config/brd2710a/sparkfun_ccs811_config.h
+    file_id: sparkfun_ccs811_config
+    condition: [brd2710a]
   - path: public/silabs/environmental_bme280_ccs811/config/brd2704a/sparkfun_ccs811_config.h
     file_id: sparkfun_ccs811_config
     condition: [brd2704a]
@@ -41,7 +44,7 @@ config_file:
     condition: [brd2605a]
   - path: public/silabs/environmental_bme280_ccs811/config/other/sparkfun_ccs811_config.h
     file_id: sparkfun_ccs811_config
-    unless: [brd2601b, brd2703a, brd2704a, brd4108a, brd4314a, brd4338a, brd2605a]
+    unless: [brd2601b, brd2703a, brd2704a, brd4108a, brd4314a, brd4338a, brd2605a, brd2710a]
 include:
   - path: public/silabs/environmental_bme280_ccs811/inc
     file_list:

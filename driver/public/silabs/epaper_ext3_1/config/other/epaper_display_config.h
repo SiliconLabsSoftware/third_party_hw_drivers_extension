@@ -4,7 +4,7 @@
  * @version 1.0.0
  *******************************************************************************
  * # License
- * <b>Copyright 2022 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -43,8 +43,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "em_gpio.h"
 
 #define EPD_TYPE                    0x580B
 #define EPD_VERTICAL                256

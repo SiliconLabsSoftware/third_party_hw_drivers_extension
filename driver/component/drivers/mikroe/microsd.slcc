@@ -13,6 +13,9 @@ config_file:
   - path: public/mikroe/microsd/config/brd2703a/mikroe_microsd_config.h
     file_id: driver_config_microsd
     condition: [brd2703a]
+  - path: public/mikroe/microsd/config/brd2710a/mikroe_microsd_config.h
+    file_id: driver_config_microsd
+    condition: [brd2710a]
   - path: public/mikroe/microsd/config/brd4108a/mikroe_microsd_config.h
     file_id: driver_config_microsd
     condition: [brd4108a]
@@ -27,7 +30,7 @@ config_file:
     condition: [brd4338a]
   - path: public/mikroe/microsd/config/other/mikroe_microsd_config.h
     file_id: driver_config_microsd
-    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a, brd2710a]
 template_contribution:
   - name: component_catalog
     value: fatfs_storage_device_sdcard

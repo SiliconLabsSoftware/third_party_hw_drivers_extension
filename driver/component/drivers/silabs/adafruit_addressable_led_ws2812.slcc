@@ -1,0 +1,27 @@
+id: adafruit_addressable_led_ws2812
+package: third_party_hw_drivers
+label: WS2812 - Addressable LED (Adafruit)
+description: >
+  Driver for the Adafruit WS2812 Addressable LED.
+category: Display & LED
+quality: evaluation
+root_path: driver
+requires:
+  - name: status
+  - name: mikroe_peripheral_driver_spi
+config_file:
+  - path: public/silabs/addressable_led_ws2812/config/adafruit_ws2812_config.h
+    file_id: adafruit_ws2812_config
+template_contribution:
+  - name: component_catalog
+    value: adafruit_addressable_led_ws2812
+provides:
+  - name: adafruit_addressable_led_ws2812
+    allow_multiple: false
+include:
+  - path: public/silabs/addressable_led_ws2812/inc
+    file_list:
+      - path: adafruit_ws2812.h
+      - path: adafruit_ws2812_color.h
+source:
+  - path: public/silabs/addressable_led_ws2812/src/adafruit_ws2812.c

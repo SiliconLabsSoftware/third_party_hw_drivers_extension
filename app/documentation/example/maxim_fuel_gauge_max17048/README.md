@@ -38,11 +38,19 @@ We can use some [Wire Jumpers Female to Female](https://www.mikroe.com/wire-jump
 | PK+                                |  BAT+                |
 | PK-                                |  BAT-                |
 
-**Note:** The MAX17048 EV kit is set by default to evaluate 1-cell Li+ batteries. LDO U2 is provided so that only a single supply is needed to power the EV kit in the case a 2-cell battery is used. When evaluating the MAX17048, set jumper JU1 to pins 1-2 and remove any shunt installed on JU2 to bypass the LDO.
+> [!NOTE]
+> The MAX17048 EV kit is set by default to evaluate 1-cell Li+ batteries. LDO U2 is provided so that only a single supply is needed to power the EV kit in the case a 2-cell battery is used. When evaluating the MAX17048, set jumper JU1 to pins 1-2 and remove any shunt installed on JU2 to bypass the LDO.
 
 ## Setup ##
 
 You can either create a project based on an example project or start with an empty example project.
+
+> [!IMPORTANT]
+> - Make sure that the [Third Party Hardware Drivers](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) extension is installed as part of the SiSDK. If not, follow [this documentation](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+> - **Third Party Hardware Drivers** extension must be enabled for the project to install the required components from this extension.
+
+> [!TIP]
+> To show all components in the **Third Party Hardware Drivers** extension, the **Evaluation** quality must be enabled in the Software Component view.
 
 ### Create a project based on an example project ###
 
@@ -89,17 +97,12 @@ You can either create a project based on an example project or start with an emp
 
 4. Build and flash this example to the board.
 
-**Note:**
-
-- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
-
-- **Third Party Hardware Drivers** extension must be enabled for the project to install "MAX17048 - MAX17048EVKIT Evaluation Kits (Maxim)" component.
-
 ## How It Works ##
 
 ### API overview ###
 
-**Note:** When Power Manager is used, I2C transfers to and from the MAX17048 are always complete because the driver adds a Power Manager requirement that prevents EM2 or EM3 entry. In cases where Power Manager is not used, it may be desirable to mark sections of code that call driver functions as atomic or critical if an interrupt can cause entry into EM2 or EM3.
+> [!NOTE]
+> When Power Manager is used, I2C transfers to and from the MAX17048 are always complete because the driver adds a Power Manager requirement that prevents EM2 or EM3 entry. In cases where Power Manager is not used, it may be desirable to mark sections of code that call driver functions as atomic or critical if an interrupt can cause entry into EM2 or EM3.
 
 The APIs of the driver can be grouped into as follows:
 
@@ -434,6 +437,6 @@ Below is the console output of the example application. The message is sent to t
 
 ## Report Bugs & Get Support ##
 
-To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
+To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
 
-Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo.
+Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo.

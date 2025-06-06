@@ -7,24 +7,23 @@ quality: evaluation
 ui_hints:
   visibility: basic
 root_path: driver
-
 requires:
   - name: status
   - name: sleeptimer
   - name: mikroe_peripheral_driver_digital_io
   - name: mikroe_peripheral_driver_i2c
-
 provides:
   - name: mikroe_pcr_xm125
-
 template_contribution:
   - name: component_catalog
     value: mikroe_pcr_xm125
-
 config_file:
   - path: public/mikroe/pcr_xm125/config/brd2703a/mikroe_xm125_config.h
     file_id: mikroe_xm125_config
     condition: [brd2703a]
+  - path: public/mikroe/pcr_xm125/config/brd2710a/mikroe_xm125_config.h
+    file_id: mikroe_xm125_config
+    condition: [brd2710a]
   - path: public/mikroe/pcr_xm125/config/brd4108a/mikroe_xm125_config.h
     file_id: mikroe_xm125_config
     condition: [brd4108a]
@@ -39,7 +38,7 @@ config_file:
     condition: [brd4338a]
   - path: public/mikroe/pcr_xm125/config/other/mikroe_xm125_config.h
     file_id: mikroe_xm125_config
-    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a, brd2710a]
 include:
   - path: inc
     file_list:

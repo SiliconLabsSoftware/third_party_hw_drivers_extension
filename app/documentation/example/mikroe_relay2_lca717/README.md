@@ -33,6 +33,13 @@ Relay 2 click is a dual relay click board™, equipped with two single-pole soli
 
 You can either create a project based on an example project or start with an empty example project.
 
+> [!IMPORTANT]
+> - Make sure that the [Third Party Hardware Drivers](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) extension is installed as part of the SiSDK. If not, follow [this documentation](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+> - **Third Party Hardware Drivers** extension must be enabled for the project to install the required components from this extension.
+
+> [!TIP]
+> To show all components in the **Third Party Hardware Drivers** extension, the **Evaluation** quality must be enabled in the Software Component view.
+
 ### Create a project based on an example project ###
 
 1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by **"relay"**.
@@ -72,12 +79,6 @@ You can either create a project based on an example project or start with an emp
            ![config](image/configuration_si91x.png)
 
 4. Build and flash this example to the board.
-
-**Note:**
-
-- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
-
-- **Third Party Hardware Drivers** extension must be enabled for the project to install "LCA717 - Relay 2 Click (Mikroe)" component.
 
 ## How It Works ##
 

@@ -15,6 +15,9 @@ config_file:
   - path: public/mikroe/brushless16_lb11685av/config/brd2703a/mikroe_lb11685av_config.h
     file_id: driver_config_brushless16
     condition: [brd2703a]
+  - path: public/mikroe/brushless16_lb11685av/config/brd2710a/mikroe_lb11685av_config.h
+    file_id: driver_config_brushless16
+    condition: [brd2710a]
   - path: public/mikroe/brushless16_lb11685av/config/brd4108a/mikroe_lb11685av_config.h
     file_id: driver_config_brushless16
     condition: [brd4108a]
@@ -29,7 +32,7 @@ config_file:
     condition: [brd4338a]
   - path: public/mikroe/brushless16_lb11685av/config/other/mikroe_lb11685av_config.h
     file_id: driver_config_brushless16
-    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a, brd2710a]
 template_contribution:
   - name: component_catalog
     value: mikroe_brushless16

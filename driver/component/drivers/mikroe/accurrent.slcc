@@ -18,6 +18,9 @@ config_file:
   - path: public/mikroe/accurrent/config/brd2703a/mikroe_accurrent_config.h
     file_id: driver_config_accurrent
     condition: [brd2703a]
+  - path: public/mikroe/accurrent/config/brd2710a/mikroe_accurrent_config.h
+    file_id: driver_config_accurrent
+    condition: [brd2710a]
   - path: public/mikroe/accurrent/config/brd4314a/mikroe_accurrent_config.h
     file_id: driver_config_accurrent
     condition: [brd4314a]
@@ -29,7 +32,7 @@ config_file:
     condition: [brd4338a]
   - path: public/mikroe/accurrent/config/other/mikroe_accurrent_config.h
     file_id: driver_config_accurrent
-    unless: [brd4314a, brd2703a, brd4108a, brd2605a, brd4338a]
+    unless: [brd4314a, brd2703a, brd4108a, brd2605a, brd4338a, brd2710a]
 template_contribution:
   - name: component_catalog
     value: accurrent

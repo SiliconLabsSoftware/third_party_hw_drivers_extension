@@ -33,9 +33,12 @@ config_file:
   - path: public/silabs/epaper_ext3_1/config/brd2703a/epaper_display_config.h
     file_id: epaper_display_config
     condition: [brd2703a]
-  - path: public/silabs/epaper_ext3_1/config/brd4314a/epaper_display_config.h
+  - path: public/silabs/epaper_ext3_1/config/brd2710a/epaper_display_config.h
     file_id: epaper_display_config
-    condition: [brd4314a]
+    condition: [brd2710a]
+  - path: public/silabs/epaper_ext3_1/config/brd4108a/epaper_display_config.h
+    file_id: epaper_display_config
+    condition: [brd4108a]
   - path: public/silabs/epaper_ext3_1/config/brd4314a/epaper_display_config.h
     file_id: epaper_display_config
     condition: [brd4314a]
@@ -47,7 +50,7 @@ config_file:
     condition: [brd4338a]
   - path: public/silabs/epaper_ext3_1/config/other/epaper_display_config.h
     file_id: epaper_display_config
-    unless: [brd4314a, brd2703a, brd2605a, brd4338a]
+    unless: [brd4314a, brd2703a, brd2605a, brd4338a, brd4108a, brd2710a]
 template_contribution:
   - name: component_catalog
     value: epaper_ext3_1

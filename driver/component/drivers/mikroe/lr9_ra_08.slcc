@@ -20,6 +20,9 @@ config_file:
   - path: public/mikroe/lr9_ra_08/config/brd2703a/mikroe_ra_08_config.h
     file_id: driver_config_ra_08
     condition: [brd2703a]
+  - path: public/mikroe/lr9_ra_08/config/brd2710a/mikroe_ra_08_config.h
+    file_id: driver_config_ra_08
+    condition: [brd2710a]
   - path: public/mikroe/lr9_ra_08/config/brd4108a/mikroe_ra_08_config.h
     file_id: driver_config_ra_08
     condition: [brd4108a]
@@ -31,7 +34,7 @@ config_file:
     condition: [brd4338a]
   - path: public/mikroe/lr9_ra_08/config/other/mikroe_ra_08_config.h
     file_id: driver_config_ra_08
-    unless: [brd2605a, brd2703a, brd4108a, brd4314a, brd4338a]
+    unless: [brd2605a, brd2703a, brd4108a, brd4314a, brd4338a, brd2710a]
 provides:
   - name: mikroe_lr9
     allow_multiple: false

@@ -43,7 +43,7 @@ define:
 
 sdk_extension:
   - id: third_party_hw_drivers
-    version: 4.1.1
+    version: 4.2.0
 
 readme:
   - path: ../../documentation/example/sparkfun_human_presence_ak9753/README.md

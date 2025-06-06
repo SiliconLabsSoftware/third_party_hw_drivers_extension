@@ -139,8 +139,8 @@ gps_error_t gps_generic_parser
     uint8_t element, char *parser_buf 
 )
 {    
-    char * start_rsp;
-    char * end_rsp;
+    char * start_rsp = NULL;
+    char * end_rsp = NULL;
     char rsp_buf[ 200 ];
     
     uint8_t element_cnt = 0;
@@ -156,7 +156,17 @@ gps_error_t gps_generic_parser
     }
     
     start_rsp = strstr( rsp, current_cmd_buf );
-    end_rsp = strstr( start_rsp , "\n" );
+    // FIXED GPS
+
+    /* Silabs - 14/4/2025 Fix issue: invalid parameter */
+
+    /* The original function does not check if start_rsp is NULL,
+     * which causes undefined behavior.
+     * This means that the function may crash. */
+    if ( start_rsp )
+    {
+        end_rsp = strstr( start_rsp , "\n" );
+    }
     
     if ( ( end_rsp != 0 ) && ( start_rsp != 0 ) )
     {
@@ -172,7 +182,16 @@ gps_error_t gps_generic_parser
                 element_start++;
             }
         }
-        element_end = strstr( element_start, "," );
+        // FIXED GPS
+
+        /* Silabs - 14/4/2025 Fix issue: invalid parameter */
+
+        /* The original function does not check if element_start is NULL,
+         * which causes undefined behavior.
+         * This means that the function may crash. */
+        if ( element_start ) {
+          element_end = strstr( element_start, "," );
+        }
         
         if ( ( element_start != 0 ) && ( element_end != 0 ) )
         {

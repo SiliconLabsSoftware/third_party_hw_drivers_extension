@@ -14,35 +14,30 @@ config_file:
   - path: public/silabs/tft_lcd_st7789/config/brd2601b/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd2601b]
-
   - path: public/silabs/tft_lcd_st7789/config/brd2703a/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd2703a]
-
+  - path: public/silabs/tft_lcd_st7789/config/brd2710a/adafruit_st7789_spi_config.h
+    file_id: adafruit_st7789_config
+    condition: [brd2710a]
   - path: public/silabs/tft_lcd_st7789/config/brd2704a/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd2704a]
-
   - path: public/silabs/tft_lcd_st7789/config/brd4314a/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd4314a]
-
   - path: public/silabs/tft_lcd_st7789/config/brd4108a/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd4108a]
-
   - path: public/silabs/tft_lcd_st7789/config/brd2605a/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd2605a]
-
   - path: public/silabs/tft_lcd_st7789/config/brd4338a/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
     condition: [brd4338a]
-
   - path: public/silabs/tft_lcd_st7789/config/other/adafruit_st7789_spi_config.h
     file_id: adafruit_st7789_config
-    unless: [brd2601b, brd2703a, brd2704a, brd4314a, brd4108a, brd2605a, brd4338a]
-
+    unless: [brd2601b, brd2703a, brd2704a, brd4314a, brd4108a, brd2605a, brd4338a, brd2710a]
 template_contribution:
   - name: component_catalog
     value: adafruit_tft_lcd_st7789_dma

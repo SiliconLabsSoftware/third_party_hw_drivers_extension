@@ -1630,12 +1630,9 @@ sl_status_t max17048_load_model(const uint8_t *model)
 #endif // SLI_SI917
 #endif // MAX17048_ENABLE_POWER_MANAGER
 
-  if (I2C_MASTER_SUCCESS != i2c_master_write(&fuel_gauge.i2c,
-                                             i2c_write_data,
-                                             sizeof(i2c_write_data))) {
-    return SL_STATUS_TRANSMIT;
-  }
-  return SL_STATUS_OK;
+  status = i2c_master_write(&fuel_gauge.i2c,
+                            i2c_write_data,
+                            sizeof(i2c_write_data));
 
   /*
    * Call sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1)
@@ -1649,6 +1646,10 @@ sl_status_t max17048_load_model(const uint8_t *model)
   sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1);
 #endif // SLI_SI917
 #endif // MAX17048_ENABLE_POWER_MANAGER
+
+  if (status != SL_STATUS_OK) {
+    return status;
+  }
 
   // Lock and load the new model
   buffer[0] = 0x0;

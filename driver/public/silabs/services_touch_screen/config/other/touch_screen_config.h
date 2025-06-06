@@ -42,7 +42,7 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-// <h>Touch settings
+// <h> Touch settings
 
 // <o TOUCHSCREEN_HOR_RES> Touch Screen Horizontal Resolution
 // <i> Default: 240
@@ -71,8 +71,6 @@ extern "C" {
 // <i> Default: 0
 // <d> 0
 #define TOUCHSCREEN_XY_SWAP             0
-
-// </h>
 
 // <o TOUCHSCREEN_X_MIN> Calib X-min
 // <i> Default: 460
@@ -122,4 +120,4 @@ extern "C"
 }
 #endif
 
-#endif /* TOUCH_SCREEN_CONFIG_H_ */
+#endif // TOUCH_SCREEN_CONFIG_H_

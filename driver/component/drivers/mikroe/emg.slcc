@@ -19,6 +19,9 @@ config_file:
   - path: public/mikroe/emg/config/brd2703a/mikroe_emg_config.h
     file_id: driver_config_emg
     condition: [brd2703a]
+  - path: public/mikroe/emg/config/brd2710a/mikroe_emg_config.h
+    file_id: driver_config_emg
+    condition: [brd2710a]
   - path: public/mikroe/emg/config/brd4108a/mikroe_emg_config.h
     file_id: driver_config_emg
     condition: [brd4108a]
@@ -30,7 +33,7 @@ config_file:
     condition: [device_si91x]
   - path: public/mikroe/emg/config/other/mikroe_emg_config.h
     file_id: driver_config_emg
-    unless: [brd2703a, brd4108a, brd4314a, device_si91x]
+    unless: [brd2703a, brd4108a, brd4314a, device_si91x, brd2710a]
 
 provides:
   - name: emg

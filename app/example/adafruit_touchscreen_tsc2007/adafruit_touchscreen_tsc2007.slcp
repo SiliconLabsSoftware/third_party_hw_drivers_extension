@@ -44,7 +44,7 @@ define:
 
 sdk_extension:
   - id: third_party_hw_drivers
-    version: 4.1.1
+    version: 4.2.0
 
 readme:
   - path: ../../documentation/example/adafruit_touchscreen_tsc2007/README.md

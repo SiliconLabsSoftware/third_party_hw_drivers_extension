@@ -108,6 +108,14 @@ void app_init(void)
   app_spi_instance = &gspi_instance;
 #else
   app_spi_instance = sl_spidrv_mikroe_handle;
+
+  /* The MISO pin is driven by a tri-stated output from the SDcard.
+   * Therefore, the MISO pin should be configured as a pull-up input
+   * to hold that input into a known state when the SDcard is not selected.
+   */
+  sl_gpio_t pinport = { sl_spidrv_mikroe_handle->initData.portRx,
+                        sl_spidrv_mikroe_handle->initData.pinRx };
+  sl_gpio_set_pin_mode(&pinport, SL_GPIO_MODE_INPUT_PULL, 1);
 #endif
 
   sd_card_spi_init(app_spi_instance);

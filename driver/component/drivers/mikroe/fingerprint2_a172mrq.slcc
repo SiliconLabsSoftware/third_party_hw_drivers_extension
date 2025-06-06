@@ -16,6 +16,9 @@ config_file:
   - path: public/mikroe/fingerprint2_a172mrq/config/brd2703a/mikroe_a172mrq_config.h
     file_id: driver_config_fingerprint2
     condition: [brd2703a]
+  - path: public/mikroe/fingerprint2_a172mrq/config/brd2710a/mikroe_a172mrq_config.h
+    file_id: driver_config_fingerprint2
+    condition: [brd2710a]
   - path: public/mikroe/fingerprint2_a172mrq/config/brd4108a/mikroe_a172mrq_config.h
     file_id: driver_config_fingerprint2
     condition: [brd4108a]
@@ -30,7 +33,7 @@ config_file:
     condition: [brd4338a]
   - path: public/mikroe/fingerprint2_a172mrq/config/other/mikroe_a172mrq_config.h
     file_id: driver_config_fingerprint2
-    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a, brd2710a]
 provides:
   - name: mikroe_fingerprint2
     allow_multiple: false

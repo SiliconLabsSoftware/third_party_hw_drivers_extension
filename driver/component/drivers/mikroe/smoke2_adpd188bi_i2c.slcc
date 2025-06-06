@@ -16,6 +16,9 @@ config_file:
   - path: public/mikroe/smoke2_adpd188bi/config/brd2703a/mikroe_smoke2_adpd188bi_i2c_config.h
     file_id: driver_config_mikroe_smoke2_adpd188bi
     condition: [brd2703a]
+  - path: public/mikroe/smoke2_adpd188bi/config/brd2710a/mikroe_smoke2_adpd188bi_i2c_config.h
+    file_id: driver_config_mikroe_smoke2_adpd188bi
+    condition: [brd2710a]
   - path: public/mikroe/smoke2_adpd188bi/config/brd4314a/mikroe_smoke2_adpd188bi_i2c_config.h
     file_id: driver_config_mikroe_smoke2_adpd188bi
     condition: [brd4314a]
@@ -30,7 +33,7 @@ config_file:
     condition: [brd4338a]
   - path: public/mikroe/smoke2_adpd188bi/config/other/mikroe_smoke2_adpd188bi_i2c_config.h
     file_id: driver_config_mikroe_smoke2_adpd188bi
-    unless: [brd4314a, brd2703a, brd4108a, brd2605a, brd4338a]
+    unless: [brd4314a, brd2703a, brd4108a, brd2605a, brd4338a, brd2710a]
 provides:
   - name: smoke2_adpd188bi_i2c
     allow_multiple: false

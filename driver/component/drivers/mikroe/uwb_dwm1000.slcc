@@ -8,23 +8,22 @@ quality: evaluation
 ui_hints:
   visibility: basic
 root_path: driver
-
 requires:
   - name: status
   - name: udelay
   - name: mikroe_peripheral_driver_spi
-
 provides:
   - name: mikroe_dwm1000
-
 template_contribution:
   - name: component_catalog
     value: mikroe_dwm1000
-
 config_file:
   - path: public/mikroe/uwb_dwm1000/config/brd2703a/mikroe_uwb_dwm1000_config.h
     file_id: driver_config_dwm1000
     condition: [brd2703a]
+  - path: public/mikroe/uwb_dwm1000/config/brd2710a/mikroe_uwb_dwm1000_config.h
+    file_id: driver_config_dwm1000
+    condition: [brd2710a]
   - path: public/mikroe/uwb_dwm1000/config/brd4108a/mikroe_uwb_dwm1000_config.h
     file_id: driver_config_dwm1000
     condition: [brd4108a]
@@ -39,8 +38,7 @@ config_file:
     condition: [brd4338a]
   - path: public/mikroe/uwb_dwm1000/config/other/mikroe_uwb_dwm1000_config.h
     file_id: driver_config_dwm1000
-    unless: [brd2703a, brd4108a, brd4314a, brd2605a, brd4338a]
-
+    unless: [brd2703a, brd4108a, brd4314a, brd2605a, brd4338a, brd2710a]
 include:
   - path: inc
     file_list:
@@ -52,7 +50,6 @@ include:
   - path: public/mikroe/uwb_dwm1000/inc
     file_list:
       - path: mikroe_uwb_dwm1000.h
-
 source:
   - path: thirdparty/mikrosdk_click_v2/clicks/uwb/lib_uwb/src/uwb.c
   - path: public/mikroe/uwb_dwm1000/src/mikroe_uwb_dwm1000.c

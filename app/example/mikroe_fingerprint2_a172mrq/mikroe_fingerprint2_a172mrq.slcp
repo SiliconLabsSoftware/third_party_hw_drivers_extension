@@ -45,7 +45,7 @@ configuration:
 
 sdk_extension:
 - id: third_party_hw_drivers
-  version: 4.1.1
+  version: 4.1.2
 
 readme:
   - path: ../../documentation/example/mikroe_fingerprint2_a172mrq/README.md

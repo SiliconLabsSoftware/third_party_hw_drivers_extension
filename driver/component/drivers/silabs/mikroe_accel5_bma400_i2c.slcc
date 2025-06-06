@@ -8,24 +8,23 @@ quality: evaluation
 ui_hints:
   visibility: basic
 root_path: driver
-
 requires:
   - name: sleeptimer
   - name: mikroe_peripheral_driver_i2c
   - name: mikroe_peripheral_driver_digital_io
-
 provides:
   - name: mikroe_accel5_bma400_i2c
     allow_multiple: false
-
 template_contribution:
   - name: component_catalog
     value: mikroe_accel5_bma400_i2c
-
 config_file:
   - path: public/silabs/accel5_bma400/config/brd2703a/mikroe_bma400_i2c_config.h
     file_id: driver_config_bma400_i2c
     condition: [brd2703a]
+  - path: public/silabs/accel5_bma400/config/brd2710a/mikroe_bma400_i2c_config.h
+    file_id: driver_config_bma400_i2c
+    condition: [brd2710a]
   - path: public/silabs/accel5_bma400/config/brd4108a/mikroe_bma400_i2c_config.h
     file_id: driver_config_bma400_i2c
     condition: [brd4108a]
@@ -40,18 +39,15 @@ config_file:
     condition: [brd4338a]
   - path: public/silabs/accel5_bma400/config/other/mikroe_bma400_i2c_config.h
     file_id: driver_config_bma400_i2c
-    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
-
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a, brd2710a]
 include:
   - path: public/silabs/accel5_bma400/inc
     file_list:
       - path: mikroe_bma400_i2c.h
-
   - path: thirdparty/boschsensortec/bma400
     file_list:
       - path: bma400_defs.h
       - path: bma400.h
-
 source:
   - path: thirdparty/boschsensortec/bma400/bma400.c
   - path: public/silabs/accel5_bma400/src/mikroe_bma400_i2c.c

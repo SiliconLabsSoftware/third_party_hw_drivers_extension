@@ -16,6 +16,9 @@ config_file:
   - path: public/mikroe/dcmotor3_tb6549fg/config/brd2703a/mikroe_tb6549fg_config.h
     file_id: driver_config_dcmotor3
     condition: [brd2703a]
+  - path: public/mikroe/dcmotor3_tb6549fg/config/brd2710a/mikroe_tb6549fg_config.h
+    file_id: driver_config_dcmotor3
+    condition: [brd2710a]
   - path: public/mikroe/dcmotor3_tb6549fg/config/brd4108a/mikroe_tb6549fg_config.h
     file_id: driver_config_dcmotor3
     condition: [brd4108a]
@@ -30,7 +33,7 @@ config_file:
     condition: [brd4338a]
   - path: public/mikroe/dcmotor3_tb6549fg/config/other/mikroe_tb6549fg_config.h
     file_id: driver_config_dcmotor3
-    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a, brd2710a]
 template_contribution:
   - name: component_catalog
     value: mikroe_dcmotor3

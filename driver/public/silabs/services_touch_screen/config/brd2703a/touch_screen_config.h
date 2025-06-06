@@ -42,11 +42,7 @@ extern "C" {
 
 // <<< Use Configuration Wizard in Context Menu >>>
 
-// <h>Touch settings
-
-// <o TOUCHSCREEN_ADC> ADC module
-// <i> Default: 240
-#define TOUCHSCREEN_ADC                  IADC0
+// <h> Touch settings
 
 // <o TOUCHSCREEN_HOR_RES> Touch Screen Horizontal Resolution
 // <i> Default: 240
@@ -144,4 +140,4 @@ extern "C"
 }
 #endif
 
-#endif /* TOUCH_SCREEN_CONFIG_H_ */
+#endif // TOUCH_SCREEN_CONFIG_H_

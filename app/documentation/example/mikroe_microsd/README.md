@@ -18,11 +18,9 @@ The microSD Click communicates with the target microcontroller over SPI interfac
 
 - 1x [microSD Click board](https://www.mikroe.com/microsd-click)
 
-- 1x microSD card, e.g. [microSD card 32 GB with adapter](https://www.mikroe.com/microsd-32gb)
+- 1x microSD card, e.g. microSD card 32 GB
 
 ## Connections Required ##
-
-**Note:** A pull-up resistor (e.g., 100k) should be placed on the MISO.
 
 - If the BGM220P Explorer Kit is used:
 
@@ -31,6 +29,9 @@ The microSD Click communicates with the target microcontroller over SPI interfac
   ![board](image/board.png)
 
 - If the Wi-Fi Development Kit is used:
+
+> [!IMPORTANT]
+> The MISO pin is driven by a tri-stated output from the SDcard. Therefore, a pull-up resistor (e.g., 100k) should be placed on the MISO pin to hold that input into a known state when the SDcard is not selected.
 
   | Description  | BRD4338A + BRD4002A | BRD2605A     | microSD Click Board |
   | -------------| ------------- | ------------------ | ------------------- |
@@ -43,6 +44,13 @@ The microSD Click communicates with the target microcontroller over SPI interfac
 ## Setup ##
 
 You can either create a project based on an example project or start with an empty example project.
+
+> [!IMPORTANT]
+> - Make sure that the [Third Party Hardware Drivers](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) extension is installed as part of the SiSDK. If not, follow [this documentation](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+> - **Third Party Hardware Drivers** extension must be enabled for the project to install the required components from this extension.
+
+> [!TIP]
+> To show all components in the **Third Party Hardware Drivers** extension, the **Evaluation** quality must be enabled in the Software Component view.
 
 ### Create a project based on an example project ###
 
@@ -70,7 +78,7 @@ You can either create a project based on an example project or start with an emp
 
         - **[Third Party Hardware Drivers] → [Storage] → [microSD - microSD Click (Mikroe)]**
         - **[Third Party Hardware Drivers] → [Storage] → [FatFS - Generic FAT Filesystem]**
-        - **[Services] → [IO Stream] → [IO Stream: USART]** → with the default instance name: **vcom**
+        - **[Services] → [IO Stream] → [IO Stream: EUSART]** → with the default instance name: **vcom**
         - **[Application] → [Utility] → [Log]**
         - **[Application] → [Utility] → [Assert]**
 
@@ -81,12 +89,6 @@ You can either create a project based on an example project or start with an emp
         ![fatfs_config](image/fatfs_config.png)
 
 4. Build and flash the project to your device.
-
-**Note:**
-
-- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
-
-- **Third Party Hardware Drivers** extension must be enabled for the project to install "microSD - microSD Click (Mikroe)" component.
 
 ## How It Works ##
 
@@ -132,6 +134,6 @@ Unmount the SD Card. Use a micro Card Reader to read files from the SD Card on y
 
 ## Report Bugs & Get Support ##
 
-To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
+To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
 
-Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo.
+Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo.

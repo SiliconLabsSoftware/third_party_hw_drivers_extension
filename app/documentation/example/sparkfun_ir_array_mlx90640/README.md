@@ -36,6 +36,13 @@ measurements, thermal leaks in homes, industrial temperature control of moving p
 
 You can either create a project based on an example project or start with an empty example project.
 
+> [!IMPORTANT]
+> - Make sure that the [Third Party Hardware Drivers](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) extension is installed as part of the SiSDK. If not, follow [this documentation](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+> - **Third Party Hardware Drivers** extension must be enabled for the project to install the required components from this extension.
+
+> [!TIP]
+> To show all components in the **Third Party Hardware Drivers** extension, the **Evaluation** quality must be enabled in the Software Component view.
+
 ### Create a project based on an example project ###
 
 1. From the Launcher Home, add your device to My Products, click on it, and click on the **EXAMPLE PROJECTS & DEMOS** tab. Find the example project filtering by *mlx90640*.
@@ -84,13 +91,8 @@ You can either create a project based on an example project or start with an emp
 
 5. Build and flash the project to your device.
 
-**Note:**
-
-- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
-
-- **Third Party Hardware Drivers** extension must be enabled for the project to install "MLX90640 - IR Array Breakout (Sparkfun)" component.
-
-- The driver stores the contents of the EEPROM, so the HEAP and STACK sizes need to be increased. Edit the config/sl_memory_config.h file and increase SL_STACK_SIZE to 10240 and SL_HEAP_SIZE to 6411
+> [!NOTE]
+> The driver stores the contents of the EEPROM, so the HEAP and STACK sizes need to be increased. Edit the config/sl_memory_config.h file and increase SL_STACK_SIZE to 10240 and SL_HEAP_SIZE to 6411
 
 ![memory_config](image/memory_config.png)
 
@@ -98,7 +100,7 @@ You can either create a project based on an example project or start with an emp
 
 ### API Overview ###
 
-[sparkfun_mlx90640.c](https://github.com/SiliconLabs/third_party_hw_drivers_extension/tree/master/driver/public/silabs/ir_array_mlx90640/src/sparkfun_mlx90640.c) - This is the top-level API implementation. The user application should only use the APIs listed below.
+[sparkfun_mlx90640.c](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/tree/master/driver/public/silabs/ir_array_mlx90640/src/sparkfun_mlx90640.c) - This is the top-level API implementation. The user application should only use the APIs listed below.
 
 - `sparkfun_mlx90640_init`: Initialize mlx90640 driver
 
@@ -123,7 +125,7 @@ Initializing the driver and getting a temperature array from the sensor happens 
 ![workflow](image/workflow.png)
 
 Application only needs to call **sparkfun_mlx90640_init** once at startup, then with **sparkfun_mlx90640_get_image_array()** function it's possible to request an array of temperatures for all 768 pixels.
-For more features or possibilities please refer to the API function descriptions found in [sparkfun_mlx90640.h](https://github.com/SiliconLabs/third_party_hw_drivers_extension/tree/master/driver/public/silabs/ir_array_mlx90640/inc/sparkfun_mlx90640.h).
+For more features or possibilities please refer to the API function descriptions found in [sparkfun_mlx90640.h](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/tree/master/driver/public/silabs/ir_array_mlx90640/inc/sparkfun_mlx90640.h).
 
 ## Generating image with Python ##
 
@@ -141,6 +143,6 @@ Then run the script, and the live image will be visible in a new window.
 
 ## Report Bugs & Get Support ##
 
-To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
+To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
 
-Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo.
+Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo.

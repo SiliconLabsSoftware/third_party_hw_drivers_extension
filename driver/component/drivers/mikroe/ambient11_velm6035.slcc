@@ -1,0 +1,33 @@
+id: mikroe_ambient11_veml6035
+package: third_party_hw_drivers
+label: VEML6035 - Ambient 11 Click (Mikroe)
+description: >
+  Driver for the Ambient 11 Click board using I2C interface.
+category: Sensors
+quality: evaluation
+ui_hints:
+  visibility: basic
+root_path: driver
+requires:
+  - name: status
+  - name: mikroe_peripheral_driver_digital_io
+  - name: mikroe_peripheral_driver_i2c
+provides:
+  - name: mikroe_ambient11_veml6035
+    allow_multiple: false
+template_contribution:
+  - name: component_catalog
+    value: mikroe_ambient11_veml6035
+include:
+  - path: inc
+    file_list:
+      - path: third_party_hw_drivers_helpers.h
+  - path: thirdparty/mikrosdk_click_v2/clicks/ambient11/lib/include
+    file_list:
+      - path: ambient11.h
+  - path: public/mikroe/ambient11_veml6035/inc
+    file_list:
+      - path: mikroe_veml6035.h
+source:
+  - path: thirdparty/mikrosdk_click_v2/clicks/ambient11/lib/src/ambient11.c
+  - path: public/mikroe/ambient11_veml6035/src/mikroe_veml6035.c

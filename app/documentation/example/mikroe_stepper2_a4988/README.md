@@ -32,10 +32,16 @@ The Stepper 2 Click Board™ supports MikroBus, so it can connect easily to BGM2
   | Direction      | GPIO_47 [P26] | GPIO_11     | INT       |
   | Step trigger   | GPIO_48 [P28] | GPIO_12     | PWM       |
 
-
 ## Setup ##
 
 You can either create a project based on an example project or start with an empty example project.
+
+> [!IMPORTANT]
+> - Make sure that the [Third Party Hardware Drivers](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) extension is installed as part of the SiSDK. If not, follow [this documentation](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
+> - **Third Party Hardware Drivers** extension must be enabled for the project to install the required components from this extension.
+
+> [!TIP]
+> To show all components in the **Third Party Hardware Drivers** extension, the **Evaluation** quality must be enabled in the Software Component view.
 
 ### Create a project based on an example project ###
 
@@ -59,7 +65,7 @@ You can either create a project based on an example project or start with an emp
     - Select the SOFTWARE COMPONENTS tab.
 
     - Install the following components:
-      
+
       **If the Explorer Kit is used:**
         - [Services] → [Timer] → [Sleep Timer]
         - [Services] → [IO Stream] → [IO Stream: USART] → default instance name: vcom
@@ -73,12 +79,6 @@ You can either create a project based on an example project or start with an emp
 
 4. Build and flash this example to the board.
 
-**Note:**
-
-- Make sure that the **Third Party Hardware Drivers** extension is installed. If not, follow [this documentation](https://github.com/SiliconLabs/third_party_hw_drivers_extension/blob/master/README.md#how-to-add-to-simplicity-studio-ide).
-
-- **Third Party Hardware Drivers** extension must be enabled for the project to install "A4988 - Stepper 2 Click (Mikroe)" component.
-
 ## How It Works ##
 
 Use Putty/Tera Term or other programs to read the serial output. The BGM220P uses by default a baudrate of 115200. You should expect a similar output to the one below. After the main program is executed, the stepper motor will start to rotate. When the user press button0, it will change the active state.
@@ -88,6 +88,6 @@ Use Putty/Tera Term or other programs to read the serial output. The BGM220P use
 
 ## Report Bugs & Get Support ##
 
-To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
+To report bugs in the Application Examples projects, please create a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo. Please reference the board, project, and source files associated with the bug, and reference line numbers. If you are proposing a fix, also include information on the proposed fix. Since these examples are provided as-is, there is no guarantee that these examples will be updated to fix these issues.
 
-Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabs/third_party_hw_drivers_extension) repo.
+Questions and comments related to these examples should be made by creating a new "Issue" in the "Issues" section of [third_party_hw_drivers_extension](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension) repo.

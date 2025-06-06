@@ -23,6 +23,9 @@ config_file:
   - path: public/mikroe/heartrate2_maxm86161/config/brd2703a/mikroe_maxm86161_config.h
     file_id: driver_config_heartrate2
     condition: [brd2703a]
+  - path: public/mikroe/heartrate2_maxm86161/config/brd2710a/mikroe_maxm86161_config.h
+    file_id: driver_config_heartrate2
+    condition: [brd2710a]
   - path: public/mikroe/heartrate2_maxm86161/config/brd4108a/mikroe_maxm86161_config.h
     file_id: driver_config_heartrate2
     condition: [brd4108a]
@@ -31,7 +34,7 @@ config_file:
     condition: [brd4314a]
   - path: public/mikroe/heartrate2_maxm86161/config/other/mikroe_maxm86161_config.h
     file_id: driver_config_heartrate2
-    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a]
+    unless: [brd4314a, brd4108a, brd2703a, brd2605a, brd4338a, brd2710a]
 provides:
   - name: mikroe_heartrate2
     allow_multiple: false

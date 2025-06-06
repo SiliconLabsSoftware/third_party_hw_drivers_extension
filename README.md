@@ -1,6 +1,6 @@
 # Third Party Hardware Drivers #
 
-[![Version Badge](https://img.shields.io/badge/v4.1.1-green)](https://github.com/SiliconLabs/third_party_hw_drivers_extension/releases)
+[![Version Badge](https://img.shields.io/badge/v4.2.0-green)](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/releases)
 [![SiSDK Badge](https://img.shields.io/badge/SiSDK-v2024.12.0-green)](https://github.com/SiliconLabs/simplicity_sdk/releases)
 [![WSDK Badge](https://img.shields.io/badge/WSDK-v3.4.0-green)](https://github.com/SiliconLabs/wiseconnect/releases)
 ![License badge](https://img.shields.io/badge/License-Zlib-green)
@@ -11,13 +11,13 @@ This repo contains example drivers developed by Silicon Labs engineers and are p
 
 The following table shows extension support for Silicon Labs SoCs where ![Static Badge](https://img.shields.io/badge/preview-orange) and ![Static Badge](https://img.shields.io/badge/supported-green) denote preview and support, respectively.
 
-| Chip family | v1.x.x | [v2.x.x](https://github.com/SiliconLabs/third_party_hw_drivers_extension/tree/release/v2) | [v3.x.x](https://github.com/SiliconLabs/third_party_hw_drivers_extension/tree/release/v3) | v4.x.x |
+| Chip family | v1.x.x | [v2.x.x](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/tree/release/v2) | [v3.x.x](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/tree/release/v3) | v4.x.x |
 |---|---|---|---|---|
 |Series 1|![Static Badge](https://img.shields.io/badge/supported-green)|![Static Badge](https://img.shields.io/badge/supported-green)|![Static Badge](https://img.shields.io/badge/supported-green)||
 |Series 2|![Static Badge](https://img.shields.io/badge/supported-green)|![Static Badge](https://img.shields.io/badge/supported-green)|![Static Badge](https://img.shields.io/badge/supported-green)|![Static Badge](https://img.shields.io/badge/supported-green)|
 |SiWx917|||![Static Badge](https://img.shields.io/badge/preview-orange)|![Static Badge](https://img.shields.io/badge/supported-green)|
 
-This extension supports Simplicity SDK from v4.0.0, prior versions support GSDK.
+This extension supports Simplicity SDK from v2024.6.0, prior versions support GSDK.
 
 For the SiW917 chip family, WiseConnect SDK is supported from  v3.0.0.
 
@@ -138,6 +138,8 @@ A full list of all examples and drivers in this repository is defined below:
 | 107 | XM125 - PCR Click (Mikroe) | [Example](./app/example/mikroe_pcr_xm125) | [Documentation](./app/documentation/example/mikroe_pcr_xm125) |
 | 108 | RGB Driver Click (Mikroe) | [Example](./app/example/mikroe_rgb_driver) | [Documentation](./app/documentation/example/mikroe_rgb_driver) |
 | 109 | DRV8245P - DC Motor 29 Click (Mikroe) | [Example](./app/example/mikroe_dcmotor29_drv8245p) | [Documentation](./app/documentation/example/mikroe_dcmotor29_drv8245p) |
+| 110 | WS2812 - Addressable LED (Adafruit) | [Example](./app/example/adafruit_addressable_led_ws2812) | [Documentation](./app/documentation/example/adafruit_addressable_led_ws2812) |
+| 111 | VEML6035 - Ambient 11 Click (Mikroe) | [Example](./app/example/mikroe_ambient11_veml6035) | [Documentation](./app/documentation/example/mikroe_ambient11_veml6035) |
 
 ## Drivers ##
 
@@ -270,6 +272,13 @@ A full list of all examples and drivers in this repository is defined below:
                     <td colspan="2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;RGB Driver Click (Mikore)</td>
                     <td>
                         <a href="./driver/public/mikroe/rgb">Driver</a>
+                        </td>
+                </tr>
+        <tr></tr>
+        <tr>
+                    <td colspan="2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;WS2812 - Addressable LED (Adafruit) - SPI</td>
+                    <td>
+                        <a href="./driver/public/silabs/addressable_led_ws2812">Driver</a>
                         </td>
                 </tr>
         <tr></tr>
@@ -816,9 +825,16 @@ A full list of all examples and drivers in this repository is defined below:
                 </tr>
         <tr></tr>
         <tr>
-                    <td colspan="2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;XM125 - PCR Click (Mikroe) - I2C</td>
+                    <td colspan="2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;XM125 - PCR Click (Mikroe)</td>
                     <td>
                         <a href="./driver/public/mikroe/pcr_xm125">Driver</a>
+                        </td>
+                </tr>
+        <tr></tr>
+                <tr>
+                    <td colspan="2" align="left">&nbsp;&nbsp;&nbsp;&nbsp;VEML6035 - Ambient 11 Click (Mikroe)</td>
+                    <td>
+                        <a href="./driver/public/mikroe/ambient11_veml6035">Driver</a>
                         </td>
                 </tr>
         <tr></tr>
@@ -1069,11 +1085,11 @@ A full list of all examples and drivers in this repository is defined below:
 
 - Clone the repository somewhere on your PC
 
-  `git clone https://github.com/SiliconLabs/third_party_hw_drivers_extension.git`
+  `git clone https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension.git`
 
-- Add the SDK extension to the GSDK
+- Add the SDK extension to the Simplicity SDK
 
-  - In Simplicity Studio go to **Preferences** → **Simplicity Studio** → **SDKs** and select the Gecko SDK Suite to which the SDK extension will be added. Click **Add Extension…**
+  - In Simplicity Studio go to **Preferences** → **Simplicity Studio** → **SDKs** and select the Simplicity SDK Suite to which the SDK extension will be added. Click **Add Extension…**
   - Click **Browse** and navigate to the root folder of the package above and click **Select Folder**.
   - The SDK extension should be displayed in the Detected SDK Extension window with the **Third Party Hardware Drivers** name, version, and path. Click **OK** and then **Trust** and **Apply and Close**.
   - Restart Simplicity Studio

@@ -1,0 +1,68 @@
+project_name: adafruit_addressable_led_ws2812
+label: Third Party Hardware Drivers - WS2812 - Addressable LED (Adafruit)
+package: platform
+description: |
+  This example project shows an example for Adafruit WS2812 Addressable LED driver integration.
+category: Example|Platform
+quality: evaluation
+
+filter:
+  - name: Device Type
+    value: [SoC]
+  - name: MCU
+    value: [32-bit MCU]
+  - name: Project Difficulty
+    value: [Beginner]
+
+source:
+  - path: app.c
+  - path: main.c
+
+include:
+  - path: ''
+    file_list:
+    - path: app.h
+
+component:
+  - id: sl_system
+  - id: sleeptimer_si91x
+    from: wiseconnect3_sdk
+  - id: syscalls
+    from: wiseconnect3_sdk
+  - id: si917_memory_default_config
+    from: wiseconnect3_sdk
+  - id: adafruit_addressable_led_ws2812
+    from: third_party_hw_drivers
+  - id: sl_gspi
+    from: wiseconnect3_sdk
+
+configuration:
+  - name: SL_GSPI_BITRATE
+    value: "6000000"
+  - name: SL_GSPI_CLOCK_MODE
+    value: "SL_GSPI_MODE_0"
+
+sdk_extension:
+  - id: third_party_hw_drivers
+    version: 4.2.0
+  - id: wiseconnect3_sdk
+    version: 3.4.0
+
+readme:
+  - path: ../../documentation/example/adafruit_addressable_led_ws2812/README.md
+
+other_file:
+  - path: ../../documentation/example/adafruit_addressable_led_ws2812/image/connection.png
+    directory: "image"
+  - path: ../../documentation/example/adafruit_addressable_led_ws2812/image/create_proj.png
+    directory: "image"
+  - path: ../../documentation/example/adafruit_addressable_led_ws2812/image/result_test.gif
+    directory: "image"
+
+ui_hints:
+  highlight:
+    - path: README.md
+      focus: true
+
+post_build:
+  path: ../../../utilities/postbuild_profile/wiseconnect_soc.slpb
