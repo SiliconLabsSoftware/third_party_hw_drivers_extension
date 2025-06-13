@@ -106,10 +106,10 @@ extern "C" {
 // <gpio optional=true> TOUCHSCREEN_YP
 // $[GPIO_TOUCHSCREEN_YP]
 #ifndef TOUCHSCREEN_YP_PORT
-#define TOUCHSCREEN_YP_PORT                                  SL_GPIO_PORT_B
+#define TOUCHSCREEN_YP_PORT                                  SL_GPIO_PORT_D
 #endif
 #ifndef TOUCHSCREEN_YP_PIN
-#define TOUCHSCREEN_YP_PIN                                   1
+#define TOUCHSCREEN_YP_PIN                                   2
 #endif
 // [GPIO_TOUCHSCREEN_YP]$
 

@@ -38,8 +38,8 @@ define:
   - name: DEBUG_EFM
 
 sdk_extension:
-- id: third_party_hw_drivers
-  version: 4.1.2
+  - id: third_party_hw_drivers
+    version: 4.3.0
 
 readme:
   - path: ../../documentation/example/sparkfun_qwiic_keypad/README.md

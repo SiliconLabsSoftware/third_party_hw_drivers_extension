@@ -40,7 +40,7 @@ configuration:
 
 sdk_extension:
   - id: third_party_hw_drivers
-    version: 4.2.0
+    version: 4.3.0
 
 readme:
   - path: ../../documentation/example/mikroe_ozone2_mq131/README.md

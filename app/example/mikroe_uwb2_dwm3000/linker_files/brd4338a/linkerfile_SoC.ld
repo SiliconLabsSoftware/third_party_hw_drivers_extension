@@ -47,10 +47,15 @@ SECTIONS
 	.text :
 	{
 		KEEP(*(.isr_vector))
-    
-            *(.text*)        
-			KEEP(*(.init))
-			KEEP(*(.fini))
+		. = ALIGN(32);
+		  *(EXCLUDE_FILE(*UDMA.o).text*)        
+			 KEEP(*(.init))
+			 KEEP(*(.fini))
+    	
+				
+        	     	  	
+
+			
 
 		/* .ctors */
 		*crtbegin.o(.ctors)
@@ -82,32 +87,38 @@ SECTIONS
 	} > rom 
 	__exidx_end = .;
 
-	.dw_drivers ALIGN(4): 
+	.dw_drivers ALIGN(4):
   {
     __dw_drivers_start = . ;
     KEEP(*(.dw_drivers*))
     __dw_drivers_end = . ;
   } > rom
-
 	__etext = .;
 	
+
+
+	/* _sidata is used in code startup code */
+	_sidata = __etext;
+
 	
 
 	
-	/* _sidata is used in code startup code */
-	_sidata = __etext;
 	
 	.data :
-	
+
 	{
 		__data_start__ = .;
 		
 		/* _sdata is used in startup code */
 		_sdata = __data_start__;
 		*(.data*)
+		*UDMA.o(.text*)
 		
 		
-
+		
+		/* ipmu calibration data */
+		*(.common_ipmu_ram*)
+		
 		. = ALIGN(4);
 		/* preinit data */
 		PROVIDE_HIDDEN (__preinit_array_start = .);
@@ -136,7 +147,7 @@ SECTIONS
 		
 		/* _edata is used in startup code */
 		_edata = __data_end__; 
-	} > ram AT> rom	
+	} > ram AT> rom
 	
 	.bss (NOLOAD) :
 	{
@@ -145,9 +156,9 @@ SECTIONS
 		*(.bss*)
 		*(COMMON)
 		. = ALIGN(4);
-		__bss_end__ = .; 
+		__bss_end__ = .;
 	} > ram 
-	
+
 	
 	.stack (NOLOAD):
 	{
@@ -157,29 +168,26 @@ SECTIONS
 		__StackTop = .;
 		PROVIDE(__stack = __StackTop);			
 	} > ram
-			
   	.heap (COPY):
   	{
 		__HeapBase = .;
 		__end__ = .;
 		end = __end__;
 		_end = __end__;
-		KEEP(*(.heap*))	
+		KEEP(*(.heap*))
 		. = ORIGIN(ram) + LENGTH(ram);
-  		
 		__HeapLimit = .;			
   	} > ram
-  
+ 
 	__heap_size = __HeapLimit - __HeapBase;
 	.udma_addr0 :
 	{
 		*(.udma_addr0*)
 	} > udma0 AT> rom
-	
 
 	.udma_addr1 :
 	{
 		*(.udma_addr1*)		
 	} > udma1 AT> rom	
-   
+  /* nvm3 enable*/  /* Flash Present*/  /* littlefs_enable */  /* Flash Present */
 }

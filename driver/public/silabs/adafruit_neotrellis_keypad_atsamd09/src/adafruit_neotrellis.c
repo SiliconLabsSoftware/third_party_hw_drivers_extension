@@ -72,7 +72,7 @@ sl_status_t adafruit_neotrellis_init(mikroe_i2c_handle_t i2cspm,
       return SL_STATUS_FAIL;
     }
 
-    for (int keycount = 0; keycount < NEO_TRELLIS_NUM_KEYS; keycount++) {
+    for (uint8_t keycount = 0; keycount < NEO_TRELLIS_NUM_KEYS; keycount++) {
       trellis_dev[i].callbacks[keycount] = NULL;
     }
 
@@ -198,7 +198,7 @@ void adafruit_neotrellis_show()
 
 void adafruit_neotrellis_read()
 {
-  for (int n = 0; n < NUM_NEOTRELLIS_DEVICE; n++) {
+  for (uint8_t n = 0; n < NUM_NEOTRELLIS_DEVICE; n++) {
     int8_t count = adafruit_seesaw_get_keypad_count(
       &trellis_dev[n].pixel.adafruit_seesaw);
 

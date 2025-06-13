@@ -51,7 +51,7 @@ define:
 
 sdk_extension:
   - id: third_party_hw_drivers
-    version: 4.2.0
+    version: 4.3.0
 
 readme:
   - path: ../../documentation/example/sparkfun_ir_array_mlx90640/README.md

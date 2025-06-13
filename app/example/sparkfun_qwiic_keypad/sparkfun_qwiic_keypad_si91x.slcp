@@ -37,9 +37,9 @@ component:
 
 sdk_extension:
   - id: third_party_hw_drivers
-    version: 4.2.0
+    version: 4.3.0
   - id: wiseconnect3_sdk
-    version: 3.4.0
+    version: 3.4.2
 
 readme:
   - path: ../../documentation/example/sparkfun_qwiic_keypad/README.md

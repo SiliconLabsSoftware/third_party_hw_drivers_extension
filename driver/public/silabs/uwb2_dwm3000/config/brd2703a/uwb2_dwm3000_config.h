@@ -62,8 +62,8 @@ extern "C"
 
 // <usart signal=TX,RX,CLK,(CS)> DWM3000
 // $[USART_DWM3000]
-#define DWM3000_PERIPHERAL              EUSART1
-#define DWM3000_PERIPHERAL_NO           1
+#define DWM3000_PERIPHERAL              USART0
+#define DWM3000_PERIPHERAL_NO           0
 
 // USART0 TX on PC00
 #define DWM3000_TX_PORT                 SL_GPIO_PORT_C
@@ -111,8 +111,12 @@ extern "C"
 
 // <gpio optional=true> DWM3000_ON
 // $[GPIO_DWM3000_ON]
-#define DWM3000_ON_PORT                          SL_GPIO_PORT_A
-#define DWM3000_ON_PIN                           0
+// #ifndef DWM3000_ON_PORT
+// #define DWM3000_ON_PORT                       SL_GPIO_PORT_A
+// #endif
+// #ifndef DWM3000_ON_PIN
+// #define DWM3000_ON_PIN                        0
+// #endif
 // [GPIO_DWM3000_ON]$
 
 // <<< sl:end pin_tool >>>

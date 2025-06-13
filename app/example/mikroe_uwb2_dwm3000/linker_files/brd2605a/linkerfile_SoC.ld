@@ -27,6 +27,7 @@
  *
  ******************************************************************************/
 
+
  MEMORY
  {
    rom   (rx)  : ORIGIN = 0x8202000, LENGTH = 0x1fe000
@@ -40,16 +41,21 @@
  }
 
 ENTRY(Reset_Handler)
-
+ 
 SECTIONS
 {
 	.text :
 	{
 		KEEP(*(.isr_vector))
+		. = ALIGN(32);
+		  *(EXCLUDE_FILE(*UDMA.o).text*)        
+			 KEEP(*(.init))
+			 KEEP(*(.fini))
+    	
+				
+        	     	  	
 
-            *(.text*)
-			KEEP(*(.init))
-			KEEP(*(.fini))
+			
 
 		/* .ctors */
 		*crtbegin.o(.ctors)
@@ -57,7 +63,7 @@ SECTIONS
 		*(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
 		*(SORT(.ctors.*))
 		*(.ctors)
-
+		
 		/* .dtors */
 		*crtbegin.o(.dtors)
 		*crtbegin?.o(.dtors)
@@ -65,20 +71,20 @@ SECTIONS
 		*(SORT(.dtors.*))
 		*(.dtors)
 		*(.rodata*)
-
-		KEEP(*(.eh_fram e*))
-	} > rom
-
-	.ARM.extab :
+		
+		KEEP(*(.eh_fram e*))			
+	} > rom	
+	
+	.ARM.extab : 
 	{
-		*(.ARM.extab* .gnu.linkonce.armextab.*)
+		*(.ARM.extab* .gnu.linkonce.armextab.*)			
 	} > rom
-
+	
 	__exidx_start = .;
 	.ARM.exidx :
 	{
-		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
-	} > rom
+		*(.ARM.exidx* .gnu.linkonce.armexidx.*)			
+	} > rom 
 	__exidx_end = .;
 
 	.dw_drivers ALIGN(4):
@@ -87,51 +93,62 @@ SECTIONS
     KEEP(*(.dw_drivers*))
     __dw_drivers_end = . ;
   } > rom
-
 	__etext = .;
+	
+
 
 	/* _sidata is used in code startup code */
 	_sidata = __etext;
 
+	
+
+	
+	
 	.data :
 
 	{
 		__data_start__ = .;
-
+		
 		/* _sdata is used in startup code */
 		_sdata = __data_start__;
 		*(.data*)
-
+		*UDMA.o(.text*)
+		
+		
+		
+		/* ipmu calibration data */
+		*(.common_ipmu_ram*)
+		
 		. = ALIGN(4);
 		/* preinit data */
 		PROVIDE_HIDDEN (__preinit_array_start = .);
 		KEEP(*(.preinit_array))
 		PROVIDE_HIDDEN (__preinit_array_end = .);
-
+		
 		. = ALIGN(4);
 		/* init data */
-
+		
 		PROVIDE_HIDDEN (__init_array_start = .);
 		KEEP(*(SORT(.init_array.*)))
 		KEEP(*(.init_array))
 		PROVIDE_HIDDEN (__init_array_end = .);
-
+		
 		. = ALIGN(4);
 		/* finit data */
 		PROVIDE_HIDDEN (__fini_array_start = .);
 		KEEP(*(SORT(.fini_array.*)))
 		KEEP(*(.fini_array))
 		PROVIDE_HIDDEN (__fini_array_end = .);
-
+		
 		KEEP(*(.jcr*))
 		. = ALIGN(4);
 		/* All data end */
 		__data_end__ = .;
-
+		
 		/* _edata is used in startup code */
-		_edata = __data_end__;
+		_edata = __data_end__; 
 	} > ram AT> rom
-
+	
 	.bss (NOLOAD) :
 	{
 		. = ALIGN(4);
@@ -140,17 +157,17 @@ SECTIONS
 		*(COMMON)
 		. = ALIGN(4);
 		__bss_end__ = .;
-	} > ram
+	} > ram 
 
+	
 	.stack (NOLOAD):
 	{
 		__StackLimit = .;
 		KEEP(*(.stack*))
 		. = ALIGN(4);
 		__StackTop = .;
-		PROVIDE(__stack = __StackTop);
+		PROVIDE(__stack = __StackTop);			
 	} > ram
-
   	.heap (COPY):
   	{
 		__HeapBase = .;
@@ -159,20 +176,18 @@ SECTIONS
 		_end = __end__;
 		KEEP(*(.heap*))
 		. = ORIGIN(ram) + LENGTH(ram);
-
-		__HeapLimit = .;
+		__HeapLimit = .;			
   	} > ram
-
+ 
 	__heap_size = __HeapLimit - __HeapBase;
 	.udma_addr0 :
 	{
 		*(.udma_addr0*)
 	} > udma0 AT> rom
 
-
 	.udma_addr1 :
 	{
-		*(.udma_addr1*)
-	} > udma1 AT> rom
-
+		*(.udma_addr1*)		
+	} > udma1 AT> rom	
+  /* nvm3 enable*/  /* Flash Present*/  /* littlefs_enable */  /* Flash Present */
 }

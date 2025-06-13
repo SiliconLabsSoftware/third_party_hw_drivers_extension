@@ -36,7 +36,7 @@ component:
 
 sdk_extension:
   - id: third_party_hw_drivers
-    version: 4.2.0
+    version: 4.3.0
 
 readme:
   - path: ../../documentation/example/mikroe_pwm_driver_si8711cc/README.md

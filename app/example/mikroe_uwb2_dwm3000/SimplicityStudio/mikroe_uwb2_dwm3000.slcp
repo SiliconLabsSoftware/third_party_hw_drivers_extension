@@ -51,7 +51,7 @@ define:
 
 sdk_extension:
   - id: third_party_hw_drivers
-    version: 4.2.0
+    version: 4.3.0
 
 readme:
   - path: ../../../documentation/example/mikroe_uwb2_dwm3000/README.md
@@ -63,6 +63,8 @@ other_file:
     condition: [brd4108a]
   - path: ../linker_files/brd4314a/linkerfile.ld
     condition: [brd4314a]
+  - path: ../linker_files/brd2710a/linkerfile.ld
+    condition: [brd2710a]
   - path: ../../../documentation/example/mikroe_uwb2_dwm3000/image/create_example.png
     directory: image
   - path: ../../../documentation/example/mikroe_uwb2_dwm3000/image/hardware_connection.png

@@ -2,10 +2,10 @@ id: third_party_hw_drivers
 label: Third Party Hardware Drivers
 description: >
   Third Party Hardware Driver extension for the Gecko and Wiseconnect SDKs.
-version: 4.2.0
+version: 4.3.0
 sdk:
   id: simplicity_sdk
-  version: "2024.12.0"
+  version: "2024.12.2"
 component_path:
   - path: "driver/component/drivers/mikroe"
   - path: "driver/component/drivers/silabs"

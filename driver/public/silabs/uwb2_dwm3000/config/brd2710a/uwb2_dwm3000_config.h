@@ -4,7 +4,7 @@
  * @version 0.0.1
  *******************************************************************************
  * # License
- * <b>Copyright 2025 Silicon Laboratories Inc. www.silabs.com</b>
+ * <b>Copyright 2024 Silicon Laboratories Inc. www.silabs.com</b>
  *******************************************************************************
  *
  * SPDX-License-Identifier: Zlib
@@ -40,8 +40,7 @@
 #define DWM3000_CONFIG_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // <<< Use Configuration Wizard in Context Menu
@@ -62,8 +61,8 @@ extern "C"
 
 // <usart signal=TX,RX,CLK,(CS)> DWM3000
 // $[USART_DWM3000]
-#define DWM3000_PERIPHERAL              EUSART1
-#define DWM3000_PERIPHERAL_NO           1
+#define DWM3000_PERIPHERAL              USART0
+#define DWM3000_PERIPHERAL_NO           0
 
 // USART0 TX on PC00
 #define DWM3000_TX_PORT                 SL_GPIO_PORT_C
@@ -85,34 +84,42 @@ extern "C"
 
 // <gpio optional=true> DWM3000_RESET
 // $[GPIO_DWM3000_RESET]
-#ifndef DWM3000_RESET_PORT                      
+#ifndef DWM3000_RESET_PORT
 #define DWM3000_RESET_PORT                       SL_GPIO_PORT_C
 #endif
-#ifndef DWM3000_RESET_PIN                       
+#ifndef DWM3000_RESET_PIN
 #define DWM3000_RESET_PIN                        6
 #endif
 // [GPIO_DWM3000_RESET]$
 
 // <gpio optional=true> DWM3000_INT
 // $[GPIO_DWM3000_INT]
-#ifndef DWM3000_INT_PORT                        
+#ifndef DWM3000_INT_PORT
 #define DWM3000_INT_PORT                         SL_GPIO_PORT_B
 #endif
-#ifndef DWM3000_INT_PIN                         
+#ifndef DWM3000_INT_PIN
 #define DWM3000_INT_PIN                          3
 #endif
 // [GPIO_DWM3000_INT]$
 
 // <gpio optional=true> DWM3000_WAKE
 // $[GPIO_DWM3000_WAKE]
-// #define DWM3000_WAKE_PORT                     SL_GPIO_PORT_B
-// #define DWM3000_WAKE_PIN                      0
+// #ifndef DWM3000_WAKE_PORT
+// #define DWM3000_WAKE_PORT                        SL_GPIO_PORT_B
+// #endif
+// #ifndef DWM3000_WAKE_PIN
+// #define DWM3000_WAKE_PIN                         0
+// #endif
 // [GPIO_DWM3000_WAKE]$
 
 // <gpio optional=true> DWM3000_ON
 // $[GPIO_DWM3000_ON]
-#define DWM3000_ON_PORT                          SL_GPIO_PORT_B
-#define DWM3000_ON_PIN                           4
+// #ifndef DWM3000_ON_PORT
+// #define DWM3000_ON_PORT                          SL_GPIO_PORT_B
+// #endif
+// #ifndef DWM3000_ON_PIN
+// #define DWM3000_ON_PIN                           4
+// #endif
 // [GPIO_DWM3000_ON]$
 
 // <<< sl:end pin_tool >>>

@@ -1,8 +1,8 @@
 # Third Party Hardware Drivers #
 
-[![Version Badge](https://img.shields.io/badge/v4.2.0-green)](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/releases)
-[![SiSDK Badge](https://img.shields.io/badge/SiSDK-v2024.12.0-green)](https://github.com/SiliconLabs/simplicity_sdk/releases)
-[![WSDK Badge](https://img.shields.io/badge/WSDK-v3.4.0-green)](https://github.com/SiliconLabs/wiseconnect/releases)
+[![Version Badge](https://img.shields.io/badge/v4.3.0-green)](https://github.com/SiliconLabsSoftware/third_party_hw_drivers_extension/releases)
+[![SiSDK Badge](https://img.shields.io/badge/SiSDK-v2024.12.2-green)](https://github.com/SiliconLabs/simplicity_sdk/releases)
+[![WSDK Badge](https://img.shields.io/badge/WSDK-v3.4.2-green)](https://github.com/SiliconLabs/wiseconnect/releases)
 ![License badge](https://img.shields.io/badge/License-Zlib-green)
 
 This repo contains example drivers developed by Silicon Labs engineers and are provided as [an SDK extension](https://docs.silabs.com/simplicity-studio-5-users-guide/latest/ss-5-users-guide-getting-started/install-sdk-extensions). These drivers interface with different types of external hardware and are tested against a specific device listed in the driver name. These drivers are intended to be fully compatible with Silicon Labs' wireless stacks. All drivers provide a minimal Simplicity Studio project for testing and to show an example usage of the driver. The driver source is provided for modification and extension as needed. All drivers in this repository are considered to be EVALUATION QUALITY which implies that the code provided in the repos is subjected to limited testing and is provided provided as-is. It is not suitable for production environments.
@@ -1074,8 +1074,8 @@ A full list of all examples and drivers in this repository is defined below:
 - Desired Silicon Labs Starter Kit
 - Driver specific test hardware
 - Simplicity Studio v5.9.3.2 or newer
-- Simplicity SDK 2024.12.0
-- WiSeConnect SDK 3.4.0
+- Simplicity SDK 2024.12.2
+- WiSeConnect SDK 3.4.2
 
 ## How to add to Simplicity Studio IDE ##
 
