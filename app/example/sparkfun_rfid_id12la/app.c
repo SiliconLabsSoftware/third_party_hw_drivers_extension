@@ -77,7 +77,7 @@ void app_init(void)
       "Device is not present on the I2C bus or I2C address has been changed before\n");
     ret = sparkfun_id12la_scan_address();
     app_assert_status(ret);
-    app_printf("I2C address is: 0x%02X\n", sparkfun_id12la_get_i2c_address());
+    app_printf("I2C Address is: 0x%02X\n", sparkfun_id12la_get_i2c_address());
   } else if (ret != SL_STATUS_OK) {
     app_printf("Failed to initialize RFID\r\n");
     return;
